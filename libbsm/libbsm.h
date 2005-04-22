@@ -45,7 +45,9 @@
 
 #include <bsm/audit.h>
 #include <bsm/audit_record.h>
+#ifdef DARWIN
 #include <mach/mach.h>		/* audit_token_t */
+#endif
 
 #define AU_PRS_SUCCESS  1
 #define AU_PRS_FAILURE  2
@@ -838,6 +840,7 @@ int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len);
 void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm);
 __END_DECLS
 
+#ifdef DARWIN
 /*
  * Apple-internal "wrapping" and utility definitions and prototypes.  
  */
@@ -905,6 +908,8 @@ __BEGIN_DECLS
  */
 int au_get_state(void);
 __END_DECLS
+
+#endif /* !DARWIN */
 
 /* OpenSSH compatibility */
 #define cannot_audit(x) (au_get_state() == AUC_NOAUDIT)
