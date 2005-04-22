@@ -1,0 +1,45 @@
+OpenBSM 1.0
+
+  Introduction
+
+OpenBSM provides an open source implementation of Sun's BSM Audit API. 
+Originally created under contract to Apple Computer by McAfee Research, 
+this implementation is now maintained by volunteers and the generous 
+contribution of several organizations.  Coupled with a kernel audit 
+implementation, OpenBSM can be used to maintain system audit streams, and 
+is a foundation for an Audit-enabled system.
+
+  Contents
+
+OpenBSM consists of several directories:
+
+    bin/           Audit-related command line tools
+    bsm/           System include files for BSM
+    etc/           Sample /etc/security configuration files
+    libbsm/        Implementation of BSM library interfaces and man pages
+    man/           System call and configuration file man pages
+
+  Credits
+
+The following organizations and individuals have contributed substantially 
+to the development of OpenBSM:
+
+    Apple Computer, Inc.
+    McAfee Research, McAfee, Inc.
+    SPARTA, Inc.
+    Robert Watson
+    Wayne Salamon
+    Tom Rhodes
+
+  Contributions
+
+The TrustedBSD Project would appreciate the contribution of bug fixes, 
+enhancements, etc, under identically or substantially similar licenses to 
+those present on the remainder of the OpenBSM source code.
+
+  Location
+
+Information on OpenBSM may be found on the OpenBSM home page:
+
+    http://www.OpenBSM.org/
+    http://www.TrustedBSD.org/
