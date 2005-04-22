@@ -24,9 +24,9 @@
 #ifndef _BSM_AUDIT_H
 #define	_BSM_AUDIT_H
 
+#include <sys/param.h>
 #include <sys/queue.h>
 #include <sys/ucred.h>
-#include <sys/param.h>
 #include <sys/ipc.h>
 #include <sys/socket.h>
 #include <sys/cdefs.h>

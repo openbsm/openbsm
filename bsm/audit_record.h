@@ -281,11 +281,13 @@ token_t			*au_to_return(char status, u_int32_t ret);
 token_t			*au_to_return32(char status, u_int32_t ret);
 token_t			*au_to_return64(char status, u_int64_t ret);
 token_t			*au_to_seq(long audit_count);
+#if defined(_KERNEL) || defined(KERNEL)
 token_t			*au_to_socket(struct socket *so);
 token_t			*au_to_socket_ex_32(u_int16_t lp, u_int16_t rp, 
 				struct sockaddr *la, struct sockaddr *ta);
 token_t			*au_to_socket_ex_128(u_int16_t lp, u_int16_t rp, 
 				struct sockaddr *la, struct sockaddr *ta);
+#endif
 token_t			*au_to_sock_inet(struct sockaddr_in *so);
 token_t			*au_to_sock_inet32(struct sockaddr_in *so);
 token_t			*au_to_sock_inet128(struct sockaddr_in6 *so);
