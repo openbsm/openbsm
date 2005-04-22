@@ -35,7 +35,7 @@
 #include <stdint.h>	/* uint32_t */
 #include <syslog.h>	/* syslog() */
 #include <stdarg.h>	/* syslog() */
-#include "libbsm.h"
+#include <libbsm.h>
 
 /* if 1, assumes a kernel that sends the right notification */
 #define AUDIT_NOTIFICATION_ENABLED	1

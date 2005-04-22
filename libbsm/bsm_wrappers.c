@@ -36,7 +36,7 @@
 #include <syslog.h>		/* syslog() */
 #include <stdarg.h>		/* syslog() */
 #include <errno.h>
-#include "libbsm.h"
+#include <libbsm.h>
 
 /*
  * XXX  Write up in a separate white paper.  
