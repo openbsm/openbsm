@@ -45,7 +45,7 @@
 
 #include <bsm/audit.h>
 #include <bsm/audit_record.h>
-#ifdef DARWIN
+#ifdef __APPLE__
 #include <mach/mach.h>		/* audit_token_t */
 #endif
 
@@ -840,7 +840,7 @@ int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len);
 void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm);
 __END_DECLS
 
-#ifdef DARWIN
+#ifdef __APPLE__
 /*
  * Apple-internal "wrapping" and utility definitions and prototypes.  
  */
@@ -850,6 +850,7 @@ __END_DECLS
 #ifdef __APPLE_API_PRIVATE
 #define __BSM_INTERNAL_NOTIFY_KEY "com.apple.audit.change"
 #endif
+#endif /* !__APPLE__ */
 
 /* 
  * au_get_state() return values 
@@ -908,8 +909,6 @@ __BEGIN_DECLS
  */
 int au_get_state(void);
 __END_DECLS
-
-#endif /* !DARWIN */
 
 /* OpenSSH compatibility */
 #define cannot_audit(x) (au_get_state() == AUC_NOAUDIT)
@@ -1150,6 +1149,7 @@ int audit_write_failure_na(short event_code, char *errmsg, int errret,
 /* END au_write() WRAPPERS */
 
 
+#ifdef  __APPLE__
 /*
  * audit_token_to_au32()
  *
@@ -1196,6 +1196,7 @@ void audit_token_to_au32(
 	pid_t			*pidp,
 	au_asid_t		*asidp,
 	au_tid_t		*tidp);
+#endif /* !__APPLE__ */
 
 
 __END_DECLS
