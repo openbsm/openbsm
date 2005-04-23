@@ -320,6 +320,7 @@ audit_write_failure_na(short event_code, char *errmsg, int errret,
 
 /* END OF au_write() WRAPPERS */
 
+#ifdef __APPLE__
 void 
 audit_token_to_au32(
 	audit_token_t	atoken,
@@ -351,4 +352,4 @@ audit_token_to_au32(
 		tidp->port = (dev_t)atoken.val[7];
 	}
 }
-
+#endif /* !__APPLE__ */
