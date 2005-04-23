@@ -19,6 +19,10 @@ OpenBSM consists of several directories:
     libbsm/        Implementation of BSM library interfaces and man pages
     man/           System call and configuration file man pages
 
+OpenBMS currently builds on FreeBSD and Darwin.  With Makefile adjustment
+and minor tweaks, it should build without problems on a broad range of
+POSIX-like systems.
+
   Credits
 
 The following organizations and individuals have contributed substantially 
