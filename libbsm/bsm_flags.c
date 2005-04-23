@@ -31,7 +31,7 @@
 
 #include <libbsm.h>
 
-char *delim = ",";
+static const char *delim = ",";
 
 /*
  * Convert the character representation of audit values 
