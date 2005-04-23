@@ -10,6 +10,7 @@ INCS=	audit.h								\
 
 TARGET=	${DESTDIR}/usr/include/bsm
 
+all:
 default:
 clean:
 
