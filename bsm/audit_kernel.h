@@ -24,7 +24,7 @@
 #ifndef _BSM_AUDIT_KERNEL_H
 #define	_BSM_AUDIT_KERNEL_H
 
-#ifdef KERNEL
+#if defined(_KERNEL) || defined(KERNEL)
 
 #include <bsm/audit.h>
 
@@ -395,6 +395,6 @@ void			 audit_proc_free(struct proc *p);
 
 #endif /* AUDIT */
 
-#endif /* KERNEL */
+#endif /* !defined(_KERNEL) || defined(KERNEL) */
 
 #endif /* !_BSM_AUDIT_KERNEL_H */
