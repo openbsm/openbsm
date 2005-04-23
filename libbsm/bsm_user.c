@@ -303,3 +303,13 @@ int getfauditflags(au_mask_t *usremask, au_mask_t *usrdmask,
 
 	return 0;
 }
+
+/*
+ * Allow the caller to free an au_user_ent.
+ */
+void
+free_au_user_ent(struct au_user_ent *u)
+{
+
+	destroy_user_area(u);
+}

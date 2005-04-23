@@ -832,6 +832,7 @@ struct au_user_ent *getauusernam(const char *name);
 int au_user_mask(char *username, au_mask_t *mask_p);
 int getfauditflags(au_mask_t *usremask, au_mask_t *usrdmask, 
                                 au_mask_t *lastmask);
+void free_au_user_ent(struct au_user_ent *u);
 
 
 int au_read_rec(FILE *fp, u_char **buf);
