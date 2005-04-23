@@ -93,8 +93,10 @@ extern int	audit_suspended;
 #define ARG_AMASK		0x0000020000000000ULL
 #define ARG_CTLNAME		0x0000040000000000ULL
 #define ARG_PROCESS		0x0000080000000000ULL
+#ifdef __APPLE__
 #define ARG_MACHPORT1		0x0000100000000000ULL
 #define ARG_MACHPORT2		0x0000200000000000ULL
+#endif /* !__APPLE__ */
 #define ARG_NONE		0x0000000000000000ULL
 #define ARG_ALL			0xFFFFFFFFFFFFFFFFULL
 
@@ -211,8 +213,10 @@ struct audit_record {
 	int				ar_arg_svipc_id;
 	void *				ar_arg_svipc_addr;
 	struct posix_ipc_perm		ar_arg_pipc_perm;
+#ifdef __APPLE__
 	mach_port_t			ar_arg_mach_port1;
 	mach_port_t			ar_arg_mach_port2;
+#endif /* !__APPLE__ */
 	union auditon_udata		ar_arg_auditon;
 };
 
@@ -247,9 +251,11 @@ void			 audit_syscall_enter(unsigned short code,
 				struct proc *proc, struct uthread *uthread);
 void			 audit_syscall_exit(int error, struct proc *proc,
 				struct uthread *uthread);
+#ifdef __APPLE__
 void			 audit_mach_syscall_enter(unsigned short audit_event);
 void			 audit_mach_syscall_exit(int retval,
 				struct uthread *uthread);
+#endif /* !__APPLE__ */
 
 int			kaudit_to_bsm(struct kaudit_record *kar,
 					struct au_record **pau);
@@ -316,8 +322,10 @@ void			 audit_arg_posix_ipc_perm(uid_t uid, gid_t gid,
 						 mode_t mode);
 void			 audit_arg_auditon(union auditon_udata *udata);
 void			 audit_arg_file(struct proc *p, struct file *fp);
+#ifdef __APPLE__
 void			 audit_arg_mach_port1(mach_port_t port);
 void			 audit_arg_mach_port2(mach_port_t port);
+#endif /* !__APPLE__ */
 
 void			 audit_sysclose(struct proc *p, int fd);
 
@@ -352,6 +360,7 @@ void			 audit_proc_free(struct proc *p);
 	}								\
 	} while (0)
 
+#ifdef __APPLE__
 /*
  * Wrap the audit_mach_syscall_enter() and audit_mach_syscall_exit()
  * functions in a manner similar to other system call enter/exit functions.
@@ -368,6 +377,7 @@ void			 audit_proc_free(struct proc *p);
 		audit_mach_syscall_exit(retval, uthread);		\
 	}								\
 	} while (0)
+#endif /* !__APPLE__ */
 
 /*
  * A Macro to wrap the audit_sysclose() function.
@@ -384,11 +394,13 @@ void			 audit_proc_free(struct proc *p);
 #define AUDIT_SYSCALL_EXIT(error, proc, uthread)	do {		\
 	} while (0)
 
+#ifdef __APPLE__
 #define AUDIT_MACH_SYSCALL_ENTER(args...)       do {			\
 	} while (0)
 
 #define AUDIT_MACH_SYSCALL_EXIT(retval) 	do {			\
 	} while (0)
+#endif /* !__APPLE__ */
 
 #define	AUDIT_SYSCLOSE(op, args...)	do {				\
 	} while (0)
