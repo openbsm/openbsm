@@ -22,8 +22,7 @@ SRCS=	bsm_audit.c							\
 	bsm_user.c							\
 	bsm_wrappers.c
 
-INCS=	audit_uevents.h							\
-	libbsm.h
+INCS=	libbsm.h
 
 MAN=	libbsm.3							\
 	au_class.3							\
