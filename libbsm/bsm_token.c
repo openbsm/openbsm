@@ -74,12 +74,7 @@ token_t *au_to_arg32(char n, char *text, u_int32_t v)
 		return NULL;	
 	}
 	
-	/* Make sure that text is null terminated */
 	textlen = strlen(text);
-	if(text[textlen] != '\0') {	
-		return NULL;
-	}
-	
 	GET_TOKEN_AREA(t, dptr, 9 + textlen);
 	if(t == NULL) {
 		return NULL;
@@ -107,12 +102,7 @@ token_t *au_to_arg64(char n, char *text, u_int64_t v)
 		return NULL;	
 	}
 	
-	/* Make sure that text is null terminated */
 	textlen = strlen(text);
-	if(text[textlen] != '\0') {	
-		return NULL;
-	}
-	
 	GET_TOKEN_AREA(t, dptr, 13 + textlen);
 	if(t == NULL) {
 		return NULL;
@@ -537,12 +527,7 @@ token_t *au_to_file(char *file)
 	if(file == NULL) {
 		return NULL;
 	}
-	/* Make sure that text is null terminated */
 	filelen = strlen(file);
-	if(file[filelen] != '\0') {
-		return NULL;
-	}
- 
 	GET_TOKEN_AREA(t, dptr, filelen + 12);
 	if(t == NULL) {
 		return NULL;
@@ -576,12 +561,7 @@ token_t *au_to_text(char *text)
 	if(text == NULL) {
 		return NULL;
 	}
-	/* Make sure that text is null terminated */
 	textlen = strlen(text);
-	if(text[textlen] != '\0') {
-		return NULL;
-	}
-
 	GET_TOKEN_AREA(t, dptr, textlen + 4);
 	if(t == NULL) {
 		return NULL;
@@ -610,12 +590,7 @@ token_t *au_to_path(char *text)
 	if(text == NULL) {
 		return NULL;
 	}
-	/* Make sure that text is null terminated */
 	textlen = strlen(text);
-	if(text[textlen] != '\0') {
-		return NULL;
-	}
-
 	GET_TOKEN_AREA(t, dptr, textlen + 4);
 	if(t == NULL) {
 		return NULL;
@@ -1087,10 +1062,6 @@ token_t *au_to_exec_args(const char **args)
 		int nextlen;
 	
 		nextlen = strlen(nextarg);
-		if(nextarg[nextlen] != '\0') {
-			return NULL;
-		}
-		
 		totlen += nextlen + 1;
 		count++;
 		nextarg = *(args + count);
@@ -1137,10 +1108,6 @@ token_t *au_to_exec_env(const char **env)
 		int nextlen;
 		
 		nextlen = strlen(nextenv);
-		if(nextenv[nextlen] != '\0') {
-			return NULL;
-		}
-		
 		totlen += nextlen + 1;
 		count++;
 		nextenv = *(env + count);
