@@ -41,6 +41,8 @@
 #include <unistd.h>
 #include <sys/socketvar.h>
 
+#include <bsm/audit_internal.h>
+
 #include <libbsm.h>
 
 #define GET_TOKEN_AREA(t, dptr, length) \
