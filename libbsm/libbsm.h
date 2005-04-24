@@ -38,13 +38,15 @@
 #define MAX_ARGS 10
 #define MAX_ENV 10
 
-#include <stdio.h>
 #include <sys/types.h>
+#include <sys/cdefs.h>
 #include <sys/queue.h>
-#include <sys/cdefs.h>		/* __{BEGIN,END}_DECLS */
 
 #include <bsm/audit.h>
 #include <bsm/audit_record.h>
+
+#include <stdio.h>
+
 #ifdef __APPLE__
 #include <mach/mach.h>		/* audit_token_t */
 #endif

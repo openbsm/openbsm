@@ -24,13 +24,6 @@
 #ifndef _BSM_AUDIT_H
 #define	_BSM_AUDIT_H
 
-#include <sys/param.h>
-#include <sys/queue.h>
-#include <sys/ucred.h>
-#include <sys/ipc.h>
-#include <sys/socket.h>
-#include <sys/cdefs.h>
-
 #define	AUDIT_RECORD_MAGIC	0x828a0f1b
 #define MAX_AUDIT_RECORDS	20
 #define MAX_AUDIT_RECORD_SIZE	4096	

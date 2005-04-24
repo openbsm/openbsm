@@ -27,7 +27,14 @@
  */
 
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/time.h>
+
+#include <sys/ipc.h>
+
+#include <netinet/in.h>
+#include <netinet/in_systm.h>
+#include <netinet/ip.h>
 
 #include <string.h>
 #include <stdlib.h>
@@ -125,6 +132,7 @@ token_t *au_to_arg(char n, char *text, u_int32_t v)
 	return au_to_arg32(n, text, v);
 }
 
+#if defined(_KERNEL) || defined(_KERNEL)
 /*
  * token ID                1 byte
  * file access mode        4 bytes
@@ -186,7 +194,7 @@ token_t *au_to_attr(struct vattr *attr)
 	return au_to_attr32(attr);
 
 }
-
+#endif /* !(defined(_KERNEL) || defined(KERNEL) */
 
 /*
  * token ID                1 byte

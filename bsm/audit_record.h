@@ -24,15 +24,6 @@
 #ifndef _BSM_AUDIT_RECORD_H_
 #define _BSM_AUDIT_RECORD_H_
 
-#include <sys/cdefs.h>
-#include <sys/vnode.h>
-#include <sys/ipc.h>
-#include <sys/un.h>
-#include <sys/event.h>
-#include <netinet/in_systm.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-
 /* We could determined the header and trailer sizes by
  * defining appropriate structures. We hold off that approach
  * till we have a consistant way of using structures for all tokens.
@@ -228,6 +219,18 @@
 
 __BEGIN_DECLS
 
+struct in_addr;
+struct in6_addr;
+struct ip;
+struct ipc_perm;
+struct kevent;
+struct sockaddr_in;
+struct sockaddr_in6;
+struct sockaddr_un;
+#if defined(_KERNEL) || defined(KERNEL)
+struct vattr;
+#endif
+
 int			au_open(void);
 int			au_write(int d, token_t *m);
 int			au_close(int d, int keep, short event);
@@ -243,9 +246,11 @@ token_t			*au_to_me(void);
 token_t			*au_to_arg(char n, char *text, u_int32_t v);
 token_t			*au_to_arg32(char n, char *text, u_int32_t v);
 token_t			*au_to_arg64(char n, char *text, u_int64_t v);
+#if defined(_KERNEL) || defined(KERNEL)
 token_t			*au_to_attr(struct vattr *attr);
 token_t			*au_to_attr32(struct vattr *attr);
 token_t			*au_to_attr64(struct vattr *attr);
+#endif
 token_t			*au_to_data(char unit_print, char unit_type,
 				char unit_count, char *p);
 token_t			*au_to_exit(int retval, int err);

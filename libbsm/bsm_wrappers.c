@@ -29,12 +29,12 @@
 /*
  * XXX  lib_wrappers.c is a provisional name 
  */
-#include <sys/types.h>	/* [f]stat(), sysctl(), gete[ug]id(), getpid() */
-#include <sys/stat.h>	/* [f]stat() */
-#include <sys/sysctl.h>	/* sysctl() */
-#include <unistd.h>		/* STDIN_FILENO, gete[ug]id(), getpid() */
-#include <syslog.h>		/* syslog() */
-#include <stdarg.h>		/* syslog() */
+#include <sys/param.h>
+#include <sys/stat.h>
+#include <sys/sysctl.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <stdarg.h>
 #include <errno.h>
 #include <libbsm.h>
 

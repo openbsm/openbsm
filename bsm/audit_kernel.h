@@ -26,12 +26,6 @@
 
 #if defined(_KERNEL) || defined(KERNEL)
 
-#include <bsm/audit.h>
-
-#include <sys/sysctl.h>
-#include <sys/eventvar.h>
-#include <sys/user.h>
-
 /*
  * Audit subsystem condition flags.  The audit_enabled flag is set and
  * removed automatically as a result of configuring log files, and
