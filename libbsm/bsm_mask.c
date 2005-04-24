@@ -42,7 +42,7 @@ static int firsttime = 1;
  * exits.  This may or may not be a problem as far as absolute memory usage
  * goes, but at least there don't appear to be any leaks in using the cache.  
  */
-LIST_HEAD(, audit_event_map) ev_cache;
+static LIST_HEAD(, audit_event_map) ev_cache;
 
 static int load_event_table() 
 {
