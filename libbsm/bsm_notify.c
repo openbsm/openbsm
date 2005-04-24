@@ -26,6 +26,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifdef __APPLE__
+
 /* 
  * Based on sample code from Marc Majka 
  */
@@ -144,3 +146,4 @@ au_get_state(void)
     }
 }
 
+#endif /* !__APPLE__ */

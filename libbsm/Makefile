@@ -18,6 +18,7 @@ SRCS=	bsm_audit.c							\
 	bsm_flags.c							\
 	bsm_io.c							\
 	bsm_mask.c							\
+	bsm_notify.c							\
 	bsm_token.c							\
 	bsm_user.c							\
 	bsm_wrappers.c
