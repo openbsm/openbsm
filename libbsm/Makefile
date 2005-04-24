@@ -7,7 +7,7 @@
 LIB=		bsm
 SHLIB_MAJOR=	1
 
-CFLAGS+=								\
+CFLAGS+=-I-								\
 	-I ..								\
 	-I .
 

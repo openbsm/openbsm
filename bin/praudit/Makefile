@@ -2,7 +2,7 @@
 # $FreeBSD$
 #
 
-CFLAGS+=	-I ../.. -I ../../libbsm
+CFLAGS+=	-I- -I ../.. -I ../../libbsm -I.
 PROG=		praudit
 MAN=		praudit.1
 DPADD=		/usr/lib/libbsm.a
