@@ -55,17 +55,16 @@ static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* 
  * This call frees a token_t and its internal data.  
- *
- * XXX  Should it be a macro for speed?  
  */
-void au_free_token(token_t *tok)
+void
+au_free_token(token_t *tok)
 {
-    if (tok)
-    {
+
+	if (tok != NULL) {
 		if (tok->t_data)
 			free(tok->t_data);
 		free(tok);
-    }
+	}
 }
 
 /*
