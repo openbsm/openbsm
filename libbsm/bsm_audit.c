@@ -37,6 +37,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "libbsm_internal.h"
+
 /* array of used descriptors */
 static au_record_t* open_desc_table[MAX_AUDIT_RECORDS]; 
 

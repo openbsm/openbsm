@@ -42,6 +42,8 @@
 
 #include <libbsm.h>
 
+#include "libbsm_internal.h"
+
 #define READ_TOKEN_BYTES(buf, len, dest, size, bytesread, err)	\
 	do {\
 		if(bytesread + size > len) {\
