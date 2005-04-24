@@ -24,6 +24,14 @@
 #ifndef _LIBBSM_INTERNAL_H
 #define	_LIBBSM_INTERNAL_H
 
+/*
+ * audit_internal.h contains private interfaces that are shared by user space
+ * and the kernel for the purposes of assembling audit records.  Applications
+ * should not include this file or use the APIs found within, or it may be
+ * broken with future releases of OpenBSM, which may delete, modify, or
+ * otherwise break these interfaces or the assumptions they rely on.
+ */
+
 /* We could determined the header and trailer sizes by
  * defining appropriate structures. We hold off that approach
  * till we have a consistant way of using structures for all tokens.
