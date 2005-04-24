@@ -40,9 +40,9 @@
 #include <pwd.h>
 #include <grp.h>
 
-#include <libbsm.h>
+#include <bsm/audit_internal.h>
 
-#include "libbsm_internal.h"
+#include <libbsm.h>
 
 #define READ_TOKEN_BYTES(buf, len, dest, size, bytesread, err)	\
 	do {\

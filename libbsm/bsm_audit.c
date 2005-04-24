@@ -31,13 +31,13 @@
 #include <sys/types.h>
 #include <sys/queue.h>
 
+#include <bsm/audit_internal.h>
+
 #include <errno.h>
 #include <libbsm.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "libbsm_internal.h"
 
 /* array of used descriptors */
 static au_record_t* open_desc_table[MAX_AUDIT_RECORDS]; 
