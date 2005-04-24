@@ -1,5 +1,6 @@
 .\"-
 .\" Copyright (c) 2005 Robert N. M. Watson
+.\" Copyright (c) 2005 Tom Rhodes
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -10,7 +11,7 @@
 .\" 2. Redistributions in binary form must reproduce the above copyright
 .\"    notice, this list of conditions and the following disclaimer in the
 .\"    documentation and/or other materials provided with the distribution.
-.\" 
+.\"
 .\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
 .\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 .\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,14 +37,127 @@
 .Ft int
 .Fn auditon "int cmd" "void *data" "u_int length"
 .Sh DESCRIPTION
-
-XXXXXXXXXXXXXXXX
-
-.Sh RETURN VALUES
+The
 .Nm
-returns 0 on success, or returns -1 on failure, providing additional error
-information via
-.Va errno .
+system call is used to manipulate various audit control operations.
+.Ft *data
+should point to a structure whose type depends on the command.
+.Ft length
+specifies the size of the 
+.Em data 
+in bytes.
+.Ft cmd
+may be any of the following:
+.Bl -tag -width ".It Dv A_GETPINFO_ADDR"
+.It Dv A_SETPOLICY
+Set audit policy flags.
+Currently, only
+.Dv AUDIT_CNT
+and
+.Dv AUDIT_AHLT
+are implemented.
+In the
+.Dv AUDIT_CNT
+case, the action will continue regardless if
+an event will not be audited.
+In the
+.Dv AUDIT_AHLT
+case, a
+.Xr panic 9
+will result if an event will not be written to the
+audit log file.
+.It Dv A_SETKAUDIT
+Return
+.Er ENOSYS .
+.It Dv A_SETKMASK
+Set the kernel preselection mask to the data stored in the class mask.
+This mask is used for non-attributable audit event preselection.
+.It Dv A_SETQCTRL
+Set the kernel audit queue control parameters to their minimum or
+maximum values in
+.Va high water ,
+.Va low water ,
+.Va output buffer size ,
+and
+.Em delay .
+.It Dv A_SETSTAT
+Return
+.Er ENOSYS .
+.It Dv A_SETUMASK
+Return
+.Er ENOSYS .
+.It Dv A_SETSMASK
+Return
+.Er ENOSYS .
+.It Dv A_SETCOND
+Toggle audit record generation to on or off values.
+.It Dv A_SETCLASS
+Set the event class preselection mask for the designated audit event.
+.It Dv A_SETPMASK
+Set the given process's audit selection masks for both
+success and failure.
+.It Dv A_SETFSIZE
+Set the maximum size of the audit log file.
+.It Dv A_SETKAUDIT
+Return
+.Er ENOSYS .
+.It Dv A_GETCLASS
+Return the event to class mapping for the designated audit event.
+.It Dv A_GETKAUDIT
+Return
+.Er ENOSYS .
+.It Dv A_GETPINFO
+Return the audit ID, preselection mask, terminal ID, and audit session
+ID of the specified process.
+.It Dv A_GETPINFO_ADDR
+Return
+.Er ENOSYS .
+.It Dv A_GETKMASK
+Return the current kernel preselection mask for non-attributable mask.
+.It Dv A_GETPOLICY
+Get the current audit policy flags.
+.It Dv A_GETQCTRL
+Return the kernel audit queue control parameters.
+.It Dv A_SETQCTRL
+Set the kernel audit queue control parameters.
+.It Dv A_GETCWD
+.\" [COMMENTED OUT]: Valid description, not yet implemented.
+.\" Return the current working directory as stored in the audit subsystem.
+Return
+.Er ENOSYS .
+.It Dv A_GETCAR
+.\" [COMMENTED OUT]: Valid description, not yet implemented.
+.\"Stores and returns the current active root as stored in the audit
+.\"subsystem.
+Return
+.Er ENOSYS .
+.It Dv A_GETSTAT
+.\" [COMMENTED OUT]: Valid description, not yet implemented.
+.\"Return the statistics stored in the audit system.
+Return
+.Er ENOSYS .
+.It Dv A_GETCOND
+Return
+.Er ENOSYS .
+.El
+.Sh RETURN VALUES
+.Rv -std
+.Sh ERRORS
+The
+.Fn auditon
+function will fail if:
+.Bl -tag -width Er
+.It Bq Er ENOSYS
+Returned by options not yet implemented.
+.It Bq Er EFAULT
+A failure occurred while data transferred to or from
+the kernel failed.
+.It Bq Er EINVAL
+Illegal argument was passed by a system call.
+.It Bq Er EPERM
+The process does not have sufficient permission to complete
+the operation.
+.El
 .Sh SEE ALSO
 .Xr audit 2 ,
 .Xr auditctl 2 ,
@@ -61,9 +175,16 @@ Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
+.Pp
+This manual page was written by
+.An Tom Rhodes Aq trhodes@FreeBSD.org .
 .Sh HISTORY
 The OpenBSM implementation was created by McAfee Research, the security
 division of McAfee Inc., under contract to Apple Computer Inc. in 1994.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
-.Sh BUGS
+.Pp
+The
+.Fn audit
+function first appeared in
+.Fx 6.0 .
