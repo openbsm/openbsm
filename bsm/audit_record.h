@@ -234,6 +234,8 @@ struct vattr;
 int			au_open(void);
 int			au_write(int d, token_t *m);
 int			au_close(int d, int keep, short event);
+int			au_close_buffer(int d, short event, u_char *buffer,
+					size_t *buflen);
 token_t			*au_to_file(char *file);
 token_t			*au_to_header(int rec_size, au_event_t e_type, 
 					au_emod_t e_mod);

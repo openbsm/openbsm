@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
+ * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2005 Robert N. M. Watson
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -28,11 +30,12 @@
 
 #include <sys/types.h>
 #include <sys/queue.h>
+
+#include <errno.h>
+#include <libbsm.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <libbsm.h>
 
 /* array of used descriptors */
 static au_record_t* open_desc_table[MAX_AUDIT_RECORDS]; 
@@ -139,19 +142,29 @@ int au_open(void)
 
 /*
  * Store the token with the record descriptor
+ *
+ * Don't permit writing more to the buffer than would let the trailer be
+ * appended later.
  */ 
 int au_write(int d, token_t *tok)
 {
 	au_record_t *rec;
 		
 	if(tok == NULL) {
+		errno = EINVAL;
 		return -1; /* Invalid Token */
 	}		
 
 	/* Write the token to the record descriptor */
 	rec = open_desc_table[d];	
 	if((rec == NULL) || (rec->used == 0)) {
+		errno = EINVAL;
 		return -1; /* Invalid descriptor */
+	}
+
+	if (rec->len + tok->len + TRAILER_SIZE > MAX_AUDIT_RECORD_SIZE) {
+		errno = ENOMEM;
+		return (-1);
 	}
 
 	/* Add the token to the tail */
@@ -169,54 +182,55 @@ int au_write(int d, token_t *tok)
 }
 
 /*
- * Add the header token, identify any missing tokens
- * Write out the tokens to the record memory and finally, 
- * call audit
+ * Assemble an audit record out of its tokens, including allocating header
+ * and trailer tokens.  Does not free the token chain, which must be done by
+ * the caller if desirable.
+ *
+ * XXX: Assumes there is sufficient space for the header and trailer.
  */
-int au_close(int d, int keep, short event)
+static int
+au_assemble(au_record_t *rec, short event)
 {
-	au_record_t *rec;
-	u_char *dptr;
+	token_t *header, *tok, *trailer;
 	size_t tot_rec_size;
-	token_t *tok, *hdr, *trail;
-	int retval = 0;
-		
-	rec = open_desc_table[d];
-	if((rec == NULL) || (rec->used == 0)) {
-		return -1; /* Invalid descriptor */
-	}	
-	
+	u_char *dptr;
+	int error;
+
 	tot_rec_size = rec->len + HEADER_SIZE + TRAILER_SIZE;
-	if(keep && (tot_rec_size <= MAX_AUDIT_RECORD_SIZE)) {
-		/* Create the header token */
-		/* No modifier for libbsm records */
-		hdr = au_to_header32(tot_rec_size, event, 0);
-			
-		if(hdr != NULL) {
-			/* Add to head of list */
-			TAILQ_INSERT_HEAD(&rec->token_q, hdr, tokens);
+	header = au_to_header32(tot_rec_size, event, 0);
+	if (header == NULL)
+		return (-1);
 
-			trail = au_to_trailer(tot_rec_size);
-			if(trail != NULL) {
-				/* Add to tail of list */
-				TAILQ_INSERT_TAIL(&rec->token_q, trail, tokens);
-			}
-		}
-		/* Serialize token data to the record */
-
-		rec->len = tot_rec_size;
-		dptr = rec->data;
-
-		TAILQ_FOREACH(tok, &rec->token_q, tokens) {
-			memcpy(dptr, tok->t_data, tok->len);		
-			dptr += tok->len;
-		}
-
-		/* Call the kernel interface to audit */
-		retval = audit(rec->data, rec->len);
+	trailer = au_to_trailer(tot_rec_size);
+	if (trailer == NULL) {
+		error = errno;
+		au_free_token(header);
+		errno = error;
+		return (-1);
 	}
 
-	/* CLEANUP */
+	TAILQ_INSERT_HEAD(&rec->token_q, header, tokens);
+	TAILQ_INSERT_TAIL(&rec->token_q, trailer, tokens);
+
+	rec->len = tot_rec_size;
+	dptr = rec->data;
+
+	TAILQ_FOREACH(tok, &rec->token_q, tokens) {
+		memcpy(dptr, tok->t_data, tok->len);
+		dptr += tok->len;
+	}
+
+	return (0);
+}
+
+/*
+ * Given a record that is no longer of interest, tear it down and convert to
+ * a free record.
+ */
+static void
+au_teardown(au_record_t *rec)
+{
+	token_t *tok;
 
 	/* Free the token list */
 	while ((tok = TAILQ_FIRST(&rec->token_q))) {
@@ -234,7 +248,102 @@ int au_close(int d, int keep, short event)
 	LIST_INSERT_HEAD(&bsm_free_q, rec, au_rec_q);
 
 	pthread_mutex_unlock(&mutex);
+}
 
+/*
+ * Add the header token, identify any missing tokens
+ * Write out the tokens to the record memory and finally, 
+ * call audit
+ */
+int au_close(int d, int keep, short event)
+{
+	au_record_t *rec;
+	u_char *dptr;
+	size_t tot_rec_size;
+	int retval = 0;
+		
+	rec = open_desc_table[d];
+	if((rec == NULL) || (rec->used == 0)) {
+		return -1; /* Invalid descriptor */
+	}
+
+	if (!keep) {
+		retval = 0;
+		goto cleanup;
+	}
+
+	
+	tot_rec_size = rec->len + HEADER_SIZE + TRAILER_SIZE;
+
+	if (tot_rec_size > MAX_AUDIT_RECORD_SIZE) {
+		/*
+		 * XXXRW: Since au_write() is supposed to prevent this, spew
+		 * an error here.
+		 */
+		fprintf(stderr, "au_close failed");
+		errno = ENOMEM;
+		retval = -1;
+		goto cleanup;
+	}
+
+	if (au_assemble(rec, event) < 0) {
+		/*
+		 * XXXRW: This is also not supposed to happen, but might if
+		 * we are unable to allocate header and trailer memory.
+		 */
+		retval = -1;
+		goto cleanup;
+	}
+
+	/* Call the kernel interface to audit */
+	retval = audit(rec->data, rec->len);
+
+cleanup:
+	/* CLEANUP */
+	au_teardown(rec);
 	return retval; 
 }
- 
+
+/*
+ * au_close(), except onto an in-memory buffer.  Buffer size as an argument,
+ * record size returned via same argument on success.
+ */
+int
+au_close_buffer(int d, short event, u_char *buffer, size_t *buflen)
+{
+	size_t tot_rec_size;
+	au_record_t *rec;
+	int retval;
+
+	rec = open_desc_table[d];
+	if ((rec == NULL) || (rec->used == 0)) {
+		errno = EINVAL;
+		return (-1);
+	}
+
+	tot_rec_size = rec->len + HEADER_SIZE + TRAILER_SIZE;
+	if ((tot_rec_size > MAX_AUDIT_RECORD_SIZE) ||
+	    (tot_rec_size > *buflen)) {
+		/*
+		 * XXXRW: See au_close() comment.
+		 */
+		fprintf(stderr, "au_close_buffer failed %d", tot_rec_size);
+		errno = ENOMEM;
+		retval = -1;
+		goto cleanup;
+	}
+
+	if (au_assemble(rec, event) < 0) {
+		/*
+		 * XXXRW: See au_close() comment.
+		 */
+		retval = -1;
+		goto cleanup;
+	}
+
+	memcpy(buffer, rec->data, rec->len);
+	*buflen = rec->len;
+cleanup:
+	au_teardown(rec);
+	return (retval);
+}
