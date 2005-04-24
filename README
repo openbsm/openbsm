@@ -32,7 +32,7 @@ Darwin prior to 10.3.8 have a nested include of "sys/audit.h" from
 with include files from an earlier version of Darwin, the nested include 
 must be manually removed in order that libbsm can be built, due to 
 potentially conflicting types resulting from an include of "sys/sysctl.h" 
-by that file.  On Dariwn, the use of BSD make must be specified explicitly 
+by that file.  On Darwin, the use of BSD make must be specified explicitly 
 by using "bsdmake" rather than "make", which on Darwin refers to GNU make.  
 Typical invocations from the OpenBSM tree root:
 
