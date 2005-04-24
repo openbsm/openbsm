@@ -308,7 +308,7 @@ typedef struct {
 typedef struct {
 
 	u_int16_t no;
-	u_int32_t list[MAX_GROUPS];		
+	u_int32_t list[BSM_MAX_GROUPS];		
 
 } au_groups_t;
 

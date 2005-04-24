@@ -211,7 +211,7 @@
 #define PAD_FAILURE  0x8000   /* fail audit event */
 
 
-#define MAX_GROUPS          16
+#define BSM_MAX_GROUPS      16
 #define HEADER_VERSION      1
 #define TRAILER_PAD_MAGIC   0xB105
 

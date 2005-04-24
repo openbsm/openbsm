@@ -271,7 +271,7 @@ token_t *au_to_exit(int retval, int err)
  */
 token_t *au_to_groups(int *groups)
 {
-	return au_to_newgroups(MAX_GROUPS, groups);	
+	return au_to_newgroups(BSM_MAX_GROUPS, groups);	
 }
 
 /*
