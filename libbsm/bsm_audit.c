@@ -46,7 +46,7 @@ static int bsm_rec_count = 0;
  * freed 
  */ 
 
-LIST_HEAD(, au_record) bsm_free_q;
+static LIST_HEAD(, au_record) bsm_free_q;
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
