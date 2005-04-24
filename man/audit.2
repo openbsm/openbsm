@@ -1,4 +1,4 @@
-.\"-
+.\" Copyright (c) 2005 Tom Rhodes
 .\" Copyright (c) 2005 Robert N. M. Watson
 .\" All rights reserved.
 .\"
@@ -10,7 +10,7 @@
 .\" 2. Redistributions in binary form must reproduce the above copyright
 .\"    notice, this list of conditions and the following disclaimer in the
 .\"    documentation and/or other materials provided with the distribution.
-.\" 
+.\"
 .\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
 .\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 .\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,19 +37,32 @@
 .Fn audit "const char *record" "u_int length"
 .Sh DESCRIPTION
 .Nm
-submits a completed BSM audit record,
-pointed to by
-.Va record
-and of
-.Va length
-bytes, to the system audit log.
+submits a completed BSM audit record to the system audit log.
 .Pp
-This system call required appropriate privilege to complete.
+.Fa record
+is a pointer to the the specific event to be recorded and
+.Vt length
+is the size in bytes of the data to be written.
 .Sh RETURN VALUES
-.Nm
-returns 0 on success, or returns -1 on failure, providing additional error
-information via
-.Va errno .
+.Rv -std
+.Sh ERRORS
+The
+.Fn audit
+system call will fail and the data never written if:
+.Bl -tag -width Er
+.It Bq Er EFAULT
+The
+.Fa record
+argument is beyond the allocated address space of the process.
+.It Bq Er EINVAL
+The token ID is invalid or
+.Vt length
+is larger than
+.Vt MAXAUDITDATA .
+.It Bq Er EPERM
+The process does not have sufficient permission to complete
+the operation.
+.El
 .Sh SEE ALSO
 .Xr auditon 2 ,
 .Xr getauid 2 ,
@@ -66,11 +79,19 @@ Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
+.Pp
+This manual page was written by
+.An Tom Rhodes Aq trhodes@FreeBSD.org .
 .Sh HISTORY
 The OpenBSM implementation was created by McAfee Research, the security
 division of McAfee Inc., under contract to Apple Computer Inc. in 1994.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
+.Pp
+The
+.Fn audit
+function first appeared in
+.Fx
 .Sh BUGS
 The
 .Fx
