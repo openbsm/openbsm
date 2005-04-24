@@ -31,8 +31,8 @@
  * contain pointers of whose contents we dont know the size
  * (e.g text tokens)
  */
-#define HEADER_SIZE     18
-#define TRAILER_SIZE    7
+#define BSM_HEADER_SIZE     18
+#define BSM_TRAILER_SIZE    7
         
 #define ADD_U_CHAR(loc, val) \
         do {\

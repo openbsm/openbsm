@@ -2057,7 +2057,7 @@ static int fetch_invalid_tok(tokenstr_t *tok, char *buf, int len)
 	int err = 0;
 	int recoversize;
 
-	recoversize = len - tok->len - TRAILER_SIZE;
+	recoversize = len - tok->len - BSM_TRAILER_SIZE;
 	if(recoversize <= 0) {
 		return -1;
 	}
