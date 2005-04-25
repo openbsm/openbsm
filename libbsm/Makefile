@@ -9,7 +9,8 @@ SHLIB_MAJOR=	1
 
 CFLAGS+=-I-								\
 	-I ..								\
-	-I .
+	-I .								\
+	-Wall
 
 SRCS=	bsm_audit.c							\
 	bsm_class.c							\
