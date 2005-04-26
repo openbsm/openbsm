@@ -27,6 +27,7 @@
  */
 
 #include <sys/types.h>
+#include <sys/endian.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 
@@ -381,6 +382,9 @@ token_t *au_to_ip(struct ip *ip)
 	}
 						 
 	ADD_U_CHAR(dptr, AU_IP_TOKEN);
+	/*
+	 * XXXRW: Any byte order work needed on the IP header before writing?
+	 */
 	ADD_MEM(dptr, ip, sizeof(struct ip));
 				
 	return t;

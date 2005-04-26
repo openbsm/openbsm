@@ -1,7 +1,9 @@
 /*
  * @APPLE_LICENSE_HEADER_START@
  *
- * Copyright (c) 1999-2004 Apple Computer, Inc.  All Rights Reserved.
+ * Copyright (c) 1999-2004 Apple Computer, Inc.
+ * Copyright (c) 2005 Robert N. M. Watson
+ * All Rights Reserved.
  *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
@@ -42,6 +44,11 @@
 #define	BSM_HEADER_SIZE		18
 #define	BSM_TRAILER_SIZE	7
 
+/*
+ * BSM token streams store fields in big endian byte order, so as to be
+ * portable; when encoding and decoding, we must convert byte orders for
+ * typed values.
+ */
 #define	ADD_U_CHAR(loc, val)						\
 	do {								\
 		*loc = val;						\
@@ -51,19 +58,19 @@
 
 #define	ADD_U_INT16(loc, val)						\
 	do {								\
-		memcpy(loc, (u_char *)&val, sizeof(u_int16_t));		\
+		be16enc(loc, val);					\
 		loc += sizeof(u_int16_t);				\
 	} while(0)
 
 #define	ADD_U_INT32(loc, val)						\
 	do {								\
-		memcpy(loc, (u_char *)&val, sizeof(u_int32_t));		\
+		be32enc(loc, val);					\
 		loc += sizeof(u_int32_t);				\
 	} while(0)
 
 #define	ADD_U_INT64(loc, val)						\
 	do {								\
-		memcpy(loc, (u_char *)&val, sizeof(u_int64_t));		\
+		be64enc(loc, val);					\
 		loc += sizeof(u_int64_t); 				\
 	} while(0)
 

@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
+ * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2005 Robert N. M. Watson
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -26,17 +28,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/types.h>
+#include <sys/endian.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
 #include <pwd.h>
 #include <grp.h>
 
@@ -55,6 +60,37 @@
 		}\
 	} while(0)
 
+#define	READ_TOKEN_U_CHAR(buf, len, dest, bytesread, err) do {		\
+	if (bytesread + sizeof(u_char) <= len) {			\
+		dest = buf[bytesread];					\
+		bytesread += sizeof(u_char);				\
+	} else								\
+		err = 1;						\
+} while (0)
+
+#define	READ_TOKEN_U_INT16(buf, len, dest, bytesread, err) do {		\
+	if (bytesread + sizeof(u_int16_t) <= len) {			\
+		dest = be16dec(buf + bytesread);			\
+		bytesread += sizeof(u_int16_t);				\
+	} else								\
+		err = 1;						\
+} while (0)
+
+#define	READ_TOKEN_U_INT32(buf, len, dest, bytesread, err) do {		\
+	if (bytesread + sizeof(u_int32_t) <= len) {			\
+		dest = be32dec(buf + bytesread);			\
+		bytesread += sizeof(u_int32_t);				\
+	} else								\
+		err = 1; 						\
+} while (0)
+
+#define	READ_TOKEN_U_INT64(buf, len, dest, bytesread, err) do {		\
+	if (bytesread + sizeof(u_int64_t) <= len) {			\
+		dest = be64dec(buf + bytesread);			\
+		bytesread += sizeof(u_int64_t);				\
+	} else								\
+		err = 1; 						\
+} while (0)
 
 #define	SET_PTR(buf, len, ptr, size, bytesread, err) \
 	do {\
@@ -362,38 +398,32 @@ static int fetch_header32_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &(tok->tt.hdr32.size), 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32.size, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.hdr32.version, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.hdr32.version, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.hdr32.e_type, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.hdr32.e_type, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.hdr32.e_mod, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.hdr32.e_mod, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.hdr32.s, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32.s, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.hdr32.ms, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32.ms, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -427,14 +457,12 @@ static int fetch_trailer_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.trail.magic, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.trail.magic, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.trail.count, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.trail.count, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -460,20 +488,17 @@ static int fetch_arg32_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arg32.no, 
-			sizeof(u_char), tok->len, err);
-	if(err) {
-		return -1;
-	}
-	
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arg32.val, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.arg32.no, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arg32.len, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.arg32.val, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT16(buf, len, tok->tt.arg32.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -503,20 +528,17 @@ static int fetch_arg64_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arg64.no, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.arg64.no, tok->len, err);
 	if(err) {
 		return -1;
 	}
 	
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arg64.val, 
-			sizeof(u_int64_t), tok->len, err);
+	READ_TOKEN_U_INT64(buf, len, tok->tt.arg64.val, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arg64.len, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.arg64.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -553,18 +575,15 @@ static int fetch_arb_tok(tokenstr_t *tok, char *buf, int len)
 	int err = 0;
 	int datasize;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arb.howtopr, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.arb.howtopr, tok->len, err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arb.bu, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.arb.bu, tok->len, err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.arb.uc, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.arb.uc, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -688,38 +707,32 @@ static int fetch_attr32_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.attr32.mode, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr32.mode, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.attr32.uid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr32.uid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.attr32.gid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr32.gid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.attr32.fsid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr32.fsid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.attr32.nid, 
-			sizeof(u_int64_t), tok->len, err);
+	READ_TOKEN_U_INT64(buf, len, tok->tt.attr32.nid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.attr32.dev, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr32.dev, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -753,14 +766,12 @@ static int fetch_exit_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.exit.status, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.exit.status, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.exit.ret, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.exit.ret, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -788,8 +799,7 @@ static int fetch_execarg_tok(tokenstr_t *tok, char *buf, int len)
 	int i;
 	char *bptr;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.execarg.count, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.execarg.count, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -834,8 +844,7 @@ static int fetch_execenv_tok(tokenstr_t *tok, char *buf, int len)
 	int i;
 	char *bptr;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.execenv.count, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.execenv.count, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -878,20 +887,17 @@ static int fetch_file_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.file.s, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.file.s, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.file.ms, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.file.ms, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.file.len, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.file.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -925,19 +931,17 @@ static int fetch_newgroups_tok(tokenstr_t *tok, char *buf, int len)
 	int i;
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.grps.no, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.grps.no, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
 	for(i = 0; i<tok->tt.grps.no; i++) {
-
-		READ_TOKEN_BYTES(buf, len, &tok->tt.grps.list[i], 
-		sizeof(u_int32_t), tok->len, err);
-    	if(err) {
-    		return -1;
-    	}
+		READ_TOKEN_U_INT32(buf, len, tok->tt.grps.list[i], tok->len,
+		    err);
+    		if(err) {
+    			return -1;
+    		}
 	}
 
 	return 0;
@@ -962,8 +966,7 @@ static int fetch_inaddr_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr.addr, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr.addr, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -989,23 +992,22 @@ static int fetch_inaddr_ex_tok(tokenstr_t *tok, char *buf, int len)
 	int err = 0;
 	int i;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr_ex.type, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr_ex.type, tok->len, err);
 	if(err) {
 		return -1;
 	}
 	
 	if(tok->tt.inaddr_ex.type == AF_INET) {
-		READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr_ex.addr[0], 
-			sizeof(u_int32_t), tok->len, err);
+		READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr_ex.addr[0],
+		    tok->len, err);
 		if(err) {
 			return -1;
 		}
 	}
 	else if (tok->tt.inaddr_ex.type == AF_INET6) {
 		for(i = 0; i < 4; i++) {
-			READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr_ex.addr[i], 
-				sizeof(u_int32_t), tok->len, err);
+			READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr_ex.addr[i],
+			    tok->len, err);
 			if(err) {
 				return -1;
 			}
@@ -1033,62 +1035,52 @@ static int fetch_ip_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.version, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.ip.version, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.tos, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.ip.tos, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.len, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.ip.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.id, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.ip.id, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.offset, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.ip.offset, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.ttl, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.ip.ttl, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.prot, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.ip.prot, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.chksm, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.ip.chksm, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.src, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ip.src, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.dest, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ip.dest, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1130,14 +1122,12 @@ static int fetch_ipc_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipc.type, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.ipc.type, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipc.id, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ipc.id, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1168,44 +1158,37 @@ static int fetch_ipcperm_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipcperm.uid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ipcperm.uid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipcperm.gid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ipcperm.gid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipcperm.puid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ipcperm.puid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipcperm.pgid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ipcperm.pgid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipcperm.mode, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ipcperm.mode, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipcperm.seq, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ipcperm.seq, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ipcperm.key, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ipcperm.key, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1240,8 +1223,7 @@ static int fetch_iport_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.iport.port, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.iport.port, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1265,8 +1247,7 @@ static int fetch_opaque_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.opaque.size, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.opaque.size, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1297,8 +1278,7 @@ static int fetch_path_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.path.len, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.path.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1336,56 +1316,47 @@ static int fetch_process32_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.auid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.auid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.euid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.euid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.egid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.egid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.ruid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.ruid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.rgid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.rgid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.pid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.pid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.sid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.sid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.tid.port, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.tid.port, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.tid.addr, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.tid.addr, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1422,71 +1393,64 @@ static int fetch_process32ex_tok(tokenstr_t *tok, char *buf, int len)
 	int err = 0;
 	int i;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.auid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.auid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.euid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.euid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.egid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.egid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.ruid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.ruid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.rgid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.rgid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.pid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.pid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.sid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.sid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.port, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.tid.port, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.type, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.tid.type, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
 
 	if(tok->tt.proc32_ex.tid.type == AF_INET) {
-		READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.addr[0], 
-			sizeof(u_int32_t), tok->len, err);
+		READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.tid.addr[0],
+		    tok->len, err);
 		if(err) {
 			return -1;
 		}
 	}
 	else if (tok->tt.proc32_ex.tid.type == AF_INET6) {
 		for(i = 0; i < 4; i++) {
-			READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.addr[i], 
-				sizeof(u_int32_t), tok->len, err);
+			READ_TOKEN_U_INT32(buf, len,
+			    tok->tt.proc32_ex.tid.addr[i], tok->len, err);
 			if(err) {
 				return -1;
 			}
@@ -1531,14 +1495,12 @@ static int fetch_return32_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ret32.status, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.ret32.status, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ret32.ret, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.ret32.ret, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1560,14 +1522,12 @@ static int fetch_return64_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ret64.err, 
-			sizeof(u_char), tok->len, err);
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.ret64.err, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.ret64.val, 
-			sizeof(u_int64_t), tok->len, err);
+	READ_TOKEN_U_INT64(buf, len, tok->tt.ret64.val, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1592,8 +1552,7 @@ static int fetch_seq_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.seq.seqno, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.seq.seqno, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1620,20 +1579,18 @@ static int fetch_sock_inet32_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.sockinet32.family, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.sockinet32.family, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.sockinet32.port, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.sockinet32.port, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.sockinet32.addr, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.sockinet32.addr, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1661,8 +1618,7 @@ static int fetch_sock_unix_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.sockunix.family, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.sockunix.family, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1696,28 +1652,23 @@ static int fetch_socket_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.type, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.socket.type, tok->len, err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.l_port, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.socket.l_port, tok->len, err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.l_addr, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.socket.l_addr, tok->len, err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.r_port, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.socket.r_port, tok->len, err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.r_addr, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.socket.r_addr, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1756,56 +1707,47 @@ static int fetch_subject32_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.auid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.auid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.euid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.euid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.egid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.egid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.ruid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.ruid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.rgid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.rgid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.pid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.pid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.sid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.sid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.tid.port, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.tid.port, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.tid.addr, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.tid.addr, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1855,71 +1797,64 @@ static int fetch_subject32ex_tok(tokenstr_t *tok, char *buf, int len)
 	int err = 0;
 	int i;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.auid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.auid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.euid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.euid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.egid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.egid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.ruid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.ruid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.rgid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.rgid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.pid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.pid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.sid, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.sid, tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.port, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.tid.port, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.type, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.tid.type, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
 
 	if(tok->tt.subj32_ex.tid.type == AF_INET) {
-		READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.addr[0], 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.tid.addr[0],
+	    tok->len, err);
 		if(err) {
 			return -1;
 		}
 	}
 	else if (tok->tt.subj32_ex.tid.type == AF_INET6) {
 		for(i = 0; i < 4; i++) {
-			READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.addr[i], 
-				sizeof(u_int32_t), tok->len, err);
+			READ_TOKEN_U_INT32(buf, len,
+			    tok->tt.subj32_ex.tid.addr[i], tok->len, err);
 			if(err) {
 				return -1;
 			}
@@ -1964,8 +1899,7 @@ static int fetch_text_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.text.len, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.text.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1999,39 +1933,39 @@ static int fetch_socketex32_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.type, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.socket_ex32.type, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.l_port, 
-			sizeof(u_int16_t), tok->len, err);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.socket_ex32.l_port, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.l_ad_type, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.socket_ex32.l_ad_type, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.l_addr, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.socket_ex32.l_addr, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.r_port, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.socket_ex32.r_port, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.r_ad_type, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.socket_ex32.r_ad_type, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.r_addr, 
-			sizeof(u_int32_t), tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.socket_ex32.r_addr, tok->len,
+	    err);
 	if(err) {
 		return -1;
 	}
@@ -2316,16 +2250,20 @@ int au_read_rec(FILE *fp, u_char **buf)
 	type = fgetc(fp);
 	/* record must begin with a header token */
 	if(type != AU_HEADER_32_TOKEN) {
+		errno = EINVAL;
 		return -1;
 	}
 
 	/* read the record size from the token */
 	if(fread(&recsize, 1, sizeof(u_int32_t), fp) < sizeof(u_int32_t)) {
+		errno = EINVAL;
 		return -1;
 	}
+	recsize = be32toh(recsize);
 
 	/* Check for recsize sanity */
 	if(recsize < (sizeof(u_int32_t) + sizeof(u_char))) {
+		errno = EINVAL;
 		return -1;
 	}
 
@@ -2339,7 +2277,7 @@ int au_read_rec(FILE *fp, u_char **buf)
 	/* store the token contents already read, back to the buffer*/
 	*bptr = type;
 	bptr++;
-	memcpy(bptr, &recsize, sizeof(u_int32_t));
+	be32enc(bptr, recsize);
 	bptr += sizeof(u_int32_t);
 
 	/* now read remaining record bytes */
@@ -2347,6 +2285,7 @@ int au_read_rec(FILE *fp, u_char **buf)
 
 	if(fread(bptr, 1, bytestoread, fp) < bytestoread) {
 		free(*buf);
+		errno = EINVAL;
 		return -1;
 	}
 
