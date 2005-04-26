@@ -111,6 +111,7 @@ int au_open(void)
 		rec->data = (u_char *) malloc (MAX_AUDIT_RECORD_SIZE * sizeof(u_char));
 		if(rec->data == NULL) {
 			free(rec);
+			errno = ENOMEM;
 			return -1;
 		}
 
@@ -122,6 +123,7 @@ int au_open(void)
 			free(rec);
 
 			/* XXX We need to increase size of MAX_AUDIT_RECORDS */
+			errno = ENOMEM;
 			return -1;
 		}
 		rec->desc = bsm_rec_count;
@@ -264,6 +266,7 @@ int au_close(int d, int keep, short event)
 		
 	rec = open_desc_table[d];
 	if((rec == NULL) || (rec->used == 0)) {
+		errno = EINVAL;
 		return -1; /* Invalid descriptor */
 	}
 
