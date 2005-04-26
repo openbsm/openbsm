@@ -259,7 +259,6 @@ au_teardown(au_record_t *rec)
 int au_close(int d, int keep, short event)
 {
 	au_record_t *rec;
-	u_char *dptr;
 	size_t tot_rec_size;
 	int retval = 0;
 		
@@ -322,6 +321,7 @@ au_close_buffer(int d, short event, u_char *buffer, size_t *buflen)
 		return (-1);
 	}
 
+	retval = 0;
 	tot_rec_size = rec->len + BSM_HEADER_SIZE + BSM_TRAILER_SIZE;
 	if ((tot_rec_size > MAX_AUDIT_RECORD_SIZE) ||
 	    (tot_rec_size > *buflen)) {
