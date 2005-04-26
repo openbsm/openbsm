@@ -1,6 +1,7 @@
 .\"-
 .\" Copyright (c) 2005 Robert N. M. Watson
 .\" Copyright (c) 2005 Tom Rhodes
+.\" Copyright (c) 2005 Wayne J. Salamon
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -51,6 +52,9 @@ may be any of the following:
 .Bl -tag -width ".It Dv A_GETPINFO_ADDR"
 .It Dv A_SETPOLICY
 Set audit policy flags.
+.Ft *data
+must point to an long value set to one of the audit 
+policy control values defined in audit.h.
 Currently, only
 .Dv AUDIT_CNT
 and
@@ -70,16 +74,26 @@ audit log file.
 Return
 .Er ENOSYS .
 .It Dv A_SETKMASK
-Set the kernel preselection mask to the data stored in the class mask.
-This mask is used for non-attributable audit event preselection.
+Set the kernel preselection masks (success and failure).
+.Ft *data
+must point to a
+.Ft au_mask_t
+structure containing the mask values.
+These masks are used for non-attributable audit event preselection.
 .It Dv A_SETQCTRL
-Set the kernel audit queue control parameters to their minimum or
-maximum values in
+Set kernel audit queue parameters.
+.Ft *data
+must point to a 
+.Ft au_qctrl_t
+structure containing the
+kernel audit queue control settings:
 .Va high water ,
 .Va low water ,
 .Va output buffer size ,
+.Va percent min free disk space ,
 and
-.Em delay .
+.Em delay
+(not currently used).
 .It Dv A_SETSTAT
 Return
 .Er ENOSYS .
@@ -90,36 +104,95 @@ Return
 Return
 .Er ENOSYS .
 .It Dv A_SETCOND
-Toggle audit record generation to on or off values.
+Set the current auditing condition.
+.Ft *data
+must point to an long value containing the new
+audit condition, one of
+.Dv AUC_AUDITING ,
+.Dv AUC_NOAUDIT ,
+or
+.Dv AUC_DISABLED .
 .It Dv A_SETCLASS
-Set the event class preselection mask for the designated audit event.
+Set the event class preselection mask for an audit event.
+.Ft *data
+must point to a 
+.Ft au_evclass_map_t
+structure containing the audit event and mask.
 .It Dv A_SETPMASK
-Set the given process's audit selection masks for both
-success and failure.
+Set the preselection masks for a process.
+.Ft *data
+must point to a 
+.Ft auditpinfo_t
+structure that contains the given process's audit 
+preselection masks for both success and failure.
 .It Dv A_SETFSIZE
 Set the maximum size of the audit log file.
+.Ft *data
+must point to a
+.Ft au_fstat_t
+structure with the
+.Ft af_filesz
+field set to the maximum audit log file size. A value of 0
+indicates no limit to the size.
 .It Dv A_SETKAUDIT
 Return
 .Er ENOSYS .
 .It Dv A_GETCLASS
 Return the event to class mapping for the designated audit event.
+.Ft *data
+must point to a 
+.Ft au_evclass_map_t
+structure.
 .It Dv A_GETKAUDIT
 Return
 .Er ENOSYS .
 .It Dv A_GETPINFO
-Return the audit ID, preselection mask, terminal ID, and audit session
-ID of the specified process.
+Return the audit settings for a process.
+.Ft *data
+must point to a
+.Ft auditpinfo_t
+structure which will be set to contain
+the audit ID, preselection mask, terminal ID, and audit session
+ID of the given process.
 .It Dv A_GETPINFO_ADDR
 Return
 .Er ENOSYS .
 .It Dv A_GETKMASK
-Return the current kernel preselection mask for non-attributable mask.
+Return the current kernel preselection masks.
+.Ft *data
+must point to a
+.Ft au_mask_t
+structure which will be set to 
+the current kernel preselection masks for non-attributable events.
 .It Dv A_GETPOLICY
-Get the current audit policy flags.
+Return the current audit policy setting.
+.Ft *data
+must point to an long value which will be set to
+one of the current audit policy flags.
+Currently, only
+.Dv AUDIT_CNT
+and
+.Dv AUDIT_AHLT
+are implemented.
 .It Dv A_GETQCTRL
-Return the kernel audit queue control parameters.
-.It Dv A_SETQCTRL
-Set the kernel audit queue control parameters.
+Return the current kernel audit queue control parameters.
+.Ft *data
+must point to a 
+.Ft au_qctrl_t
+structure which will be set to the current
+kernel audit queue control parameters.
+.It Dv A_GETFSIZE
+Returns the maximum size of the audit log file.
+.Ft *data
+must point to a
+.Ft au_fstat_t
+structure. The
+.Ft af_filesz
+field will set to the maximum audit log file size. A value of 0
+indicates no limit to the size.
+The
+.Ft af_filesz
+will be set to the current audit log file size.
 .It Dv A_GETCWD
 .\" [COMMENTED OUT]: Valid description, not yet implemented.
 .\" Return the current working directory as stored in the audit subsystem.
@@ -137,8 +210,13 @@ Return
 Return
 .Er ENOSYS .
 .It Dv A_GETCOND
-Return
-.Er ENOSYS .
+Return the current auditing condition.
+.Ft *data
+must point to an long value which will be set to
+the current audit condition, either
+.Dv AUC_AUDITING
+or
+.Dv AUC_NOAUDIT .
 .El
 .Sh RETURN VALUES
 .Rv -std
@@ -177,14 +255,17 @@ The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
 .Pp
 This manual page was written by
-.An Tom Rhodes Aq trhodes@FreeBSD.org .
+.An Tom Rhodes Aq trhodes@FreeBSD.org ,
+.An Robert Watson Aq rwatson@FreeBSD.org ,
+and
+.An Wayne Salamon Aq wsalamon@FreeBSD.org .
 .Sh HISTORY
 The OpenBSM implementation was created by McAfee Research, the security
-division of McAfee Inc., under contract to Apple Computer Inc. in 1994.
+division of McAfee Inc., under contract to Apple Computer Inc. in 2003.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Pp
 The
-.Fn audit
+.Fn auditon
 function first appeared in
 .Fx 6.0 .
