@@ -331,7 +331,7 @@ au_close_buffer(int d, short event, u_char *buffer, size_t *buflen)
 		/*
 		 * XXXRW: See au_close() comment.
 		 */
-		fprintf(stderr, "au_close_buffer failed %d", tot_rec_size);
+		fprintf(stderr, "au_close_buffer failed %zd", tot_rec_size);
 		errno = ENOMEM;
 		retval = -1;
 		goto cleanup;
