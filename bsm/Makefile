@@ -4,7 +4,6 @@
 
 INCS=	audit.h								\
 	audit_internal.h						\
-	audit_kernel.h							\
 	audit_kevents.h							\
 	audit_record.h							\
 	audit_uevents.h
