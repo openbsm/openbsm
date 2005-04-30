@@ -559,7 +559,7 @@ static void print_arg64_tok(FILE *fp, tokenstr_t *tok, char *del,
 	print_delim(fp, del);
 	print_1_byte(fp, tok->tt.arg64.no, "%u");
 	print_delim(fp, del);
-	print_8_bytes(fp, tok->tt.arg64.val, "%lld");
+	print_8_bytes(fp, tok->tt.arg64.val, "%#llx");
 	print_delim(fp, del);
 	print_string(fp, tok->tt.arg64.text, tok->tt.arg64.len);
 }
