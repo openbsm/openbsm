@@ -305,7 +305,7 @@ token_t *au_to_newgroups(u_int16_t n, gid_t *groups)
 	token_t *t;
 	u_char *dptr = NULL;
 	int i;
-   
+
 	if(groups == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -547,7 +547,7 @@ token_t *au_to_opaque(char *data, u_int16_t bytes)
  * seconds of time			4 bytes
  * milliseconds of time		4 bytes
  * file name len			2 bytes
- * file pathname			N bytes + 1 terminating NULL byte   
+ * file pathname			N bytes + 1 terminating NULL byte
  */
 token_t *au_to_file(char *file)
 {
