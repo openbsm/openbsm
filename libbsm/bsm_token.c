@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
+ * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2005 Robert N. M. Watson
+ * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,6 +39,7 @@
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
 
+#include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -81,6 +84,7 @@ token_t *au_to_arg32(char n, char *text, u_int32_t v)
 	u_int16_t textlen;
 	
 	if(text == NULL) {
+		errno = EINVAL;
 		return NULL;	
 	}
 	
@@ -109,6 +113,7 @@ token_t *au_to_arg64(char n, char *text, u_int64_t v)
 	u_int16_t textlen;
 	
 	if(text == NULL) {
+		errno = EINVAL;
 		return NULL;	
 	}
 	
@@ -153,6 +158,7 @@ token_t *au_to_attr32(struct vattr *attr)
 	u_int16_t pad0_32 = 0;
 
 	if(attr == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	
@@ -189,6 +195,7 @@ token_t *au_to_attr32(struct vattr *attr)
 
 token_t *au_to_attr64(struct vattr *attr)
 {
+	errno = ENOTSUP;
 	return NULL;
 }
 
@@ -214,6 +221,7 @@ token_t *au_to_data(char unit_print, char unit_type,
 	size_t datasize, totdata;
 	
 	if(p == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	
@@ -228,7 +236,9 @@ token_t *au_to_data(char unit_print, char unit_type,
 		case AUR_LONG:	datasize = AUR_LONG_SIZE;
 						break;
 				
-		default: return NULL;
+		default:
+			errno = EINVAL;
+ 			return NULL;
 	}
 
 	totdata = datasize * unit_count;
@@ -289,6 +299,7 @@ token_t *au_to_newgroups(u_int16_t n, gid_t *groups)
 	int i;
    	
 	if(groups == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	
@@ -319,6 +330,7 @@ token_t *au_to_in_addr(struct in_addr *internet_addr)
 	u_char *dptr = NULL;
 		 
 	if(internet_addr == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 
@@ -345,6 +357,7 @@ token_t *au_to_in_addr_ex(struct in6_addr *internet_addr)
 	u_int32_t type = AF_INET6;
 	
 	if(internet_addr == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	
@@ -373,6 +386,7 @@ token_t *au_to_ip(struct ip *ip)
 	u_char *dptr = NULL;
 
 	if(ip == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 
@@ -431,6 +445,7 @@ token_t *au_to_ipc_perm(struct ipc_perm *perm)
 	
 	
 	if(perm == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	
@@ -503,6 +518,7 @@ token_t *au_to_opaque(char *data, u_int16_t bytes)
 	u_char *dptr = NULL;
 			 
 	if((data == NULL) || (bytes <= 0)) {
+		errno = EINVAL;
 		return NULL;
 	}
  
@@ -539,6 +555,7 @@ token_t *au_to_file(char *file)
 	}
 	
 	if(file == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	filelen = strlen(file);
@@ -573,6 +590,7 @@ token_t *au_to_text(char *text)
 	u_int16_t textlen;
 	
 	if(text == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	textlen = strlen(text);
@@ -602,6 +620,7 @@ token_t *au_to_path(char *text)
 	u_int16_t textlen;
 	
 	if(text == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	textlen = strlen(text);
@@ -640,6 +659,7 @@ token_t *au_to_process32(au_id_t auid, uid_t euid, gid_t egid,
 	u_char *dptr = NULL;
 	
 	if(tid == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 
@@ -666,6 +686,8 @@ token_t *au_to_process64(au_id_t auid, uid_t euid, gid_t egid,
 		               uid_t ruid, gid_t rgid, pid_t pid,
 		               au_asid_t sid, au_tid_t *tid)
 {
+
+	errno = ENOTSUP;
 	return NULL;
 }
 
@@ -699,6 +721,7 @@ token_t *au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid,
 	u_char *dptr = NULL;
 	
 	if(tid == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 
@@ -729,6 +752,8 @@ token_t *au_to_process64_ex(au_id_t auid, uid_t euid, gid_t egid,
 		               	   uid_t ruid, gid_t rgid, pid_t pid,
 		                   au_asid_t sid, au_tid_addr_t *tid)
 {
+
+	errno = ENOTSUP;
 	return NULL;
 }
 
@@ -816,6 +841,8 @@ token_t *au_to_seq(long audit_count)
  * remote Internet address 4 bytes
  */
 token_t *au_to_socket(struct socket *so) {
+
+	errno = ENOTSUP;
 	return NULL;
 }
 
@@ -832,12 +859,16 @@ token_t *au_to_socket(struct socket *so) {
 token_t *au_to_socket_ex_32(u_int16_t lp, u_int16_t rp, 
 	struct sockaddr *la, struct sockaddr *ra)
 {
+
+	errno = ENOTSUP;
 	return NULL;
 }
 
 token_t *au_to_socket_ex_128(u_int16_t lp, u_int16_t rp, 
 	struct sockaddr *la, struct sockaddr *ra)
 {
+
+	errno = ENOTSUP;
 	return NULL;
 }
 
@@ -854,6 +885,7 @@ token_t *au_to_sock_inet32(struct sockaddr_in *so)
 	u_char *dptr = NULL;
 
 	if(so == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}	
 
@@ -882,6 +914,7 @@ token_t *au_to_sock_inet128(struct sockaddr_in6 *so)
 	u_char *dptr = NULL;
 
 	if(so == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}	
 
@@ -934,6 +967,7 @@ token_t *au_to_subject32(au_id_t auid, uid_t euid, gid_t egid,
 	u_char *dptr = NULL;
 	
 	if(tid == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 
@@ -960,6 +994,8 @@ token_t *au_to_subject64(au_id_t auid, uid_t euid, gid_t egid,
 						uid_t ruid, gid_t rgid, pid_t pid,
 						au_asid_t sid, au_tid_t *tid)
 {
+
+	errno = ENOTSUP;
 	return NULL;
 }
 
@@ -993,6 +1029,7 @@ token_t *au_to_subject32_ex(au_id_t auid, uid_t euid,
 	u_char *dptr = NULL;
 	
 	if(tid == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 
@@ -1023,6 +1060,8 @@ token_t *au_to_subject64_ex(au_id_t auid, uid_t euid,
 	                       gid_t egid, uid_t ruid, gid_t rgid, pid_t pid,
 		                   au_asid_t sid, au_tid_addr_t *tid)
 {
+
+	errno = ENOTSUP;
 	return NULL;
 }
 
@@ -1067,6 +1106,7 @@ token_t *au_to_exec_args(const char **args)
 	size_t totlen = 0;
 	
 	if(args == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	
@@ -1113,6 +1153,7 @@ token_t *au_to_exec_env(const char **env)
 	const char *nextenv;
 	
 	if(env == NULL) {
+		errno = EINVAL;
 		return NULL;
 	}
 	
@@ -1187,6 +1228,8 @@ token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 
 token_t *au_to_header64(int rec_size, au_event_t e_type, au_emod_t e_mod)
 {
+
+	errno = ENOTSUP;
 	return NULL;
 }
 
