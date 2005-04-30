@@ -844,28 +844,36 @@ void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm);
 __END_DECLS
 
 #ifdef __APPLE__
-/*
- * Apple-internal "wrapping" and utility definitions and prototypes.  
- */
-
 #include <sys/appleapiopts.h>
+
+/**************************************************************************
+ **************************************************************************
+ ** The following definitions, functions, etc., are NOT officially
+ ** supported: they may be changed or removed in the future.  Do not use
+ ** them unless you are prepared to cope with that eventuality.
+ **************************************************************************
+ **************************************************************************/
 
 #ifdef __APPLE_API_PRIVATE
 #define __BSM_INTERNAL_NOTIFY_KEY "com.apple.audit.change"
-#endif
-#endif /* !__APPLE__ */
+#endif /* __APPLE_API_PRIVATE */
 
 /* 
  * au_get_state() return values 
  * XXX  use AUC_* values directly instead (<bsm/audit.h>); AUDIT_OFF and 
  * AUDIT_ON are deprecated and WILL be removed.  
  */
+#ifdef __APPLE_API_PRIVATE
 #define AUDIT_OFF	AUC_NOAUDIT
 #define AUDIT_ON	AUC_AUDITING
+#endif /* __APPLE_API_PRIVATE */
+#endif /* !__APPLE__ */
 
 /*
  * Error return codes for audit_set_terminal_id(), audit_write() and its 
  * brethren.  We have 255 (not including kAUNoErr) to play with.  
+ *
+ * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
 enum
 {
@@ -885,6 +893,7 @@ enum
     kAULastErr
 };
 
+#ifdef __APPLE__
 /*
  * Error return codes for au_get_state() and/or its private support
  * functions.  These codes are designed to be compatible with the
@@ -894,7 +903,10 @@ enum
  * AU_UNIMPL should never happen unless you've changed your system software 
  * without rebooting.  Shame on you.  
  */
+#ifdef __APPLE_API_PRIVATE
 #define AU_UNIMPL	NOTIFY_STATUS_FAILED + 1	/* audit unimplemented */
+#endif /* __APPLE_API_PRIVATE */
+#endif /* !__APPLE__ */
 
 
 __BEGIN_DECLS
