@@ -181,12 +181,20 @@ token_t *au_to_attr32(struct vattr *attr)
 	ADD_U_INT32(dptr, attr->va_gid);
 	ADD_U_INT32(dptr, attr->va_fsid);
 
-	/* 
-	 * Darwin defines the size for fileid 
-	 * as 4 bytes; BSM defines 8 so pad with 0
-	 */    
-	ADD_U_INT32(dptr, pad0_32);
-	ADD_U_INT32(dptr, attr->va_fileid);
+	/*
+	 * Some systems use 32-bit file ID's, other's use 64-bit file IDs.
+	 * Attempt to handle both, and let the compiler sort it out.  If we
+	 * could pick this out at compile-time, it would be better, so as to
+	 * avoid the else case below.
+	 */
+	if (sizeof(attr->va_fileid) == sizeof(uint32_t)) {
+		ADD_U_INT32(dptr, pad0_32);
+		ADD_U_INT32(dptr, attr->va_fileid);
+	} else if (sizeof(attr->va_fileid) == sizeof(uint64_t)) {
+		ADD_U_INT64(dptr, attr->va_fileid);
+	} else {
+		ADD_U_INT64(dptr, 0LL);
+	}
 
 	ADD_U_INT32(dptr, attr->va_rdev);
 	
