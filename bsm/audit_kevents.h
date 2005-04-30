@@ -1,15 +1,15 @@
 /*
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * Copyright (c) 1999-2004 Apple Computer, Inc.  All Rights Reserved.
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,28 +17,28 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
 #define _BSM_AUDIT_KEVENTS_H_
 
-/* 
- * Values marked as AUE_NULL are not required to be audited as per CAPP 
- *  
+/*
+ * Values marked as AUE_NULL are not required to be audited as per CAPP
+ *
  * The second value within comments is the syscall number in Darwin
  *
- * Values in the third column are the values assigned by BSM for obsolete 
- * or old system calls   
+ * Values in the third column are the values assigned by BSM for obsolete
+ * or old system calls
  *
- * Values marked as XXX in the third column do not have an 
- * event number assigned as yet, and have (temporarily) been assigned 
- * value of AUE_NULL 
+ * Values marked as XXX in the third column do not have an
+ * event number assigned as yet, and have (temporarily) been assigned
+ * value of AUE_NULL
  */
 
 #define	AUE_NULL        0
-#define	AUE_EXIT        1               /*1*/	
+#define	AUE_EXIT        1               /*1*/
 #define	AUE_FORK        2               /*2*/
 #define	AUE_OPEN        3               /*3*/
 #define	AUE_READ        AUE_NULL        /*4*/
@@ -56,14 +56,14 @@
 #define	AUE_OPEN_WTC    79              /*5*/
 #define	AUE_OPEN_WT	78              /*5*/
 #define	AUE_CLOSE       112              /*6*/
-#define	AU_WAIT4        AUE_NULL        /*7*/	
+#define	AU_WAIT4        AUE_NULL        /*7*/
 #define	AUE_O_CREAT     AUE_OPEN_RWTC   /*8*/     /*4*/
-#define	AUE_LINK        5               /*9*/	
-#define	AUE_UNLINK      6               /*10*/	
+#define	AUE_LINK        5               /*9*/
+#define	AUE_UNLINK      6               /*10*/
 #define AUE_O_EXECV     AUE_NULL        /*11*/
 #define	AUE_CHDIR       8               /*12*/
 #define	AUE_FCHDIR      68              /*13*/
-#define	AUE_MKNOD       9               /*14*/	
+#define	AUE_MKNOD       9               /*14*/
 #define	AUE_CHMOD       10              /*15*/
 #define	AUE_CHOWN       11              /*16*/
 #define AUE_O_SBREAK    AUE_NULL        /*17*/
@@ -72,11 +72,11 @@
 #define AUE_GETPID      AUE_NULL        /*20*/
 #define	AUE_O_MOUNT     AUE_NULL        /*21*/
 #define	AUE_O_UMOUNT    AUE_NULL        /*22*/
-#define	AUE_SETUID      200             /*23*/	
+#define	AUE_SETUID      200             /*23*/
 #define AUE_GETUID      AUE_NULL        /*24*/
 #define AUE_GETEUID	AUE_NULL	/*25*/
 #define AUE_PTRACE      302		/*26*/
-#define	AUE_RECVMSG     190             /*27*/	
+#define	AUE_RECVMSG     190             /*27*/
 #define	AUE_SENDMSG     188             /*28*/
 #define	AUE_RECVFROM    191             /*29*/
 #define	AUE_ACCEPT      33              /*30*/
@@ -85,8 +85,8 @@
 #define	AUE_ACCESS      14              /*33*/
 #define AUE_CHFLAGS     303		/*34*/
 #define AUE_FCHFLAGS    304		/*35*/
-#define AUE_SYNC        AUE_NULL        /*36*/				
-#define	AUE_KILL        15              /*37*/	
+#define AUE_SYNC        AUE_NULL        /*36*/
+#define	AUE_KILL        15              /*37*/
 #define	AUE_O_STAT      AUE_STAT        /*38*/
 #define AUE_GETPPID     AUE_NULL	/*39*/
 #define	AUE_O_LSTAT     AUE_LSTAT	/*40*/
@@ -101,7 +101,7 @@
 #define AUE_SIGPROCMASK AUE_NULL        /*48*/    /*XXX*/
 #define AUE_GETLOGIN    AUE_NULL        /*49*/
 #define AUE_SETLOGIN    307		/*50*/
-#define	AUE_ACCT        18              /*51*/	
+#define	AUE_ACCT        18              /*51*/
 #define AUE_SIGPENDING  AUE_NULL        /*52*/    /*XXX*/
 #define AUE_SIGALTSTACK AUE_NULL        /*53*/    /*XXX*/
 #define AUE_IOCTL       158             /*54*/
@@ -111,7 +111,7 @@
 #define AUE_READLINK    22              /*58*/
 #define AUE_EXECVE      23              /*59*/
 #define AUE_UMASK       310		/*60*/
-#define AUE_CHROOT      24              /*61*/ 
+#define AUE_CHROOT      24              /*61*/
 #define AUE_O_FSTAT     AUE_FSTAT       /*62*/
 
 #define AUE_O_GETPAGESIZE AUE_NULL      /*64*/
@@ -128,7 +128,7 @@
 #define AUE_MADVISE     AUE_NULL        /*75*/
 #define AUE_O_VHANGUP   AUE_NULL        /*76*/
 #define AUE_O_VLIMIT    AUE_NULL        /*77*/
-#define AUE_MINCORE     AUE_NULL        /*78*/	
+#define AUE_MINCORE     AUE_NULL        /*78*/
 #define AUE_GETGROUPS   AUE_NULL        /*79*/
 #define AUE_SETGROUPS   26              /*80*/
 #define AUE_GETPGRP     AUE_NULL        /*81*/
@@ -170,7 +170,7 @@
 #define AUE_GETRUSAGE   AUE_NULL        /*117*/
 #define AUE_GTSOCKOPT   AUE_NULL        /*118*/
 #define AUE_O_RESUBA    AUE_NULL        /*119*/
-#define AUE_READV       AUE_NULL        /*120*/      
+#define AUE_READV       AUE_NULL        /*120*/
 #define AUE_WRITEV      AUE_NULL        /*121*/
 #define AUE_SETTIMEOFDAY 313		/*122*/
 #define AUE_FCHOWN      38              /*123*/
@@ -195,7 +195,7 @@
 #define AUE_O_GETHOSTID AUE_NULL        /*142*/
 #define AUE_O_SETHOSTID AUE_NULL        /*143*/
 #define AUE_O_GETRLIMIT AUE_NULL        /*144*/
-#define AUE_O_SETRLIMIT AUE_SETRLIMIT   /*145*/ 
+#define AUE_O_SETRLIMIT AUE_SETRLIMIT   /*145*/
 #define AUE_O_KILLPG    AUE_KILL        /*146*/
 #define AUE_SETSID      319		/*147*/
 #define AUE_O_SETQUOTA  AUE_NULL        /*148*/
@@ -254,7 +254,7 @@
 #define AUE_LSTATV      AUE_NULL        /*218*/   /*EOPNOTSUPP*/
 #define AUE_FSTATV      AUE_NULL        /*219*/   /*EOPNOTSUPP*/
 #define AUE_GETATTRLIST 335		/*220*/
-#define AUE_SETATTRLIST 336		/*221*/ 
+#define AUE_SETATTRLIST 336		/*221*/
 #define AUE_GETDIRENTRIESATTR 337	/*222*/
 #define AUE_EXCHANGEDATA 338		/*223*/
 #define AUE_CHECKUSERACCESS AUE_ACCESS    /*224*/   /* To Be Removed */
@@ -364,7 +364,7 @@
 #define AUE_FCHROOT                     69
 #define AUE_FORK1                       241
 #define AUE_GETAUDIT                    132
-#define AUE_GETAUDIT_ADDR               267	
+#define AUE_GETAUDIT_ADDR               267
 #define AUE_GETAUID                     130
 #define AUE_GETMSG                      217
 #define AUE_SOCKACCEPT                  247

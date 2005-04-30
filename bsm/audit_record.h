@@ -1,15 +1,15 @@
 /*
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * Copyright (c) 1999-2004 Apple Computer, Inc.  All Rights Reserved.
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -26,14 +26,14 @@
 
 /* Various token id types */
 
-/* 
+/*
  * Values inside the comments are not documented in the BSM pages and
- * have been picked up from the header files 
- */  
+ * have been picked up from the header files
+ */
 
 /*
- * Values marked as XXX do not have a value defined in the BSM header files 
- */   
+ * Values marked as XXX do not have a value defined in the BSM header files
+ */
 
 /*
  * Control token types
@@ -46,8 +46,8 @@
 
 #define AUT_INVALID                 0x00
 #define AU_FILE_TOKEN               0x11
-#define AU_TRAILER_TOKEN            0x13 
-#define AU_HEADER_32_TOKEN          0x14	
+#define AU_TRAILER_TOKEN            0x13
+#define AU_HEADER_32_TOKEN          0x14
 #define AU_HEADER_EX_32_TOKEN       0x15
 
 /*
@@ -57,7 +57,7 @@
  */
 
 #define AU_DATA_TOKEN               0x21
-#define AU_ARB_TOKEN                AU_DATA_TOKEN	
+#define AU_ARB_TOKEN                AU_DATA_TOKEN
 #define AU_IPC_TOKEN                0x22
 #define AU_PATH_TOKEN               0x23
 #define AU_SUBJECT_32_TOKEN         0x24
@@ -68,7 +68,7 @@
 #define AU_IN_ADDR_TOKEN            0x2A
 #define AU_IP_TOKEN                 0x2B
 #define AU_IPORT_TOKEN              0x2C
-#define AU_ARG32_TOKEN              0x2D	
+#define AU_ARG32_TOKEN              0x2D
 #define AU_SOCK_TOKEN               0x2E
 #define AU_SEQ_TOKEN                0x2F
 
@@ -84,7 +84,7 @@
 #define AUT_PRIV                ((char)0x38)
 #define AUT_UPRIV               ((char)0x39)
 #define AUT_LIAISON             ((char)0x3A)
- 
+
  */
 
 #define AU_ATTR_TOKEN               0x31
@@ -97,7 +97,7 @@
 /*
  * Command token types
  */
- 
+
 #define AU_CMD_TOKEN                0x51
 #define AU_EXIT_TOKEN               0x52
 
@@ -126,9 +126,9 @@
 /*
  * Extended network address token types
  */
- 
+
 #define AU_HEADER_EX_64_TOKEN       0x79
-#define AU_SUBJECT_32_EX_TOKEN      0x7a	
+#define AU_SUBJECT_32_EX_TOKEN      0x7a
 #define AU_PROCESS_32_EX_TOKEN      0x7b
 #define AU_SUBJECT_64_EX_TOKEN      0x7c
 #define AU_PROCESS_64_EX_TOKEN      0x7d
@@ -141,7 +141,7 @@
  * The values for the following token ids are not
  * defined by BSM
  */
-#define AU_SOCK_INET_32_TOKEN       0x80         /*XXX*/ 
+#define AU_SOCK_INET_32_TOKEN       0x80         /*XXX*/
 #define AU_SOCK_INET_128_TOKEN      0x81         /*XXX*/
 #define AU_SOCK_UNIX_TOKEN          0x82         /*XXX*/
 
@@ -158,7 +158,7 @@
 #define AUR_LONG        2
 
 /* ... and their sizes */
-#define AUR_BYTE_SIZE       sizeof(u_char)	
+#define AUR_BYTE_SIZE       sizeof(u_char)
 #define AUR_SHORT_SIZE      sizeof(u_int16_t)
 #define AUR_LONG_SIZE       sizeof(u_int32_t)
 
@@ -193,14 +193,14 @@ int			au_close(int d, int keep, short event);
 int			au_close_buffer(int d, short event, u_char *buffer,
 					size_t *buflen);
 token_t			*au_to_file(char *file);
-token_t			*au_to_header(int rec_size, au_event_t e_type, 
+token_t			*au_to_header(int rec_size, au_event_t e_type,
 					au_emod_t e_mod);
-token_t			*au_to_header32(int rec_size, au_event_t e_type, 
+token_t			*au_to_header32(int rec_size, au_event_t e_type,
 					au_emod_t e_mod);
-token_t			*au_to_header64(int rec_size, au_event_t e_type, 
+token_t			*au_to_header64(int rec_size, au_event_t e_type,
 					au_emod_t e_mod);
 token_t			*au_to_me(void);
-                               
+
 token_t			*au_to_arg(char n, char *text, u_int32_t v);
 token_t			*au_to_arg32(char n, char *text, u_int32_t v);
 token_t			*au_to_arg64(char n, char *text, u_int64_t v);
@@ -246,9 +246,9 @@ token_t			*au_to_return64(char status, u_int64_t ret);
 token_t			*au_to_seq(long audit_count);
 #if defined(_KERNEL) || defined(KERNEL)
 token_t			*au_to_socket(struct socket *so);
-token_t			*au_to_socket_ex_32(u_int16_t lp, u_int16_t rp, 
+token_t			*au_to_socket_ex_32(u_int16_t lp, u_int16_t rp,
 				struct sockaddr *la, struct sockaddr *ta);
-token_t			*au_to_socket_ex_128(u_int16_t lp, u_int16_t rp, 
+token_t			*au_to_socket_ex_128(u_int16_t lp, u_int16_t rp,
 				struct sockaddr *la, struct sockaddr *ta);
 #endif
 token_t			*au_to_sock_inet(struct sockaddr_in *so);

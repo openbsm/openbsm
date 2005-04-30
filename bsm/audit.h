@@ -1,15 +1,15 @@
 /*
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * Copyright (c) 1999-2004 Apple Computer, Inc.  All Rights Reserved.
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -26,10 +26,10 @@
 
 #define	AUDIT_RECORD_MAGIC	0x828a0f1b
 #define MAX_AUDIT_RECORDS	20
-#define MAX_AUDIT_RECORD_SIZE	4096	
+#define MAX_AUDIT_RECORD_SIZE	4096
 #define MIN_AUDIT_FILE_SIZE	512 * 1024
 
-/* 
+/*
  * Triggers for the audit daemon
  */
 #define AUDIT_TRIGGER_LOW_SPACE	1
@@ -151,7 +151,7 @@ __BEGIN_DECLS
 typedef uid_t au_id_t;
 typedef pid_t au_asid_t;
 typedef u_int16_t au_event_t;
-typedef u_int16_t au_emod_t; 
+typedef u_int16_t au_emod_t;
 typedef u_int32_t au_class_t;
 
 struct au_tid {
@@ -223,7 +223,7 @@ struct au_record {
 	u_char *data;
 	size_t len;
 	LIST_ENTRY(au_record) au_rec_q;
-}; 
+};
 typedef struct au_record au_record_t;
 
 /*
