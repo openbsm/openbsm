@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -28,8 +28,8 @@
 
 #ifdef __APPLE__
 
-/* 
- * Based on sample code from Marc Majka 
+/*
+ * Based on sample code from Marc Majka
  */
 #include <notify.h>
 #include <string.h>	/* strerror() */
@@ -63,7 +63,7 @@ au_notify_initialize(void)
 
     if (auditon(A_GETCOND, &au_cond, sizeof(long)) < 0)
     {
-	syslog(LOG_ERR, "Initial audit status check failed (%s)", 
+	syslog(LOG_ERR, "Initial audit status check failed (%s)",
 	       strerror(errno));
 	if (errno == ENOSYS)		/* auditon() unimplemented */
 	    return AU_UNIMPL;
@@ -82,14 +82,14 @@ au_notify_terminate(void)
 #endif
 }
 
-/* 
- * On error of any notify(3) call, reset 'au_cond' to ensure we re-run 
- * au_notify_initialize() next time 'round--but assume auditing is on.  
- * This is a slight performance hit if auditing is off, but at least the 
- * system will behave correctly.  The notification calls are unlikely to 
- * fail, anyway.  
+/*
+ * On error of any notify(3) call, reset 'au_cond' to ensure we re-run
+ * au_notify_initialize() next time 'round--but assume auditing is on.
+ * This is a slight performance hit if auditing is off, but at least the
+ * system will behave correctly.  The notification calls are unlikely to
+ * fail, anyway.
  */
-int 
+int
 au_get_state(void)
 {
 #if AUDIT_NOTIFICATION_ENABLED
@@ -97,15 +97,15 @@ au_get_state(void)
 #endif
     int status;
 
-    /* 
-     * Don't make the client initialize this set of routines, but 
-     * take the slight performance hit by checking ourselves every 
-     * time.  
+    /*
+     * Don't make the client initialize this set of routines, but
+     * take the slight performance hit by checking ourselves every
+     * time.
      */
     if (au_cond == AUC_UNSET)
     {
 	status = au_notify_initialize();
-	if (status != NOTIFY_STATUS_OK) 
+	if (status != NOTIFY_STATUS_OK)
 	{
 	    if (status == AU_UNIMPL)
 		return AU_UNIMPL;
@@ -128,7 +128,7 @@ au_get_state(void)
     if (auditon(A_GETCOND, &au_cond, sizeof(long)) < 0)
     {
 	/* XXX  reset au_cond to AUC_UNSET? */
-	syslog(LOG_ERR, "Audit status check failed (%s)", 
+	syslog(LOG_ERR, "Audit status check failed (%s)",
 	       strerror(errno));
 	if (errno == ENOSYS)	/* function unimplemented */
 	    return AU_UNIMPL;

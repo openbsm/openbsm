@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,10 +34,10 @@
 
 #include <libbsm.h>
 
-/* 
- * Parse the contents of the audit_control file to return 
+/*
+ * Parse the contents of the audit_control file to return
  * the audit control parameters
- */  
+ */
 static FILE *fp = NULL;
 static char linestr[AU_LINE_MAX];
 static char *delim = ":";
@@ -47,21 +47,21 @@ static char ptrmoved = 0;
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* 
- * Returns the string value corresponding to the given label  
+/*
+ * Returns the string value corresponding to the given label
  * from the configuration file
- */  
+ */
 static int getstrfromtype(char *name, char **str)
 {
 	char *type, *nl;
 	char *tokptr;
 	char *last;
-	
+
 	*str = NULL;
 
 	pthread_mutex_lock(&mutex);
 
-	if((fp == NULL) 
+	if((fp == NULL)
 		&& ((fp = fopen(AUDIT_CONTROL_FILE, "r")) == NULL)) {
 
 		pthread_mutex_unlock(&mutex);
@@ -90,16 +90,16 @@ static int getstrfromtype(char *name, char **str)
 				}
 				return 0; /* Success */
 			}
-		}	
+		}
 	}
 
 	pthread_mutex_unlock(&mutex);
 	return 0; /* EOF */
 }
 
-/* 
- * Rewind the file pointer to beginning 
- */  
+/*
+ * Rewind the file pointer to beginning
+ */
 void setac()
 {
 	pthread_mutex_lock(&mutex);
@@ -114,11 +114,11 @@ void setac()
 
 /*
  * Close the audit_control file
- */  
+ */
 void endac()
 {
 	pthread_mutex_lock(&mutex);
-	
+
 	ptrmoved = 1;
 	if(fp != NULL) {
 		fclose(fp);
@@ -130,12 +130,12 @@ void endac()
 
 /*
  * Return audit directory information from the audit control file
- */  
+ */
 int getacdir(char *name, int len)
 {
 	char *dir;
 	int ret = 0;
-	
+
 	if(name == NULL) {
 		errno = EINVAL;
 		return -2;
@@ -143,25 +143,25 @@ int getacdir(char *name, int len)
 
 	pthread_mutex_lock(&mutex);
 
-	/* 
-	 * Check if another function was called between 
-	 * successive calls to getacdir 
+	/*
+	 * Check if another function was called between
+	 * successive calls to getacdir
 	 */
 	if(inacdir && ptrmoved) {
 		ptrmoved = 0;
 		if(fp != NULL) {
-			fseek(fp, 0, SEEK_SET);	
+			fseek(fp, 0, SEEK_SET);
 		}
-		
-		ret = 2; 
+
+		ret = 2;
 	}
-					
+
 	pthread_mutex_unlock(&mutex);
-	
+
 	if(getstrfromtype(DIR_CONTROL_ENTRY, &dir) == 1) {
 		return -3;
 	}
-			
+
 	if(dir == NULL){
 
 		return -1;
@@ -171,20 +171,20 @@ int getacdir(char *name, int len)
 		return -3;
 	}
 
-	strcpy(name, dir);	
+	strcpy(name, dir);
 
 	return ret;
 }
 
 /*
  * Return the minimum free diskspace value from the audit control file
- */  
+ */
 int getacmin(int *min_val)
 {
 	char *min;
 
 	setac();
-	
+
 	if(min_val == NULL) {
 		errno = EINVAL;
 		return -2;
@@ -193,7 +193,7 @@ int getacmin(int *min_val)
 	if(getstrfromtype(MINFREE_CONTROL_ENTRY, &min) == 1) {
 		return -3;
 	}
-	
+
 	if(min == NULL) {
 		return 1;
 	}
@@ -205,13 +205,13 @@ int getacmin(int *min_val)
 
 /*
  * Return the system audit value from the audit contol file
- */  
+ */
 int getacflg(char *auditstr, int len)
 {
 	char *str;
 
 	setac();
-		
+
 	if(auditstr == NULL) {
 		errno = EINVAL;
 		return -2;
@@ -220,7 +220,7 @@ int getacflg(char *auditstr, int len)
 	if(getstrfromtype(FLAGS_CONTROL_ENTRY, &str) == 1) {
 		return -3;
 	}
-	
+
 	if(str == NULL) {
 		return 1;
 	}
@@ -229,21 +229,20 @@ int getacflg(char *auditstr, int len)
 		return -3;
 	}
 
-	strcpy(auditstr, str);	
+	strcpy(auditstr, str);
 
 	return 0;
 }
 
-
 /*
  * Return the non attributable flags from the audit contol file
- */  
+ */
 int getacna(char *auditstr, int len)
 {
 	char *str;
 
 	setac();
-		
+
 	if(auditstr == NULL) {
 		errno = EINVAL;
 		return -2;
@@ -261,8 +260,7 @@ int getacna(char *auditstr, int len)
 		return -3;
 	}
 
-	strcpy(auditstr, str);	
+	strcpy(auditstr, str);
 
 	return 0;
 }
-

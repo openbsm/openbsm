@@ -2,19 +2,19 @@
  * Copyright (c) 2004, Apple Computer, Inc.
  * Copyright (c) 2005 Robert N. M. Watson
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -82,12 +82,12 @@ token_t *au_to_arg32(char n, char *text, u_int32_t v)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t textlen;
-	
+
 	if(text == NULL) {
 		errno = EINVAL;
-		return NULL;	
+		return NULL;
 	}
-	
+
 	textlen = strlen(text);
 	GET_TOKEN_AREA(t, dptr, 9 + textlen);
 	if(t == NULL) {
@@ -111,26 +111,26 @@ token_t *au_to_arg64(char n, char *text, u_int64_t v)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t textlen;
-	
+
 	if(text == NULL) {
 		errno = EINVAL;
-		return NULL;	
+		return NULL;
 	}
-	
+
 	textlen = strlen(text);
 	GET_TOKEN_AREA(t, dptr, 13 + textlen);
 	if(t == NULL) {
 		return NULL;
 	}
 
-	textlen += 1;	
+	textlen += 1;
 
 	ADD_U_CHAR(dptr, AU_ARG64_TOKEN);
 	ADD_U_CHAR(dptr, n);
 	ADD_U_INT64(dptr, v);
 	ADD_U_INT16(dptr, textlen);
 	ADD_STRING(dptr, text, textlen);
-	
+
 	return t;
 
 }
@@ -161,8 +161,8 @@ token_t *au_to_attr32(struct vattr *attr)
 		errno = EINVAL;
 		return NULL;
 	}
-	
-	
+
+
 	GET_TOKEN_AREA(t, dptr, 29);
 	if(t == NULL) {
 		return NULL;
@@ -170,10 +170,10 @@ token_t *au_to_attr32(struct vattr *attr)
 
 	ADD_U_CHAR(dptr, AU_ATTR32_TOKEN);
 
-	/* 
-	 * Darwin defines the size for the file mode 
+	/*
+	 * Darwin defines the size for the file mode
 	 * as 2 bytes; BSM defines 4 so pad with 0
-	 */    
+	 */
 	ADD_U_INT16(dptr, pad0_16);
 	ADD_U_INT16(dptr, attr->va_mode);
 
@@ -197,7 +197,7 @@ token_t *au_to_attr32(struct vattr *attr)
 	}
 
 	ADD_U_INT32(dptr, attr->va_rdev);
-	
+
 	return t;
 }
 
@@ -227,12 +227,12 @@ token_t *au_to_data(char unit_print, char unit_type,
 	token_t *t;
 	u_char *dptr = NULL;
 	size_t datasize, totdata;
-	
+
 	if(p == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
-	
+
 	/* Determine the size of the basic unit */
 	switch(unit_type) {
 		case AUR_BYTE:	datasize = AUR_BYTE_SIZE;
@@ -240,17 +240,17 @@ token_t *au_to_data(char unit_print, char unit_type,
 
 		case AUR_SHORT:	datasize = AUR_SHORT_SIZE;
 						break;
-	
+
 		case AUR_LONG:	datasize = AUR_LONG_SIZE;
 						break;
-				
+
 		default:
 			errno = EINVAL;
  			return NULL;
 	}
 
 	totdata = datasize * unit_count;
-	
+
 	GET_TOKEN_AREA(t, dptr, totdata + 4);
 	if(t == NULL) {
 		return NULL;
@@ -261,7 +261,7 @@ token_t *au_to_data(char unit_print, char unit_type,
 	ADD_U_CHAR(dptr, unit_type);
 	ADD_U_CHAR(dptr, unit_count);
 	ADD_MEM(dptr, p, totdata);
-	
+
 	return t;
 }
 
@@ -269,30 +269,30 @@ token_t *au_to_data(char unit_print, char unit_type,
 /*
  * token ID                1 byte
  * status		   4 bytes
- * return value            4 bytes  
+ * return value            4 bytes
  */
 token_t *au_to_exit(int retval, int err)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-		 
+
 	GET_TOKEN_AREA(t, dptr, 9);
 	if(t == NULL) {
 		return NULL;
 	}
-	
+
 	ADD_U_CHAR(dptr, AU_EXIT_TOKEN);
 	ADD_U_INT32(dptr, err);
 	ADD_U_INT32(dptr, retval);
 
-	return t;	
+	return t;
 }
 
 /*
  */
 token_t *au_to_groups(int *groups)
 {
-	return au_to_newgroups(BSM_MAX_GROUPS, groups);	
+	return au_to_newgroups(BSM_MAX_GROUPS, groups);
 }
 
 /*
@@ -305,24 +305,24 @@ token_t *au_to_newgroups(u_int16_t n, gid_t *groups)
 	token_t *t;
 	u_char *dptr = NULL;
 	int i;
-   	
+   
 	if(groups == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
-	
+
 	GET_TOKEN_AREA(t, dptr, n * 4 + 3);
 	if(t == NULL) {
 		return NULL;
 	}
- 
+
 	ADD_U_CHAR(dptr, AU_NEWGROUPS_TOKEN);
 	ADD_U_INT16(dptr, n);
 	for(i = 0; i < n; i++) {
 	    ADD_U_INT32(dptr, groups[i]);
 	}
- 
-	return t;	
+
+	return t;
 }
 
 
@@ -336,7 +336,7 @@ token_t *au_to_in_addr(struct in_addr *internet_addr)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-		 
+
 	if(internet_addr == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -346,7 +346,7 @@ token_t *au_to_in_addr(struct in_addr *internet_addr)
 	if(t == NULL) {
 		return NULL;
 	}
-	
+
 	ADD_U_CHAR(dptr, AU_IN_ADDR_TOKEN);
 	ADD_U_INT32(dptr, internet_addr->s_addr);
 
@@ -356,24 +356,24 @@ token_t *au_to_in_addr(struct in_addr *internet_addr)
 /*
  * token ID                1 byte
  * address type/length     4 bytes
- * Address                16 bytes 
+ * Address                16 bytes
  */
 token_t *au_to_in_addr_ex(struct in6_addr *internet_addr)
 {
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int32_t type = AF_INET6;
-	
+
 	if(internet_addr == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
-	
+
 	GET_TOKEN_AREA(t, dptr, 21);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_IN_ADDR_EX_TOKEN);
 	ADD_U_INT32(dptr, type);
 	ADD_U_INT32(dptr, internet_addr->__u6_addr.__u6_addr32[0]);
@@ -402,13 +402,13 @@ token_t *au_to_ip(struct ip *ip)
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_IP_TOKEN);
 	/*
 	 * XXXRW: Any byte order work needed on the IP header before writing?
 	 */
 	ADD_MEM(dptr, ip, sizeof(struct ip));
-				
+
 	return t;
 }
 
@@ -421,13 +421,13 @@ token_t *au_to_ipc(char type, int id)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-		 
-		 
+
+
 	GET_TOKEN_AREA(t, dptr, 6);
 	if(t == NULL) {
 		return NULL;
 	}
-				 
+
 	ADD_U_CHAR(dptr, AU_IPC_TOKEN);
 	ADD_U_CHAR(dptr, type);
 	ADD_U_INT32(dptr, id);
@@ -450,31 +450,31 @@ token_t *au_to_ipc_perm(struct ipc_perm *perm)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t pad0 = 0;
-	
-	
+
+
 	if(perm == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
-	
+
 	GET_TOKEN_AREA(t, dptr, 29);
 	if(t == NULL) {
 		return NULL;
 	}
-				
+
 	ADD_U_CHAR(dptr, AU_IPCPERM_TOKEN);
 
 
-	/* 
+	/*
 	 * Darwin defines the sizes for ipc_perm members
 	 * as 2 bytes; BSM defines 4 so pad with 0
-	 */    
+	 */
 	ADD_U_INT16(dptr, pad0);
 	ADD_U_INT16(dptr, perm->uid);
-	
+
 	ADD_U_INT16(dptr, pad0);
 	ADD_U_INT16(dptr, perm->gid);
-	
+
 	ADD_U_INT16(dptr, pad0);
 	ADD_U_INT16(dptr, perm->cuid);
 
@@ -501,7 +501,7 @@ token_t *au_to_iport(u_int16_t iport)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-		
+
 
 	GET_TOKEN_AREA(t, dptr, 3);
 	if(t == NULL) {
@@ -510,7 +510,7 @@ token_t *au_to_iport(u_int16_t iport)
 
 	ADD_U_CHAR(dptr, AU_IPORT_TOKEN);
 	ADD_U_INT16(dptr, iport);
-										 
+
 	return t;
 }
 
@@ -524,21 +524,21 @@ token_t *au_to_opaque(char *data, u_int16_t bytes)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-			 
+
 	if((data == NULL) || (bytes <= 0)) {
 		errno = EINVAL;
 		return NULL;
 	}
- 
+
 	GET_TOKEN_AREA(t, dptr, bytes + 3);
 	if(t == NULL) {
 		return NULL;
 	}
- 
+
 	ADD_U_CHAR(dptr, AU_OPAQUE_TOKEN);
 	ADD_U_INT16(dptr, bytes);
 	ADD_MEM(dptr, data, bytes);
- 
+
 	return t;
 }
 
@@ -547,7 +547,7 @@ token_t *au_to_opaque(char *data, u_int16_t bytes)
  * seconds of time			4 bytes
  * milliseconds of time		4 bytes
  * file name len			2 bytes
- * file pathname			N bytes + 1 terminating NULL byte   	
+ * file pathname			N bytes + 1 terminating NULL byte   
  */
 token_t *au_to_file(char *file)
 {
@@ -561,7 +561,7 @@ token_t *au_to_file(char *file)
 	if(gettimeofday(&tm, &tzp) == -1) {
 		return NULL;
 	}
-	
+
 	if(file == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -571,16 +571,16 @@ token_t *au_to_file(char *file)
 	if(t == NULL) {
 		return NULL;
 	}
-		
+
 	filelen += 1;
-	timems = tm.tv_usec/1000;				 
+	timems = tm.tv_usec/1000;
 
 	ADD_U_CHAR(dptr, AU_FILE_TOKEN);
 	ADD_U_INT32(dptr, tm.tv_sec);
 	ADD_U_INT32(dptr, timems); /* We need time in ms */
 	ADD_U_INT16(dptr, filelen);
 	ADD_STRING(dptr, file, filelen);
-	 
+
 	return t;
 
 }
@@ -596,7 +596,7 @@ token_t *au_to_text(char *text)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t textlen;
-	
+
 	if(text == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -608,7 +608,7 @@ token_t *au_to_text(char *text)
 	}
 
 	textlen += 1;
-						 
+
 	ADD_U_CHAR(dptr, AU_TEXT_TOKEN);
 	ADD_U_INT16(dptr, textlen);
 	ADD_STRING(dptr, text, textlen);
@@ -626,7 +626,7 @@ token_t *au_to_path(char *text)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t textlen;
-	
+
 	if(text == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -638,7 +638,7 @@ token_t *au_to_path(char *text)
 	}
 
 	textlen += 1;
-						 
+
 	ADD_U_CHAR(dptr, AU_PATH_TOKEN);
 	ADD_U_INT16(dptr, textlen);
 	ADD_STRING(dptr, text, textlen);
@@ -665,7 +665,7 @@ token_t *au_to_process32(au_id_t auid, uid_t euid, gid_t egid,
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	
+
 	if(tid == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -675,7 +675,7 @@ token_t *au_to_process32(au_id_t auid, uid_t euid, gid_t egid,
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_PROCESS_32_TOKEN);
 	ADD_U_INT32(dptr, auid);
 	ADD_U_INT32(dptr, euid);
@@ -686,7 +686,7 @@ token_t *au_to_process32(au_id_t auid, uid_t euid, gid_t egid,
 	ADD_U_INT32(dptr, sid);
 	ADD_U_INT32(dptr, tid->port);
 	ADD_U_INT32(dptr, tid->machine);
-	 
+
 	return t;
 }
 
@@ -727,7 +727,7 @@ token_t *au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid,
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	
+
 	if(tid == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -737,7 +737,7 @@ token_t *au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid,
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_PROCESS_32_EX_TOKEN);
 	ADD_U_INT32(dptr, auid);
 	ADD_U_INT32(dptr, euid);
@@ -752,7 +752,7 @@ token_t *au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid,
 	ADD_U_INT32(dptr, tid->at_addr[1]);
 	ADD_U_INT32(dptr, tid->at_addr[2]);
 	ADD_U_INT32(dptr, tid->at_addr[3]);
-	 
+
 	return t;
 }
 
@@ -769,7 +769,7 @@ token_t *au_to_process_ex(au_id_t auid, uid_t euid, gid_t egid,
 		               	   uid_t ruid, gid_t rgid, pid_t pid,
 		                   au_asid_t sid, au_tid_addr_t *tid)
 {
-	return au_to_process32_ex(auid, euid, egid, ruid, rgid, 
+	return au_to_process32_ex(auid, euid, egid, ruid, rgid,
 			pid, sid, tid);
 }
 
@@ -782,13 +782,13 @@ token_t *au_to_return32(char status, u_int32_t ret)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	
+
 
 	GET_TOKEN_AREA(t, dptr, 6);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_RETURN_32_TOKEN);
 	ADD_U_CHAR(dptr, status);
 	ADD_U_INT32(dptr, ret);
@@ -800,13 +800,13 @@ token_t *au_to_return64(char status, u_int64_t ret)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	
+
 
 	GET_TOKEN_AREA(t, dptr, 10);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_RETURN_64_TOKEN);
 	ADD_U_CHAR(dptr, status);
 	ADD_U_INT64(dptr, ret);
@@ -827,13 +827,13 @@ token_t *au_to_seq(long audit_count)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	
+
 
 	GET_TOKEN_AREA(t, dptr, 5);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_SEQ_TOKEN);
 	ADD_U_INT32(dptr, audit_count);
 
@@ -864,7 +864,7 @@ token_t *au_to_socket(struct socket *so) {
  * address type/length     4 bytes
  * remote Internet address 4 bytes/16 bytes (IPv4/IPv6 address)
  */
-token_t *au_to_socket_ex_32(u_int16_t lp, u_int16_t rp, 
+token_t *au_to_socket_ex_32(u_int16_t lp, u_int16_t rp,
 	struct sockaddr *la, struct sockaddr *ra)
 {
 
@@ -872,7 +872,7 @@ token_t *au_to_socket_ex_32(u_int16_t lp, u_int16_t rp,
 	return NULL;
 }
 
-token_t *au_to_socket_ex_128(u_int16_t lp, u_int16_t rp, 
+token_t *au_to_socket_ex_128(u_int16_t lp, u_int16_t rp,
 	struct sockaddr *la, struct sockaddr *ra)
 {
 
@@ -895,15 +895,15 @@ token_t *au_to_sock_inet32(struct sockaddr_in *so)
 	if(so == NULL) {
 		errno = EINVAL;
 		return NULL;
-	}	
+	}
 
 	GET_TOKEN_AREA(t, dptr, 9);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_SOCK_INET_32_TOKEN);
-	/* 
+	/*
 	 * In Darwin, sin_family is one octet, but BSM defines the token
  	 * to store two. So we copy in a 0 first.
  	 */
@@ -924,21 +924,21 @@ token_t *au_to_sock_inet128(struct sockaddr_in6 *so)
 	if(so == NULL) {
 		errno = EINVAL;
 		return NULL;
-	}	
+	}
 
 	GET_TOKEN_AREA(t, dptr, 21);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_SOCK_INET_128_TOKEN);
-	/* 
+	/*
 	 * In Darwin, sin6_family is one octet, but BSM defines the token
  	 * to store two. So we copy in a 0 first.
  	 */
 	ADD_U_CHAR(dptr, 0);
 	ADD_U_CHAR(dptr, so->sin6_family);
-		
+
 	ADD_U_INT16(dptr, so->sin6_port);
 	ADD_U_INT32(dptr, so->sin6_addr.__u6_addr.__u6_addr32[0]);
 	ADD_U_INT32(dptr, so->sin6_addr.__u6_addr.__u6_addr32[1]);
@@ -946,7 +946,7 @@ token_t *au_to_sock_inet128(struct sockaddr_in6 *so)
 	ADD_U_INT32(dptr, so->sin6_addr.__u6_addr.__u6_addr32[3]);
 
 	return t;
-		
+
 }
 
 token_t *au_to_sock_inet(struct sockaddr_in *so)
@@ -973,7 +973,7 @@ token_t *au_to_subject32(au_id_t auid, uid_t euid, gid_t egid,
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	
+
 	if(tid == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -983,7 +983,7 @@ token_t *au_to_subject32(au_id_t auid, uid_t euid, gid_t egid,
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_SUBJECT_32_TOKEN);
 	ADD_U_INT32(dptr, auid);
 	ADD_U_INT32(dptr, euid);
@@ -994,7 +994,7 @@ token_t *au_to_subject32(au_id_t auid, uid_t euid, gid_t egid,
 	ADD_U_INT32(dptr, sid);
 	ADD_U_INT32(dptr, tid->port);
 	ADD_U_INT32(dptr, tid->machine);
-	 
+
 	return t;
 }
 
@@ -1035,7 +1035,7 @@ token_t *au_to_subject32_ex(au_id_t auid, uid_t euid,
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	
+
 	if(tid == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -1045,7 +1045,7 @@ token_t *au_to_subject32_ex(au_id_t auid, uid_t euid,
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_SUBJECT_32_EX_TOKEN);
 	ADD_U_INT32(dptr, auid);
 	ADD_U_INT32(dptr, euid);
@@ -1060,7 +1060,7 @@ token_t *au_to_subject32_ex(au_id_t auid, uid_t euid,
 	ADD_U_INT32(dptr, tid->at_addr[1]);
 	ADD_U_INT32(dptr, tid->at_addr[2]);
 	ADD_U_INT32(dptr, tid->at_addr[3]);
-	 
+
 	return t;
 }
 
@@ -1082,7 +1082,7 @@ token_t *au_to_subject_ex(au_id_t auid, uid_t euid,
 }
 
 /*
- * Collects audit information for the current process 
+ * Collects audit information for the current process
  * and creates a subject token from it
  */
 token_t *au_to_me(void)
@@ -1091,11 +1091,11 @@ token_t *au_to_me(void)
 	auditinfo_t auinfo;
 
 	if(getaudit(&auinfo) != 0) {
-		return NULL;	
-	} 
+		return NULL;
+	}
 
 	return au_to_subject32(auinfo.ai_auid, geteuid(), getegid(),
-		getuid(), getgid(), getpid(), auinfo.ai_asid, 
+		getuid(), getgid(), getpid(), auinfo.ai_asid,
 		&auinfo.ai_termid);
 
 }
@@ -1103,7 +1103,7 @@ token_t *au_to_me(void)
 /*
  * token ID				1 byte
  * count				4 bytes
- * text					count null-terminated strings 
+ * text					count null-terminated strings
  */
 token_t *au_to_exec_args(const char **args)
 {
@@ -1112,29 +1112,29 @@ token_t *au_to_exec_args(const char **args)
 	const char *nextarg;
 	int i, count = 0;
 	size_t totlen = 0;
-	
+
 	if(args == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
-	
+
 	nextarg = *args;
-	
+
 	while(nextarg != NULL) {
 		int nextlen;
-	
+
 		nextlen = strlen(nextarg);
 		totlen += nextlen + 1;
 		count++;
 		nextarg = *(args + count);
 	}
-	
-	
+
+
 	GET_TOKEN_AREA(t, dptr, 5 + totlen);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_EXEC_ARG_TOKEN);
 	ADD_U_INT32(dptr, count);
 
@@ -1142,7 +1142,7 @@ token_t *au_to_exec_args(const char **args)
 		nextarg = *(args + i);
 		ADD_MEM(dptr, nextarg, strlen(nextarg) + 1);
 	}
-	 
+
 	return t;
 }
 
@@ -1150,7 +1150,7 @@ token_t *au_to_exec_args(const char **args)
 /*
  * token ID				1 byte
  * count				4 bytes
- * text					count null-terminated strings 
+ * text					count null-terminated strings
  */
 token_t *au_to_exec_env(const char **env)
 {
@@ -1159,29 +1159,29 @@ token_t *au_to_exec_env(const char **env)
 	int i, count = 0;
 	size_t totlen = 0;
 	const char *nextenv;
-	
+
 	if(env == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
-	
+
 	nextenv = *env;
-	
+
 	while(nextenv != NULL) {
 		int nextlen;
-		
+
 		nextlen = strlen(nextenv);
 		totlen += nextlen + 1;
 		count++;
 		nextenv = *(env + count);
 	}
-	
-	
+
+
 	GET_TOKEN_AREA(t, dptr, 5 + totlen);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_EXEC_ENV_TOKEN);
 	ADD_U_INT32(dptr, count);
 
@@ -1189,7 +1189,7 @@ token_t *au_to_exec_env(const char **env)
 		nextenv = *(env + i);
 		ADD_MEM(dptr, nextenv, strlen(nextenv) + 1);
 	}
-	 
+
 	return t;
 }
 
@@ -1210,7 +1210,7 @@ token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 	struct timeval tm;
 	struct timezone tzp;
 	u_int32_t timems;
-	
+
 	if(gettimeofday(&tm, &tzp) == -1) {
 		return NULL;
 	}
@@ -1219,7 +1219,7 @@ token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 	if(t == NULL) {
 		return NULL;
 	}
-	
+
 	ADD_U_CHAR(dptr, AU_HEADER_32_TOKEN);
 	ADD_U_INT32(dptr, rec_size);
 	ADD_U_CHAR(dptr, HEADER_VERSION);
@@ -1256,18 +1256,17 @@ token_t *au_to_trailer(int rec_size)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t magic = TRAILER_PAD_MAGIC;
-	
+
 
 	GET_TOKEN_AREA(t, dptr, 7);
 	if(t == NULL) {
 		return NULL;
 	}
-						 
+
 	ADD_U_CHAR(dptr, AU_TRAILER_TOKEN);
 	ADD_U_INT16(dptr, magic);
 	ADD_U_INT32(dptr, rec_size);
 
 	return t;
-		
-}
 
+}

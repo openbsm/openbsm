@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -27,7 +27,7 @@
  */
 
 /*
- * XXX  lib_wrappers.c is a provisional name 
+ * XXX  lib_wrappers.c is a provisional name
  */
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -40,7 +40,7 @@
 #include <libbsm.h>
 
 /*
- * XXX  Write up in a separate white paper.  
+ * XXX  Write up in a separate white paper.
  *
 Event code		Token type; contents
 
@@ -54,7 +54,7 @@ AUE_enable_user		text; ???
 AUE_disable_user	text; ???
 AUE_create_group	text; "Add group [<gid>, <groupname>]"
 AUE_delete_group	text; "Delete group [<gid>, <groupname>]"
-(In the following, if the name is changing, use the old name following 
+(In the following, if the name is changing, use the old name following
 "Modify group.")
 AUE_modify_group	text; "Modify group <groupname> <GID|NAME>: old = <oldval>, new = <newval>"
 AUE_add_to_group	text; "Add user <shortname> to group <groupname>"
@@ -70,7 +70,7 @@ AUE_auth_user		text: "Authenticated user <shortname|UID>"
 int audit_set_terminal_port(dev_t *p);
 int audit_set_terminal_host(u_int32_t *m);
 
-int 
+int
 audit_set_terminal_port(dev_t *p)
 {
 	struct stat st;
@@ -98,7 +98,7 @@ audit_set_terminal_port(dev_t *p)
 	return kAUNoErr;
 }
 
-int 
+int
 audit_set_terminal_host(u_int32_t *m)
 {
 	int name[2] = { CTL_KERN, KERN_HOSTID };
@@ -116,7 +116,7 @@ audit_set_terminal_host(u_int32_t *m)
 	return kAUNoErr;
 }
 
-int 
+int
 audit_set_terminal_id(au_tid_t *tid)
 {
 	int ret;
@@ -130,9 +130,9 @@ audit_set_terminal_id(au_tid_t *tid)
 
 
 /*
- * This is OK for those callers who have only one token to write.  If you 
- * have multiple tokens that logically form part of the same audit record, 
- * you need to use the existing au_open()/au_write()/au_close() API: 
+ * This is OK for those callers who have only one token to write.  If you
+ * have multiple tokens that logically form part of the same audit record,
+ * you need to use the existing au_open()/au_write()/au_close() API:
  *
  * aufd = au_open();
  * tok = au_to_random_token_1(...);
@@ -143,11 +143,11 @@ audit_set_terminal_id(au_tid_t *tid)
  * au_close(aufd, 1, AUE_your_event_type);
  *
  * Assumes, like all wrapper calls, that the caller has previously checked
- * that auditing is enabled via the audit_get_state() call.  
+ * that auditing is enabled via the audit_get_state() call.
  *
  * XXX  Should be more robust against bad arguments
  */
-int 
+int
 audit_write(short event_code, token_t *subject, token_t *misctok, char
 	    retval, int errcode)
 {
@@ -193,10 +193,10 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char
 		syslog(LOG_ERR, "%s: write of return code failed", func);
 		return kAUWriteReturnTokErr;
     }
-    /* 
+    /*
      * au_close()'s second argument is "keep": if keep == 0, the record is
      * discarded.  We assume the caller wouldn't have bothered with this
-     * function if it hadn't already decided to keep the record.  
+     * function if it hadn't already decided to keep the record.
      */
     if (au_close(aufd, 1, event_code) < 0)
     {
@@ -207,12 +207,12 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char
 }
 
 /*
- * Same caveats as audit_write().  In addition, this function explicitly 
- * assumes success; use audit_write_failure() on error.  
+ * Same caveats as audit_write().  In addition, this function explicitly
+ * assumes success; use audit_write_failure() on error.
  */
-int 
-audit_write_success(short event_code, token_t *tok, au_id_t auid, 
-		    uid_t euid, gid_t egid, uid_t ruid, gid_t rgid, 
+int
+audit_write_success(short event_code, token_t *tok, au_id_t auid,
+		    uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 		    pid_t pid, au_asid_t sid, au_tid_t *tid)
 {
     char *func = "audit_write_success()";
@@ -229,10 +229,10 @@ audit_write_success(short event_code, token_t *tok, au_id_t auid,
 }
 
 /*
- * Same caveats as audit_write().  In addition, this function explicitly 
- * assumes success; use audit_write_failure_self() on error.  
+ * Same caveats as audit_write().  In addition, this function explicitly
+ * assumes success; use audit_write_failure_self() on error.
  */
-int 
+int
 audit_write_success_self(short event_code, token_t *tok)
 {
     token_t *subject;
@@ -247,15 +247,15 @@ audit_write_success_self(short event_code, token_t *tok)
 }
 
 /*
- * Same caveats as audit_write().  In addition, this function explicitly 
- * assumes failure; use audit_write_success() otherwise.  
+ * Same caveats as audit_write().  In addition, this function explicitly
+ * assumes failure; use audit_write_success() otherwise.
  *
  * XXX  This should let the caller pass an error return value rather than
- * hard-coding -1.  
+ * hard-coding -1.
  */
 int
-audit_write_failure(short event_code, char *errmsg, int errcode, 
-		    au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, 
+audit_write_failure(short event_code, char *errmsg, int errcode,
+		    au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 		    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_t *tid)
 {
     char *func = "audit_write_failure()";
@@ -277,13 +277,13 @@ audit_write_failure(short event_code, char *errmsg, int errcode,
 }
 
 /*
- * Same caveats as audit_write().  In addition, this function explicitly 
- * assumes failure; use audit_write_success_self() otherwise.  
+ * Same caveats as audit_write().  In addition, this function explicitly
+ * assumes failure; use audit_write_success_self() otherwise.
  *
  * XXX  This should let the caller pass an error return value rather than
- * hard-coding -1.  
+ * hard-coding -1.
  */
-int 
+int
 audit_write_failure_self(short event_code, char *errmsg, int errret)
 {
     char *func = "audit_write_failure_self()";
@@ -304,17 +304,17 @@ audit_write_failure_self(short event_code, char *errmsg, int errret)
 }
 
 /*
- * For auditing errors during login.  Such errors are implicitly 
- * non-attributable (i.e., not ascribable to any user).  
+ * For auditing errors during login.  Such errors are implicitly
+ * non-attributable (i.e., not ascribable to any user).
  *
  * Assumes, like all wrapper calls, that the caller has previously checked
- * that auditing is enabled via the audit_get_state() call.  
+ * that auditing is enabled via the audit_get_state() call.
  */
-int 
+int
 audit_write_failure_na(short event_code, char *errmsg, int errret,
 		       uid_t euid, uid_t egid, pid_t pid, au_tid_t *tid)
 {
-    return audit_write_failure(event_code, errmsg, errret, -1, euid, 
+    return audit_write_failure(event_code, errmsg, errret, -1, euid,
 			       egid, -1, -1, pid, -1, tid);
 }
 
@@ -322,7 +322,7 @@ audit_write_failure_na(short event_code, char *errmsg, int errret,
 /* END OF au_write() WRAPPERS */
 
 #ifdef __APPLE__
-void 
+void
 audit_token_to_au32(
 	audit_token_t	atoken,
 	uid_t			*auidp,

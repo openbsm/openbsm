@@ -2,19 +2,19 @@
  * Copyright (c) 2004, Apple Computer, Inc.
  * Copyright (c) 2005 Robert N. M. Watson
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -104,11 +104,11 @@
 	} while(0)
 
 /*
- * Prints the delimiter string 
+ * Prints the delimiter string
  */
 static void print_delim(FILE *fp, char *del)
 {
-	fprintf(fp, "%s", del);           
+	fprintf(fp, "%s", del);
 }
 
 /*
@@ -116,7 +116,7 @@ static void print_delim(FILE *fp, char *del)
  */
 static void print_1_byte(FILE *fp, u_char val, const char *format)
 {
-	fprintf(fp, format, val);           
+	fprintf(fp, format, val);
 }
 
 /*
@@ -129,7 +129,7 @@ static void print_2_bytes(FILE *fp, u_int16_t val, const char *format)
 
 
 /*
- * Prints 4 bytes in the given format 
+ * Prints 4 bytes in the given format
  */
 static void print_4_bytes(FILE *fp, u_int32_t val, const char *format)
 {
@@ -137,10 +137,10 @@ static void print_4_bytes(FILE *fp, u_int32_t val, const char *format)
 }
 
 /*
- * Prints 8 bytes in the given format 
+ * Prints 8 bytes in the given format
  */
 static void print_8_bytes(FILE *fp, u_int64_t val, const char *format)
-{ 
+{
 	fprintf(fp, format, val);
 }
 
@@ -169,7 +169,7 @@ static void print_string(FILE *fp, u_char *str, size_t len)
 	int i;
 	if(len > 0) {
 		for(i = 0; i < len; i++) {
-			if(str[i] != '\0') 
+			if(str[i] != '\0')
 				fprintf(fp, "%c", str[i]);
 		}
 	}
@@ -329,10 +329,10 @@ static void print_ip_ex_address(FILE *fp, u_int32_t type, u_int32_t *ipaddr)
 		ret = inet_ntop(type, &ipv4, dst, INET6_ADDRSTRLEN);
 	}
 	else if(type == AF_INET6) {
-		ipv6.__u6_addr.__u6_addr32[0] = ipaddr[0];	
-		ipv6.__u6_addr.__u6_addr32[1] = ipaddr[1];	
-		ipv6.__u6_addr.__u6_addr32[2] = ipaddr[2];	
-		ipv6.__u6_addr.__u6_addr32[3] = ipaddr[3];	
+		ipv6.__u6_addr.__u6_addr32[0] = ipaddr[0];
+		ipv6.__u6_addr.__u6_addr32[1] = ipaddr[1];
+		ipv6.__u6_addr.__u6_addr32[2] = ipaddr[2];
+		ipv6.__u6_addr.__u6_addr32[3] = ipaddr[3];
 		ret = inet_ntop(type, &ipv6, dst, INET6_ADDRSTRLEN);
 	}
 
@@ -392,7 +392,7 @@ static void print_ipctype(FILE *fp, u_char type, char raw)
  * event type              2 bytes
  * event modifier          2 bytes
  * seconds of time         4 bytes/8 bytes (32-bit/64-bit value)
- * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)    
+ * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
  */
 static int fetch_header32_tok(tokenstr_t *tok, char *buf, int len)
 {
@@ -440,7 +440,7 @@ static void print_header32_tok(FILE *fp, tokenstr_t *tok, char *del,
 	print_delim(fp, del);
 	print_1_byte(fp, tok->tt.hdr32.version, "%u");
 	print_delim(fp, del);
-	print_event(fp, tok->tt.hdr32.e_type, raw, sfrm); 	
+	print_event(fp, tok->tt.hdr32.e_type, raw, sfrm);
 	print_delim(fp, del);
 	print_evmod(fp, tok->tt.hdr32.e_mod, raw);
 	print_delim(fp, del);
@@ -449,7 +449,7 @@ static void print_header32_tok(FILE *fp, tokenstr_t *tok, char *del,
 	print_msec(fp, tok->tt.hdr32.ms, raw);
 }
 
-/*       
+/*
  * trailer magic                        2 bytes
  * record size                          4 bytes
  */
@@ -478,7 +478,7 @@ static void print_trailer_tok(FILE *fp, tokenstr_t *tok, char *del,
 	print_4_bytes(fp, tok->tt.trail.count, "%u");
 }
 
-/*       
+/*
  * argument #              1 byte
  * argument value          4 bytes/8 bytes (32-bit/64-bit value)
  * text length             2 bytes
@@ -502,8 +502,8 @@ static int fetch_arg32_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	
-	SET_PTR(buf, len, tok->tt.arg32.text, tok->tt.arg32.len, tok->len, err);		
+
+	SET_PTR(buf, len, tok->tt.arg32.text, tok->tt.arg32.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -532,7 +532,7 @@ static int fetch_arg64_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	
+
 	READ_TOKEN_U_INT64(buf, len, tok->tt.arg64.val, tok->len, err);
 	if(err) {
 		return -1;
@@ -542,8 +542,8 @@ static int fetch_arg64_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	
-	SET_PTR(buf, len, tok->tt.arg64.text, tok->tt.arg64.len, tok->len, err);		
+
+	SET_PTR(buf, len, tok->tt.arg64.text, tok->tt.arg64.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -602,8 +602,8 @@ static int fetch_arb_tok(tokenstr_t *tok, char *buf, int len)
 		default: return -1;
 	}
 
-	SET_PTR(buf, len, tok->tt.arb.data, 
-			datasize * tok->tt.arb.uc , tok->len, err);		
+	SET_PTR(buf, len, tok->tt.arb.data,
+			datasize * tok->tt.arb.uc , tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -627,7 +627,7 @@ static void print_arb_tok(FILE *fp, tokenstr_t *tok, char *del,
 			format = " %c";
 			break;
 
-		case AUP_OCTAL:	
+		case AUP_OCTAL:
 			str = "octal";
 			format = " %o";
 			break;
@@ -646,7 +646,7 @@ static void print_arb_tok(FILE *fp, tokenstr_t *tok, char *del,
 			str = "string";
 			format = "%c";
 			break;
-	
+
 		default:
 			return;
 	}
@@ -658,22 +658,22 @@ static void print_arb_tok(FILE *fp, tokenstr_t *tok, char *del,
 			size = AUR_BYTE_SIZE;
 			print_string(fp, str, strlen(str));
 			print_delim(fp, del);
-			print_1_byte(fp, tok->tt.arb.uc, "%u");	
+			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			print_delim(fp, del);
 			for(i = 0; i<tok->tt.arb.uc; i++) {
-				fprintf(fp, format, *(tok->tt.arb.data + (size * i))); 
+				fprintf(fp, format, *(tok->tt.arb.data + (size * i)));
 			}
 			break;
 
-		case AUR_SHORT:	
+		case AUR_SHORT:
 			str = "short";
 			size = AUR_SHORT_SIZE;
 			print_string(fp, str, strlen(str));
 			print_delim(fp, del);
-			print_1_byte(fp, tok->tt.arb.uc, "%u");	
+			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			print_delim(fp, del);
 			for(i = 0; i<tok->tt.arb.uc; i++) {
-				fprintf(fp, format, *((u_int16_t *)(tok->tt.arb.data + (size * i)))); 
+				fprintf(fp, format, *((u_int16_t *)(tok->tt.arb.data + (size * i))));
 			}
 			break;
 
@@ -682,10 +682,10 @@ static void print_arb_tok(FILE *fp, tokenstr_t *tok, char *del,
 			size = AUR_LONG_SIZE;
 			print_string(fp, str, strlen(str));
 			print_delim(fp, del);
-			print_1_byte(fp, tok->tt.arb.uc, "%u");	
+			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			print_delim(fp, del);
 			for(i = 0; i<tok->tt.arb.uc; i++) {
-				fprintf(fp, format, *((u_int32_t *)(tok->tt.arb.data + (size * i)))); 
+				fprintf(fp, format, *((u_int32_t *)(tok->tt.arb.data + (size * i))));
 			}
 			break;
 
@@ -695,7 +695,7 @@ static void print_arb_tok(FILE *fp, tokenstr_t *tok, char *del,
 
 }
 
-/*       
+/*
  * file access mode        4 bytes
  * owner user ID           4 bytes
  * owner group ID          4 bytes
@@ -812,10 +812,10 @@ static int fetch_execarg_tok(tokenstr_t *tok, char *buf, int len)
 			if(++tok->len >=len)
 				return -1;
 			bptr = buf + tok->len;
-		}	
+		}
 		if(!bptr)
 			return -1;
-		tok->len++; /* \0 character */	
+		tok->len++; /* \0 character */
 	}
 
 	return 0;
@@ -829,7 +829,7 @@ static void print_execarg_tok(FILE *fp, tokenstr_t *tok, char *del,
 	print_tok_type(fp, tok->id, "exec arg", raw);
 	for(i = 0; i< tok->tt.execarg.count; i++) {
 		print_delim(fp, del);
-		print_string(fp, tok->tt.execarg.text[i], 
+		print_string(fp, tok->tt.execarg.text[i],
 			strlen(tok->tt.execarg.text[i]));
 	}
 }
@@ -857,10 +857,10 @@ static int fetch_execenv_tok(tokenstr_t *tok, char *buf, int len)
 			if(++tok->len >=len)
 				return -1;
 			bptr = buf + tok->len;
-		}	
+		}
 		if(!bptr)
 			return -1;
-		tok->len++; /* \0 character */	
+		tok->len++; /* \0 character */
 	}
 
 	return 0;
@@ -902,7 +902,7 @@ static int fetch_file_tok(tokenstr_t *tok, char *buf, int len)
 		return -1;
 	}
 
-	SET_PTR(buf, len, tok->tt.file.name, tok->tt.file.len, tok->len, err);		
+	SET_PTR(buf, len, tok->tt.file.name, tok->tt.file.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -996,7 +996,7 @@ static int fetch_inaddr_ex_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	
+
 	if(tok->tt.inaddr_ex.type == AF_INET) {
 		READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr_ex.addr[0],
 		    tok->len, err);
@@ -1011,7 +1011,7 @@ static int fetch_inaddr_ex_tok(tokenstr_t *tok, char *buf, int len)
 			if(err) {
 				return -1;
 			}
-		}                                              
+		}
     }
 	else {
 		return -1;
@@ -1252,7 +1252,7 @@ static int fetch_opaque_tok(tokenstr_t *tok, char *buf, int len)
 		return -1;
 	}
 
-	SET_PTR(buf, len, tok->tt.opaque.data, tok->tt.opaque.size, tok->len, err);		
+	SET_PTR(buf, len, tok->tt.opaque.data, tok->tt.opaque.size, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1283,7 +1283,7 @@ static int fetch_path_tok(tokenstr_t *tok, char *buf, int len)
 		return -1;
 	}
 
-	SET_PTR(buf, len, tok->tt.path.path, tok->tt.path.len, tok->len, err);		
+	SET_PTR(buf, len, tok->tt.path.path, tok->tt.path.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1454,7 +1454,7 @@ static int fetch_process32ex_tok(tokenstr_t *tok, char *buf, int len)
 			if(err) {
 				return -1;
 			}
-		}                                              
+		}
     }
 	else {
 		return -1;
@@ -1622,7 +1622,7 @@ static int fetch_sock_unix_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_BYTES(buf, len, &tok->tt.sockunix.path, 
+	READ_TOKEN_BYTES(buf, len, &tok->tt.sockunix.path,
 			104, tok->len, err);
 	if(err) {
 		return -1;
@@ -1858,7 +1858,7 @@ static int fetch_subject32ex_tok(tokenstr_t *tok, char *buf, int len)
 			if(err) {
 				return -1;
 			}
-		}                                              
+		}
     }
 	else {
 		return -1;
@@ -1904,7 +1904,7 @@ static int fetch_text_tok(tokenstr_t *tok, char *buf, int len)
 		return -1;
 	}
 
-	SET_PTR(buf, len, tok->tt.text.text, tok->tt.text.len, tok->len, err);		
+	SET_PTR(buf, len, tok->tt.text.text, tok->tt.text.len, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1924,8 +1924,8 @@ static void print_text_tok(FILE *fp, tokenstr_t *tok, char *del,
  * socket type             2 bytes
  * local port              2 bytes
  * address type/length     4 bytes
- * local Internet address  4 bytes 
- * remote port             4 bytes      
+ * local Internet address  4 bytes
+ * remote port             4 bytes
  * address type/length     4 bytes
  * remote Internet address 4 bytes
  */
@@ -2000,7 +2000,7 @@ static int fetch_invalid_tok(tokenstr_t *tok, char *buf, int len)
 
 	tok->tt.invalid.length = recoversize;
 
-	SET_PTR(buf, len, tok->tt.invalid.data, recoversize, tok->len, err);		
+	SET_PTR(buf, len, tok->tt.invalid.data, recoversize, tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -2131,7 +2131,7 @@ int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 /*
- * 'prints' the token out to outfp 
+ * 'prints' the token out to outfp
  */
 void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 {
@@ -2235,9 +2235,9 @@ void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 	}
 }
 
-/* 
- * Rread a record from the file pointer, store data in buf 
- * memory for buf is also allocated in this function 
+/*
+ * Rread a record from the file pointer, store data in buf
+ * memory for buf is also allocated in this function
  * and has to be free'd outside this call
  */
 int au_read_rec(FILE *fp, u_char **buf)
@@ -2291,4 +2291,3 @@ int au_read_rec(FILE *fp, u_char **buf)
 
 	return recsize;
 }
-

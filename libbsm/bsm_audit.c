@@ -2,19 +2,19 @@
  * Copyright (c) 2004, Apple Computer, Inc.
  * Copyright (c) 2005 Robert N. M. Watson
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,23 +40,23 @@
 #include <string.h>
 
 /* array of used descriptors */
-static au_record_t* open_desc_table[MAX_AUDIT_RECORDS]; 
+static au_record_t* open_desc_table[MAX_AUDIT_RECORDS];
 
-/* The current number of active record descriptors */ 
-static int bsm_rec_count = 0; 
-/* 
+/* The current number of active record descriptors */
+static int bsm_rec_count = 0;
+/*
  * Records that can be recycled are maintained in the list given below
  * The maximum number of elements that can be present in this list is
  * bounded by MAX_AUDIT_RECORDS. Memory allocated for these records are never
- * freed 
- */ 
+ * freed
+ */
 
 static LIST_HEAD(, au_record) bsm_free_q;
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* 
- * This call frees a token_t and its internal data.  
+/*
+ * This call frees a token_t and its internal data.
  */
 void
 au_free_token(token_t *tok)
@@ -70,39 +70,39 @@ au_free_token(token_t *tok)
 }
 
 /*
- * This call reserves memory for the audit record. 
+ * This call reserves memory for the audit record.
  * Memory must be guaranteed before any auditable event can be
- * generated. 
+ * generated.
  * The au_record_t structure maintains a reference to the
- * memory allocated above and also the list of tokens associated 
+ * memory allocated above and also the list of tokens associated
  * with this record
- * Descriptors are recyled once the records are added to the audit 
- * trail following au_close(). 
- */  
+ * Descriptors are recyled once the records are added to the audit
+ * trail following au_close().
+ */
 int au_open(void)
-{	
+{
 	au_record_t *rec = NULL;
-	
+
 	pthread_mutex_lock(&mutex);
 
 	if(bsm_rec_count == 0) {
 		LIST_INIT(&bsm_free_q);
 	}
 
-	/* 
+	/*
 	 * Find an unused descriptor, remove it from the free list, mark as used
-	 */  
+	 */
 	if (!LIST_EMPTY(&bsm_free_q)) {
 		rec = LIST_FIRST(&bsm_free_q);
 		rec->used = 1;
 		LIST_REMOVE(rec, au_rec_q);
-	}	
+	}
 
 	pthread_mutex_unlock(&mutex);
 
 	if(rec == NULL) {
 		/*
-		 * Create a new au_record_t if no descriptors are available 
+		 * Create a new au_record_t if no descriptors are available
 		 */
 		rec = (au_record_t *) malloc (sizeof(au_record_t));
 		if(rec == NULL) {
@@ -148,18 +148,18 @@ int au_open(void)
  *
  * Don't permit writing more to the buffer than would let the trailer be
  * appended later.
- */ 
+ */
 int au_write(int d, token_t *tok)
 {
 	au_record_t *rec;
-		
+
 	if(tok == NULL) {
 		errno = EINVAL;
 		return -1; /* Invalid Token */
-	}		
+	}
 
 	/* Write the token to the record descriptor */
-	rec = open_desc_table[d];	
+	rec = open_desc_table[d];
 	if((rec == NULL) || (rec->used == 0)) {
 		errno = EINVAL;
 		return -1; /* Invalid descriptor */
@@ -171,15 +171,15 @@ int au_write(int d, token_t *tok)
 	}
 
 	/* Add the token to the tail */
-	/* 
+	/*
 	 * XXX Not locking here -- we should not be writing to
 	 * XXX the same descriptor from different threads
-	 */ 
+	 */
 	TAILQ_INSERT_TAIL(&rec->token_q, tok, tokens);
 
 	rec->len += tok->len; /* grow record length by token size bytes */
-	
-	/* Token should not be available after this call */	
+
+	/* Token should not be available after this call */
 	tok = NULL;
 	return 0; /* Success */
 }
@@ -240,10 +240,10 @@ au_teardown(au_record_t *rec)
 		TAILQ_REMOVE(&rec->token_q, tok, tokens);
 		free(tok->t_data);
 		free(tok);
-	}	
+	}
 
 	rec->used = 0;
-	rec->len = 0;	
+	rec->len = 0;
 
 	pthread_mutex_lock(&mutex);
 
@@ -255,7 +255,7 @@ au_teardown(au_record_t *rec)
 
 /*
  * Add the header token, identify any missing tokens
- * Write out the tokens to the record memory and finally, 
+ * Write out the tokens to the record memory and finally,
  * call audit
  */
 int au_close(int d, int keep, short event)
@@ -263,7 +263,7 @@ int au_close(int d, int keep, short event)
 	au_record_t *rec;
 	size_t tot_rec_size;
 	int retval = 0;
-		
+
 	rec = open_desc_table[d];
 	if((rec == NULL) || (rec->used == 0)) {
 		errno = EINVAL;
@@ -275,7 +275,7 @@ int au_close(int d, int keep, short event)
 		goto cleanup;
 	}
 
-	
+
 	tot_rec_size = rec->len + BSM_HEADER_SIZE + BSM_TRAILER_SIZE;
 
 	if (tot_rec_size > MAX_AUDIT_RECORD_SIZE) {
@@ -304,7 +304,7 @@ int au_close(int d, int keep, short event)
 cleanup:
 	/* CLEANUP */
 	au_teardown(rec);
-	return retval; 
+	return retval;
 }
 
 /*

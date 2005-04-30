@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,9 +34,9 @@
 #include <libbsm.h>
 
 /*
- * Parse the contents of the audit_class file to return 
+ * Parse the contents of the audit_class file to return
  * struct au_class_ent entries
- */   
+ */
 static FILE *fp = NULL;
 static char linestr[AU_LINE_MAX];
 static char *delim = ":";
@@ -46,19 +46,19 @@ static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /*
  * XXX The reentrant versions of the following functions is TBD
- * XXX struct au_class_ent *getclassent_r(au_class_ent_t *class_int); 
- * XXX struct au_class_ent *getclassnam_r(au_class_ent_t *class_int, const char *name); 
+ * XXX struct au_class_ent *getclassent_r(au_class_ent_t *class_int);
+ * XXX struct au_class_ent *getclassnam_r(au_class_ent_t *class_int, const char *name);
  */
 
 
 
 /*
  * Allocate a au_class_ent structure
- */  
+ */
 static struct au_class_ent *get_class_area()
 {
 	struct au_class_ent *c;
-		
+
 	c = (struct au_class_ent *) malloc (sizeof(struct au_class_ent));
 	if(c == NULL) {
 		return NULL;
@@ -81,7 +81,7 @@ static struct au_class_ent *get_class_area()
 
 /*
  * Free the au_class_ent structure
- */   
+ */
 void free_au_class_ent(struct au_class_ent *c)
 {
     if (c)
@@ -97,27 +97,27 @@ void free_au_class_ent(struct au_class_ent *c)
 /*
  * Parse a single line from the audit_class file passed in str
  * to the struct au_class_ent elements; store the result in c
- */   
-static struct au_class_ent *classfromstr(char *str, char *delim, struct au_class_ent *c) 
+ */
+static struct au_class_ent *classfromstr(char *str, char *delim, struct au_class_ent *c)
 {
 	char *classname, *classdesc, *classflag;
 	char *last;
 
-	/* each line contains flag:name:desc */		
+	/* each line contains flag:name:desc */
 	classflag = strtok_r(str, delim, &last);
 	classname = strtok_r(NULL, delim, &last);
 	classdesc = strtok_r(NULL, delim, &last);
 
-	if((classflag == NULL) 
+	if((classflag == NULL)
 		|| (classname == NULL)
 		|| (classdesc == NULL)) {
 
 		return NULL;
-	}		
+	}
 
 	/*
 	 * Check for very large classnames
-	 */  
+	 */
 	if(strlen(classname) >= AU_CLASS_NAME_MAX) {
 		return NULL;
 	}
@@ -126,7 +126,7 @@ static struct au_class_ent *classfromstr(char *str, char *delim, struct au_class
 
 	/*
 	 * Check for very large class description
-	 */  
+	 */
 	if(strlen(classdesc) >= AU_CLASS_DESC_MAX) {
 		return NULL;
 	}
@@ -140,18 +140,18 @@ static struct au_class_ent *classfromstr(char *str, char *delim, struct au_class
 /*
  * Return the next au_class_ent structure from the file
  * setauclass should be called before invoking this function
- * for the first time  
- */  
+ * for the first time
+ */
 struct au_class_ent *getauclassent()
 {
 	struct au_class_ent *c;
-	char *tokptr, *nl;	
-	
+	char *tokptr, *nl;
+
 	pthread_mutex_lock(&mutex);
 
-	if((fp == NULL) 
+	if((fp == NULL)
 		&& ((fp = fopen(AUDIT_CLASS_FILE, "r")) == NULL)) {
-		
+
 		pthread_mutex_unlock(&mutex);
 		return NULL;
 	}
@@ -165,9 +165,9 @@ struct au_class_ent *getauclassent()
 	if((nl = strrchr(linestr, '\n')) != NULL) {
 		*nl = '\0';
 	}
-	
+
 	tokptr = linestr;
-	
+
 	c = get_class_area(); /* allocate */
 	if(c == NULL) {
 
@@ -175,7 +175,7 @@ struct au_class_ent *getauclassent()
 		return NULL;
 	}
 
-	/* parse tokptr to au_class_ent components */	
+	/* parse tokptr to au_class_ent components */
 	if(classfromstr(tokptr, delim, c) == NULL) {
 
 		free_au_class_ent(c);
@@ -190,7 +190,7 @@ struct au_class_ent *getauclassent()
 
 /*
  * Return the next au_class_entry having the given class name
- */  
+ */
 struct au_class_ent *getauclassnam(const char *name)
 {
 	struct au_class_ent *c;
@@ -202,17 +202,17 @@ struct au_class_ent *getauclassnam(const char *name)
 
 	/* Rewind to beginning of file */
 	setauclass();
-		
+
 	pthread_mutex_lock(&mutex);
 
-	if((fp == NULL) 
+	if((fp == NULL)
 		&& ((fp = fopen(AUDIT_CLASS_FILE, "r")) == NULL)) {
-		
+
 		pthread_mutex_unlock(&mutex);
 		return NULL;
 	}
-	
-	c = get_class_area(); /* allocate */ 
+
+	c = get_class_area(); /* allocate */
 	if(c == NULL) {
 
 		pthread_mutex_unlock(&mutex);
@@ -224,14 +224,14 @@ struct au_class_ent *getauclassnam(const char *name)
 			*nl = '\0';
 		}
 
-		/* parse tokptr to au_class_ent components */	
+		/* parse tokptr to au_class_ent components */
 		if(classfromstr(linestr, delim, c) != NULL) {
 			if(!strcmp(name, c->ac_name)) {
-					
+
 				pthread_mutex_unlock(&mutex);
 				return c;
 			}
-		}	
+		}
 	}
 
 	free_au_class_ent(c);
@@ -243,7 +243,7 @@ struct au_class_ent *getauclassnam(const char *name)
 
 /*
  * Rewind to the beginning of the enumeration
- */  
+ */
 void setauclass()
 {
 	pthread_mutex_lock(&mutex);
@@ -256,12 +256,12 @@ void setauclass()
 }
 
 /*
- * audit_class processing is complete; close any open files 
- */  
+ * audit_class processing is complete; close any open files
+ */
 void endauclass()
 {
 	pthread_mutex_lock(&mutex);
-	
+
 	if(fp != NULL) {
 		fclose(fp);
 		fp = NULL;

@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,7 +36,7 @@
 /*
  * Parse the contents of the audit_event file to return
  * au_event_ent entries
- */   
+ */
 static FILE *fp = NULL;
 static char linestr[AU_LINE_MAX];
 static char *delim = ":";
@@ -51,13 +51,13 @@ static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
  */
 
 
-/* 
+/*
  * Allocate an au_event_ent structure
- */  
+ */
 static struct au_event_ent *get_event_area()
 {
 	struct au_event_ent *e;
-		
+
 	e = (struct au_event_ent *) malloc (sizeof(struct au_event_ent));
 	if(e == NULL) {
 		return NULL;
@@ -79,41 +79,41 @@ static struct au_event_ent *get_event_area()
 
 /*
  * Free the au_event_ent structure
- */  
+ */
 void free_au_event_ent(struct au_event_ent *e)
 {
     if (e)
     {
-	if (e->ae_name) 
+	if (e->ae_name)
 	    free(e->ae_name);
-	if (e->ae_desc) 
+	if (e->ae_desc)
 	    free(e->ae_desc);
 	free(e);
     }
 }
 
-/* 
- * Parse one line from the audit_event file into 
+/*
+ * Parse one line from the audit_event file into
  * the au_event_ent structure
- */ 
-static struct au_event_ent *eventfromstr(char *str, char *delim, struct au_event_ent *e) 
+ */
+static struct au_event_ent *eventfromstr(char *str, char *delim, struct au_event_ent *e)
 {
 	char *evno, *evname, *evdesc, *evclass;
 	struct au_mask evmask;
 	char *last;
-	
+
 	evno = strtok_r(str, delim, &last);
 	evname = strtok_r(NULL, delim, &last);
 	evdesc = strtok_r(NULL, delim, &last);
 	evclass = strtok_r(NULL, delim, &last);
 
-	if((evno == NULL) 
+	if((evno == NULL)
 		|| (evname == NULL)
 		|| (evdesc == NULL)
 		|| (evclass == NULL)) {
 
 		return NULL;
-	}		
+	}
 
 	if(strlen(evname) >= AU_EVENT_NAME_MAX) {
 			return NULL;
@@ -124,24 +124,24 @@ static struct au_event_ent *eventfromstr(char *str, char *delim, struct au_event
 			return NULL;
 	}
 	strcpy(e->ae_desc, evdesc);
-	
+
 	e->ae_number = atoi(evno);
 
-	/* 
-	 * find out the mask that corresponds 
-	 * to the given list of classes. 
-	 */ 
+	/*
+	 * find out the mask that corresponds
+	 * to the given list of classes.
+	 */
 	if(getauditflagsbin(evclass, &evmask) != 0)
 		e->ae_class = AU_NULL;
-	else 
-		e->ae_class = evmask.am_success; 
+	else
+		e->ae_class = evmask.am_success;
 
 	return e;
 }
 
 /*
  * Rewind the audit_event file
- */  
+ */
 void setauevent()
 {
 	pthread_mutex_lock(&mutex);
@@ -155,11 +155,11 @@ void setauevent()
 
 /*
  * Close the open file pointers
- */  
+ */
 void endauevent()
 {
 	pthread_mutex_lock(&mutex);
-	
+
 	if(fp != NULL) {
 		fclose(fp);
 		fp = NULL;
@@ -170,7 +170,7 @@ void endauevent()
 
 /*
  * Enumerate the au_event_ent entries
- */ 
+ */
 struct au_event_ent *getauevent()
 {
 	struct au_event_ent *e;
@@ -178,9 +178,9 @@ struct au_event_ent *getauevent()
 
 	pthread_mutex_lock(&mutex);
 
-	if((fp == NULL) 
+	if((fp == NULL)
 		&& ((fp = fopen(AUDIT_EVENT_FILE, "r")) == NULL)) {
-		
+
 		pthread_mutex_unlock(&mutex);
 		return NULL;
 	}
@@ -202,7 +202,7 @@ struct au_event_ent *getauevent()
 		return NULL;
 	}
 
-	/* Get the next event structure */	
+	/* Get the next event structure */
 	if(eventfromstr(linestr, delim, e) == NULL) {
 
 		free_au_event_ent(e);
@@ -217,7 +217,7 @@ struct au_event_ent *getauevent()
 
 /*
  * Search for an audit event structure having the given event name
- */  
+ */
 struct au_event_ent *getauevnam(char *name)
 {
 	struct au_event_ent *e;
@@ -226,20 +226,20 @@ struct au_event_ent *getauevnam(char *name)
 	if(name == NULL) {
 		return NULL;
 	}
-	
+
 	/* Rewind to beginning of the file */
 	setauevent();
-	
+
 	pthread_mutex_lock(&mutex);
 
-	if((fp == NULL) 
+	if((fp == NULL)
 		&& ((fp = fopen(AUDIT_EVENT_FILE, "r")) == NULL)) {
-		
+
 		pthread_mutex_unlock(&mutex);
 		return NULL;
 	}
 
-	e = get_event_area(); 
+	e = get_event_area();
 	if(e == NULL) {
 
 		pthread_mutex_unlock(&mutex);
@@ -251,14 +251,14 @@ struct au_event_ent *getauevnam(char *name)
 		if((nl = strrchr(linestr, '\n')) != NULL) {
 			*nl = '\0';
 		}
-		
+
 		if(eventfromstr(linestr, delim, e) != NULL) {
 			if(!strcmp(name, e->ae_name)) {
-					
+
 				pthread_mutex_unlock(&mutex);
 				return e;
 			}
-		}	
+		}
 	}
 
 	free_au_event_ent(e);
@@ -271,7 +271,7 @@ struct au_event_ent *getauevnam(char *name)
 
 /*
  * Search for an audit event structure having the given event number
- */  
+ */
 struct au_event_ent *getauevnum(au_event_t event_number)
 {
 	struct au_event_ent *e;
@@ -282,14 +282,14 @@ struct au_event_ent *getauevnum(au_event_t event_number)
 
 	pthread_mutex_lock(&mutex);
 
-	if((fp == NULL) 
+	if((fp == NULL)
 		&& ((fp = fopen(AUDIT_EVENT_FILE, "r")) == NULL)) {
-		
+
 		pthread_mutex_unlock(&mutex);
 		return NULL;
 	}
 
-	e = get_event_area(); 
+	e = get_event_area();
 	if(e == NULL) {
 
 		pthread_mutex_unlock(&mutex);
@@ -301,14 +301,14 @@ struct au_event_ent *getauevnum(au_event_t event_number)
 		if((nl = strrchr(linestr, '\n')) != NULL) {
 			*nl = '\0';
 		}
-	
+
 		if(eventfromstr(linestr, delim, e) != NULL) {
 			if(event_number == e->ae_number) {
-					
+
 				pthread_mutex_unlock(&mutex);
 				return e;
 			}
-		}	
+		}
 	}
 
 	free_au_event_ent(e);
@@ -319,9 +319,9 @@ struct au_event_ent *getauevnum(au_event_t event_number)
 }
 
 /*
- * Search for an audit_event entry with a given event_name 
+ * Search for an audit_event entry with a given event_name
  * and returns the corresponding event number
- */ 
+ */
 au_event_t *getauevnonam(char *event_name)
 {
 	struct au_event_ent *e;
@@ -331,16 +331,16 @@ au_event_t *getauevnonam(char *event_name)
 	if(e != NULL) {
 		n = (au_event_t *) malloc (sizeof(au_event_t));
 		if(n != NULL) {
-			*n = e->ae_number;		
+			*n = e->ae_number;
 		}
 		free_au_event_ent(e);
 	}
-	 
+
 	return n;
 }
 
 void free_au_event(au_event_t *e)
 {
-    if (e) 
+    if (e)
 	free(e);
 }

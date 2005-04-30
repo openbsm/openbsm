@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,7 +35,7 @@
 
 /*
  * Parse the contents of the audit_user file into au_user_ent structures
- */  
+ */
 
 static FILE *fp = NULL;
 static char linestr[AU_LINE_MAX];
@@ -46,16 +46,16 @@ static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 /*
  * XXX The reentrant versions of the following functions is TBD
  * XXX struct au_user_ent *getauusernam_r(au_user_ent_t *u, const char *name);
- * XXX struct au_user_ent *getauuserent_r(au_user_ent_t *u);             
+ * XXX struct au_user_ent *getauuserent_r(au_user_ent_t *u);
  */
 
 /*
- * Allocate a user area structure 
+ * Allocate a user area structure
  */
 static struct au_user_ent *get_user_area()
 {
 	struct au_user_ent *u;
-		
+
 	u = (struct au_user_ent *) malloc (sizeof(struct au_user_ent));
 	if(u == NULL) {
 		return NULL;
@@ -70,7 +70,7 @@ static struct au_user_ent *get_user_area()
 }
 
 /*
- * Destroy a user area structure 
+ * Destroy a user area structure
  */
 static void destroy_user_area(struct au_user_ent *u)
 {
@@ -81,8 +81,8 @@ static void destroy_user_area(struct au_user_ent *u)
 
 /*
  * Parse one line from the audit_user file into the au_user_ent structure
- */  
-static struct au_user_ent *userfromstr(char *str, char *delim, struct au_user_ent *u) 
+ */
+static struct au_user_ent *userfromstr(char *str, char *delim, struct au_user_ent *u)
 {
 	char *username, *always, *never;
 	char *last;
@@ -91,12 +91,12 @@ static struct au_user_ent *userfromstr(char *str, char *delim, struct au_user_en
 	always = strtok_r(NULL, delim, &last);
 	never = strtok_r(NULL, delim, &last);
 
-	if((username == NULL) 
+	if((username == NULL)
 		|| (always == NULL)
 		|| (never == NULL)) {
 
 		return NULL;
-	}		
+	}
 
 	if(strlen(username) >= AU_USER_NAME_MAX) {
 		return NULL;
@@ -115,7 +115,7 @@ static struct au_user_ent *userfromstr(char *str, char *delim, struct au_user_en
 }
 
 /*
- * Rewind to beginning of the file 
+ * Rewind to beginning of the file
  */
 void setauuser()
 {
@@ -130,11 +130,11 @@ void setauuser()
 
 /*
  * Close the file descriptor
- */  
+ */
 void endauuser()
 {
 	pthread_mutex_lock(&mutex);
-	
+
 	if(fp != NULL) {
 		fclose(fp);
 		fp = NULL;
@@ -145,7 +145,7 @@ void endauuser()
 
 /*
  * Enumerate the au_user_ent structures from the file
- */  
+ */
 struct au_user_ent *getauuserent()
 {
 	struct au_user_ent *u;
@@ -153,9 +153,9 @@ struct au_user_ent *getauuserent()
 
 	pthread_mutex_lock(&mutex);
 
-	if((fp == NULL) 
+	if((fp == NULL)
 		&& ((fp = fopen(AUDIT_USER_FILE, "r")) == NULL)) {
-		
+
 		pthread_mutex_unlock(&mutex);
 		return NULL;
 	}
@@ -177,7 +177,7 @@ struct au_user_ent *getauuserent()
 		return NULL;
 	}
 
-	/* Get the next structure */	
+	/* Get the next structure */
 	if(userfromstr(linestr, delim, u) == NULL) {
 
 		destroy_user_area(u);
@@ -192,7 +192,7 @@ struct au_user_ent *getauuserent()
 
 /*
  * Find a au_user_ent structure matching the given user name
- */  
+ */
 struct au_user_ent *getauusernam(const char *name)
 {
 	struct au_user_ent *u;
@@ -201,38 +201,38 @@ struct au_user_ent *getauusernam(const char *name)
 	if(name == NULL) {
 		return NULL;
 	}
-	
+
 	setauuser();
-	
+
 	pthread_mutex_lock(&mutex);
 
-	if((fp == NULL) 
+	if((fp == NULL)
 		&& ((fp = fopen(AUDIT_USER_FILE, "r")) == NULL)) {
-		
+
 		pthread_mutex_unlock(&mutex);
 		return NULL;
 	}
 
-	u = get_user_area(); 
+	u = get_user_area();
 	if(u == NULL) {
 
 		pthread_mutex_unlock(&mutex);
 		return NULL;
 	}
 	while(fgets(linestr, AU_LINE_MAX, fp) != NULL) {
-	
+
 		/* Remove new lines */
 		if((nl = strrchr(linestr, '\n')) != NULL) {
 			*nl = '\0';
 		}
-	
+
 		if(userfromstr(linestr, delim, u) != NULL) {
 			if(!strcmp(name, u->au_name)) {
-					
+
 				pthread_mutex_unlock(&mutex);
 				return u;
 			}
-		}	
+		}
 	}
 
 	destroy_user_area(u);
@@ -243,10 +243,10 @@ struct au_user_ent *getauusernam(const char *name)
 }
 
 /*
- * Read the default system wide audit classes from audit_control, 
- * combine with the per-user audit class and update the 
- * binary preselection mask  
- */ 
+ * Read the default system wide audit classes from audit_control,
+ * combine with the per-user audit class and update the
+ * binary preselection mask
+ */
 int au_user_mask(char *username, au_mask_t *mask_p)
 {
 	struct au_user_ent *u;
@@ -268,36 +268,36 @@ int au_user_mask(char *username, au_mask_t *mask_p)
 			return -1;
 		}
 		return 0;
-	}   
+	}
 
 	/* No masks defined */
 	return -1;
 }
 
 /*
- * Generate the process audit state by combining the audit maks 
- * passed as parameters with the sustem audit masks 
- */ 
-int getfauditflags(au_mask_t *usremask, au_mask_t *usrdmask, 
+ * Generate the process audit state by combining the audit maks
+ * passed as parameters with the sustem audit masks
+ */
+int getfauditflags(au_mask_t *usremask, au_mask_t *usrdmask,
 				au_mask_t *lastmask)
 {
 	char auditstring[MAX_AUDITSTRING_LEN + 1];
-	
-	if((usremask == NULL) 
-		|| (usrdmask == NULL) 
+
+	if((usremask == NULL)
+		|| (usrdmask == NULL)
 		|| (lastmask == NULL)) {
 
 			return -1;
 	}
-		
+
 	lastmask->am_success = 0;
 	lastmask->am_failure = 0;
 
 	/* get the system mask */
 	if(getacflg(auditstring, MAX_AUDITSTRING_LEN) == 0) {
 		getauditflagsbin(auditstring, lastmask);
-	}   
-	
+	}
+
 	ADDMASK(lastmask, usremask);
 	SUBMASK(lastmask, usrdmask);
 

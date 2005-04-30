@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,20 +34,20 @@
 static const char *delim = ",";
 
 /*
- * Convert the character representation of audit values 
- * into the au_mask_t field 
- */ 
+ * Convert the character representation of audit values
+ * into the au_mask_t field
+ */
 int getauditflagsbin(char *auditstr, au_mask_t *masks)
 {
 	char *tok;
 	char sel, sub;
 	struct au_class_ent *c;
 	char *last;
-	
+
 	if((auditstr == NULL) || (masks == NULL)) {
 		return -1;
 	}
-	
+
 	masks->am_success = 0;
 	masks->am_failure = 0;
 
@@ -62,7 +62,7 @@ int getauditflagsbin(char *auditstr, au_mask_t *masks)
 		else {
 			sub = 0;
 		}
-					
+
 		/* check for the events to be audited for success */
 		if(tok[0] == '+') {
 			sel = AU_PRS_SUCCESS;
@@ -81,12 +81,12 @@ int getauditflagsbin(char *auditstr, au_mask_t *masks)
 				SUB_FROM_MASK(masks, c->ac_class, sel);
 			}
 			else {
-				ADD_TO_MASK(masks, c->ac_class, sel);	
+				ADD_TO_MASK(masks, c->ac_class, sel);
 			}
 			free_au_class_ent(c);
 		} else {
 			return -1;
-		}	
+		}
 
 		/* Get the next class */
 		tok = strtok_r(NULL, delim, &last);
@@ -96,23 +96,23 @@ int getauditflagsbin(char *auditstr, au_mask_t *masks)
 
 /*
  * Convert the au_mask_t fields into a string value
- * If verbose is non-zero the long flag names are used 
- * else the short (2-character)flag names are used 
- */  
+ * If verbose is non-zero the long flag names are used
+ * else the short (2-character)flag names are used
+ */
 int getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 {
 	struct au_class_ent *c;
 	char *strptr = auditstr;
 	u_char sel;
-	
+
 	if((auditstr == NULL) || (masks == NULL)) {
 		return -1;
 	}
-		
-	/* 
-	 * Enumerate the class entries, check if each is selected 
+
+	/*
+	 * Enumerate the class entries, check if each is selected
 	 * in either the success or failure masks
-	 */ 
+	 */
 
 	for (setauclass(); (c = getauclassent()) != NULL; free_au_class_ent(c)) {
 
@@ -123,20 +123,20 @@ int getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 			continue;
 		}
 
-		sel |= ((c->ac_class & masks->am_success) == c->ac_class) ? AU_PRS_SUCCESS : 0; 
+		sel |= ((c->ac_class & masks->am_success) == c->ac_class) ? AU_PRS_SUCCESS : 0;
 		sel |= ((c->ac_class & masks->am_failure) == c->ac_class) ? AU_PRS_FAILURE : 0;
 
-		/* 
-		 * No prefix should be attached if both 
- 		 * success and failure are selected 
+		/*
+		 * No prefix should be attached if both
+ 		 * success and failure are selected
 		 */
 		if((sel & AU_PRS_BOTH) == 0) {
 			if((sel & AU_PRS_SUCCESS) != 0) {
-				*strptr = '+';			
+				*strptr = '+';
 				strptr = strptr + 1;
 			}
 			else if((sel & AU_PRS_FAILURE) != 0) {
-				*strptr = '-';			
+				*strptr = '-';
 				strptr = strptr + 1;
 			}
 		}
@@ -159,7 +159,6 @@ int getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 	if(strptr != auditstr) {
 		*(strptr-1) = '\0';
 	}
-		
-	return 0;	
-}
 
+	return 0;
+}
