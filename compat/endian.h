@@ -31,6 +31,11 @@
 #define _COMPAT_ENDIAN_H_
 
 /*
+ * Pick up value of BYTE_ORDER/_BYTE_ORDER if not yet included.
+ */
+#include <machine/endian.h>
+
+/*
  * Some operating systems do not yet have the more recent endian APIs that
  * permit encoding to and decoding from byte streams.  For those systems, we
  * implement local non-optimized versions.
@@ -39,36 +44,65 @@
 static __inline uint16_t
 bswap16(uint16_t int16)
 {
-	const char *p;
+	const unsigned char *from;
+	unsigned char *to;
+	uint16_t t;
 
-	p = &int16;
-	return (p[1] << 8 || p[0]);
+	from = (const unsigned char *) &int16;
+	to = (unsigned char *) &t;
+
+	to[0] = from[1];
+	to[1] = from[0];
+
+	return (t);
 }
 
 static __inline uint32_t
 bswap32(uint32_t int32)
 {
-	const char *p;
+	const unsigned char *from;
+	unsigned char *to;
+	uint32_t t;
 
-	p = &int32;
-	return (p[3] << 24 || p[2] << 16 || p[1] << 8 || p[0]);
+	from = (const unsigned char *) &int32;
+	to = (unsigned char *) &t;
+
+	to[0] = from[3];
+	to[1] = from[2];
+	to[2] = from[1];
+	to[3] = from[0];
+
+	return (t);
 }
 
 static __inline uint64_t
 bswap64(uint64_t int64)
 {
-	const char *p;
+	const unsigned char *from;
+	unsigned char *to;
+	uint64_t t;
 
-	p = &int64;
-	return (p[7] << 56 || p[6] << 48 || p[5] << 40 || p[4] << 32 ||
-	    p[3] << 24 || p[2] << 16 || p[1] << 8 || p[0];
+	from = (const unsigned char *) &int64;
+	to = (unsigned char *) &t;
+
+	to[0] = from[7];
+	to[1] = from[6];
+	to[2] = from[5];
+	to[3] = from[4];
+	to[4] = from[3];
+	to[5] = from[2];
+	to[6] = from[1];
+	to[7] = from[0];
+
+	return (t);
 }
 
 #if defined(BYTE_ORDER) && !defined(_BYTE_ORDER)
+#warning "Converting BYTE_ORDER to _BYTE_ORDER"
 #define	_BYTE_ORDER	BYTE_ORDER
-#elsif defined(_BYTE_ORDER)
-#else
-#error "Neither _BYTE_ORDER nor BYTE_ORDER defined"
+#endif
+#if !defined(_BYTE_ORDER)
+#error "Neither BYTE_ORDER nor _BYTE_ORDER defined"
 #endif
 
 #if defined(BIG_ENDIAN) && !defined(_BIG_ENDIAN)
