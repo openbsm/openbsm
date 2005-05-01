@@ -1156,7 +1156,6 @@ static void print_inaddr_tok(FILE *fp, tokenstr_t *tok, char *del,
 static int fetch_inaddr_ex_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
-	int i;
 
 	READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr_ex.type, tok->len, err);
 	if(err) {
@@ -1164,19 +1163,17 @@ static int fetch_inaddr_ex_tok(tokenstr_t *tok, char *buf, int len)
 	}
 
 	if(tok->tt.inaddr_ex.type == AF_INET) {
-		READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr_ex.addr[0],
-		    tok->len, err);
+		READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr_ex.addr[0],
+		    sizeof(tok->tt.inaddr_ex.addr[0]), tok->len, err);
 		if(err) {
 			return -1;
 		}
 	}
 	else if (tok->tt.inaddr_ex.type == AF_INET6) {
-		for(i = 0; i < 4; i++) {
-			READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr_ex.addr[i],
-			    tok->len, err);
-			if(err) {
-				return -1;
-			}
+		READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr_ex.addr,
+		    sizeof(tok->tt.inaddr_ex.addr), tok->len, err);
+		if(err) {
+			return -1;
 		}
     }
 	else {
@@ -1241,12 +1238,14 @@ static int fetch_ip_tok(tokenstr_t *tok, char *buf, int len)
 		return -1;
 	}
 
-	READ_TOKEN_U_INT32(buf, len, tok->tt.ip.src, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.src, sizeof(tok->tt.ip.src),
+	    tok->len, err);
 	if(err) {
 		return -1;
 	}
 
-	READ_TOKEN_U_INT32(buf, len, tok->tt.ip.dest, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.dest, sizeof(tok->tt.ip.dest),
+	    tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1275,9 +1274,9 @@ static void print_ip_tok(FILE *fp, tokenstr_t *tok, char *del,
 	print_delim(fp, del);
 	print_2_bytes(fp, tok->tt.ip.chksm, "%u");
 	print_delim(fp, del);
-	print_4_bytes(fp, tok->tt.ip.src, "%#x");
+	print_ip_address(fp, tok->tt.ip.src);
 	print_delim(fp, del);
-	print_4_bytes(fp, tok->tt.ip.dest, "%#x");
+	print_ip_address(fp, tok->tt.ip.dest);
 }
 
 /*
@@ -1557,7 +1556,6 @@ static void print_process32_tok(FILE *fp, tokenstr_t *tok, char *del,
 static int fetch_process32ex_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
-	int i;
 
 	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.auid, tok->len, err);
 	if(err) {
@@ -1607,19 +1605,17 @@ static int fetch_process32ex_tok(tokenstr_t *tok, char *buf, int len)
 	}
 
 	if(tok->tt.proc32_ex.tid.type == AF_INET) {
-		READ_TOKEN_U_INT32(buf, len, tok->tt.proc32_ex.tid.addr[0],
-		    tok->len, err);
+		READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.addr[0],
+		    sizeof(tok->tt.proc32_ex.tid.addr[0]), tok->len, err);
 		if(err) {
 			return -1;
 		}
 	}
 	else if (tok->tt.proc32_ex.tid.type == AF_INET6) {
-		for(i = 0; i < 4; i++) {
-			READ_TOKEN_U_INT32(buf, len,
-			    tok->tt.proc32_ex.tid.addr[i], tok->len, err);
-			if(err) {
-				return -1;
-			}
+		READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.addr,
+		    sizeof(tok->tt.proc32_ex.tid.addr), tok->len, err);
+		if(err) {
+			return -1;
 		}
     }
 	else {
@@ -1756,7 +1752,8 @@ static int fetch_sock_inet32_tok(tokenstr_t *tok, char *buf, int len)
 		return -1;
 	}
 
-	READ_TOKEN_U_INT32(buf, len, tok->tt.sockinet32.addr, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.sockinet32.addr,
+	    sizeof(tok->tt.sockinet32.addr), tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1826,7 +1823,8 @@ static int fetch_socket_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_U_INT32(buf, len, tok->tt.socket.l_addr, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.l_addr,
+	    sizeof(tok->tt.socket.l_addr), tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1834,7 +1832,8 @@ static int fetch_socket_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_U_INT32(buf, len, tok->tt.socket.r_addr, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.l_addr,
+	    sizeof(tok->tt.socket.r_addr), tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -1913,7 +1912,8 @@ static int fetch_subject32_tok(tokenstr_t *tok, char *buf, int len)
 		return -1;
 	}
 
-	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32.tid.addr, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.subj32.tid.addr,
+	    sizeof(tok->tt.subj32.tid.addr), tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -2001,7 +2001,8 @@ static int fetch_subject64_tok(tokenstr_t *tok, char *buf, int len)
 		return -1;
 	}
 
-	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.tid.addr, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.subj64.tid.addr,
+	    sizeof(tok->tt.subj64.tid.addr), tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -2049,7 +2050,6 @@ static void print_subject64_tok(FILE *fp, tokenstr_t *tok, char *del,
 static int fetch_subject32ex_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
-	int i;
 
 	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.auid, tok->len, err);
 	if(err) {
@@ -2099,19 +2099,17 @@ static int fetch_subject32ex_tok(tokenstr_t *tok, char *buf, int len)
 	}
 
 	if(tok->tt.subj32_ex.tid.type == AF_INET) {
-	READ_TOKEN_U_INT32(buf, len, tok->tt.subj32_ex.tid.addr[0],
-	    tok->len, err);
+		READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.addr[0],
+		    sizeof(tok->tt.subj32_ex.tid.addr[0]), tok->len, err);
 		if(err) {
 			return -1;
 		}
 	}
 	else if (tok->tt.subj32_ex.tid.type == AF_INET6) {
-		for(i = 0; i < 4; i++) {
-			READ_TOKEN_U_INT32(buf, len,
-			    tok->tt.subj32_ex.tid.addr[i], tok->len, err);
-			if(err) {
-				return -1;
-			}
+		READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.addr,
+		    sizeof(tok->tt.subj32_ex.tid.addr), tok->len, err);
+		if(err) {
+			return -1;
 		}
     }
 	else {
@@ -2202,8 +2200,8 @@ static int fetch_socketex32_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_U_INT32(buf, len, tok->tt.socket_ex32.l_addr, tok->len,
-	    err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.l_addr,
+	    sizeof(tok->tt.socket_ex32.l_addr), tok->len, err);
 	if(err) {
 		return -1;
 	}
@@ -2218,8 +2216,8 @@ static int fetch_socketex32_tok(tokenstr_t *tok, char *buf, int len)
 	if(err) {
 		return -1;
 	}
-	READ_TOKEN_U_INT32(buf, len, tok->tt.socket_ex32.r_addr, tok->len,
-	    err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.r_addr,
+	    sizeof(tok->tt.socket_ex32.r_addr), tok->len, err);
 	if(err) {
 		return -1;
 	}
