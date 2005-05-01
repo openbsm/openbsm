@@ -2243,6 +2243,13 @@ void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
  * Rread a record from the file pointer, store data in buf
  * memory for buf is also allocated in this function
  * and has to be free'd outside this call
+ *
+ * au_read_rec() handles two possibilities: a stand-alone file token, or a
+ * complete audit record.
+ *
+ * XXXRW: Note that if we hit an error, we leave the stream in an unusable
+ * state, because it will be partly offset into a record.  We should rewind
+ * or do something more intelligent.
  */
 int au_read_rec(FILE *fp, u_char **buf)
 {
@@ -2251,44 +2258,97 @@ int au_read_rec(FILE *fp, u_char **buf)
 	u_int32_t bytestoread;
 	u_char type;
 
+	u_int32_t sec, msec;
+	u_int16_t filenamelen;
+
 	type = fgetc(fp);
-	/* record must begin with a header token */
-	if(type != AU_HEADER_32_TOKEN) {
-		errno = EINVAL;
-		return -1;
-	}
 
-	/* read the record size from the token */
-	if(fread(&recsize, 1, sizeof(u_int32_t), fp) < sizeof(u_int32_t)) {
-		errno = EINVAL;
-		return -1;
-	}
-	recsize = be32toh(recsize);
+	switch (type) {
+	case AU_HEADER_32_TOKEN:
+	case AU_HEADER_EX_32_TOKEN:
+	case AU_HEADER_64_TOKEN:
+	case AU_HEADER_EX_64_TOKEN:
+		/* read the record size from the token */
+		if (fread(&recsize, 1, sizeof(u_int32_t), fp) <
+		    sizeof(u_int32_t)) {
+			errno = EINVAL;
+			return -1;
+		}
+		recsize = be32toh(recsize);
 
-	/* Check for recsize sanity */
-	if(recsize < (sizeof(u_int32_t) + sizeof(u_char))) {
-		errno = EINVAL;
-		return -1;
-	}
+		/* Check for recsize sanity */
+		if (recsize < (sizeof(u_int32_t) + sizeof(u_char))) {
+			errno = EINVAL;
+			return -1;
+		}
 
-	*buf = (u_char *)malloc(recsize * sizeof(u_char));
-	if(*buf == NULL) {
-		return -1;
-	}
-	bptr = *buf;
-	memset(bptr, 0, recsize);
+		*buf = (u_char *)malloc(recsize * sizeof(u_char));
+		if (*buf == NULL)
+			return -1;
+		bptr = *buf;
+		memset(bptr, 0, recsize);
 
-	/* store the token contents already read, back to the buffer*/
-	*bptr = type;
-	bptr++;
-	be32enc(bptr, recsize);
-	bptr += sizeof(u_int32_t);
+		/* store the token contents already read, back to the buffer*/
+		*bptr = type;
+		bptr++;
+		be32enc(bptr, recsize);
+		bptr += sizeof(u_int32_t);
 
-	/* now read remaining record bytes */
-	bytestoread = recsize - sizeof(u_int32_t) - sizeof(u_char);
+		/* now read remaining record bytes */
+		bytestoread = recsize - sizeof(u_int32_t) - sizeof(u_char);
 
-	if(fread(bptr, 1, bytestoread, fp) < bytestoread) {
-		free(*buf);
+		if (fread(bptr, 1, bytestoread, fp) < bytestoread) {
+			free(*buf);
+			errno = EINVAL;
+			return -1;
+		}
+		break;
+
+	case AU_FILE_TOKEN:
+		/*
+		 * The file token is variable-length, as it includes a
+		 * pathname.  As a result, we have to read incrementally
+		 * until we know the total length, then allocate space and
+		 * read the rest.
+		 */
+		if (fread(&sec, 1, sizeof(sec), fp) < sizeof(sec)) {
+			errno = EINVAL;
+			return -1;
+		}
+		if (fread(&msec, 1, sizeof(msec), fp) < sizeof(msec)) {
+			errno = EINVAL;
+			return -1;
+		}
+		if (fread(&filenamelen, 1, sizeof(filenamelen), fp) <
+		    sizeof(filenamelen)) {
+			errno = EINVAL;
+			return -1;
+		}
+		recsize = sizeof(type) + sizeof(sec) + sizeof(msec) +
+		    sizeof(filenamelen) + ntohs(filenamelen);
+		*buf = malloc(recsize);
+		if (*buf == NULL)
+			return -1;
+		bptr = *buf;
+
+		bcopy(&type, bptr, sizeof(type));
+		bptr += sizeof(type);
+		bcopy(&sec, bptr, sizeof(sec));
+		bptr += sizeof(sec);
+		bcopy(&msec, bptr, sizeof(msec));
+		bptr += sizeof(msec);
+		bcopy(&filenamelen, bptr, sizeof(filenamelen));
+		bptr += sizeof(filenamelen);
+
+		if (fread(bptr, 1, ntohs(filenamelen), fp) <
+		    ntohs(filenamelen)) {
+			free(buf);
+			errno = EINVAL;
+			return -1;
+		}
+
+		break;
+	default:
 		errno = EINVAL;
 		return -1;
 	}
