@@ -112,6 +112,7 @@ MLINKS=	libbsm.3 bsm.3							\
 	au_token.3 au_to_me.3						\
 	au_token.3 au_to_exec_args.3					\
 	au_token.3 au_to_exec_env.3					\
+	au_token.3 au_to_header.3					\
 	au_token.3 au_to_header32.3					\
 	au_token.3 au_to_header64.3					\
 	au_token.3 au_to_trailer.3

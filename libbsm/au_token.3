@@ -72,6 +72,7 @@
 .Nm au_to_me ,
 .Nm au_to_exec_args ,
 .Nm au_to_exec_env ,
+.Nm au_to_header ,
 .Nm au_to_header32 ,
 .Nm au_to_header64 ,
 .Nm au_to_trailer .
@@ -104,6 +105,8 @@
 .Fn au_to_in_addr "struct in_addr *internet_addr"
 .Ft token_t *
 .Fn au_to_in_addr_ex "struct in6_addr *internet_addr"
+.Ft token_t *
+.Fn au_to_ip "struct ip *ip"
 .Ft token_t *
 .Fn au_to_ipc "char type" "int id"
 .Ft token_t *
@@ -166,6 +169,8 @@
 .Fn au_to_exec_args "const char **args"
 .Ft token_t *
 .Fn au_to_exec_env "const char **env"
+.Ft token_t *
+.Fn au_to_header "int rec_size" "au_event_t e_type" "au_emod_t emod"
 .Ft token_t *
 .Fn au_to_header32 "int rec_size" "au_event_t e_type" "au_emod_t emod"
 .Ft token_t *
