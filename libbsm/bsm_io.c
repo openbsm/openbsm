@@ -29,7 +29,11 @@
  */
 
 #include <sys/types.h>
+#ifdef __APPLE__
+#include <compat/endian.h>
+#else /* !__APPLE__ */
 #include <sys/endian.h>
+#endif /* __APPLE__*/
 #include <sys/stat.h>
 #include <sys/socket.h>
 
