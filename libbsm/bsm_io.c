@@ -281,7 +281,7 @@ static void print_evmod(FILE *fp, u_int16_t evmod, char raw)
 /*
  * Prints seconds in the ctime format
  */
-static void print_sec(FILE *fp, u_int32_t sec, char raw)
+static void print_sec32(FILE *fp, u_int32_t sec, char raw)
 {
 	time_t time;
 	char timestr[26];
@@ -298,15 +298,51 @@ static void print_sec(FILE *fp, u_int32_t sec, char raw)
 }
 
 /*
+ * XXXRW: 64-bit token streams make use of 64-bit time stamps; since we
+ * assume a 32-bit time_t, we simply truncate for now.
+ */
+static void print_sec64(FILE *fp, u_int64_t sec, char raw)
+{
+	time_t time;
+	char timestr[26];
+
+	if(raw) {
+		fprintf(fp, "%u", (u_int32_t)sec);
+	}
+	else {
+		time = (time_t)sec;
+		ctime_r(&time, timestr);
+		timestr[24] = '\0'; /* No new line */
+		fprintf(fp, "%s", timestr);
+	}
+}
+
+/*
  * Prints the excess milliseconds
  */
-static void print_msec(FILE *fp, u_int32_t msec, char raw)
+static void print_msec32(FILE *fp, u_int32_t msec, char raw)
 {
 	if(raw) {
 		fprintf(fp, "%u", msec);
 	}
 	else {
 		fprintf(fp, " + %u msec", msec);
+	}
+}
+
+/*
+ * XXXRW: 64-bit token streams make use of 64-bit time stamps; since we
+ * assume a 32-bit msec, we simply truncate for now.
+ */
+static void print_msec64(FILE *fp, u_int64_t msec, char raw)
+{
+
+	msec &= 0xffffffff;
+	if(raw) {
+		fprintf(fp, "%u", (u_int32_t)msec);
+	}
+	else {
+		fprintf(fp, " + %u msec", (u_int32_t)msec);
 	}
 }
 
@@ -448,9 +484,72 @@ static void print_header32_tok(FILE *fp, tokenstr_t *tok, char *del,
 	print_delim(fp, del);
 	print_evmod(fp, tok->tt.hdr32.e_mod, raw);
 	print_delim(fp, del);
-	print_sec(fp, tok->tt.hdr32.s, raw);
+	print_sec32(fp, tok->tt.hdr32.s, raw);
 	print_delim(fp, del);
-	print_msec(fp, tok->tt.hdr32.ms, raw);
+	print_msec32(fp, tok->tt.hdr32.ms, raw);
+}
+
+/*
+ * record byte count       4 bytes
+ * event type              2 bytes
+ * event modifier          2 bytes
+ * seconds of time         4 bytes/8 bytes (32-bit/64-bit value)
+ * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
+ * version #              
+ */
+static int fetch_header64_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr64.size, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.hdr64.version, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT16(buf, len, tok->tt.hdr64.e_type, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT16(buf, len, tok->tt.hdr64.e_mod, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.hdr64.s, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.hdr64.ms, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	return 0;
+}
+
+static void print_header64_tok(FILE *fp, tokenstr_t *tok, char *del,
+                char raw, char sfrm)
+{
+	print_tok_type(fp, tok->id, "header", raw);
+	print_delim(fp, del);
+	print_4_bytes(fp, tok->tt.hdr64.size, "%u");
+	print_delim(fp, del);
+	print_1_byte(fp, tok->tt.hdr64.version, "%u");
+	print_delim(fp, del);
+	print_event(fp, tok->tt.hdr64.e_type, raw, sfrm);
+	print_delim(fp, del);
+	print_evmod(fp, tok->tt.hdr64.e_mod, raw);
+	print_delim(fp, del);
+	print_sec64(fp, tok->tt.hdr64.s, raw);
+	print_delim(fp, del);
+	print_msec64(fp, tok->tt.hdr64.ms, raw);
 }
 
 /*
@@ -763,6 +862,69 @@ static void print_attr32_tok(FILE *fp, tokenstr_t *tok, char *del,
 }
 
 /*
+ * file access mode        4 bytes
+ * owner user ID           4 bytes
+ * owner group ID          4 bytes
+ * file system ID          4 bytes
+ * node ID                 8 bytes
+ * device                  4 bytes/8 bytes (32-bit/64-bit)
+ */
+static int fetch_attr64_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr64.mode, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr64.uid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr64.gid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.attr64.fsid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.attr64.nid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.attr64.dev, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	return 0;
+}
+
+static void print_attr64_tok(FILE *fp, tokenstr_t *tok, char *del,
+                char raw, char sfrm)
+{
+	print_tok_type(fp, tok->id, "attribute", raw);
+	print_delim(fp, del);
+	print_4_bytes(fp, tok->tt.attr64.mode, "%o");
+	print_delim(fp, del);
+	print_user(fp, tok->tt.attr64.uid, raw);
+	print_delim(fp, del);
+	print_group(fp, tok->tt.attr64.gid, raw);
+	print_delim(fp, del);
+	print_4_bytes(fp, tok->tt.attr64.fsid, "%u");
+	print_delim(fp, del);
+	print_8_bytes(fp, tok->tt.attr64.nid, "%lld");
+	print_delim(fp, del);
+	print_8_bytes(fp, tok->tt.attr64.dev, "%llu");
+}
+
+/*
  * status                  4 bytes
  * return value            4 bytes
  */
@@ -919,9 +1081,9 @@ static void print_file_tok(FILE *fp, tokenstr_t *tok, char *del,
 {
 	print_tok_type(fp, tok->id, "file", raw);
 	print_delim(fp, del);
-	print_sec(fp, tok->tt.file.s, raw);
+	print_sec32(fp, tok->tt.file.s, raw);
 	print_delim(fp, del);
-	print_msec(fp, tok->tt.file.ms, raw);
+	print_msec32(fp, tok->tt.file.ms, raw);
 	print_delim(fp, del);
 	print_string(fp, tok->tt.file.name, tok->tt.file.len);
 }
@@ -1704,7 +1866,7 @@ static void print_socket_tok(FILE *fp, tokenstr_t *tok, char *del,
  * pid                          4 bytes
  * sessid                       4 bytes
  * terminal ID
- *   portid             4 bytes
+ *   portid             4 bytes/8 bytes (32-bit/64-bit value)
  *   machine id         4 bytes
  */
 static int fetch_subject32_tok(tokenstr_t *tok, char *buf, int len)
@@ -1781,6 +1943,94 @@ static void print_subject32_tok(FILE *fp, tokenstr_t *tok, char *del,
 	print_4_bytes(fp, tok->tt.subj32.tid.port, "%u");
 	print_delim(fp, del);
 	print_ip_address(fp, tok->tt.subj32.tid.addr);
+}
+
+/*
+ * audit ID                     4 bytes
+ * euid                         4 bytes
+ * egid                         4 bytes
+ * ruid                         4 bytes
+ * rgid                         4 bytes
+ * pid                          4 bytes
+ * sessid                       4 bytes
+ * terminal ID
+ *   portid             4 bytes/8 bytes (32-bit/64-bit value)
+ *   machine id         4 bytes
+ */
+static int fetch_subject64_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.auid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.euid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.egid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.ruid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.rgid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.pid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.sid, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.subj64.tid.port, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64.tid.addr, tok->len, err);
+	if(err) {
+		return -1;
+	}
+
+	return 0;
+}
+
+static void print_subject64_tok(FILE *fp, tokenstr_t *tok, char *del,
+                char raw, char sfrm)
+{
+	print_tok_type(fp, tok->id, "subject", raw);
+	print_delim(fp, del);
+	print_user(fp, tok->tt.subj64.auid, raw);
+	print_delim(fp, del);
+	print_user(fp, tok->tt.subj64.euid, raw);
+	print_delim(fp, del);
+	print_group(fp, tok->tt.subj64.egid, raw);
+	print_delim(fp, del);
+	print_user(fp, tok->tt.subj64.ruid, raw);
+	print_delim(fp, del);
+	print_group(fp, tok->tt.subj64.rgid, raw);
+	print_delim(fp, del);
+	print_4_bytes(fp, tok->tt.subj64.pid, "%u");
+	print_delim(fp, del);
+	print_4_bytes(fp, tok->tt.subj64.sid, "%u");
+	print_delim(fp, del);
+	print_8_bytes(fp, tok->tt.subj64.tid.port, "%llu");
+	print_delim(fp, del);
+	print_ip_address(fp, tok->tt.subj64.tid.addr);
 }
 
 /*
@@ -2039,6 +2289,9 @@ int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 		case AU_HEADER_32_TOKEN :
 				return fetch_header32_tok(tok, buf, len);
 
+		case AU_HEADER_64_TOKEN :
+				return fetch_header64_tok(tok, buf, len);
+
 		case AU_TRAILER_TOKEN :
 				return fetch_trailer_tok(tok, buf, len);
 
@@ -2050,6 +2303,9 @@ int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 
 		case AU_ATTR32_TOKEN :
 				return fetch_attr32_tok(tok, buf, len);
+
+		case AU_ATTR64_TOKEN :
+				return fetch_attr64_tok(tok, buf, len);
 
 		case AU_EXIT_TOKEN :
 				return fetch_exit_tok(tok, buf, len);
@@ -2117,6 +2373,9 @@ int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 		case AU_SUBJECT_32_TOKEN :
 				return fetch_subject32_tok(tok, buf, len);
 
+		case AU_SUBJECT_64_TOKEN :
+				return fetch_subject64_tok(tok, buf, len);
+
 		case AU_SUBJECT_32_EX_TOKEN :
 				return fetch_subject32ex_tok(tok, buf, len);
 
@@ -2144,6 +2403,9 @@ void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 		case AU_HEADER_32_TOKEN :
 				return print_header32_tok(outfp, tok, del, raw, sfrm);
 
+		case AU_HEADER_64_TOKEN:
+				return print_header64_tok(outfp, tok, del, raw, sfrm);
+
 		case AU_TRAILER_TOKEN :
 				return print_trailer_tok(outfp, tok, del, raw, sfrm);
 
@@ -2158,6 +2420,9 @@ void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 
 		case AU_ATTR32_TOKEN :
 				return print_attr32_tok(outfp, tok, del, raw, sfrm);
+
+		case AU_ATTR64_TOKEN :
+				return print_attr64_tok(outfp, tok, del, raw, sfrm);
 
 		case AU_EXIT_TOKEN :
 				return print_exit_tok(outfp, tok, del, raw, sfrm);
@@ -2224,6 +2489,9 @@ void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 
 		case AU_SUBJECT_32_TOKEN :
 				return print_subject32_tok(outfp, tok, del, raw, sfrm);
+
+		case AU_SUBJECT_64_TOKEN :
+				return print_subject64_tok(outfp, tok, del, raw, sfrm);
 
 		case AU_SUBJECT_32_EX_TOKEN :
 				return print_subject32ex_tok(outfp, tok, del, raw, sfrm);
