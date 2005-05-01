@@ -9,6 +9,7 @@ MAN=	audit.2								\
 	getauid.2							\
 	setaudit.2							\
 	setauid.2							\
+	audit.log.5							\
 	audit_class.5							\
 	audit_control.5							\
 	audit_event.5							\
