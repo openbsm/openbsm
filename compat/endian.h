@@ -36,6 +36,12 @@
 #include <machine/endian.h>
 
 /*
+ * Some systems will have the uint/int types defined here already, others
+ * will need stdint.h.
+ */
+#include <stdint.h>
+
+/*
  * Some operating systems do not yet have the more recent endian APIs that
  * permit encoding to and decoding from byte streams.  For those systems, we
  * implement local non-optimized versions.
@@ -98,7 +104,6 @@ bswap64(uint64_t int64)
 }
 
 #if defined(BYTE_ORDER) && !defined(_BYTE_ORDER)
-#warning "Converting BYTE_ORDER to _BYTE_ORDER"
 #define	_BYTE_ORDER	BYTE_ORDER
 #endif
 #if !defined(_BYTE_ORDER)
