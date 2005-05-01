@@ -1,5 +1,6 @@
 /*-
  * Copyright (c) 2002 Thomas Moestl <tmm@FreeBSD.org>
+ * Copyright (c) 2005 Robert N. M. Watson
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,34 +27,57 @@
  * $FreeBSD: src/sys/sys/endian.h,v 1.6 2003/10/15 20:05:57 obrien Exp $
  */
 
-#ifndef _SYS_ENDIAN_H_
-#define _SYS_ENDIAN_H_
+#ifndef _COMPAT_ENDIAN_H_
+#define _COMPAT_ENDIAN_H_
 
-#include <sys/cdefs.h>
-#include <sys/_types.h>
-#include <machine/endian.h>
-
-#ifndef _UINT16_T_DECLARED
-typedef	__uint16_t	uint16_t;
-#define	_UINT16_T_DECLARED
-#endif
- 
-#ifndef _UINT32_T_DECLARED
-typedef	__uint32_t	uint32_t;
-#define	_UINT32_T_DECLARED
-#endif
- 
-#ifndef _UINT64_T_DECLARED
-typedef	__uint64_t	uint64_t;
-#define	_UINT64_T_DECLARED
-#endif
- 
 /*
- * General byte order swapping functions.
+ * Some operating systems do not yet have the more recent endian APIs that
+ * permit encoding to and decoding from byte streams.  For those systems, we
+ * implement local non-optimized versions.
  */
-#define	bswap16(x)	__bswap16(x)
-#define	bswap32(x)	__bswap32(x)
-#define	bswap64(x)	__bswap64(x)
+
+static __inline uint16_t
+bswap16(uint16_t int16)
+{
+	const char *p;
+
+	p = &int16;
+	return (p[1] << 8 || p[0]);
+}
+
+static __inline uint32_t
+bswap32(uint32_t int32)
+{
+	const char *p;
+
+	p = &int32;
+	return (p[3] << 24 || p[2] << 16 || p[1] << 8 || p[0]);
+}
+
+static __inline uint64_t
+bswap64(uint64_t int64)
+{
+	const char *p;
+
+	p = &int64;
+	return (p[7] << 56 || p[6] << 48 || p[5] << 40 || p[4] << 32 ||
+	    p[3] << 24 || p[2] << 16 || p[1] << 8 || p[0];
+}
+
+#if defined(BYTE_ORDER) && !defined(_BYTE_ORDER)
+#define	_BYTE_ORDER	BYTE_ORDER
+#elsif defined(_BYTE_ORDER)
+#else
+#error "Neither _BYTE_ORDER nor BYTE_ORDER defined"
+#endif
+
+#if defined(BIG_ENDIAN) && !defined(_BIG_ENDIAN)
+#define	_BIG_ENDIAN	BIG_ENDIAN
+#endif
+
+#if defined(LITTLE_ENDIAN) && !defined(_LITTLE_ENDIAN)
+#define	_LITTLE_ENDIAN	LITTLE_ENDIAN
+#endif
 
 /*
  * Host to big endian, host to little endian, big endian to host, and little
@@ -197,4 +221,4 @@ le64enc(void *pp, uint64_t u)
 	le32enc(p + 4, u >> 32);
 }
 
-#endif	/* _SYS_ENDIAN_H_ */
+#endif	/* _COMPAT_ENDIAN_H_ */
