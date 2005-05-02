@@ -276,7 +276,11 @@ token.
 The
 .Dv process
 token contains a description of the security properties of a process
-involved in an audit event.
+involved as the target of an auditable event, such as the destination for
+signal delivery.
+It should not be confused with the
+.Dv subject
+token, which describes the subject performing an auditable event.
 This includes both the traditional
 .Ux
 security properties, such as user IDs and group IDs, but also audit
@@ -347,18 +351,59 @@ or
 .Ss Subject Token
 The
 .Dv subject
-token ...
+token contains information on the subject performing the operation described
+by an audit record, and includes similar information to that found in the
+.Dv process
+and
+.Dv expanded process
+tokens.
+However, those tokens are used where the process being described is the
+target of the operation, not the authorizing party.
+A
+.Dv subject
+token can be created using
+.Xr au_to_subject32 3
+and
+.Xr au_to_subject64 3 .
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Audit ID" Ta "4 bytes" Ta "Audit user ID"
+.It Li "Effective User ID" Ta "4 bytes" Ta "Effective user ID"
+.It Li "Effective Group ID "Ta "4 bytes" Ta "Effective group ID"
+.It Li "Real User ID" Ta "4 bytes" Ta "Real user ID"
+.It Li "Real Group ID" Ta "4 bytes" Ta "Real group ID"
+.It Li "Process ID" Ta "4 bytes" Ta "Process ID"
+.It Li "Session ID" Ta "4 bytes" Ta "Audit session ID"
+.It Li "Terminal Port ID" Ta "4/8 bytes" Ta "Terminal port ID (32/64-bits)"
+.It Li "Terminal Machine Address" Ta "4 bytes" Ta "IP address of machine"
 .El
 .Ss Expanded Subject Token
 The
 .Dv expanded subject
-token ...
+token consists of the same elements as the
+.Dv subject
+token, with the addition of type/length and variable size machine address
+information in the terminal ID.
+A
+.Dv expanded subject
+token can be created using
+.Xr au_to_subject32_ex 3
+or
+.Xr au_to_subject64_ex 3 .
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Audit ID" Ta "4 bytes" Ta "Audit user ID"
+.It Li "Effective User ID" Ta "4 bytes" Ta "Effective user ID"
+.It Li "Effective Group ID "Ta "4 bytes" Ta "Effective group ID"
+.It Li "Real User ID" Ta "4 bytes" Ta "Real user ID"
+.It Li "Real Group ID" Ta "4 bytes" Ta "Real group ID"
+.It Li "Process ID" Ta "4 bytes" Ta "Process ID"
+.It Li "Session ID" Ta "4 bytes" Ta "Audit session ID"
+.It Li "Terminal Port ID" Ta "4/8 bytes" Ta "Terminal port ID (32/64-bits)"
+.It Li "Terminal Address Type/Length" Ta "1 byte" "Length of machine address"
+.It Li "Terminal Machine Address" Ta "4 bytes" Ta "IPv4 or IPv6 address of machine"
 .El
 .Ss System V IPC Token
 The
@@ -367,30 +412,60 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss Text Token
 The
 .Dv text
-token ...
+token contains a single nul-terminated text string.
+A
+.Dv text
+token may be created using
+.Xr au_to_text 3 .
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Text Length" Ta "2 bytes" Ta "Length of text string including nul"
+.It Li "Text" Ta "N bytes + 1 nul" Ta "Text string including nul"
 .El
 .Ss Attribute Token
 The
 .Dv attribute
-token ...
+token describes the attributes of a file associated with the audit event.
+As files may be identified by 0, 1, or many path names, a path name is not
+included with the attribute block for a file; optional
+.Dv path
+tokens may also be present in an audit record indicating which path, if any,
+was used to reach the object.
+A
+.Dv attribute
+token can be created using
+.Xr au_to_attr32 3
+or
+.Xr au_to_attr64 3 .
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "File Access Mode" Ta "1 byte" Ta "mode_t associated with file"
+.It Li "Owner User ID" Ta "4 bytes" Ta "uid_t associated with file"
+.It Li "Owner Group ID" Ta "4 bytes" Ta "gid_t associated with file"
+.It Li "File System ID" Ta "4 bytes" Ta "fsid_t associated with file"
+.It Li "File System Node ID" Ta "8 bytes" Ta "ino_t associated with file"
+.It Li "Device" Ta "4/8 bytes" Ta "Device major/minor number (32/64-bit)"
 .El
 .Ss Groups Token
 The
 .Dv groups
-token ...
+token contains a list of group IDs associated with the audit event.
+A
+.Dv groups
+token can be created using
+.Xr au_to_groups 3 .
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Number of Groups" Ta "2 bytes" Ta "Number of groups in token"
+.It Li "Group List" Ta "N * 4 bytes" Ta "List of N group IDs"
 .El
 .Ss System V IPC Permission Token
 The
@@ -399,6 +474,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss Arg Token
 The
@@ -407,6 +483,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss exec_args Token
 The
@@ -415,6 +492,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss exec_env Token
 The
@@ -423,14 +501,21 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss Exit Token
 The
 .Dv exit
-token ...
+token contains process exit/return code information.
+An
+.Dv exit
+token can be created using
+.Xr au_to_exit 3 .
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Status" Ta "4 bytes" Ta "Process status on exit"
+.It Li "Return Value" ta "4 bytes" Ta "Process return value on exit"
 .El
 .Ss Socket Token
 The
@@ -439,6 +524,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss Expanded Socket Token
 The
@@ -447,14 +533,18 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss Seq Token
 The
 .Dv seq
-token ...
+token contains a unique and monotonically increasing audit event sequence ID.
+Due to the limited range (32 bits), serial number arithmetic (and caution)
+should be used when comparing sequence numbers.
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Sequence Number" Ta "4 bytes" Ta "Audit event sequence number"
 .El
 .Ss privilege Token
 The
@@ -463,6 +553,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss Use-of-auth Token
 The
@@ -471,6 +562,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss Command Token
 The
@@ -479,6 +571,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss ACL Token
 The
@@ -487,6 +580,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Ss Zonename Token
 The
@@ -495,6 +589,7 @@ token ...
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li XXXXX
 .El
 .Sh SEE ALSO
 .Xr libbsm 3
