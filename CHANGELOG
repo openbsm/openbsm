@@ -1,0 +1,41 @@
+OpenBSM 1.0
+
+- Import of Darwin74 BSM drop
+- Use 'syslog' for audit log warnings, rather than echoing to a file in
+  audit_warn.
+- Compile using BSD make infrastructure.
+- Integrate bsm/ include files from Darwin74 XNU drop into OpenBSM.
+- Narrow set of symbols and defines that are exposed in user space: don't
+  compile in code relying on kernel-only types such as 'struct socket'.
+- Add README, including basic build documentation.
+- Compilation of Apple-specific notify and Machroutines now #ifdef __APPLE__.
+- Staticize libbsm global variables to avoid leakage into application.
+- Add free_au_user_ent() so that au_user_ent's don't have to be leaked.
+- Clean up bogus nul-termination checks in libbsm.
+- Add libbsm API man pages: au_class.3 au_control.3 au_event.3
+  au_free_token.3 au_io.3 au_mask.3 au_token.3 au_user.3 libbsm.3.
+- Add man pages for BSM system calls: audit.2 auditctl.2 auditon.2 getaudit.2
+  getauid.2 setaudit.2 setauid.2
+- Modify various libbsm interfaces to more consistently return 'errno' values
+  on failure.
+- Break out au_close() into constituent parts, allowing records to be written
+  to memory as well as files.
+- Prefix various defines with 'BSM_' to reduce name space pollution.
+- Added audit_internal.h, which can be used by a kernel audit implementation
+  wanting to rely on libbsm components.
+- Build with warnings, and eliminate warnings.
+- Make libbsm endian-independent, storing and reading BSM are big endian
+  (network byte order) rather than native byte order.  More consistently
+  print IP addresses using the IP address print routine.  These changes
+  make use of sys/endian.h from *BSD; since this isn't present on Darwin,
+  add it to OpenBSM as compat/endian.h, which is used only on Darwin.
+- Import of Darwin80 BSM drop, including 64-bit file IDs, better
+  documentation of private APIs, and bug fixes.
+- White space cleanup.
+- Add audit.log.5, a first cut at a man page documenting the BSM file format.
+- Teach au_read_rec() to recognize stand-alone file tokens, which are present
+  at the beginning and end of Solaris audit trails.  Technically, these
+  appear to violate the high level BSM spec, which suggests that all tokens
+  are present in records, but need to be supported.
+- Implement HEADER64, ATTR64, SUBJECT64 token types, which make it possible
+  to run praudit(1) on basic Solaris BSM streams.
