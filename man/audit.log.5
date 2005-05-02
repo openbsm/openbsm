@@ -78,13 +78,13 @@ A
 .Dv file
 token can be created using
 .Xr au_to_file 3 .
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "Seconds" Ta "4 bytes" Ta "File time stamp"
 .It Li "Microseconds" Ta "4 bytes" Ta "File time stamp"
 .It Li "File name lengh" Ta "2 bytes" Ta "File name of audit trail"
-.It Li "File pathname" Ta "N bytes + 1 NUL" Ta "File name of audit trail"
+.It Li "File pathname" Ta "N bytes + 1 nul" Ta "File name of audit trail"
 .El
 .Ss Header Token
 The
@@ -96,7 +96,7 @@ A
 .Dv header
 token can be created using
 .Xr au_to_header32 3 .
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "Record Byte Count" Ta "4 bytes" Ta "Number of bytes in record"
@@ -117,7 +117,7 @@ The
 API cannot currently create an
 .Dv expanded header
 token.
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "Record Byte Count" Ta "4 bytes" Ta "Number of bytes in record"
@@ -139,7 +139,7 @@ A
 .Dv trailer
 token can be created using
 .Xr au_to_trailer 3 .
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "Trailer Magic" Ta "2 bytes" Ta "Trailer magic number"
@@ -160,7 +160,7 @@ The
 API cannot currently create an
 .Dv arbitrary data
 token.
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "How to Print" Ta "1 byte" Ta "User-defined printing information"
@@ -182,7 +182,7 @@ for an IPv6 address.
 .Pp
 See the BUGS section for information on the storage of this token.
 .Pp
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "IP Address Type" Ta "1 byte" Ta "Type of address"
@@ -194,7 +194,7 @@ The
 token ...
 .Pp
 See the BUGS section for information on the storage of this token.
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It XXXX
@@ -207,7 +207,7 @@ An
 .Dv ip
 token can be cread using
 .Xr au_to_ip 3 .
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "Version and IHL" Ta "1 byte" Ta "Version and IP header length"
@@ -225,7 +225,7 @@ token can be cread using
 The
 .Dv expanded ip
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It XXXX
@@ -238,7 +238,7 @@ An
 .Dv iport
 token can be created using
 .Xr au_to_iport 3 .
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "Port Number" Ta "2 bytes" Ta "Port number in network byte order"
@@ -246,40 +246,109 @@ token can be created using
 .Ss Path Token
 The
 .Dv path
-token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+token contains a pathname.
+A
+.Dv path
+token can be created using
+.Xr auto_path 3 .
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Path Length" Ta "2 bytes" Ta "Length of path in bytes"
+.It Li "Path" Ta "N bytes + 1 nul" Ta "Path name"
 .El
 .Ss path_attr Token
 The
 .Dv path_attr
-token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+token contains a set of nul-terminated path names.
+The
+.Xr libbsm 3
+API cannot currently create an
+.Dv path_attr
+token.
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Count" Ta "2 bytes" Ta "Number of nul-terminated string(s) in token"
+.It Li "Path" Ta "Variable" Ta "count nul-terminated string(s)"
 .El
 .Ss Process Token
 The
 .Dv process
-token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+token contains a description of the security properties of a process
+involved in an audit event.
+This includes both the traditional
+.Ux
+security properties, such as user IDs and group IDs, but also audit
+information such as the audit user ID and sesion.
+A
+.Dv process
+token can be created using
+.Xr au_to_process32 3
+or
+.Xr au_to_process64 3 .
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Audit ID" Ta "4 bytes" Ta "Audit user ID"
+.It Li "Effective User ID" Ta "4 bytes" Ta "Effective user ID"
+.It Li "Effective Group ID "Ta "4 bytes" Ta "Effective group ID"
+.It Li "Real User ID" Ta "4 bytes" Ta "Real user ID"
+.It Li "Real Group ID" Ta "4 bytes" Ta "Real group ID"
+.It Li "Process ID" Ta "4 bytes" Ta "Process ID"
+.It Li "Session ID" Ta "4 bytes" Ta "Audit session ID"
+.It Li "Terminal Port ID" Ta "4/8 bytes" Ta "Terminal port ID (32/64-bits)"
+.It Li "Terminal Machine Address" Ta "4 bytes" Ta "IP address of machine"
+.El
+.Ss Expanded Process Token
+The .Dv expanded process
+token contains the contents of the
+.Dv process
+token, with the addition of a machine address type and variable length
+address storage capable of containing IPv6 addresses.
+A
+.Dv expanded process
+token can be created using
+.Xr au_to_process32_ex 3
+or
+.Xr au_to_process64 3 .
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
+.It Sy "Field" Ta Sy Bytes Ta Sy Description
+.It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Audit ID" Ta "4 bytes" Ta "Audit user ID"
+.It Li "Effective User ID" Ta "4 bytes" Ta "Effective user ID"
+.It Li "Effective Group ID "Ta "4 bytes" Ta "Effective group ID"
+.It Li "Real User ID" Ta "4 bytes" Ta "Real user ID"
+.It Li "Real Group ID" Ta "4 bytes" Ta "Real group ID"
+.It Li "Process ID" Ta "4 bytes" Ta "Process ID"
+.It Li "Session ID" Ta "4 bytes" Ta "Audit session ID"
+.It Li "Terminal Port ID" Ta "4/8 bytes" Ta "Terminal port ID (32/64-bits)"
+.It Li "Terminal Address Type/Length" Ta "1 byte" "Length of machine address"
+.It Li "Terminal Machine Address" Ta "4 bytes" Ta "IPv4 or IPv6 address of machine"
 .El
 .Ss Return Token
 The
 .Dv return
-token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+token contains a system call or library function return condition, including
+return value and error number associated with the global variable
+.Er errno .
+A 
+.Dv return
+token can be created using
+.Xr au_to_return 3
+or
+.Xr au_to_return64 3 .
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Error Number" Ta "1 byte" Ta "Errno value, or 0 if undefined"
+.It Li "Return Value" Ta "4/8 bytes" Ta "Return value (32/64-bits)"
 .El
 .Ss Subject Token
 The
 .Dv subject
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -287,7 +356,7 @@ token ...
 The
 .Dv expanded subject
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -295,7 +364,7 @@ token ...
 The
 .Dv System V IPC
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -303,7 +372,7 @@ token ...
 The
 .Dv text
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -311,7 +380,7 @@ token ...
 The
 .Dv attribute
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -319,7 +388,7 @@ token ...
 The
 .Dv groups
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -327,7 +396,7 @@ token ...
 The
 .Dv System V IPC permission
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -335,7 +404,7 @@ token ...
 The
 .Dv arg
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -343,7 +412,7 @@ token ...
 The
 .Dv exec_args
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -351,7 +420,7 @@ token ...
 The
 .Dv exec_env
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -359,7 +428,7 @@ token ...
 The
 .Dv exit
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -367,7 +436,7 @@ token ...
 The
 .Dv socket
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -375,7 +444,7 @@ token ...
 The
 .Dv expanded socket
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -383,7 +452,7 @@ token ...
 The
 .Dv seq
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -391,7 +460,7 @@ token ...
 The
 .Dv privilege
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -399,7 +468,7 @@ token ...
 The
 .Dv use-of-auth
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -407,7 +476,7 @@ token ...
 The
 .Dv command
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -415,7 +484,7 @@ token ...
 The
 .Dv ACL
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
@@ -423,7 +492,7 @@ token ...
 The
 .Dv zonename
 token ...
-.Bl -column -offset ind ".Sy Field Name Width" ".Sy XX Bytes XXXXX" ".Sy Description"
+.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .El
