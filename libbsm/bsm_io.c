@@ -2284,106 +2284,106 @@ int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 
 	switch(tok->id) {
 
-		case AU_HEADER_32_TOKEN :
+		case AUT_HEADER32:
 				return fetch_header32_tok(tok, buf, len);
 
-		case AU_HEADER_64_TOKEN :
+		case AUT_HEADER64:
 				return fetch_header64_tok(tok, buf, len);
 
-		case AU_TRAILER_TOKEN :
+		case AUT_TRAILER:
 				return fetch_trailer_tok(tok, buf, len);
 
-		case AU_ARG32_TOKEN :
+		case AUT_ARG32:
 				return fetch_arg32_tok(tok, buf, len);
 
-		case AU_ARG64_TOKEN :
+		case AUT_ARG64:
 				return fetch_arg64_tok(tok, buf, len);
 
-		case AU_ATTR32_TOKEN :
+		case AUT_ATTR32:
 				return fetch_attr32_tok(tok, buf, len);
 
-		case AU_ATTR64_TOKEN :
+		case AUT_ATTR64:
 				return fetch_attr64_tok(tok, buf, len);
 
-		case AU_EXIT_TOKEN :
+		case AUT_EXIT:
 				return fetch_exit_tok(tok, buf, len);
 
-		case AU_EXEC_ARG_TOKEN :
+		case AUT_EXEC_ARGS:
 				return fetch_execarg_tok(tok, buf, len);
 
-		case AU_EXEC_ENV_TOKEN :
+		case AUT_EXEC_ENV:
 				return fetch_execenv_tok(tok, buf, len);
 
-		case AU_FILE_TOKEN :
+		case AUT_OTHER_FILE32:
 				return fetch_file_tok(tok, buf, len);
 
-		case AU_NEWGROUPS_TOKEN :
+		case AUT_NEWGROUPS:
 				return fetch_newgroups_tok(tok, buf, len);
 
-		case AU_IN_ADDR_TOKEN :
+		case AUT_IN_ADDR:
 				return fetch_inaddr_tok(tok, buf, len);
 
-		case AU_IN_ADDR_EX_TOKEN :
+		case AUT_IN_ADDR_EX:
 				return fetch_inaddr_ex_tok(tok, buf, len);
 
-		case AU_IP_TOKEN :
+		case AUT_IP:
 				return fetch_ip_tok(tok, buf, len);
 
-		case AU_IPC_TOKEN :
+		case AUT_IPC:
 				return fetch_ipc_tok(tok, buf, len);
 
-		case AU_IPCPERM_TOKEN :
+		case AUT_IPC_PERM:
 				return fetch_ipcperm_tok(tok, buf, len);
 
-		case AU_IPORT_TOKEN :
+		case AUT_IPORT:
 				return fetch_iport_tok(tok, buf, len);
 
-		case AU_OPAQUE_TOKEN :
+		case AUT_OPAQUE:
 				return fetch_opaque_tok(tok, buf, len);
 
-		case AU_PATH_TOKEN :
+		case AUT_PATH:
 				return fetch_path_tok(tok, buf, len);
 
-		case AU_PROCESS_32_TOKEN :
+		case AUT_PROCESS32:
 				return fetch_process32_tok(tok, buf, len);
 
-		case AU_PROCESS_32_EX_TOKEN :
+		case AUT_PROCESS32_EX:
 				return fetch_process32ex_tok(tok, buf, len);
 
-		case AU_RETURN_32_TOKEN :
+		case AUT_RETURN32:
 				return fetch_return32_tok(tok, buf, len);
 
-		case AU_RETURN_64_TOKEN :
+		case AUT_RETURN64:
 				return fetch_return64_tok(tok, buf, len);
 
-		case AU_SEQ_TOKEN :
+		case AUT_SEQ:
 				return fetch_seq_tok(tok, buf, len);
 
-		case AU_SOCK_TOKEN :
+		case AUT_SOCKET:
 				return fetch_socket_tok(tok, buf, len);
 
-		case AU_SOCK_INET_32_TOKEN :
+		case AUT_SOCKINET32:
 				return fetch_sock_inet32_tok(tok, buf, len);
 
-		case AU_SOCK_UNIX_TOKEN :
+		case AUT_SOCKUNIX:
 				return fetch_sock_unix_tok(tok, buf, len);
 
-		case AU_SUBJECT_32_TOKEN :
+		case AUT_SUBJECT32:
 				return fetch_subject32_tok(tok, buf, len);
 
-		case AU_SUBJECT_64_TOKEN :
+		case AUT_SUBJECT64:
 				return fetch_subject64_tok(tok, buf, len);
 
-		case AU_SUBJECT_32_EX_TOKEN :
+		case AUT_SUBJECT32_EX:
 				return fetch_subject32ex_tok(tok, buf, len);
 
-		case AU_TEXT_TOKEN :
+		case AUT_TEXT:
 				return fetch_text_tok(tok, buf, len);
 
-		case AU_SOCK_EX32_TOKEN :
+		case AUT_SOCKET_EX:
 				return fetch_socketex32_tok(tok, buf, len);
 
-		case AU_ARB_TOKEN :
+		case AUT_DATA:
 				return fetch_arb_tok(tok, buf, len);
 
 		default:
@@ -2398,106 +2398,106 @@ void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 {
 	switch(tok->id) {
 
-		case AU_HEADER_32_TOKEN :
+		case AUT_HEADER32:
 				return print_header32_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_HEADER_64_TOKEN:
+		case AUT_HEADER64:
 				return print_header64_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_TRAILER_TOKEN :
+		case AUT_TRAILER:
 				return print_trailer_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_ARG32_TOKEN :
+		case AUT_ARG32:
 				return print_arg32_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_ARG64_TOKEN :
+		case AUT_ARG64:
 				return print_arg64_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_ARB_TOKEN :
+		case AUT_DATA:
 				return print_arb_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_ATTR32_TOKEN :
+		case AUT_ATTR32:
 				return print_attr32_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_ATTR64_TOKEN :
+		case AUT_ATTR64:
 				return print_attr64_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_EXIT_TOKEN :
+		case AUT_EXIT:
 				return print_exit_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_EXEC_ARG_TOKEN :
+		case AUT_EXEC_ARGS:
 				return print_execarg_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_EXEC_ENV_TOKEN :
+		case AUT_EXEC_ENV:
 				return print_execenv_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_FILE_TOKEN :
+		case AUT_OTHER_FILE32:
 				return print_file_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_NEWGROUPS_TOKEN :
+		case AUT_NEWGROUPS:
 				return print_newgroups_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_IN_ADDR_TOKEN :
+		case AUT_IN_ADDR:
 				return print_inaddr_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_IN_ADDR_EX_TOKEN :
+		case AUT_IN_ADDR_EX:
 				return print_inaddr_ex_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_IP_TOKEN :
+		case AUT_IP:
 				return print_ip_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_IPC_TOKEN :
+		case AUT_IPC:
 				return print_ipc_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_IPCPERM_TOKEN :
+		case AUT_IPC_PERM:
 				return print_ipcperm_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_IPORT_TOKEN :
+		case AUT_IPORT:
 				return print_iport_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_OPAQUE_TOKEN :
+		case AUT_OPAQUE:
 				return print_opaque_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_PATH_TOKEN :
+		case AUT_PATH:
 				return print_path_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_PROCESS_32_TOKEN :
+		case AUT_PROCESS32:
 				return print_process32_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_PROCESS_32_EX_TOKEN :
+		case AUT_PROCESS32_EX:
 				return print_process32ex_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_RETURN_32_TOKEN :
+		case AUT_RETURN32:
 				return print_return32_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_RETURN_64_TOKEN :
+		case AUT_RETURN64:
 				return print_return64_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_SEQ_TOKEN :
+		case AUT_SEQ:
 				return print_seq_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_SOCK_TOKEN :
+		case AUT_SOCKET:
 				return print_socket_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_SOCK_INET_32_TOKEN :
+		case AUT_SOCKINET32:
 				return print_sock_inet32_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_SOCK_UNIX_TOKEN :
+		case AUT_SOCKUNIX:
 				return print_sock_unix_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_SUBJECT_32_TOKEN :
+		case AUT_SUBJECT32:
 				return print_subject32_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_SUBJECT_64_TOKEN :
+		case AUT_SUBJECT64:
 				return print_subject64_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_SUBJECT_32_EX_TOKEN :
+		case AUT_SUBJECT32_EX:
 				return print_subject32ex_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_TEXT_TOKEN :
+		case AUT_TEXT:
 				return print_text_tok(outfp, tok, del, raw, sfrm);
 
-		case AU_SOCK_EX32_TOKEN :
+		case AUT_SOCKET_EX:
 				return print_socketex32_tok(outfp, tok, del, raw, sfrm);
 
 		default:
@@ -2530,10 +2530,10 @@ int au_read_rec(FILE *fp, u_char **buf)
 	type = fgetc(fp);
 
 	switch (type) {
-	case AU_HEADER_32_TOKEN:
-	case AU_HEADER_EX_32_TOKEN:
-	case AU_HEADER_64_TOKEN:
-	case AU_HEADER_EX_64_TOKEN:
+	case AUT_HEADER32:
+	case AUT_HEADER32_EX:
+	case AUT_HEADER64:
+	case AUT_HEADER64_EX:
 		/* read the record size from the token */
 		if (fread(&recsize, 1, sizeof(u_int32_t), fp) <
 		    sizeof(u_int32_t)) {
@@ -2570,7 +2570,7 @@ int au_read_rec(FILE *fp, u_char **buf)
 		}
 		break;
 
-	case AU_FILE_TOKEN:
+	case AUT_OTHER_FILE32:
 		/*
 		 * The file token is variable-length, as it includes a
 		 * pathname.  As a result, we have to read incrementally

@@ -35,115 +35,136 @@
  * Values marked as XXX do not have a value defined in the BSM header files
  */
 
-/*
- * Control token types
-
-#define AUT_OTHER_FILE              ((char)0x11)
-#define AUT_OTHER_FILE32            AUT_OTHER_FILE
-#define AUT_OHEADER                 ((char)0x12)
-
- */
-
-#define AUT_INVALID                 0x00
-#define AU_FILE_TOKEN               0x11
-#define AU_TRAILER_TOKEN            0x13
-#define AU_HEADER_32_TOKEN          0x14
-#define AU_HEADER_EX_32_TOKEN       0x15
-
-/*
- * Data token types
-#define AUT_SERVER              ((char)0x25)
-#define AUT_SERVER32            AUT_SERVER
- */
-
-#define AU_DATA_TOKEN               0x21
-#define AU_ARB_TOKEN                AU_DATA_TOKEN
-#define AU_IPC_TOKEN                0x22
-#define AU_PATH_TOKEN               0x23
-#define AU_SUBJECT_32_TOKEN         0x24
-#define AU_PROCESS_32_TOKEN         0x26
-#define AU_RETURN_32_TOKEN          0x27
-#define AU_TEXT_TOKEN               0x28
-#define AU_OPAQUE_TOKEN             0x29
-#define AU_IN_ADDR_TOKEN            0x2A
-#define AU_IP_TOKEN                 0x2B
-#define AU_IPORT_TOKEN              0x2C
-#define AU_ARG32_TOKEN              0x2D
-#define AU_SOCK_TOKEN               0x2E
-#define AU_SEQ_TOKEN                0x2F
-
-/*
- * Modifier token types
-
-#define AUT_ACL                 ((char)0x30)
-#define AUT_LABEL               ((char)0x33)
-#define AUT_GROUPS              ((char)0x34)
-#define AUT_ILABEL              ((char)0x35)
-#define AUT_SLABEL              ((char)0x36)
-#define AUT_CLEAR               ((char)0x37)
-#define AUT_PRIV                ((char)0x38)
-#define AUT_UPRIV               ((char)0x39)
-#define AUT_LIAISON             ((char)0x3A)
-
- */
-
-#define AU_ATTR_TOKEN               0x31
-#define AU_IPCPERM_TOKEN            0x32
-#define AU_NEWGROUPS_TOKEN          0x3B
-#define AU_EXEC_ARG_TOKEN           0x3C
-#define AU_EXEC_ENV_TOKEN           0x3D
-#define AU_ATTR32_TOKEN             0x3E
-
-/*
- * Command token types
- */
-
-#define AU_CMD_TOKEN                0x51
-#define AU_EXIT_TOKEN               0x52
+#define	AUT_INVALID		0x00
+#define	AUT_OTHER_FILE32	0x11
+#define	AUT_OHEADER		0x12
+#define	AUT_TRAILER		0x13
+#define	AUT_HEADER32		0x14
+#define	AUT_HEADER32_EX		0x15
+#define	AUT_DATA		0x21
+#define	AUT_IPC			0x22
+#define	AUT_PATH		0x23
+#define	AUT_SUBJECT32		0x24
+#define	AUT_SERVER32		0x25
+#define	AUT_PROCESS32		0x26
+#define	AUT_RETURN32		0x27
+#define	AUT_TEXT		0x28
+#define	AUT_OPAQUE		0x29
+#define	AUT_IN_ADDR		0x2a
+#define	AUT_IP			0x2b
+#define	AUT_IPORT		0x2c
+#define	AUT_ARG32		0x2d
+#define	AUT_SOCKET		0x2e
+#define	AUT_SEQ			0x2f
+#define	AUT_ACL			0x30
+#define	AUT_ATTR		0x31
+#define	AUT_IPC_PERM		0x32
+#define	AUT_LABEL		0x33
+#define	AUT_GROUPS		0x34
+#define	AUT_ILABEL		0x35
+#define	AUT_SLABEL		0x36
+#define	AUT_CLEAR		0x37
+#define	AUT_PRIV		0x38
+#define	AUT_UPRIV		0x39
+#define	AUT_LIAISON		0x3a
+#define	AUT_NEWGROUPS		0x3b
+#define	AUT_EXEC_ARGS		0x3c
+#define	AUT_EXEC_ENV		0x3d
+#define	AUT_ATTR32		0x3e
+/* #define	AUT_????	0x3f */
+#define	AUT_XATOM		0x40
+#define	AUT_XOBJ		0x41
+#define	AUT_XPROTO		0x42
+#define	AUT_XSELECT		0x43
+/* XXXRW: Additional X11 tokens not defined? */
+#define	AUT_CMD			0x51
+#define	AUT_EXIT		0x52
+/* XXXRW: OpenBSM AUT_HOST 0x70? */
+#define	AUT_ARG64		0x71
+#define	AUT_RETURN64		0x72
+#define	AUT_ATTR64		0x73
+#define	AUT_HEADER64		0x74
+#define	AUT_SUBJECT64		0x75
+#define	AUT_SERVER64		0x76
+#define	AUT_PROCESS64		0x77
+#define	AUT_OTHER_FILE64	0x78
+#define	AUT_HEADER64_EX		0x79
+#define	AUT_SUBJECT32_EX	0x7a
+#define	AUT_PROCESS32_EX	0x7b
+#define	AUT_SUBJECT64_EX	0x7c
+#define	AUT_PROCESS64_EX	0x7d
+#define	AUT_IN_ADDR_EX		0x7e
+#define	AUT_SOCKET_EX		0x7f
 
 /*
- * Miscellaneous token types
-
-#define AUT_HOST                ((char)0x70)
-
+ * Pre-64-bit BSM, 32-bit tokens weren't explicitly named as '32'.  We have
+ * compatibility defines.
  */
+#define	AUT_HEADER		AUT_HEADER32
+#define	AUT_ARG			AUT_ARG32
+#define	AUT_RETURN		AUT_RETURN32
+#define	AUT_SUBJECT		AUT_SUBJECT32
+#define	AUT_SERVER		AUT_SERVER32
+#define	AUT_PROCESS		AUT_PROCESS32
+#define	AUT_OTHER_FILE		AUT_OTHER_FILE32
 
 /*
- * 64bit token types
-
-#define AUT_SERVER64            ((char)0x76)
-#define AUT_OTHER_FILE64		((char)0x78)
-
+ * Darwin's bsm distribution uses the following non-BSM token name defines.
+ * We provide them for a single OpenBSM release for compatibility reasons.
  */
-
-#define AU_ARG64_TOKEN              0x71
-#define AU_RETURN_64_TOKEN          0x72
-#define AU_ATTR64_TOKEN             0x73
-#define AU_HEADER_64_TOKEN          0x74
-#define AU_SUBJECT_64_TOKEN         0x75
-#define AU_PROCESS_64_TOKEN         0x77
+#define	AU_FILE_TOKEN		AUT_OTHER_FILE32
+#define	AU_TRAILER_TOKEN	AUT_TRAILER
+#define	AU_HEADER_32_TOKEN	AUT_HEADER32
+#define	AU_DATA_TOKEN		AUT_DATA
+#define	AU_ARB_TOKEN		AUT_DATA
+#define	AU_IPC_TOKEN		AUT_IPC
+#define	AU_PATH_TOKEN		AUT_PATH
+#define	AU_SUBJECT_32_TOKEN	AUT_SUBJECT32
+#define	AU_PROCESS_32_TOKEN	AUT_PROCESS32
+#define	AU_RETURN_32_TOKEN	AUT_RETURN32
+#define	AU_TEXT_TOKEN		AUT_TEXT
+#define	AU_OPAQUE_TOKEN		AUT_OPAQUE
+#define	AU_IN_ADDR_TOKEN	AUT_IN_ADDR
+#define	AU_IP_TOKEN		AUT_IP
+#define	AU_IPORT_TOKEN		AUT_IPORT
+#define	AU_ARG32_TOKEN		AUT_ARG32
+#define	AU_SOCK_TOKEN		AUT_SOCKET
+#define	AU_SEQ_TOKEN		AUT_SEQ
+#define	AU_ATTR_TOKEN		AUT_ATTR
+#define	AU_IPCPERM_TOKEN	AUT_IPC_PERM
+#define	AU_NEWGROUPS_TOKEN	AUT_NEWGROUPS
+#define	AU_EXEC_ARG_TOKEN	AUT_EXEC_ARGS
+#define	AU_EXEC_ENV_TOKEN	AUT_EXEC_ENV
+#define	AU_ATTR32_TOKEN		AUT_ATTR32
+#define	AU_CMD_TOKEN		AUT_CMD
+#define	AU_EXIT_TOKEN		AUT_EXIT
+#define	AU_ARG64_TOKEN		AUT_ARG64
+#define	AU_RETURN_64_TOKEN	AUT_RETURN64
+#define	AU_ATTR64_TOKEN		AUT_ATTR64
+#define	AU_HEADER_64_TOKEN	AUT_HEADER64
+#define	AU_SUBJECT_64_TOKEN	AUT_SUBJECT64
+#define	AU_PROCESS_64_TOKEN	AUT_PROCESS64
+#define	AU_HEADER_64_EX_TOKEN	AUT_HEADER64_EX
+#define	AU_SUBJECT_32_EX_TOKEN	AUT_SUBJECT32_EX
+#define	AU_PROCESS_32_EX_TOKEN	AUT_PROCESS32_EX
+#define	AU_SUBJECT_64_EX_TOKEN	AUT_SUBJECT64_EX
+#define	AU_PROCESS_64_EX_TOKEN	AUT_PROCESS64_EX
+#define	AU_IN_ADDR_EX_TOKEN	AUT_IN_ADDR_EX
+#define	AU_SOCK_32_EX_TOKEN	AUT_SOCKET_EX
 
 /*
- * Extended network address token types
+ * The values for the following token ids are not defined by BSM.
+ *
+ * XXXRW: Not sure how to andle these in OpenBSM yet, but I'll give them
+ * names more consistent with Sun's BSM.  These originally came from Apple's
+ * BSM.
  */
-
-#define AU_HEADER_EX_64_TOKEN       0x79
-#define AU_SUBJECT_32_EX_TOKEN      0x7a
-#define AU_PROCESS_32_EX_TOKEN      0x7b
-#define AU_SUBJECT_64_EX_TOKEN      0x7c
-#define AU_PROCESS_64_EX_TOKEN      0x7d
-#define AU_IN_ADDR_EX_TOKEN	    0x7e
-#define AU_SOCK_EX32_TOKEN          0x7f
-#define AU_SOCK_EX128_TOKEN         AUT_INVALID         /*XXX*/
-#define AU_IP_EX_TOKEN              AUT_INVALID         /*XXX*/
-
-/*
- * The values for the following token ids are not
- * defined by BSM
- */
-#define AU_SOCK_INET_32_TOKEN       0x80         /*XXX*/
-#define AU_SOCK_INET_128_TOKEN      0x81         /*XXX*/
-#define AU_SOCK_UNIX_TOKEN          0x82         /*XXX*/
+#define	AUT_SOCKINET32		0x80		/* XXX */
+#define	AUT_SOCKINET128		0x81		/* XXX */
+#define	AUT_SOCKUNIX		0x82		/* XXX */
+#define	AU_SOCK_INET_32_TOKEN	AUT_SOCKINET32
+#define	AU_SOCK_INET_128_TOKEN	AUT_SOCKINET128
+#define	AU_SOCK_UNIX_TOKEN	AUT_SOCKUNIX
 
 /* print values for the arbitrary token */
 #define AUP_BINARY      0
@@ -169,7 +190,13 @@
 
 #define BSM_MAX_GROUPS      16
 #define HEADER_VERSION      1
-#define TRAILER_PAD_MAGIC   0xB105
+
+/*
+ * BSM define is AUT_TRAILER_MAGIC; Apple BSM define is TRAILER_PAD_MAGIC; we
+ * split the difference, will remove the Apple define for the next release.
+ */
+#define	AUT_TRAILER_MAGIC	0xb105
+#define	TRAILER_PAD_MAGIC	AUT_TRAILER_MAGIC
 
 /* BSM library calls */
 

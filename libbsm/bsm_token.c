@@ -100,7 +100,7 @@ token_t *au_to_arg32(char n, char *text, u_int32_t v)
 
 	textlen += 1;
 
-	ADD_U_CHAR(dptr, AU_ARG32_TOKEN);
+	ADD_U_CHAR(dptr, AUT_ARG32);
 	ADD_U_CHAR(dptr, n);
 	ADD_U_INT32(dptr, v);
 	ADD_U_INT16(dptr, textlen);
@@ -129,7 +129,7 @@ token_t *au_to_arg64(char n, char *text, u_int64_t v)
 
 	textlen += 1;
 
-	ADD_U_CHAR(dptr, AU_ARG64_TOKEN);
+	ADD_U_CHAR(dptr, AUT_ARG64);
 	ADD_U_CHAR(dptr, n);
 	ADD_U_INT64(dptr, v);
 	ADD_U_INT16(dptr, textlen);
@@ -172,7 +172,7 @@ token_t *au_to_attr32(struct vattr *attr)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_ATTR32_TOKEN);
+	ADD_U_CHAR(dptr, AUT_ATTR32);
 
 	/*
 	 * Darwin defines the size for the file mode
@@ -260,7 +260,7 @@ token_t *au_to_data(char unit_print, char unit_type,
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_ARB_TOKEN);
+	ADD_U_CHAR(dptr, AUT_DATA);
 	ADD_U_CHAR(dptr, unit_print);
 	ADD_U_CHAR(dptr, unit_type);
 	ADD_U_CHAR(dptr, unit_count);
@@ -285,7 +285,7 @@ token_t *au_to_exit(int retval, int err)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_EXIT_TOKEN);
+	ADD_U_CHAR(dptr, AUT_EXIT);
 	ADD_U_INT32(dptr, err);
 	ADD_U_INT32(dptr, retval);
 
@@ -320,7 +320,7 @@ token_t *au_to_newgroups(u_int16_t n, gid_t *groups)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_NEWGROUPS_TOKEN);
+	ADD_U_CHAR(dptr, AUT_NEWGROUPS);
 	ADD_U_INT16(dptr, n);
 	for(i = 0; i < n; i++) {
 	    ADD_U_INT32(dptr, groups[i]);
@@ -351,7 +351,7 @@ token_t *au_to_in_addr(struct in_addr *internet_addr)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_IN_ADDR_TOKEN);
+	ADD_U_CHAR(dptr, AUT_IN_ADDR);
 	ADD_U_INT32(dptr, internet_addr->s_addr);
 
 	return t;
@@ -378,7 +378,7 @@ token_t *au_to_in_addr_ex(struct in6_addr *internet_addr)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_IN_ADDR_EX_TOKEN);
+	ADD_U_CHAR(dptr, AUT_IN_ADDR_EX);
 	ADD_U_INT32(dptr, type);
 	ADD_U_INT32(dptr, internet_addr->__u6_addr.__u6_addr32[0]);
 	ADD_U_INT32(dptr, internet_addr->__u6_addr.__u6_addr32[1]);
@@ -407,7 +407,7 @@ token_t *au_to_ip(struct ip *ip)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_IP_TOKEN);
+	ADD_U_CHAR(dptr, AUT_IP);
 	/*
 	 * XXXRW: Any byte order work needed on the IP header before writing?
 	 */
@@ -432,7 +432,7 @@ token_t *au_to_ipc(char type, int id)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_IPC_TOKEN);
+	ADD_U_CHAR(dptr, AUT_IPC);
 	ADD_U_CHAR(dptr, type);
 	ADD_U_INT32(dptr, id);
 
@@ -466,7 +466,7 @@ token_t *au_to_ipc_perm(struct ipc_perm *perm)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_IPCPERM_TOKEN);
+	ADD_U_CHAR(dptr, AUT_IPC_PERM);
 
 
 	/*
@@ -512,7 +512,7 @@ token_t *au_to_iport(u_int16_t iport)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_IPORT_TOKEN);
+	ADD_U_CHAR(dptr, AUT_IPORT);
 	ADD_U_INT16(dptr, iport);
 
 	return t;
@@ -539,7 +539,7 @@ token_t *au_to_opaque(char *data, u_int16_t bytes)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_OPAQUE_TOKEN);
+	ADD_U_CHAR(dptr, AUT_OPAQUE);
 	ADD_U_INT16(dptr, bytes);
 	ADD_MEM(dptr, data, bytes);
 
@@ -579,7 +579,7 @@ token_t *au_to_file(char *file)
 	filelen += 1;
 	timems = tm.tv_usec/1000;
 
-	ADD_U_CHAR(dptr, AU_FILE_TOKEN);
+	ADD_U_CHAR(dptr, AUT_OTHER_FILE32);
 	ADD_U_INT32(dptr, tm.tv_sec);
 	ADD_U_INT32(dptr, timems); /* We need time in ms */
 	ADD_U_INT16(dptr, filelen);
@@ -613,7 +613,7 @@ token_t *au_to_text(char *text)
 
 	textlen += 1;
 
-	ADD_U_CHAR(dptr, AU_TEXT_TOKEN);
+	ADD_U_CHAR(dptr, AUT_TEXT);
 	ADD_U_INT16(dptr, textlen);
 	ADD_STRING(dptr, text, textlen);
 
@@ -643,7 +643,7 @@ token_t *au_to_path(char *text)
 
 	textlen += 1;
 
-	ADD_U_CHAR(dptr, AU_PATH_TOKEN);
+	ADD_U_CHAR(dptr, AUT_PATH);
 	ADD_U_INT16(dptr, textlen);
 	ADD_STRING(dptr, text, textlen);
 
@@ -680,7 +680,7 @@ token_t *au_to_process32(au_id_t auid, uid_t euid, gid_t egid,
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_PROCESS_32_TOKEN);
+	ADD_U_CHAR(dptr, AUT_PROCESS32);
 	ADD_U_INT32(dptr, auid);
 	ADD_U_INT32(dptr, euid);
 	ADD_U_INT32(dptr, egid);
@@ -742,7 +742,7 @@ token_t *au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid,
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_PROCESS_32_EX_TOKEN);
+	ADD_U_CHAR(dptr, AUT_PROCESS32_EX);
 	ADD_U_INT32(dptr, auid);
 	ADD_U_INT32(dptr, euid);
 	ADD_U_INT32(dptr, egid);
@@ -793,7 +793,7 @@ token_t *au_to_return32(char status, u_int32_t ret)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_RETURN_32_TOKEN);
+	ADD_U_CHAR(dptr, AUT_RETURN32);
 	ADD_U_CHAR(dptr, status);
 	ADD_U_INT32(dptr, ret);
 
@@ -811,7 +811,7 @@ token_t *au_to_return64(char status, u_int64_t ret)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_RETURN_64_TOKEN);
+	ADD_U_CHAR(dptr, AUT_RETURN64);
 	ADD_U_CHAR(dptr, status);
 	ADD_U_INT64(dptr, ret);
 
@@ -838,7 +838,7 @@ token_t *au_to_seq(long audit_count)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_SEQ_TOKEN);
+	ADD_U_CHAR(dptr, AUT_SEQ);
 	ADD_U_INT32(dptr, audit_count);
 
 	return t;
@@ -906,7 +906,7 @@ token_t *au_to_sock_inet32(struct sockaddr_in *so)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_SOCK_INET_32_TOKEN);
+	ADD_U_CHAR(dptr, AUT_SOCKINET32);
 	/*
 	 * In Darwin, sin_family is one octet, but BSM defines the token
  	 * to store two. So we copy in a 0 first.
@@ -935,7 +935,7 @@ token_t *au_to_sock_inet128(struct sockaddr_in6 *so)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_SOCK_INET_128_TOKEN);
+	ADD_U_CHAR(dptr, AUT_SOCKINET128);
 	/*
 	 * In Darwin, sin6_family is one octet, but BSM defines the token
  	 * to store two. So we copy in a 0 first.
@@ -988,7 +988,7 @@ token_t *au_to_subject32(au_id_t auid, uid_t euid, gid_t egid,
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_SUBJECT_32_TOKEN);
+	ADD_U_CHAR(dptr, AUT_SUBJECT32);
 	ADD_U_INT32(dptr, auid);
 	ADD_U_INT32(dptr, euid);
 	ADD_U_INT32(dptr, egid);
@@ -1050,7 +1050,7 @@ token_t *au_to_subject32_ex(au_id_t auid, uid_t euid,
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_SUBJECT_32_EX_TOKEN);
+	ADD_U_CHAR(dptr, AUT_SUBJECT32_EX);
 	ADD_U_INT32(dptr, auid);
 	ADD_U_INT32(dptr, euid);
 	ADD_U_INT32(dptr, egid);
@@ -1139,7 +1139,7 @@ token_t *au_to_exec_args(const char **args)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_EXEC_ARG_TOKEN);
+	ADD_U_CHAR(dptr, AUT_EXEC_ARGS);
 	ADD_U_INT32(dptr, count);
 
 	for(i =0; i< count; i++) {
@@ -1186,7 +1186,7 @@ token_t *au_to_exec_env(const char **env)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_EXEC_ENV_TOKEN);
+	ADD_U_CHAR(dptr, AUT_EXEC_ENV);
 	ADD_U_INT32(dptr, count);
 
 	for(i =0; i< count; i++) {
@@ -1224,7 +1224,7 @@ token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_HEADER_32_TOKEN);
+	ADD_U_CHAR(dptr, AUT_HEADER32);
 	ADD_U_INT32(dptr, rec_size);
 	ADD_U_CHAR(dptr, HEADER_VERSION);
 	ADD_U_INT16(dptr, e_type);
@@ -1267,7 +1267,7 @@ token_t *au_to_trailer(int rec_size)
 		return NULL;
 	}
 
-	ADD_U_CHAR(dptr, AU_TRAILER_TOKEN);
+	ADD_U_CHAR(dptr, AUT_TRAILER);
 	ADD_U_INT16(dptr, magic);
 	ADD_U_INT32(dptr, rec_size);
 
