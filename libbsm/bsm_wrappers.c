@@ -26,9 +26,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * XXX  lib_wrappers.c is a provisional name
- */
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
@@ -39,36 +36,9 @@
 #include <errno.h>
 #include <libbsm.h>
 
-/*
- * XXX  Write up in a separate white paper.
- *
-Event code		Token type; contents
-
-AUE_create_user		text; "New user [<uid>, <gid>, <shortname>, <longname>]"
-(In the following, if the short name is changing, use the old shortname
-following "Modify user.")
-AUE_modify_user		text; "Modify user <shortname> <UID|GID|SHORTNAME|LONGNAME>: old = <oldval>, new = <newval>"
-AUE_modify_password	text; "Modify password for user <shortname>"
-AUE_delete_user		text; "Delete user [<uid>, <gid>, <shortname>, <longname>]"
-AUE_enable_user		text; ???
-AUE_disable_user	text; ???
-AUE_create_group	text; "Add group [<gid>, <groupname>]"
-AUE_delete_group	text; "Delete group [<gid>, <groupname>]"
-(In the following, if the name is changing, use the old name following
-"Modify group.")
-AUE_modify_group	text; "Modify group <groupname> <GID|NAME>: old = <oldval>, new = <newval>"
-AUE_add_to_group	text; "Add user <shortname> to group <groupname>"
-AUE_remove_from_group	text; "Removed user <shortname> from group <groupname>"
-AUE_revoke_obj		text; ???
-
-
-DirectoryServices and netinfod "subatomic" events:
-AUE_auth_user		text: "Authenticated user <shortname|UID>"
- */
-
 /* These are not advertised in libbsm.h */
 int audit_set_terminal_port(dev_t *p);
-int audit_set_terminal_host(u_int32_t *m);
+int audit_set_terminal_host(uint32_t *m);
 
 int
 audit_set_terminal_port(dev_t *p)
@@ -99,7 +69,7 @@ audit_set_terminal_port(dev_t *p)
 }
 
 int
-audit_set_terminal_host(u_int32_t *m)
+audit_set_terminal_host(uint32_t *m)
 {
 	int name[2] = { CTL_KERN, KERN_HOSTID };
 	size_t len;
