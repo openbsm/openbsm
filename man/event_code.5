@@ -1,0 +1,79 @@
+.\"
+.\" Copyright (c) 2004 Tom Rhodes
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\" $FreeBSD$
+.\"
+.Dd May 1, 2005
+.Dt EVENT_CODE 5
+.Os
+.Sh NAME
+.Nm event code
+.Sh DESCRIPTION
+Known event codes in the OpenBSM implementation:
+.Pp
+.Bl -column -hang -compact ".Sy Event Code" ".Sy Token Type" ".Sy Contents"
+.It Sy Event Code Ta Sy Token Type Ta Sy Contents
+.It AUE_create_user Ta text Ta New user "[<uid>, <gid>, <shortname>, <longname>]" 
+.El
+.Pp
+If the
+.Em shortname
+is changing in the following, use the old
+.Em shortname
+with regards to modify user.
+.Pp
+.Bl  -column -hang -compact ".Sy Event Code" ".Sy Token Type" ".Sy Contents"
+.It AUE_modify_password Ta text Ta "Modify password for user <shortname>"
+.It AUE_delete_user Ta text Ta "Delete user [<uid>, <gid>, <shortname>, <longname>]"
+.It AUE_enable_user Ta text Ta "???"
+.It AUE_disable_user Ta text Ta "???"
+.It AUE_create_group Ta text Ta "Add group [<gid>, <groupname>]"
+.It AUE_delete_group Ta text Ta "Delete group [<gid>, <groupname>]"
+.El
+.Pp
+With regards to
+.Em Modify group ,
+if the name is changing then use the old name.
+.Pp
+.Bl -column -hang -compact ".Sy Event Code" ".Sy Token Type" ".Sy Contents"
+.It AUE_modify_group Ta text Ta "Modify group <groupname> <GID|NAME>: old = <oldval>, new = <newval>"
+.It AUE_add_to_group Ta text Ta "Add user <shortname> to group <groupname>"
+.It AUE_remove_from_group Ta text Ta "Removed user <shortname> from group <groupname>"
+.It AUE_revoke_obj Ta text Ta ???
+.El
+.Pp
+DirectoryServices and netinfod "subatomic" events:
+.Pp
+.Bl -column -hang -compact ".Sy Event Code" ".Sy Token Type" ".Sy Contents"
+.It AUE_auth_user Ta text Ta "Authenticated user <shortname|UID>"
+.El
+.Sh SEE ALSO
+.Sh STANDARDS
+.Sh AUTHORS
+This manual page was written by
+.An Tom Rhodes Aq trhodes@FreeBSD.org
+and is made up of content found in the
+.Pa bsm_wrappers.c
+file.

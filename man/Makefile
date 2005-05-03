@@ -14,6 +14,7 @@ MAN=	audit.2								\
 	audit_control.5							\
 	audit_event.5							\
 	audit_user.5							\
-	audit_warn.5
+	audit_warn.5							\
+	event_code.5
 
 .include <bsd.prog.mk>
