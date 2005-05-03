@@ -39,3 +39,5 @@ OpenBSM 1.0
   are present in records, but need to be supported.
 - Implement HEADER64, ATTR64, SUBJECT64 token types, which make it possible
   to run praudit(1) on basic Solaris BSM streams.
+- Switched to Solaris spelling of token names; Darwin spellings are now
+  deprecated and will be removed in a future version of OpenBSM.
