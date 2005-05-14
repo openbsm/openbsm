@@ -211,7 +211,7 @@ struct sockaddr_in;
 struct sockaddr_in6;
 struct sockaddr_un;
 #if defined(_KERNEL) || defined(KERNEL)
-struct vattr;
+struct vnode_au_info;
 #endif
 
 int			au_open(void);
@@ -219,11 +219,22 @@ int			au_write(int d, token_t *m);
 int			au_close(int d, int keep, short event);
 int			au_close_buffer(int d, short event, u_char *buffer,
 					size_t *buflen);
+#if defined(KERNEL) || defined(_KERNEL)
+token_t			*au_to_file(char *file, struct timeval tm);
+#else
 token_t			*au_to_file(char *file);
+#endif
+#if defined(KERNEL) || defined(_KERNEL)
+token_t			*au_to_header(int rec_size, au_event_t e_type,
+					au_emod_t e_mod, struct timeval tm);
+token_t			*au_to_header32(int rec_size, au_event_t e_type,
+					au_emod_t e_mod, struct timeval tm);
+#else
 token_t			*au_to_header(int rec_size, au_event_t e_type,
 					au_emod_t e_mod);
 token_t			*au_to_header32(int rec_size, au_event_t e_type,
 					au_emod_t e_mod);
+#endif
 token_t			*au_to_header64(int rec_size, au_event_t e_type,
 					au_emod_t e_mod);
 token_t			*au_to_me(void);
@@ -232,9 +243,9 @@ token_t			*au_to_arg(char n, char *text, u_int32_t v);
 token_t			*au_to_arg32(char n, char *text, u_int32_t v);
 token_t			*au_to_arg64(char n, char *text, u_int64_t v);
 #if defined(_KERNEL) || defined(KERNEL)
-token_t			*au_to_attr(struct vattr *attr);
-token_t			*au_to_attr32(struct vattr *attr);
-token_t			*au_to_attr64(struct vattr *attr);
+token_t			*au_to_attr(struct vnode_au_info *vni);
+token_t			*au_to_attr32(struct vnode_au_info *vni);
+token_t			*au_to_attr64(struct vnode_au_info *vni);
 #endif
 token_t			*au_to_data(char unit_print, char unit_type,
 				char unit_count, char *p);

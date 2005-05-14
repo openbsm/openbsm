@@ -36,6 +36,7 @@
 #endif /* __APPLE__*/
 #include <sys/socket.h>
 #include <sys/time.h>
+#include <sys/un.h>
 
 #include <sys/ipc.h>
 
@@ -144,7 +145,7 @@ token_t *au_to_arg(char n, char *text, u_int32_t v)
 	return au_to_arg32(n, text, v);
 }
 
-#if defined(_KERNEL) || defined(_KERNEL)
+#if defined(_KERNEL) || defined(KERNEL)
 /*
  * token ID                1 byte
  * file access mode        4 bytes
@@ -154,14 +155,14 @@ token_t *au_to_arg(char n, char *text, u_int32_t v)
  * node ID                 8 bytes
  * device                  4 bytes/8 bytes (32-bit/64-bit)
  */
-token_t *au_to_attr32(struct vattr *attr)
+token_t *au_to_attr32(struct vnode_au_info *vni)
 {
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t pad0_16 = 0;
 	u_int16_t pad0_32 = 0;
 
-	if(attr == NULL) {
+	if(vni == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
@@ -179,11 +180,11 @@ token_t *au_to_attr32(struct vattr *attr)
 	 * as 2 bytes; BSM defines 4 so pad with 0
 	 */
 	ADD_U_INT16(dptr, pad0_16);
-	ADD_U_INT16(dptr, attr->va_mode);
+	ADD_U_INT16(dptr, vni->vn_mode);
 
-	ADD_U_INT32(dptr, attr->va_uid);
-	ADD_U_INT32(dptr, attr->va_gid);
-	ADD_U_INT32(dptr, attr->va_fsid);
+	ADD_U_INT32(dptr, vni->vn_uid);
+	ADD_U_INT32(dptr, vni->vn_gid);
+	ADD_U_INT32(dptr, vni->vn_fsid);
 
 	/*
 	 * Some systems use 32-bit file ID's, other's use 64-bit file IDs.
@@ -191,29 +192,29 @@ token_t *au_to_attr32(struct vattr *attr)
 	 * could pick this out at compile-time, it would be better, so as to
 	 * avoid the else case below.
 	 */
-	if (sizeof(attr->va_fileid) == sizeof(uint32_t)) {
+	if (sizeof(vni->vn_fileid) == sizeof(uint32_t)) {
 		ADD_U_INT32(dptr, pad0_32);
-		ADD_U_INT32(dptr, attr->va_fileid);
-	} else if (sizeof(attr->va_fileid) == sizeof(uint64_t)) {
-		ADD_U_INT64(dptr, attr->va_fileid);
+		ADD_U_INT32(dptr, vni->vn_fileid);
+	} else if (sizeof(vni->vn_fileid) == sizeof(uint64_t)) {
+		ADD_U_INT64(dptr, vni->vn_fileid);
 	} else {
 		ADD_U_INT64(dptr, 0LL);
 	}
 
-	ADD_U_INT32(dptr, attr->va_rdev);
+	ADD_U_INT32(dptr, vni->vn_dev);
 
 	return t;
 }
 
-token_t *au_to_attr64(struct vattr *attr)
+token_t *au_to_attr64(struct vnode_au_info *vni)
 {
 	errno = ENOTSUP;
 	return NULL;
 }
 
-token_t *au_to_attr(struct vattr *attr)
+token_t *au_to_attr(struct vnode_au_info *vni)
 {
-	return au_to_attr32(attr);
+	return au_to_attr32(vni);
 
 }
 #endif /* !(defined(_KERNEL) || defined(KERNEL) */
@@ -553,18 +554,24 @@ token_t *au_to_opaque(char *data, u_int16_t bytes)
  * file name len			2 bytes
  * file pathname			N bytes + 1 terminating NULL byte
  */
+#if defined(KERNEL) || defined(_KERNEL)
+token_t *au_to_file(char *file, struct timeval tm)
+#else
 token_t *au_to_file(char *file)
+#endif
 {
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t filelen;
+	u_int32_t timems;
+#if !defined(KERNEL) && !defined(_KERNEL)
 	struct timeval tm;
 	struct timezone tzp;
-	u_int32_t timems;
 
 	if(gettimeofday(&tm, &tzp) == -1) {
 		return NULL;
 	}
+#endif
 
 	if(file == NULL) {
 		errno = EINVAL;
@@ -884,6 +891,33 @@ token_t *au_to_socket_ex_128(u_int16_t lp, u_int16_t rp,
 	return NULL;
 }
 
+/*
+ * token ID                1 byte
+ * socket family           2 bytes
+ * path                    104 bytes
+ */
+token_t *au_to_sock_unix(struct sockaddr_un *so)
+{
+	token_t *t;
+	u_char *dptr;
+
+	if(so == NULL) {
+		return NULL;
+	}	
+
+	GET_TOKEN_AREA(t, dptr, 107);
+	if(t == NULL) {
+		return NULL;
+	}
+						 
+	ADD_U_CHAR(dptr, AU_SOCK_UNIX_TOKEN);
+	/* BSM token has two bytes for family */
+	ADD_U_CHAR(dptr, 0);
+	ADD_U_CHAR(dptr, so->sun_family);
+	ADD_STRING(dptr, so->sun_path, strlen(so->sun_path));
+
+	return t;
+}
 
 /*
  * token ID                1 byte
@@ -1085,6 +1119,7 @@ token_t *au_to_subject_ex(au_id_t auid, uid_t euid,
 			pid, sid, tid);
 }
 
+#if !defined(_KERNEL) && !defined(KERNEL)
 /*
  * Collects audit information for the current process
  * and creates a subject token from it
@@ -1103,6 +1138,7 @@ token_t *au_to_me(void)
 		&auinfo.ai_termid);
 
 }
+#endif
 
 /*
  * token ID				1 byte
@@ -1207,17 +1243,24 @@ token_t *au_to_exec_env(const char **env)
  * seconds of time         4 bytes/8 bytes (32-bit/64-bit value)
  * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
  */
+#if defined(KERNEL) || defined(_KERNEL)
 token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
+	struct timeval tm)
+#else
+token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
+#endif
 {
 	token_t *t;
 	u_char *dptr = NULL;
+	u_int32_t timems;
+#if !defined(KERNEL) && !defined(_KERNEL)
 	struct timeval tm;
 	struct timezone tzp;
-	u_int32_t timems;
 
 	if(gettimeofday(&tm, &tzp) == -1) {
 		return NULL;
 	}
+#endif
 
 	GET_TOKEN_AREA(t, dptr, 18);
 	if(t == NULL) {
