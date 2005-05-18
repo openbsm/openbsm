@@ -1244,7 +1244,7 @@ token_t *au_to_exec_env(const char **env)
  * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
  */
 #if defined(KERNEL) || defined(_KERNEL)
-token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
+token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod,
 	struct timeval tm)
 #else
 token_t *au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
