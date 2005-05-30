@@ -682,6 +682,9 @@ int main(int argc, char **argv)
 		}
 	}
 
+	if (optind + 2 != argc)
+		usage("Unknown option");
+
 	/* For each of the files passed as arguments dump the contents */
 	if(optind == argc) {
 		// XXX should look in the default directory for audit trail files
