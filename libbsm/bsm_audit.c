@@ -40,20 +40,19 @@
 #include <string.h>
 
 /* array of used descriptors */
-static au_record_t* open_desc_table[MAX_AUDIT_RECORDS];
+static au_record_t	*open_desc_table[MAX_AUDIT_RECORDS];
 
 /* The current number of active record descriptors */
-static int bsm_rec_count = 0;
+static int	bsm_rec_count = 0;
+
 /*
- * Records that can be recycled are maintained in the list given below
- * The maximum number of elements that can be present in this list is
- * bounded by MAX_AUDIT_RECORDS. Memory allocated for these records are never
- * freed
+ * Records that can be recycled are maintained in the list given below.  The
+ * maximum number of elements that can be present in this list is bounded by
+ * MAX_AUDIT_RECORDS.  Memory allocated for these records are never freed.
  */
+static LIST_HEAD(, au_record)	bsm_free_q;
 
-static LIST_HEAD(, au_record) bsm_free_q;
-
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /*
  * This call frees a token_t and its internal data.
@@ -70,27 +69,25 @@ au_free_token(token_t *tok)
 }
 
 /*
- * This call reserves memory for the audit record.
- * Memory must be guaranteed before any auditable event can be
- * generated.
- * The au_record_t structure maintains a reference to the
- * memory allocated above and also the list of tokens associated
- * with this record
- * Descriptors are recyled once the records are added to the audit
- * trail following au_close().
+ * This call reserves memory for the audit record.  Memory must be guaranteed
+ * before any auditable event can be generated.  The au_record_t structure
+ * maintains a reference to the memory allocated above and also the list of
+ * tokens associated with this record.  Descriptors are recyled once the
+ * records are added to the audit trail following au_close().
  */
-int au_open(void)
+int
+au_open(void)
 {
 	au_record_t *rec = NULL;
 
 	pthread_mutex_lock(&mutex);
 
-	if(bsm_rec_count == 0) {
+	if (bsm_rec_count == 0)
 		LIST_INIT(&bsm_free_q);
-	}
 
 	/*
-	 * Find an unused descriptor, remove it from the free list, mark as used
+	 * Find an unused descriptor, remove it from the free list, mark as
+	 * used.
 	 */
 	if (!LIST_EMPTY(&bsm_free_q)) {
 		rec = LIST_FIRST(&bsm_free_q);
@@ -100,31 +97,31 @@ int au_open(void)
 
 	pthread_mutex_unlock(&mutex);
 
-	if(rec == NULL) {
+	if (rec == NULL) {
 		/*
-		 * Create a new au_record_t if no descriptors are available
+		 * Create a new au_record_t if no descriptors are available.
 		 */
-		rec = (au_record_t *) malloc (sizeof(au_record_t));
-		if(rec == NULL) {
-			return -1; /* Failed */
-		}
-		rec->data = (u_char *) malloc (MAX_AUDIT_RECORD_SIZE * sizeof(u_char));
-		if(rec->data == NULL) {
+		rec = malloc (sizeof(au_record_t));
+		if (rec == NULL)
+			return (-1);
+
+		rec->data = malloc (MAX_AUDIT_RECORD_SIZE * sizeof(u_char));
+		if (rec->data == NULL) {
 			free(rec);
 			errno = ENOMEM;
-			return -1;
+			return (-1);
 		}
 
 		pthread_mutex_lock(&mutex);
 
-		if(bsm_rec_count == MAX_AUDIT_RECORDS) {
+		if (bsm_rec_count == MAX_AUDIT_RECORDS) {
 			pthread_mutex_unlock(&mutex);
 			free(rec->data);
 			free(rec);
 
 			/* XXX We need to increase size of MAX_AUDIT_RECORDS */
 			errno = ENOMEM;
-			return -1;
+			return (-1);
 		}
 		rec->desc = bsm_rec_count;
 		open_desc_table[bsm_rec_count] = rec;
@@ -140,29 +137,30 @@ int au_open(void)
 	rec->len = 0;
 	rec->used = 1;
 
-	return rec->desc;
+	return (rec->desc);
 }
 
 /*
- * Store the token with the record descriptor
+ * Store the token with the record descriptor.
  *
  * Don't permit writing more to the buffer than would let the trailer be
  * appended later.
  */
-int au_write(int d, token_t *tok)
+int
+au_write(int d, token_t *tok)
 {
 	au_record_t *rec;
 
-	if(tok == NULL) {
+	if (tok == NULL) {
 		errno = EINVAL;
-		return -1; /* Invalid Token */
+		return (-1); /* Invalid Token */
 	}
 
 	/* Write the token to the record descriptor */
 	rec = open_desc_table[d];
-	if((rec == NULL) || (rec->used == 0)) {
+	if ((rec == NULL) || (rec->used == 0)) {
 		errno = EINVAL;
-		return -1; /* Invalid descriptor */
+		return (-1); /* Invalid descriptor */
 	}
 
 	if (rec->len + tok->len + BSM_TRAILER_SIZE > MAX_AUDIT_RECORD_SIZE) {
@@ -181,13 +179,13 @@ int au_write(int d, token_t *tok)
 
 	/* Token should not be available after this call */
 	tok = NULL;
-	return 0; /* Success */
+	return (0); /* Success */
 }
 
 /*
- * Assemble an audit record out of its tokens, including allocating header
- * and trailer tokens.  Does not free the token chain, which must be done by
- * the caller if desirable.
+ * Assemble an audit record out of its tokens, including allocating header and
+ * trailer tokens.  Does not free the token chain, which must be done by the
+ * caller if desirable.
  *
  * XXX: Assumes there is sufficient space for the header and trailer.
  */
@@ -227,8 +225,8 @@ au_assemble(au_record_t *rec, short event)
 }
 
 /*
- * Given a record that is no longer of interest, tear it down and convert to
- * a free record.
+ * Given a record that is no longer of interest, tear it down and convert to a
+ * free record.
  */
 static void
 au_teardown(au_record_t *rec)
@@ -254,9 +252,8 @@ au_teardown(au_record_t *rec)
 }
 
 /*
- * Add the header token, identify any missing tokens
- * Write out the tokens to the record memory and finally,
- * call audit
+ * Add the header token, identify any missing tokens.  Write out the tokens to
+ * the record memory and finally, call audit.
  */
 int au_close(int d, int keep, short event)
 {
@@ -265,9 +262,9 @@ int au_close(int d, int keep, short event)
 	int retval = 0;
 
 	rec = open_desc_table[d];
-	if((rec == NULL) || (rec->used == 0)) {
+	if ((rec == NULL) || (rec->used == 0)) {
 		errno = EINVAL;
-		return -1; /* Invalid descriptor */
+		return (-1); /* Invalid descriptor */
 	}
 
 	if (!keep) {
@@ -291,8 +288,8 @@ int au_close(int d, int keep, short event)
 
 	if (au_assemble(rec, event) < 0) {
 		/*
-		 * XXXRW: This is also not supposed to happen, but might if
-		 * we are unable to allocate header and trailer memory.
+		 * XXXRW: This is also not supposed to happen, but might if we
+		 * are unable to allocate header and trailer memory.
 		 */
 		retval = -1;
 		goto cleanup;
@@ -304,7 +301,7 @@ int au_close(int d, int keep, short event)
 cleanup:
 	/* CLEANUP */
 	au_teardown(rec);
-	return retval;
+	return (retval);
 }
 
 /*
@@ -338,15 +335,14 @@ au_close_buffer(int d, short event, u_char *buffer, size_t *buflen)
 	}
 
 	if (au_assemble(rec, event) < 0) {
-		/*
-		 * XXXRW: See au_close() comment.
-		 */
+		/* XXXRW: See au_close() comment. */
 		retval = -1;
 		goto cleanup;
 	}
 
 	memcpy(buffer, rec->data, rec->len);
 	*buflen = rec->len;
+
 cleanup:
 	au_teardown(rec);
 	return (retval);
