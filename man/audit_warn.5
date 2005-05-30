@@ -29,7 +29,7 @@
 .Os "Mac OS X"
 .Sh NAME
 .Nm audit_warn
-.Nd alert when audit daemon issues warnings
+.Nd "alert when audit daemon issues warnings"
 .Sh DESCRIPTION
 .Nm 
 runs when 
@@ -42,8 +42,9 @@ is a script whose first parameter is the type of warning; the script
 appends its arguments to 
 .Pa /etc/security/audit_messages .
 Administrators may replace this script: a more comprehensive one would take
-different actions based on the type of warning.  For example, a low-space
-warning could result in an email message being sent to the administrator.  
+different actions based on the type of warning.
+For example, a low-space warning
+could result in an email message being sent to the administrator.  
 .Sh FILES
 .Bl -tag -width "/etc/security/audit_warn" -compact
 .It Pa /etc/security/audit_warn

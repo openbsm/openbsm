@@ -29,37 +29,44 @@
 .Os "Mac OS X"
 .Sh NAME
 .Nm audit_control
-.Nd contains audit system parameters
+.Nd "contains audit system parameters"
 .Sh DESCRIPTION
 The
 .Nm 
-file contains several audit system parameters.  Each line of this file is of
-the form parameter:value.  The parameters are:
+file contains several audit system parameters.
+Each line of this file is of the form:
+.Dl parameter:value.
+The parameters are:
 .Bl -tag -width Ds
-.It Nm dir
-The directory where audit log files are stored.  There may be more than one of
-these entries.  Changes to this entry can only be enacted by restarting the
-audit system.  See
+.It Pa dir
+The directory where audit log files are stored.
+There may be more than one of these entries.
+Changes to this entry can only be enacted by restarting the
+audit system.
+See
 .Xr audit 1
 for a description of how to restart the audit system.
-.It Nm flags
+.It Va flags
 Specifies which audit event classes are audited for all users.  
 .Xr audit_user 5
-describes how to audit events for individual users.  See the
-information below for the format of the audit flags.
-.It Nm naflags
+describes how to audit events for individual users.
+See the information below for the format of the audit flags.
+.It Va naflags
 Contains the audit flags that define what classes of events are audited when
 an action cannot be attributed to a specific user.
-.It Nm minfree
-The minimum free space required on the file system audit logs are being written to.  When the free space falls below this limit a warning will be issued.  Not
-currently used as the value of 20 percent is chosen by the kernel.
+.It Va minfree
+The minimum free space required on the file system audit logs are being written to.
+When the free space falls below this limit a warning will be issued.
+Not currently used as the value of 20 percent is chosen by the kernel.
 .El
 .Sh AUDIT FLAGS
 Audit flags are a comma delimited list of audit classes as defined in the
-audit_class file.  (See
+audit_class file.
+See
 .Xr audit_class 5
-for details.)  Event classes may be preceded by a prefix which changes their
-interpretation.  The following prefixes may be used for each class:
+for details.
+Event classes may be preceded by a prefix which changes their interpretation.
+The following prefixes may be used for each class:
 .Bl -tag -width Ds -compact -offset indent
 .It +
 Record successful events
@@ -84,7 +91,7 @@ naflags:lo
 .Ed
 .Pp
 The
-.Nm flags
+.Va flags
 parameter above specifies the system-wide mask corresponding to login/logout
 events, administrative events, and all failures except for failures in creating
 or closing files.

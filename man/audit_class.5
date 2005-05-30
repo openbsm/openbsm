@@ -29,14 +29,16 @@
 .Os "Mac OS X"
 .Sh NAME
 .Nm audit_class
-.Nd contains audit event class descriptions
+.Nd "contains audit event class descriptions"
 .Sh DESCRIPTION
 The
 .Nm 
-file contains descriptions of the auditable event classes on the system.  Each
-auditable event is a member of an event class.  Each line maps an audit event 
-mask (bitmap) to a class and a description.  Entries are of the form 
-classmask:eventclass:description.
+file contains descriptions of the auditable event classes on the system.
+Each auditable event is a member of an event class.
+Each line maps an audit event 
+mask (bitmap) to a class and a description.
+Entries are of the form 
+.Dl classmask:eventclass:description.
 .Pp
 Example entries in this file are:
 .Bd -literal -offset indent

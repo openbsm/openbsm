@@ -29,21 +29,29 @@
 .Os "Mac OS X"
 .Sh NAME
 .Nm audit_user
-.Nd specifies events to be audited for the given users
+.Nd "specifies events to be audited for the given users"
 .Sh DESCRIPTION
 The
 .Nm 
 file specifies which audit event classes are to be audited for the given users.
 If specified, these flags are combined with the system-wide audit flags in the
-audit_control file to determine which classes of events to audit for that user.
+.Pa audit_control
+file to determine which classes of events to audit for that user.
 These settings take effect when the user logs in.
 .Pp
-Each line maps a user name to a list of classes that should be audited and a list of classes that should not be audited. 
-Entries are of the form username:alwaysaudit:neveraudit, where alwaysaudit
-is a set of event classes that are always audited, and neveraudit
-is a set of event classes that should not be audited.  These sets can indicate
+Each line maps a user name to a list of classes that should be audited and a
+list of classes that should not be audited. 
+Entries are of the form of
+.Dl username:alwaysaudit:neveraudit ,
+where
+.Vt alwaysaudit
+is a set of event classes that are always audited, and
+.Vt neveraudit
+is a set of event classes that should not be audited.
+These sets can indicate
 the inclusion or exclusion of multiple classes, and whether to audit successful
-or failed events.  See
+or failed events.
+See
 .Xr audit_control 5
 for more information about audit flags.
 .Pp
@@ -54,8 +62,11 @@ jdoe:-fc,ad:+fw
 .Ed
 .Pp
 These settings would cause login and administrative events that succeed on
-behalf of user root to be audited.  No failure events are audited.  For the
-user jdoe, failed file creation events are audited, administrative events are
+behalf of user root to be audited.
+No failure events are audited.
+For the user
+.Em jdoe ,
+failed file creation events are audited, administrative events are
 audited, and successful file write events are never audited.
 .Sh FILES
 .Bl -tag -width "/etc/security/audit_user" -compact

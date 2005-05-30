@@ -60,8 +60,7 @@ The BSM file format defines specific token orders for each record event type;
 however, some variation may occur depending on the operating system in use,
 what system options, such as mandatory access control, are present.
 .Pp
-.Pp
-This man page documents the common token types and their binary format, and
+This manual page documents the common token types and their binary format, and
 is intended for reference purposes only.
 It is recommended that application programmers use the
 .Xr libbsm 3
@@ -539,7 +538,7 @@ token ...
 The
 .Dv seq
 token contains a unique and monotonically increasing audit event sequence ID.
-Due to the limited range (32 bits), serial number arithmetic (and caution)
+Due to the limited range of 32 bits, serial number arithmetic and caution
 should be used when comparing sequence numbers.
 .Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description

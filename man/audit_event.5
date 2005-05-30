@@ -29,14 +29,18 @@
 .Os "Mac OS X"
 .Sh NAME
 .Nm audit_event
-.Nd contains audit event descriptions
+.Nd "contains audit event descriptions"
 .Sh DESCRIPTION
 The
 .Nm 
-file contains descriptions of the auditable events on the system.  Each line
-maps an audit event number to a name, a description, and a class.  Entries
-are of the form eventnum:eventname:description:eventclass.  Each eventclass
-should have a corresponding entry in the audit_class file.  See 
+file contains descriptions of the auditable events on the system.
+Each line maps an audit event number to a name, a description, and a class.
+Entries are of the form
+.Dl eventnum:eventname:description:eventclass .
+Each
+.Vt eventclass
+should have a corresponding entry in the audit_class file.
+See 
 .Xr audit_class 5
 for details.
 .Pp
