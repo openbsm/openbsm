@@ -28,11 +28,7 @@
 
 /* 
  * Tool used to merge and select audit records from audit trail files 
- */   
-
-/*
- * auditreaduce [options] [audit-trail-file...]
- */   
+ */    
 
 /*
  * XXX Currently we do not support merging of records from multiple
@@ -59,7 +55,7 @@ extern int optind, optopt, opterr,optreset;
 au_mask_t maskp; /* Used while selecting based on class */
 time_t p_atime;/* select records created after this time */
 time_t p_btime;/* select records created before this time */
-u_int16_t p_evtype; /* The event that we are searching for */
+uint16_t p_evtype; /* The event that we are searching for */
 int p_auid; /* audit id */ 
 int p_euid; /* effective user id */
 int p_egid; /* effective group id */ 
@@ -76,7 +72,7 @@ char *p_shmobj = NULL;
 char *p_sockobj = NULL; 
 
 
-u_int32_t opttochk = 0;
+uint32_t opttochk = 0;
 
 
 static void usage(const char *msg)
@@ -193,7 +189,7 @@ static int select_subid(int subid)
 /*
  * Check if object's pid maches the given pid
  */ 
-static int select_pidobj(u_int32_t pid) 
+static int select_pidobj(uint32_t pid) 
 {
 	if(ISOPTSET(opttochk, OPT_op)) {
 		if(pid != strtol(p_pidobj, (char **)NULL, 10)) {
@@ -207,7 +203,7 @@ static int select_pidobj(u_int32_t pid)
  * Check if the given ipc object with the given type matches the
  * selection criteria
  */
-static int select_ipcobj(u_char type, u_int32_t id, u_int32_t *optchkd)
+static int select_ipcobj(u_char type, uint32_t id, uint32_t *optchkd)
 {
 	if(type == AT_IPC_MSG) {
 		SETOPT((*optchkd), OPT_om);
@@ -251,7 +247,7 @@ static int select_ipcobj(u_char type, u_int32_t id, u_int32_t *optchkd)
 /*
  * Check if the file name matches selection criteria
  */
-static int select_filepath(char *path, u_int32_t *optchkd)
+static int select_filepath(char *path, uint32_t *optchkd)
 {
 	char *loc;
 
@@ -286,7 +282,7 @@ static int select_filepath(char *path, u_int32_t *optchkd)
  * class, 
  * event 
  */
-static int select_hdr32(tokenstr_t tok, u_int32_t *optchkd)
+static int select_hdr32(tokenstr_t tok, uint32_t *optchkd)
 {
 	SETOPT((*optchkd), (OPT_A | OPT_a | OPT_b | OPT_c | OPT_m));
 
@@ -335,7 +331,7 @@ static int select_hdr32(tokenstr_t tok, u_int32_t *optchkd)
  * ruid, 
  * process id
  */
-static int select_proc32(tokenstr_t tok, u_int32_t *optchkd)
+static int select_proc32(tokenstr_t tok, uint32_t *optchkd)
 {
 	SETOPT((*optchkd), (OPT_u | OPT_e | OPT_f | OPT_g | OPT_r | OPT_op));
 
@@ -371,7 +367,7 @@ static int select_proc32(tokenstr_t tok, u_int32_t *optchkd)
  * ruid, 
  * subject id
  */
-static int select_subj32(tokenstr_t tok, u_int32_t *optchkd)
+static int select_subj32(tokenstr_t tok, uint32_t *optchkd)
 {
 	SETOPT((*optchkd), (OPT_u | OPT_e | OPT_f | OPT_g | OPT_r | OPT_j));
 
@@ -407,7 +403,7 @@ static int select_records(FILE *fp)
 	int reclen;
    	int bytesread;
 	int selected;
-	u_int32_t optchkd;
+	uint32_t optchkd;
 
 	int err = 0;
 

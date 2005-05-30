@@ -29,7 +29,7 @@
 .Os
 .Sh NAME
 .Nm auditreduce
-.Nd select records from audit trail files
+.Nd "select records from audit trail files"
 .Sh SYNOPSIS
 .Nm auditreduce
 .Op Fl A
@@ -50,11 +50,15 @@
 The
 .Nm 
 utility selects records from the audit trail files based on the specified
-criteria.  Matching audit records are printed to the standard output in
-their raw binary form.  If no filename is specified, the standard input is used
-by default.  Use the 
+criteria.
+Matching audit records are printed to the standard output in
+their raw binary form.
+If no filename is specified, the standard input is used
+by default.
+Use the 
 .Nm praudit
-utility to print the selected audit records in human-readable form.  See
+utility to print the selected audit records in human-readable form.
+See
 .Xr praudit 1
 for more information.
 .Pp
@@ -68,12 +72,13 @@ Select records that occurred after or on the given datetime.
 Select records that occurred before the given datetime.
 .It Fl c Ar flags
 Select records matching the given audit classes specified as a comma
-separated list of audit flags.  See
+separated list of audit flags.
+See
 .Xr audit_control 5
 for a description of audit flags.
 .It Fl d Ar YYYYMMDD
-Select records that occurred on a given date.  This option cannot be used
-with
+Select records that occurred on a given date.
+This option cannot be used with
 .Fl a
 or
 .Fl b
@@ -90,14 +95,19 @@ Select records with the given audit id.
 .It Fl j Ar id
 Select records having a subject token with matching ID.
 .It Fl m Ar event
-Select records with the given event name or number.  See
+Select records with the given event name or number.
+See
 .Xr audit_event 5
 for a description of audit event names and numbers.
 .It Fl o Ar object=value
 .Bl -tag -width Ds
 .It Nm file
-Select records containing the given path name.  file="/usr" matches paths
-starting with usr.  file="~/usr" matches paths not starting with usr.
+Select records containing the given path name.
+file="/usr" matches paths
+starting with
+.Pa usr .
+file="~/usr" matches paths not starting with
+.Pa usr .
 .It Nm msgqid
 Select records containing the given message queue id.
 .It Nm pid
@@ -116,7 +126,9 @@ log /var/audit/20031016184719.20031017122634:
 .Nm
 -e root /var/audit/20031016184719.20031017122634
 .Pp
-To select all setlogin(2) events from that log:
+To select all
+.Xr setlogin 2
+events from that log:
 .Pp
 .Nm
 -m AUE_SETLOGIN /var/audit/20031016184719.20031017122634
