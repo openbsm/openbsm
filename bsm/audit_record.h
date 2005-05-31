@@ -155,7 +155,7 @@
 /*
  * The values for the following token ids are not defined by BSM.
  *
- * XXXRW: Not sure how to andle these in OpenBSM yet, but I'll give them
+ * XXXRW: Not sure how to handle these in OpenBSM yet, but I'll give them
  * names more consistent with Sun's BSM.  These originally came from Apple's
  * BSM.
  */
@@ -180,8 +180,8 @@
 
 /* ... and their sizes */
 #define AUR_BYTE_SIZE       sizeof(u_char)
-#define AUR_SHORT_SIZE      sizeof(u_int16_t)
-#define AUR_LONG_SIZE       sizeof(u_int32_t)
+#define AUR_SHORT_SIZE      sizeof(uint16_t)
+#define AUR_LONG_SIZE       sizeof(uint32_t)
 
 /* Modifiers for the header token */
 #define PAD_NOTATTR  0x4000   /* nonattributable event */
@@ -239,9 +239,9 @@ token_t			*au_to_header64(int rec_size, au_event_t e_type,
 					au_emod_t e_mod);
 token_t			*au_to_me(void);
 
-token_t			*au_to_arg(char n, char *text, u_int32_t v);
-token_t			*au_to_arg32(char n, char *text, u_int32_t v);
-token_t			*au_to_arg64(char n, char *text, u_int64_t v);
+token_t			*au_to_arg(char n, char *text, uint32_t v);
+token_t			*au_to_arg32(char n, char *text, uint32_t v);
+token_t			*au_to_arg64(char n, char *text, uint64_t v);
 #if defined(_KERNEL) || defined(KERNEL)
 token_t			*au_to_attr(struct vnode_au_info *vni);
 token_t			*au_to_attr32(struct vnode_au_info *vni);
@@ -251,14 +251,14 @@ token_t			*au_to_data(char unit_print, char unit_type,
 				char unit_count, char *p);
 token_t			*au_to_exit(int retval, int err);
 token_t			*au_to_groups(int *groups);
-token_t			*au_to_newgroups(u_int16_t n, gid_t *groups);
+token_t			*au_to_newgroups(uint16_t n, gid_t *groups);
 token_t			*au_to_in_addr(struct in_addr *internet_addr);
 token_t			*au_to_in_addr_ex(struct in6_addr *internet_addr);
 token_t			*au_to_ip(struct ip *ip);
 token_t			*au_to_ipc(char type, int id);
 token_t			*au_to_ipc_perm(struct ipc_perm *perm);
-token_t			*au_to_iport(u_int16_t iport);
-token_t			*au_to_opaque(char *data, u_int16_t bytes);
+token_t			*au_to_iport(uint16_t iport);
+token_t			*au_to_opaque(char *data, uint16_t bytes);
 token_t			*au_to_path(char *path);
 token_t			*au_to_process(au_id_t auid, uid_t euid, gid_t egid,
 				uid_t ruid, gid_t rgid, pid_t pid,
@@ -278,15 +278,15 @@ token_t			*au_to_process32_ex(au_id_t auid, uid_t euid,
 token_t			*au_to_process64_ex(au_id_t auid, uid_t euid,
 				gid_t egid, uid_t ruid, gid_t rgid, pid_t pid,
 				au_asid_t sid, au_tid_addr_t *tid);
-token_t			*au_to_return(char status, u_int32_t ret);
-token_t			*au_to_return32(char status, u_int32_t ret);
-token_t			*au_to_return64(char status, u_int64_t ret);
+token_t			*au_to_return(char status, uint32_t ret);
+token_t			*au_to_return32(char status, uint32_t ret);
+token_t			*au_to_return64(char status, uint64_t ret);
 token_t			*au_to_seq(long audit_count);
 #if defined(_KERNEL) || defined(KERNEL)
 token_t			*au_to_socket(struct socket *so);
-token_t			*au_to_socket_ex_32(u_int16_t lp, u_int16_t rp,
+token_t			*au_to_socket_ex_32(uint16_t lp, uint16_t rp,
 				struct sockaddr *la, struct sockaddr *ta);
-token_t			*au_to_socket_ex_128(u_int16_t lp, u_int16_t rp,
+token_t			*au_to_socket_ex_128(uint16_t lp, uint16_t rp,
 				struct sockaddr *la, struct sockaddr *ta);
 #endif
 token_t			*au_to_sock_inet(struct sockaddr_in *so);
