@@ -46,26 +46,25 @@ audit_set_terminal_port(dev_t *p)
 	struct stat st;
 
 	if (p == NULL)
-		return kAUBadParamErr;
+		return (kAUBadParamErr);
 
 	*p = NODEV;
 
 	/* for /usr/bin/login, try fstat() first */
-	if (fstat(STDIN_FILENO, &st) != 0)
-	{
-		if (errno != EBADF)
-		{
-			syslog(LOG_ERR, "fstat() failed (%s)", strerror(errno));
-			return kAUStatErr;
+	if (fstat(STDIN_FILENO, &st) != 0) {
+		if (errno != EBADF) {
+			syslog(LOG_ERR, "fstat() failed (%s)",
+			    strerror(errno));
+			return (kAUStatErr);
 		}
-		if (stat("/dev/console", &st) != 0)
-		{
-			syslog(LOG_ERR, "stat() failed (%s)", strerror(errno));
-			return kAUStatErr;
+		if (stat("/dev/console", &st) != 0) {
+			syslog(LOG_ERR, "stat() failed (%s)",
+			    strerror(errno));
+			return (kAUStatErr);
 		}
 	}
 	*p = st.st_rdev;
-	return kAUNoErr;
+	return (kAUNoErr);
 }
 
 int
@@ -75,15 +74,14 @@ audit_set_terminal_host(uint32_t *m)
 	size_t len;
 
 	if (m == NULL)
-		return kAUBadParamErr;
+		return (kAUBadParamErr);
 	*m = 0;
 	len = sizeof(*m);
-	if (sysctl(name, 2, m, &len, NULL, 0) != 0)
-	{
+	if (sysctl(name, 2, m, &len, NULL, 0) != 0) {
 		syslog(LOG_ERR, "sysctl() failed (%s)", strerror(errno));
-		return kAUSysctlErr;
+		return (kAUSysctlErr);
 	}
-	return kAUNoErr;
+	return (kAUNoErr);
 }
 
 int
@@ -92,17 +90,16 @@ audit_set_terminal_id(au_tid_t *tid)
 	int ret;
 
 	if (tid == NULL)
-		return kAUBadParamErr;
+		return (kAUBadParamErr);
 	if ((ret = audit_set_terminal_port(&tid->port)) != kAUNoErr)
-		return ret;
-	return audit_set_terminal_host(&tid->machine);
+		return (ret);
+	return (audit_set_terminal_host(&tid->machine));
 }
 
-
 /*
- * This is OK for those callers who have only one token to write.  If you
- * have multiple tokens that logically form part of the same audit record,
- * you need to use the existing au_open()/au_write()/au_close() API:
+ * This is OK for those callers who have only one token to write.  If you have
+ * multiple tokens that logically form part of the same audit record, you need
+ * to use the existing au_open()/au_write()/au_close() API:
  *
  * aufd = au_open();
  * tok = au_to_random_token_1(...);
@@ -115,65 +112,65 @@ audit_set_terminal_id(au_tid_t *tid)
  * Assumes, like all wrapper calls, that the caller has previously checked
  * that auditing is enabled via the audit_get_state() call.
  *
- * XXX  Should be more robust against bad arguments
+ * XXX: Should be more robust against bad arguments.
  */
 int
-audit_write(short event_code, token_t *subject, token_t *misctok, char
-	    retval, int errcode)
+audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
+    int errcode)
 {
-    int aufd;
-    char *func = "audit_write()";
-    token_t *rettok;
+	int aufd;
+	char *func = "audit_write()";
+	token_t *rettok;
 
-    if ((aufd = au_open()) == -1)
-    {
+	if ((aufd = au_open()) == -1) {
 		au_free_token(subject);
 		au_free_token(misctok);
 		syslog(LOG_ERR, "%s: au_open() failed", func);
-		return kAUOpenErr;
-    }
-    /* save subject */
-    if (subject && au_write(aufd, subject) == -1)
-    {
+		return (kAUOpenErr);
+	}
+
+	/* Save subject. */
+	if (subject && au_write(aufd, subject) == -1) {
 		au_free_token(subject);
 		au_free_token(misctok);
 		(void)au_close(aufd, 0, event_code);
 		syslog(LOG_ERR, "%s: write of subject failed", func);
-		return kAUWriteSubjectTokErr;
-    }
-    /* save the event-specific token */
-    if (misctok && au_write(aufd, misctok) == -1)
-    {
+		return (kAUWriteSubjectTokErr);
+	}
+
+	/* Save the event-specific token. */
+	if (misctok && au_write(aufd, misctok) == -1) {
 		au_free_token(misctok);
 		(void)au_close(aufd, 0, event_code);
 		syslog(LOG_ERR, "%s: write of caller token failed", func);
-		return kAUWriteCallerTokErr;
-    }
-    /* tokenize and save the return value */
-    if ((rettok = au_to_return32(retval, errcode)) == NULL)
-    {
+		return (kAUWriteCallerTokErr);
+	}
+
+	/* Tokenize and save the return value. */
+	if ((rettok = au_to_return32(retval, errcode)) == NULL) {
 		(void)au_close(aufd, 0, event_code);
 		syslog(LOG_ERR, "%s: au_to_return32() failed", func);
-		return kAUMakeReturnTokErr;
-    }
-    if (au_write(aufd, rettok) == -1)
-    {
+		return (kAUMakeReturnTokErr);
+	}
+
+	if (au_write(aufd, rettok) == -1) {
 		au_free_token(rettok);
 		(void)au_close(aufd, 0, event_code);
 		syslog(LOG_ERR, "%s: write of return code failed", func);
-		return kAUWriteReturnTokErr;
-    }
-    /*
-     * au_close()'s second argument is "keep": if keep == 0, the record is
-     * discarded.  We assume the caller wouldn't have bothered with this
-     * function if it hadn't already decided to keep the record.
-     */
-    if (au_close(aufd, 1, event_code) < 0)
-    {
+		return (kAUWriteReturnTokErr);
+	}
+
+	/*
+	 * au_close()'s second argument is "keep": if keep == 0, the record is
+	 * discarded.  We assume the caller wouldn't have bothered with this
+	 * function if it hadn't already decided to keep the record.
+	 */
+	if (au_close(aufd, 1, event_code) < 0) {
 		syslog(LOG_ERR, "%s: au_close() failed", func);
-		return kAUCloseErr;
-    }
-    return kAUNoErr;
+		return (kAUCloseErr);
+	}
+
+	return (kAUNoErr);
 }
 
 /*
@@ -181,21 +178,22 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char
  * assumes success; use audit_write_failure() on error.
  */
 int
-audit_write_success(short event_code, token_t *tok, au_id_t auid,
-		    uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
-		    pid_t pid, au_asid_t sid, au_tid_t *tid)
+audit_write_success(short event_code, token_t *tok, au_id_t auid, uid_t euid,
+    gid_t egid, uid_t ruid, gid_t rgid, pid_t pid, au_asid_t sid,
+    au_tid_t *tid)
 {
-    char *func = "audit_write_success()";
-    token_t *subject = NULL;
+	char *func = "audit_write_success()";
+	token_t *subject = NULL;
 
-    /* tokenize and save subject */
-    subject = au_to_subject32(auid, euid, egid, ruid, rgid, pid, sid, tid);
-    if (subject == NULL)
-    {
-	syslog(LOG_ERR, "%s: au_to_subject32() failed", func);
-	return kAUMakeSubjectTokErr;
-    }
-    return audit_write(event_code, subject, tok, 0, 0);
+	/* Tokenize and save subject. */
+	subject = au_to_subject32(auid, euid, egid, ruid, rgid, pid, sid,
+	    tid);
+	if (subject == NULL) {
+		syslog(LOG_ERR, "%s: au_to_subject32() failed", func);
+		return kAUMakeSubjectTokErr;
+	}
+
+	return (audit_write(event_code, subject, tok, 0, 0));
 }
 
 /*
@@ -205,15 +203,15 @@ audit_write_success(short event_code, token_t *tok, au_id_t auid,
 int
 audit_write_success_self(short event_code, token_t *tok)
 {
-    token_t *subject;
-    char *func = "audit_write_success_self()";
+	token_t *subject;
+	char *func = "audit_write_success_self()";
 
-    if ((subject = au_to_me()) == NULL)
-    {
-	syslog(LOG_ERR, "%s: au_to_me() failed", func);
-	return kAUMakeSubjectTokErr;
-    }
-    return audit_write(event_code, subject, tok, 0, 0);
+	if ((subject = au_to_me()) == NULL) {
+		syslog(LOG_ERR, "%s: au_to_me() failed", func);
+		return (kAUMakeSubjectTokErr);
+	}
+
+	return (audit_write(event_code, subject, tok, 0, 0));
 }
 
 /*
@@ -224,26 +222,26 @@ audit_write_success_self(short event_code, token_t *tok)
  * hard-coding -1.
  */
 int
-audit_write_failure(short event_code, char *errmsg, int errcode,
-		    au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
-		    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_t *tid)
+audit_write_failure(short event_code, char *errmsg, int errcode, au_id_t auid,
+    uid_t euid, gid_t egid, uid_t ruid, gid_t rgid, pid_t pid, au_asid_t sid,
+    au_tid_t *tid)
 {
-    char *func = "audit_write_failure()";
-    token_t *subject, *errtok;
+	char *func = "audit_write_failure()";
+	token_t *subject, *errtok;
 
-    subject = au_to_subject32(auid, euid, egid, ruid, rgid, pid, sid, tid);
-    if (subject == NULL)
-    {
-	syslog(LOG_ERR, "%s: au_to_subject32() failed", func);
-	return kAUMakeSubjectTokErr;
-    }
-    /* tokenize and save the error message */
-    if ((errtok = au_to_text(errmsg)) == NULL)
-    {
-	syslog(LOG_ERR, "%s: au_to_text() failed", func);
-	return kAUMakeTextTokErr;
-    }
-    return audit_write(event_code, subject, errtok, -1, errcode);
+	subject = au_to_subject32(auid, euid, egid, ruid, rgid, pid, sid, tid);
+	if (subject == NULL) {
+		syslog(LOG_ERR, "%s: au_to_subject32() failed", func);
+		return (kAUMakeSubjectTokErr);
+	}
+
+	/* tokenize and save the error message */
+	if ((errtok = au_to_text(errmsg)) == NULL) {
+		syslog(LOG_ERR, "%s: au_to_text() failed", func);
+		return (kAUMakeTextTokErr);
+	}
+
+	return (audit_write(event_code, subject, errtok, -1, errcode));
 }
 
 /*
@@ -256,21 +254,19 @@ audit_write_failure(short event_code, char *errmsg, int errcode,
 int
 audit_write_failure_self(short event_code, char *errmsg, int errret)
 {
-    char *func = "audit_write_failure_self()";
-    token_t *subject, *errtok;
+	char *func = "audit_write_failure_self()";
+	token_t *subject, *errtok;
 
-    if ((subject = au_to_me()) == NULL)
-    {
-	syslog(LOG_ERR, "%s: au_to_me() failed", func);
-	return kAUMakeSubjectTokErr;
-    }
-    /* tokenize and save the error message */
-    if ((errtok = au_to_text(errmsg)) == NULL)
-    {
-	syslog(LOG_ERR, "%s: au_to_text() failed", func);
-	return kAUMakeTextTokErr;
-    }
-    return audit_write(event_code, subject, errtok, -1, errret);
+	if ((subject = au_to_me()) == NULL) {
+		syslog(LOG_ERR, "%s: au_to_me() failed", func);
+		return (kAUMakeSubjectTokErr);
+	}
+	/* tokenize and save the error message */
+	if ((errtok = au_to_text(errmsg)) == NULL) {
+		syslog(LOG_ERR, "%s: au_to_text() failed", func);
+		return (kAUMakeTextTokErr);
+	}
+	return (audit_write(event_code, subject, errtok, -1, errret));
 }
 
 /*
@@ -281,29 +277,23 @@ audit_write_failure_self(short event_code, char *errmsg, int errret)
  * that auditing is enabled via the audit_get_state() call.
  */
 int
-audit_write_failure_na(short event_code, char *errmsg, int errret,
-		       uid_t euid, uid_t egid, pid_t pid, au_tid_t *tid)
+audit_write_failure_na(short event_code, char *errmsg, int errret, uid_t euid,
+    uid_t egid, pid_t pid, au_tid_t *tid)
 {
-    return audit_write_failure(event_code, errmsg, errret, -1, euid,
-			       egid, -1, -1, pid, -1, tid);
-}
 
+	return (audit_write_failure(event_code, errmsg, errret, -1, euid,
+	    egid, -1, -1, pid, -1, tid));
+}
 
 /* END OF au_write() WRAPPERS */
 
 #ifdef __APPLE__
 void
-audit_token_to_au32(
-	audit_token_t	atoken,
-	uid_t			*auidp,
-	uid_t			*euidp,
-	gid_t			*egidp,
-	uid_t			*ruidp,
-	gid_t			*rgidp,
-	pid_t			*pidp,
-	au_asid_t		*asidp,
-	au_tid_t		*tidp)
+audit_token_to_au32(audit_token_t atoken, uid_t *auidp, uid_t *euidp,
+    gid_t *egidp, uid_t *ruidp, gid_t *rgidp, pid_t *pidp, au_asid_t *asidp,
+    au_tid_t *tidp)
 {
+
 	if (auidp != NULL)
 		*auidp = (uid_t)atoken.val[0];
 	if (euidp != NULL)
