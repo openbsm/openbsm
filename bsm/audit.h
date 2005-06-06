@@ -32,8 +32,11 @@
 /*
  * Triggers for the audit daemon
  */
-#define AUDIT_TRIGGER_LOW_SPACE	1
-#define AUDIT_TRIGGER_FILE_FULL	2
+#define AUDIT_TRIGGER_LOW_SPACE		1
+#define AUDIT_TRIGGER_OPEN_NEW		2
+#define AUDIT_TRIGGER_READ_FILE		3
+#define AUDIT_TRIGGER_CLOSE_AND_DIE	4
+#define AUDIT_TRIGGER_NO_SPACE		5
 
 /*
  * Pre-defined audit IDs
@@ -145,6 +148,13 @@
 #define AQ_MAXBUFSZ	1048576
 
 #define	AU_FS_MINFREE	20   /* default min filesystem freespace, in percent */
+
+/*
+ * auditctl(2) commands
+ */
+#define AC_SETLOGFILE	1
+#define AC_SHUTDOWN	2
+#define AC_SENDTRIGGER	3
 
 __BEGIN_DECLS
 
@@ -281,7 +291,7 @@ typedef struct au_evclass_map au_evclass_map_t;
 
 int audit (const void *, int);
 int auditon (int, void *, int);
-int auditctl (const char *);
+int auditctl (int, const void *, u_int);
 int getauid (au_id_t *);
 int setauid (const au_id_t *);
 int getaudit (struct auditinfo *);
