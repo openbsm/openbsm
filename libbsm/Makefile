@@ -24,7 +24,8 @@ SRCS=	bsm_audit.c							\
 	bsm_user.c							\
 	bsm_wrappers.c
 
-INCS=	libbsm.h
+INCS=		libbsm.h
+INCSDIR=	${INCLUDEDIR}/${LIB}
 
 MAN=	libbsm.3							\
 	au_class.3							\
@@ -116,5 +117,8 @@ MLINKS=	libbsm.3 bsm.3							\
 	au_token.3 au_to_header32.3					\
 	au_token.3 au_to_header64.3					\
 	au_token.3 au_to_trailer.3
+
+beforeinstall:
+	mkdir ${INCSDIR}
 
 .include <bsd.lib.mk>
