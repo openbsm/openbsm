@@ -119,6 +119,9 @@ MLINKS=	libbsm.3 bsm.3							\
 	au_token.3 au_to_trailer.3
 
 beforeinstall:
-	mkdir ${INCSDIR}
+	if test -d ${INCSDIR}; then					\
+	else								\
+		mkdir ${INCSDIR};					\
+	fi;
 
 .include <bsd.lib.mk>
