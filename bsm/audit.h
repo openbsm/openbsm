@@ -149,13 +149,6 @@
 
 #define	AU_FS_MINFREE	20   /* default min filesystem freespace, in percent */
 
-/*
- * auditctl(2) commands
- */
-#define AC_SETLOGFILE	1
-#define AC_SHUTDOWN	2
-#define AC_SENDTRIGGER	3
-
 __BEGIN_DECLS
 
 typedef uid_t au_id_t;
@@ -291,7 +284,7 @@ typedef struct au_evclass_map au_evclass_map_t;
 
 int audit (const void *, int);
 int auditon (int, void *, int);
-int auditctl (int, const void *, u_int);
+int auditctl (const char *);
 int getauid (au_id_t *);
 int setauid (const au_id_t *);
 int getaudit (struct auditinfo *);
