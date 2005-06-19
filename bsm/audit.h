@@ -32,11 +32,18 @@
 /*
  * Triggers for the audit daemon
  */
+#define AUDIT_TRIGGER_MIN		1
 #define AUDIT_TRIGGER_LOW_SPACE		1
 #define AUDIT_TRIGGER_OPEN_NEW		2
 #define AUDIT_TRIGGER_READ_FILE		3
 #define AUDIT_TRIGGER_CLOSE_AND_DIE	4
 #define AUDIT_TRIGGER_NO_SPACE		5
+#define AUDIT_TRIGGER_MAX		5
+
+/*
+ * File that will be read for trigger events from the kernel
+ */
+#define AUDIT_TRIGGER_FILE	"/dev/audit"
 
 /*
  * Pre-defined audit IDs
@@ -122,6 +129,7 @@
 #define A_GETPINFO_ADDR	28
 #define A_GETKAUDIT	29
 #define A_SETKAUDIT	30
+#define A_SENDTRIGGER	31
 
 /*
  * Audit policy controls.
