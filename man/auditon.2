@@ -212,11 +212,27 @@ Return
 .It Dv A_GETCOND
 Return the current auditing condition.
 .Ft *data
-must point to an long value which will be set to
+must point to a long value which will be set to
 the current audit condition, either
 .Dv AUC_AUDITING
 or
 .Dv AUC_NOAUDIT .
+.It Dv A_SENDTRIGGER
+Send a trigger to the audit daemon.
+.Fr *data
+must point to a long value set to one of the acceptable
+trigger values:
+.Dv AUDIT_TRIGGER_LOW_SPACE
+(low disk space where the audit log resides),
+.Dv AUDIT_TRIGGER_OPEN_NEW
+(open a new audit log file),
+.Dv AUDIT_TRIGGER_READ_FILE
+(read the audit_control file),
+.Dv AUDIT_TRIGGER_CLOSE_AND_DIE
+(close the current log file and exit),
+or
+.Dv AUDIT_TRIGGER_NO_SPACE
+(no disk space left for audit log file).
 .El
 .Sh RETURN VALUES
 .Rv -std
