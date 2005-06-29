@@ -37,6 +37,8 @@
 #include <sys/stat.h>
 #include <sys/socket.h>
 
+#include <bsm/libbsm.h>
+
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -50,8 +52,6 @@
 #include <grp.h>
 
 #include <bsm/audit_internal.h>
-
-#include <libbsm.h>
 
 #define	READ_TOKEN_BYTES(buf, len, dest, size, bytesread, err) do {	\
 	if (bytesread + size > len) {					\

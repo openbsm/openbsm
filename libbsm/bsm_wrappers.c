@@ -29,12 +29,14 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
+
+#include <bsm/libbsm.h>
+
 #include <unistd.h>
 #include <syslog.h>
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
-#include <libbsm.h>
 
 /* These are not advertised in libbsm.h */
 int audit_set_terminal_port(dev_t *p);

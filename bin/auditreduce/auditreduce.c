@@ -37,6 +37,8 @@
  * XXX the records present within the file and between the files themselves
  */ 
 
+#include <bsm/libbsm.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -45,7 +47,6 @@
 #include <pwd.h>
 #include <grp.h>
 
-#include <libbsm.h>
 #include "auditreduce.h"
 
 

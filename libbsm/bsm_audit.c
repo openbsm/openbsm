@@ -32,9 +32,9 @@
 #include <sys/queue.h>
 
 #include <bsm/audit_internal.h>
+#include <bsm/libbsm.h>
 
 #include <errno.h>
-#include <libbsm.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>

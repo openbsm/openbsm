@@ -28,10 +28,11 @@
 
 #include <sys/types.h>
 #include <sys/queue.h>
+
+#include <bsm/libbsm.h>
+
 #include <pthread.h>
 #include <stdlib.h>
-
-#include <libbsm.h>
 
 /* MT-Safe */
 static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;

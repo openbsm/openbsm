@@ -9,7 +9,6 @@ SHLIB_MAJOR=	1
 
 CFLAGS+=-I-								\
 	-I ..								\
-	-I .								\
 	-Wall
 
 SRCS=	bsm_audit.c							\
@@ -23,9 +22,6 @@ SRCS=	bsm_audit.c							\
 	bsm_token.c							\
 	bsm_user.c							\
 	bsm_wrappers.c
-
-INCS=		libbsm.h
-INCSDIR=	${INCLUDEDIR}/${LIB}
 
 MAN=	libbsm.3							\
 	au_class.3							\

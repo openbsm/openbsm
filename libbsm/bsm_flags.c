@@ -26,10 +26,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <bsm/libbsm.h>
+
 #include <stdio.h>
 #include <string.h>
-
-#include <libbsm.h>
 
 static const char	*delim = ",";
 

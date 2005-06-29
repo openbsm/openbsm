@@ -6,7 +6,8 @@ INCS=	audit.h								\
 	audit_internal.h						\
 	audit_kevents.h							\
 	audit_record.h							\
-	audit_uevents.h
+	audit_uevents.h							\
+	libbsm.h
 
 TARGET=	${DESTDIR}/usr/include/bsm
 

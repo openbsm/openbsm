@@ -34,11 +34,11 @@
  * praudit [-lrs] [-ddel] [filenames]
  */   
 
+#include <bsm/libbsm.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#include <libbsm.h>
 
 extern char *optarg;
 extern int optind, optopt, opterr,optreset;

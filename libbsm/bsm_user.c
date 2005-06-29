@@ -26,12 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <bsm/libbsm.h>
+
 #include <string.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <libbsm.h>
 
 /*
  * Parse the contents of the audit_user file into au_user_ent structures.

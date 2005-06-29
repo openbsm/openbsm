@@ -26,12 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <bsm/libbsm.h>
+
 #include <string.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <libbsm.h>
 
 /*
  * Parse the contents of the audit_class file to return struct au_class_ent

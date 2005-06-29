@@ -51,8 +51,7 @@
 #include <sys/socketvar.h>
 
 #include <bsm/audit_internal.h>
-
-#include <libbsm.h>
+#include <bsm/libbsm.h>
 
 #define	GET_TOKEN_AREA(t, dptr, length) do {				\
 	t = malloc (sizeof(token_t));					\

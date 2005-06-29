@@ -34,10 +34,10 @@
 #include <notify.h>
 #include <string.h>	/* strerror() */
 #include <sys/errno.h>	/* errno */
+#include <bsm/libbsm.h>
 #include <stdint.h>	/* uint32_t */
 #include <syslog.h>	/* syslog() */
 #include <stdarg.h>	/* syslog() */
-#include <libbsm.h>
 
 /* If 1, assumes a kernel that sends the right notification. */
 #define	AUDIT_NOTIFICATION_ENABLED	1
