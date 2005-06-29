@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc.
- * Copyright (c) 2005 Robert N. M. Watson
+ * Copyright (c) 2005 SPARTA, Inc.
  * All rights reserved.
+ *
+ * This code was developed in part by Robert N. M. Watson, Senior Principal
+ * Scientist, SPARTA, Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

@@ -2,8 +2,11 @@
  * @APPLE_LICENSE_HEADER_START@
  *
  * Copyright (c) 1999-2004 Apple Computer, Inc.
- * Copyright (c) 2005 Robert N. M. Watson
+ * Copyright (c) 2005 SPARTA, Inc.
  * All Rights Reserved.
+ *
+ * This code was developed in part by Robert N. M. Watson, Senior Principal
+ * Scientist, SPARTA, Inc.
  *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
