@@ -321,7 +321,6 @@
 #define	AUE_PIDFORTASK		359
 #define	AUE_SYSCTL_NONADMIN	360
 
-// BSM events - Have to identify which ones are relevant to MacOSX
 #define	AUE_ACLSET		251
 #define	AUE_AUDIT		211
 #define	AUE_AUDITON		138
