@@ -223,6 +223,7 @@
 #define	AUE_SETTIMEOFDAY	313
 #define	AUE_FLOCK		314
 #define	AUE_MKFIFO		315
+#define	AUE_POLL		316
 #define	AUE_SOCKETPAIR		317
 #define	AUE_FUTIMES		318
 #define	AUE_SETSID		319
@@ -265,6 +266,8 @@
 #define	AUE_PTHREADKILL		350
 #define	AUE_PTHREADSIGMASK	351
 #define	AUE_AUDITCTL		352
+#define	AUE_RFORK		353
+#define	AUE_LCHMOD		354
 #define	AUE_SWAPOFF		355
 #define	AUE_INITPROCESS		356
 #define	AUE_MAPFD		357
@@ -272,6 +275,8 @@
 #define	AUE_PIDFORTASK		359
 #define	AUE_SYSCTL_NONADMIN	360
 #define	AUE_COPYFILE		361
+#define	AUE_LUTIMES		362
+#define	AUE_LCHFLAGS		358
 
 /*
  * XXXRW: Values not yet assigned.
