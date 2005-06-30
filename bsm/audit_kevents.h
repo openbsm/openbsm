@@ -32,6 +32,14 @@
 #define	AUE_EXIT		1
 #define	AUE_FORK		2
 #define	AUE_OPEN		3
+#define	AUE_LINK		5
+#define	AUE_UNLINK		6
+#define	AUE_EXEC		7
+#define	AUE_CHDIR		8
+#define	AUE_MKNOD		9
+#define	AUE_CHMOD		10
+#define	AUE_CHOWN		11
+
 #define	AUE_READ		AUE_NULL
 #define	AUE_WRITE		AUE_NULL
 #define	AUE_OPEN_R		72
@@ -49,14 +57,8 @@
 #define	AUE_CLOSE		112
 #define	AU_WAIT4		AUE_NULL
 #define	AUE_O_CREAT		AUE_OPEN_RWTC
-#define	AUE_LINK		5
-#define	AUE_UNLINK		6
 #define	AUE_O_EXECV		AUE_NULL
-#define	AUE_CHDIR		8
 #define	AUE_FCHDIR		68
-#define	AUE_MKNOD		9
-#define	AUE_CHMOD		10
-#define	AUE_CHOWN		11
 #define	AUE_O_SBREAK		AUE_NULL
 #define	AUE_GETFSSTAT		301
 #define	AUE_O_LSEEK		AUE_NULL
@@ -349,7 +351,6 @@
 #define	AUE_DOORFS_DOOR_REVOKE	257
 #define	AUE_DOORFS_DOOR_UNBIND	261
 #define	AUE_ENTERPROM		153
-#define	AUE_EXEC		7
 #define	AUE_EXITPROM		154
 #define	AUE_FACLSET		252
 #define	AUE_FCHROOT		69
