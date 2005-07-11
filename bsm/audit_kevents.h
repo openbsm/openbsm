@@ -291,12 +291,18 @@
 #define	AUE_COPYFILE		361
 #define	AUE_LUTIMES		362
 #define	AUE_LCHFLAGS		362	/* FreeBSD */
-#define	AUE_SENDFILE		363	/* FreeBSD */
+#define	AUE_SENDFILE		363
 #define	AUE_USELIB		364	/* Linux */
 #define	AUE_GETRESUID		365
 #define	AUE_SETRESUID		366
 #define	AUE_GETRESGID		367
 #define	AUE_SETRESGID		368
+#define	AUE_WAIT4		369	/* FreeBSD */
+#define	AUE_LGETFH		370	/* FreeBSD */
+#define	AUE_FHSTATFS		371	/* FreeBSD */
+#define	AUE_FHOPEN		372	/* FreeBSD */
+#define	AUE_FHSTAT		373	/* FreeBSD */
+#define	AUE_JAIL		374	/* FreeBSD */
 
 /*
  * XXXRW: Values not yet assigned.
