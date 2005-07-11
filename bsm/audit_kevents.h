@@ -293,6 +293,8 @@
 #define	AUE_USELIB		364	/* Linux */
 #define	AUE_GETRESUID		365
 #define	AUE_SETRESUID		366
+#define	AUE_GETRESGID		367
+#define	AUE_SETRESGID		368
 
 /*
  * XXXRW: Values not yet assigned.
