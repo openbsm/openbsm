@@ -69,7 +69,8 @@
 #define	AUE_SETSOCKOPT		35
 #define	AUE_FCHOWN		38
 #define	AUE_FCHMOD		39
-#define	AUE_SYSINFO		39
+#define	AUE_SETREUID		40
+#define	AUE_SETREGID		41
 #define	AUE_RENAME		42
 #define	AUE_SHUTDOWN		46
 #define	AUE_MKDIR		47
@@ -195,6 +196,7 @@
 #define	AUE_LXSTAT		236
 #define	AUE_LCHOWN		237
 #define	AUE_MEMCNTL		238
+#define	AUE_SYSINFO		239
 #define	AUE_XMKNOD		240
 #define	AUE_FORK1		241
 #define	AUE_MODLOAD		243
