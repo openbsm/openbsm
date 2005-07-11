@@ -290,6 +290,7 @@
 #define	AUE_LUTIMES		362
 #define	AUE_LCHFLAGS		362	/* FreeBSD */
 #define	AUE_SENDFILE		363	/* FreeBSD */
+#define	AUE_USELIB		364	/* Linux */
 
 /*
  * XXXRW: Values not yet assigned.
