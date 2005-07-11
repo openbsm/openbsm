@@ -291,6 +291,8 @@
 #define	AUE_LCHFLAGS		362	/* FreeBSD */
 #define	AUE_SENDFILE		363	/* FreeBSD */
 #define	AUE_USELIB		364	/* Linux */
+#define	AUE_GETRESUID		365
+#define	AUE_SETRESUID		366
 
 /*
  * XXXRW: Values not yet assigned.
