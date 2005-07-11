@@ -288,7 +288,8 @@
 #define	AUE_SYSCTL_NONADMIN	360
 #define	AUE_COPYFILE		361
 #define	AUE_LUTIMES		362
-#define	AUE_LCHFLAGS		358
+#define	AUE_LCHFLAGS		362	/* FreeBSD */
+#define	AUE_SENDFILE		363	/* FreeBSD */
 
 /*
  * XXXRW: Values not yet assigned.
