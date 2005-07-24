@@ -169,7 +169,6 @@
 205:AUE_SETGID:old setgid(2):pc
 206:AUE_READL:readl(2):no
 207:AUE_READVL:readvl(2):no
-208:AUE_FSTAT:fstat(2):fa
 209:AUE_DUP2:dup2(2):no
 210:AUE_MMAP:mmap(2):fa
 211:AUE_AUDIT:audit(2):ot
@@ -284,6 +283,23 @@
 359:AUE_PIDFORTASK:pid_for_task():pc
 360:AUE_SYSCTL_NONADMIN:sysctl() - non-admin:ot
 361:AUE_COPYFILE:copyfile():fr,fw
+362:AUE_LUTIMES:lutimes(2):fm
+363:AUE_LCHFLAGS:lchflags(2):fm
+364:AUE_SENDFILE:sendfile(2):nt
+365:AUE_USELIB:uselib(2):fa
+366:AUE_GETRESUID:getresuid(2):pc
+367:AUE_SETRESUID:setresuid(2):pc
+368:AUE_GETRESGID:getresgid(2):pc
+369:AUE_SETRESGID:setresgid(2):pc
+370:AUE_WAIT4:wait4(2):pc
+371:AUE_LGETFH:lgetfh(2):fa
+372:AUE_FHSTATFS:fhstatfs(2):fa
+373:AUE_FHOPEN:fhopen(2):fa
+374:AUE_FHSTAT:fhstat(2):fa
+375:AUE_JAIL:jail(2):pc
+376:AUE_NSTAT:nstat(2):fa
+377:AUE_NFSTAT:nfstat(2):fa
+378:AUE_NLSTAT:nlstat(2):fa
 6152:AUE_login:login - local:lo
 6153:AUE_logout:logout - local:lo
 6159:AUE_su:su(1):lo
