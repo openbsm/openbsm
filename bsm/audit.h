@@ -289,16 +289,15 @@ struct au_evclass_map {
 typedef struct au_evclass_map au_evclass_map_t;
 
 #if !defined(_KERNEL) && !defined(KERNEL)
-
-int audit (const void *, int);
-int auditon (int, void *, int);
-int auditctl (const char *);
-int getauid (au_id_t *);
-int setauid (const au_id_t *);
-int getaudit (struct auditinfo *);
-int setaudit (const struct auditinfo *);
-int getaudit_addr (struct auditinfo_addr *, int);
-int setaudit_addr (const struct auditinfo_addr *, int);
+int audit(const void *, int);
+int auditon(int, void *, int);
+int auditctl(const char *);
+int getauid(au_id_t *);
+int setauid(const au_id_t *);
+int getaudit(struct auditinfo *);
+int setaudit(const struct auditinfo *);
+int getaudit_addr(struct auditinfo_addr *, int);
+int setaudit_addr(const struct auditinfo_addr *, int);
 #endif /* defined(_KERNEL) || defined(KERNEL) */
 
 __END_DECLS
