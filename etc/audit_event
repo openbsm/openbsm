@@ -297,9 +297,6 @@
 373:AUE_FHOPEN:fhopen(2):fa
 374:AUE_FHSTAT:fhstat(2):fa
 375:AUE_JAIL:jail(2):pc
-376:AUE_NSTAT:nstat(2):fa
-377:AUE_NFSTAT:nfstat(2):fa
-378:AUE_NLSTAT:nlstat(2):fa
 6152:AUE_login:login - local:lo
 6153:AUE_logout:logout - local:lo
 6159:AUE_su:su(1):lo

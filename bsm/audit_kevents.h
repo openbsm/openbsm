@@ -303,9 +303,6 @@
 #define	AUE_FHOPEN		373	/* FreeBSD */
 #define	AUE_FHSTAT		374	/* FreeBSD */
 #define	AUE_JAIL		375	/* FreeBSD */
-#define	AUE_NSTAT		376	/* FreeBSD/NetBSD */
-#define	AUE_NFSTAT		377	/* FreeBSD/NetBSD */
-#define	AUE_NLSTAT		378	/* FreeBSD/NetBSD */
 
 /*
  * XXXRW: Values not yet assigned.
