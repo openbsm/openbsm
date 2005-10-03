@@ -33,7 +33,8 @@
 #define	AUE_EXIT		1
 #define	AUE_FORK		2
 #define	AUE_OPEN		3
-#define	AUE_O_CREAT		AUE_OPEN_RWTC
+#define	AUE_CREAT		4
+#define	AUE_O_CREAT		AUE_CREAT
 #define	AUE_LINK		5
 #define	AUE_UNLINK		6
 #define	AUE_DELETE		AUE_UNLINK
@@ -47,12 +48,12 @@
 #define	AUE_ACCESS		14
 #define	AUE_CHECKUSERACCESS	AUE_ACCESS
 #define	AUE_KILL		15
-#define	AUE_O_KILLPG		AUE_KILL
 #define	AUE_STAT		16
 #define	AUE_O_STAT		AUE_STAT
 #define	AUE_LSTAT		17
 #define	AUE_O_LSTAT		AUE_LSTAT
 #define	AUE_ACCT		18
+#define	AUE_SOLARIS_REBOOT	20	/* XXX: Darwin conflict. */
 #define	AUE_SYMLINK		21
 #define	AUE_READLINK		22
 #define	AUE_EXECVE		23
@@ -61,17 +62,27 @@
 #define	AUE_SETGROUPS		26
 #define	AUE_SETPGRP		27
 #define	AUE_SWAPON		28
+#define	AUE_SOLARIS_SETHOSTNAME	29	/* XXX: Darwin conflict. */
 #define	AUE_FCNTL		30
+#define	AUE_SOLARIS_SETPRIORITY	31	/* XXX: Darwin conflict. */
 #define	AUE_CONNECT		32
 #define	AUE_ACCEPT		33
 #define	AUE_O_ACCEPT		AUE_ACCEPT
 #define	AUE_BIND		34
 #define	AUE_SETSOCKOPT		35
+#define	AUE_VTRACE		36	/* Solaris-specific. */
+#define	AUE_SOLARIS_SETTIMEOFDAY	37	/* XXX: Darwin conflict. */
 #define	AUE_FCHOWN		38
 #define	AUE_FCHMOD		39
+/* XXX: #define	AUE_SYSINFO		39 */
 #define	AUE_SETREUID		40
+#define	AUE_O_SETREUID		AUE_SETREUID
 #define	AUE_SETREGID		41
+#define	AUE_O_SETREGID		AUE_SETREGID
 #define	AUE_RENAME		42
+#define	AUE_SOLARIS_TRUNCATE	43	/* XXX: Darwin conflict. */
+#define	AUE_SOLARIS_FTRUNCATE	44	/* XXX: Darwin conflict. */
+#define	AUE_SOLARIS_FLOCK	45	/* XXX: Darwin conflict. */
 #define	AUE_SHUTDOWN		46
 #define	AUE_MKDIR		47
 #define	AUE_RMDIR		48
@@ -79,14 +90,29 @@
 #define	AUE_ADJTIME		50
 #define	AUE_SETRLIMIT		51
 #define	AUE_O_SETRLIMIT		AUE_SETRLIMIT
+#define	AUE_KILLPG		52
+#define	AUE_O_KILLPG		AUE_KILLPG
+#define	AUE_SOLARIS_NFS_SVC	53	/* XXX: Darwin conflict. */
 #define	AUE_STATFS		54
 #define	AUE_FSTATFS		55
+#define	AUE_SOLARIS_UNMOUNT	56	/* XXX: Darwin conflict. */
+#define	AUE_ASYNC_DAEMON	57
+#define	AUE_NFS_GETFH		58	/* XXX: Darwin conflict. */
+#define	AUE_SOLARIS_SETDOMAINNAME	59	/* XXX: Darwin conflict. */
+#define	AUE_O_SETDOMAINNAME	AUE_SYSCTL
+#define	AUE_SOLARIS_QUOTACTL	60	/* XXX: Darwin conflict. */
+#define	AUE_EXPORTFS		61
+#define	AUE_O_EXPORTFS		AUE_EXPORTFS
 #define	AUE_MOUNT		62
 #define	AUE_O_MOUNT		AUE_MOUNT
+#define	AUE_SEMSYS		63
 #define	AUE_MSGSYS		64
 #define	AUE_SHMSYS		65
+#define	AUE_BSMSYS		66	/* Solaris-specific. */
+#define	AUE_RFSSYS		67	/* Solaris-specific. */
 #define	AUE_FCHDIR		68
 #define	AUE_FCHROOT		69
+#define	AUE_VPIXSYS		70	/* Solaris-specific. */
 #define	AUE_PATHCONF		71
 #define	AUE_OPEN_R		72
 #define	AUE_OPEN_RC		73
@@ -130,6 +156,10 @@
 #define	AUE_CORE		111
 #define	AUE_CLOSE		112
 #define	AUE_SYSTEMBOOT		113
+#define	AUE_ASYNC_DAEMON_EXIT	114	/* Solaris-only. */
+#define	AUE_NFSSVC_EXIT		115	/* Solaris-only. */
+#define	AUE_WRITEL		128	/* Solaris-only. */
+#define	AUE_WRITEVL		129	/* Solaris-only. */
 #define	AUE_GETAUID		130
 #define	AUE_SETAUID		131
 #define	AUE_GETAUDIT		132
@@ -229,22 +259,22 @@
 #define	AUE_PROFILE		305
 #define	AUE_KTRACE		306
 #define	AUE_SETLOGIN		307
-#define	AUE_REBOOT		308
+#define	AUE_REBOOT		308	/* XXX: See AUE_SOLARIS_REBOOT. */
 #define	AUE_REVOKE		309
 #define	AUE_UMASK		310
 #define	AUE_MPROTECT		311
-#define	AUE_SETPRIORITY		312
-#define	AUE_SETTIMEOFDAY	313
-#define	AUE_FLOCK		314
+#define	AUE_SETPRIORITY		312	/* XXX: See AUE_SOLARIS_SETPRIORITY. */
+#define	AUE_SETTIMEOFDAY	313	/* XXX: See AUE_SOLARIS_SETTIMEOFDAY. */
+#define	AUE_FLOCK		314	/* XXX: See AUE_SOLARIS_FLOCK. */
 #define	AUE_MKFIFO		315
 #define	AUE_POLL		316
 #define	AUE_SOCKETPAIR		317
 #define	AUE_FUTIMES		318
 #define	AUE_SETSID		319
 #define	AUE_SETPRIVEXEC		320
-#define	AUE_NFSSVC		321
-#define	AUE_GETFH		322
-#define	AUE_QUOTACTL		323
+#define	AUE_NFSSVC		321	/* XXX: See AUE_SOLARIS_NFS_SVC. */
+#define	AUE_GETFH		322	/* XXX: See AUE_SOLARIS_NFS_GETFH. */
+#define	AUE_QUOTACTL		323	/* XXX: See AUE_SOLARIS_QUOTACTL. */
 #define	AUE_ADDPROFILE		324
 #define	AUE_KDBUGTRACE		325
 #define	AUE_FSTAT		326
@@ -252,13 +282,12 @@
 #define	AUE_FPATHCONF		327
 #define	AUE_GETDIRENTRIES	328
 #define	AUE_O_GETDIRENTRIES	AUE_GETDIRENTRIES
-#define	AUE_TRUNCATE		329
+#define	AUE_TRUNCATE		329	/* XXX: See AUE_SOLARIS_TRUNCATE. */
 #define	AUE_O_TRUNCATE		AUE_TRUNCATE
-#define	AUE_FTRUNCATE		330
+#define	AUE_FTRUNCATE		330	/* XXX: See AUE_SOLARIS_FTRUNCATE. */
 #define	AUE_O_FTRUNCATE		AUE_FTRUNCATE
 #define	AUE_SYSCTL		331
-#define	AUE_O_SETDOMAINNAME	AUE_SYSCTL
-#define	AUE_O_SETHOSTNAME	AUE_SYSCTL
+#define	AUE_O_SETHOSTNAME	AUE_SYSCTL	/* XXX: See AUE_SOLARIS_SET.. */
 #define	AUE_MLOCK		332
 #define	AUE_MUNLOCK		333
 #define	AUE_UNDELETE		334
@@ -303,6 +332,9 @@
 #define	AUE_FHOPEN		373	/* FreeBSD */
 #define	AUE_FHSTAT		374	/* FreeBSD */
 #define	AUE_JAIL		375	/* FreeBSD */
+#define	AUE_EACCESS		376	/* FreeBSD */
+#define	AUE_KQUEUE		377	/* FreeBSD */
+#define	AUE_KEVENT		378	/* FreeBSD */
 
 /*
  * XXXRW: Values not yet assigned.
@@ -349,7 +381,6 @@
 #define	AUE_MUNLOCKALL		AUE_NULL
 #define	AUE_O_ASYNCDAEMON	AUE_NULL
 #define	AUE_O_EXECV		AUE_NULL
-#define	AUE_O_EXPORTFS		AUE_NULL
 #define	AUE_O_GETDENTS		AUE_NULL
 #define	AUE_O_GETDOMAINNAME	AUE_NULL
 #define	AUE_O_GETDOPT		AUE_NULL
@@ -364,8 +395,6 @@
 #define	AUE_O_SETDOPT		AUE_NULL
 #define	AUE_O_SETHOSTID		AUE_NULL
 #define	AUE_O_SETQUOTA		AUE_NULL
-#define	AUE_O_SETREGID		AUE_NULL
-#define	AUE_O_SETREUID		AUE_NULL
 #define	AUE_O_SIGBLOCK		AUE_NULL
 #define	AUE_O_SIGSETMASK	AUE_NULL
 #define	AUE_O_SIGSTACK		AUE_NULL
@@ -388,7 +417,6 @@
 #define	AUE_SEMGETVALUE		AUE_NULL
 #define	AUE_SEMINIT		AUE_NULL
 #define	AUE_SEMPOST		AUE_NULL
-#define	AUE_SEMSYS		AUE_NULL
 #define	AUE_SEMTRYWAIT		AUE_NULL
 #define	AUE_SEMWAIT		AUE_NULL
 #define	AUE_SETITIMER		AUE_NULL
