@@ -11,7 +11,7 @@
 0x00000040:cl:file close
 0x00000080:pc:process
 0x00000100:nt:network
-0x00000200:ip:Sys V ipc 
+0x00000200:ip:ipc
 0x00000400:na:non attributable
 0x00000800:ad:administrative
 0x00001000:lo:login_logout
