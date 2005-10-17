@@ -8,7 +8,7 @@
 7:AUE_EXEC:exec(2):pc,ex
 8:AUE_CHDIR:chdir(2):pc
 9:AUE_MKNOD:mknod(2):ad
-10:AUE_CHMOD:chmod(2):ad
+10:AUE_CHMOD:chmod(2):fm
 11:AUE_CHOWN:chown(2):fm
 12:AUE_UMOUNT:umount(2) - old version:ad
 13:AUE_JUNK:junk:no
@@ -225,6 +225,8 @@
 262:AUE_P_ONLINE:p_online(2):ad
 263:AUE_PROCESSOR_BIND:processor_bind(2):ad
 264:AUE_INST_SYNC:inst_sync(2):ad
+266:AUE_SETAUDIT_ADDR:setaudit_addr(2):ad
+267:AUE_GETAUDIT_ADDR:getaudit_addr(2):ad
 301:AUE_GETFSSTAT:getfsstat(2):fa
 302:AUE_PTRACE:ptrace(2):pc
 303:AUE_CHFLAGS:chflags(2):fm
@@ -240,6 +242,7 @@
 313:AUE_SETTIMEOFDAY:settimeofday(2):ad
 314:AUE_FLOCK:flock(2):fm
 315:AUE_MKFIFO:mkfifo(2):fc
+316:AUE_POLL:poll(2):fa
 317:AUE_SOCKETPAIR:socketpair(2):nt
 318:AUE_FUTIMES:futimes(2):fm
 319:AUE_SETSID:setsid(2):pc
@@ -276,6 +279,8 @@
 350:AUE_PTHREADKILL:pthread_kill(2):pc
 351:AUE_PTHREADSIGMASK:pthread_sigmask(2):pc
 352:AUE_AUDITCTL:auditctl(2):ad
+353:AUE_RFORK:rfork(2):pc
+354:AUE_LCHMOD:lchmod(2):fm
 355:AUE_SWAPOFF:swapoff():ad
 356:AUE_INITPROCESS:init_process():pc
 357:AUE_MAPFD:map_fd():fa
@@ -297,6 +302,9 @@
 373:AUE_FHOPEN:fhopen(2):fa
 374:AUE_FHSTAT:fhstat(2):fa
 375:AUE_JAIL:jail(2):pc
+376:AUE_EACCESS:eaccess(2):fa
+377:AUE_KQUEUE:kqueue(2):fa
+378:AUE_KEVENT:kevent(2):fa
 6152:AUE_login:login - local:lo
 6153:AUE_logout:logout - local:lo
 6159:AUE_su:su(1):lo
