@@ -214,7 +214,6 @@ au_to_attr(struct vnode_au_info *vni)
 {
 
 	return (au_to_attr32(vni));
-
 }
 #endif /* !(defined(_KERNEL) || defined(KERNEL) */
 
