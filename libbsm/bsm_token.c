@@ -164,7 +164,6 @@ au_to_attr32(struct vnode_au_info *vni)
 		return (NULL);
 	}
 
-
 	GET_TOKEN_AREA(t, dptr, 29);
 	if (t == NULL)
 		return (NULL);
@@ -237,7 +236,7 @@ au_to_data(char unit_print, char unit_type, char unit_count, char *p)
 	}
 
 	/* Determine the size of the basic unit. */
-	switch(unit_type) {
+	switch (unit_type) {
 	case AUR_BYTE:
 		datasize = AUR_BYTE_SIZE;
 		break;
@@ -391,7 +390,8 @@ au_to_in_addr_ex(struct in6_addr *internet_addr)
  * token ID                1 byte
  * ip header		   20 bytes
  */
-token_t *au_to_ip(struct ip *ip)
+token_t *
+au_to_ip(struct ip *ip)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -544,11 +544,11 @@ au_to_opaque(char *data, u_int16_t bytes)
 }
 
 /*
- * token ID                     1 byte
- * seconds of time              4 bytes
- * milliseconds of time         4 bytes
- * file name len                2 bytes
- * file pathname                N bytes + 1 terminating NULL byte
+ * token ID                1 byte
+ * seconds of time         4 bytes
+ * milliseconds of time    4 bytes
+ * file name len           2 bytes
+ * file pathname           N bytes + 1 terminating NULL byte
  */
 token_t *
 #if defined(KERNEL) || defined(_KERNEL)
@@ -707,7 +707,8 @@ au_to_process(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
     pid_t pid, au_asid_t sid, au_tid_t *tid)
 {
 
-	return (au_to_process32(auid, euid, egid, ruid, rgid, pid, sid, tid));
+	return (au_to_process32(auid, euid, egid, ruid, rgid, pid, sid,
+	    tid));
 }
 
 /*
@@ -768,8 +769,8 @@ au_to_process64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 }
 
 token_t *
-au_to_process_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
-    pid_t pid, au_asid_t sid, au_tid_addr_t *tid)
+au_to_process_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
+    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_addr_t *tid)
 {
 
 	return (au_to_process32_ex(auid, euid, egid, ruid, rgid, pid, sid,
@@ -870,7 +871,7 @@ au_to_socket(struct socket *so)
  */
 token_t *
 au_to_socket_ex_32(u_int16_t lp, u_int16_t rp, struct sockaddr *la,
-struct sockaddr *ra)
+    struct sockaddr *ra)
 {
 
 	errno = ENOTSUP;
@@ -903,7 +904,7 @@ au_to_sock_unix(struct sockaddr_un *so)
 	GET_TOKEN_AREA(t, dptr, 107);
 	if (t == NULL)
 		return (NULL);
-						 
+
 	ADD_U_CHAR(dptr, AU_SOCK_UNIX_TOKEN);
 	/* BSM token has two bytes for family */
 	ADD_U_CHAR(dptr, 0);
@@ -985,7 +986,7 @@ token_t *
 au_to_sock_inet(struct sockaddr_in *so)
 {
 
-	return au_to_sock_inet32(so);
+	return (au_to_sock_inet32(so));
 }
 
 /*
@@ -1045,7 +1046,8 @@ au_to_subject(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
     pid_t pid, au_asid_t sid, au_tid_t *tid)
 {
 
-	return (au_to_subject32(auid, euid, egid, ruid, rgid, pid, sid, tid));
+	return (au_to_subject32(auid, euid, egid, ruid, rgid, pid, sid,
+	    tid));
 }
 
 /*
@@ -1109,6 +1111,7 @@ token_t *
 au_to_subject_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
     pid_t pid, au_asid_t sid, au_tid_addr_t *tid)
 {
+
 	return (au_to_subject32_ex(auid, euid, egid, ruid, rgid, pid, sid,
 	    tid));
 }
@@ -1262,7 +1265,7 @@ au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 	timems = tm.tv_usec/1000;
 	/* Add the timestamp */
 	ADD_U_INT32(dptr, tm.tv_sec);
-	ADD_U_INT32(dptr, timems); /* We need time in ms */
+	ADD_U_INT32(dptr, timems);	/* We need time in ms. */
 
 	return (t);
 }
