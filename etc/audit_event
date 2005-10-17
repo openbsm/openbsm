@@ -233,7 +233,7 @@
 304:AUE_FCHFLAGS:fchflags(2):fm
 305:AUE_PROFILE:profil(2):pc
 306:AUE_KTRACE:ktrace(2):pc
-307:AUE_SETLOGIN:setlogin(2):lo
+307:AUE_SETLOGIN:setlogin(2):pc
 308:AUE_REBOOT:reboot(2):ad
 309:AUE_REVOKE:revoke(2):cl
 310:AUE_UMASK:umask(2):pc
