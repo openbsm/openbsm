@@ -177,9 +177,12 @@
 #define	AUE_SOCKET		183
 #define	AUE_SENDTO		184
 #define	AUE_PIPE		185
+					/* XXXRW: XXX Solaris socketpair()? */
+					/* XXXRW: XXX Solaris send()? */
 #define	AUE_SENDMSG		188
 #define	AUE_O_SEND		AUE_SENDMSG
 #define	AUE_O_SENDMSG		AUE_SENDMSG
+					/* XXXRW: XXX Solaris recv()? */
 #define	AUE_RECVMSG		190
 #define	AUE_O_RECV		AUE_RECVMSG
 #define	AUE_O_RECVMSG		AUE_RECVMSG
@@ -191,11 +194,15 @@
 #define	AUE_WRITE		195
 #define	AUE_WRITEV		196
 #define	AUE_READV		198
-#define	AUE_SETUID		200
-#define	AUE_STIME		201
-#define	AUE_UTIME		202
-#define	AUE_NICE		203
-#define	AUE_SETGID		205
+					/* XXXRW: XXX Solaris old stat()? */
+#define	AUE_SETUID		200	/* XXXRW: Solaris old setuid? */
+#define	AUE_STIME		201	/* XXXRW: Solaris old stime? */
+#define	AUE_UTIME		202	/* XXXRW: Solaris old utime? */
+#define	AUE_NICE		203	/* XXXRW: Solaris old nice? */
+					/* XXXRW: Solaris old setpgrp? */
+#define	AUE_SETGID		205	/* XXXRW: Solaris old setgid? */
+					/* XXXRW: Solaris readl? */
+					/* XXXRW: Solaris readvl()? */
 #define	AUE_DUP2		209
 #define	AUE_MMAP		210
 #define	AUE_O_MMAP		AUE_MMAP
@@ -208,6 +215,7 @@
 #define	AUE_GETMSG		217
 #define	AUE_PUTPMSG		218
 #define	AUE_GETPMSG		219
+					/* XXXRW: Solaris sc placeholder? */
 #define	AUE_AUDITON_GETKMASK	221
 #define	AUE_AUDITON_SETKMASK	222
 #define	AUE_AUDITON_GETCWD	223
@@ -220,7 +228,7 @@
 #define	AUE_AUDITON_SETCOND	230
 #define	AUE_AUDITON_GETCLASS	231
 #define	AUE_AUDITON_SETCLASS	232
-#define	AUE_UTSYS		233
+#define	AUE_UTSSYS		233
 #define	AUE_STATVFS		234
 #define	AUE_XSTAT		235
 #define	AUE_LXSTAT		236
@@ -229,6 +237,7 @@
 #define	AUE_SYSINFO		239
 #define	AUE_XMKNOD		240
 #define	AUE_FORK1		241
+					/* XXXRW: Solaris modctl()? */
 #define	AUE_MODLOAD		243
 #define	AUE_MODUNLOAD		244
 #define	AUE_MODCONFIG		245
@@ -250,8 +259,8 @@
 #define	AUE_P_ONLINE		262
 #define	AUE_PROCESSOR_BIND	263
 #define	AUE_INST_SYNC		264
-#define	AUE_SETAUDIT_ADDR	266
-#define	AUE_GETAUDIT_ADDR	267
+#define	AUE_SETAUDIT_ADDR	266	/* XXXRW: Not in audit_event */
+#define	AUE_GETAUDIT_ADDR	267	/* XXXRW: Not in audit_event */
 #define	AUE_GETFSSTAT		301
 #define	AUE_PTRACE		302
 #define	AUE_CHFLAGS		303
@@ -267,8 +276,8 @@
 #define	AUE_SETTIMEOFDAY	313	/* XXX: See AUE_SOLARIS_SETTIMEOFDAY. */
 #define	AUE_FLOCK		314	/* XXX: See AUE_SOLARIS_FLOCK. */
 #define	AUE_MKFIFO		315
-#define	AUE_POLL		316
-#define	AUE_SOCKETPAIR		317
+#define	AUE_POLL		316	/* XXXRW: Not in audit_event */
+#define	AUE_SOCKETPAIR		317	/* XXXRW: What about 186? */
 #define	AUE_FUTIMES		318
 #define	AUE_SETSID		319
 #define	AUE_SETPRIVEXEC		320
@@ -309,8 +318,8 @@
 #define	AUE_PTHREADKILL		350
 #define	AUE_PTHREADSIGMASK	351
 #define	AUE_AUDITCTL		352
-#define	AUE_RFORK		353
-#define	AUE_LCHMOD		354
+#define	AUE_RFORK		353	/* XXXRW: Not in audit_event */
+#define	AUE_LCHMOD		354	/* XXXRW: Not in audit_event */
 #define	AUE_SWAPOFF		355
 #define	AUE_INITPROCESS		356
 #define	AUE_MAPFD		357
@@ -332,9 +341,9 @@
 #define	AUE_FHOPEN		373	/* FreeBSD */
 #define	AUE_FHSTAT		374	/* FreeBSD */
 #define	AUE_JAIL		375	/* FreeBSD */
-#define	AUE_EACCESS		376	/* FreeBSD */
-#define	AUE_KQUEUE		377	/* FreeBSD */
-#define	AUE_KEVENT		378	/* FreeBSD */
+#define	AUE_EACCESS		376	/* FreeBSD XXXRW: Not in audit_event */
+#define	AUE_KQUEUE		377	/* FreeBSD XXXRW: Not in audit_event */
+#define	AUE_KEVENT		378	/* FreeBSD XXXRW: Not in audit_event */
 
 /*
  * XXXRW: Values not yet assigned.
