@@ -259,8 +259,8 @@
 #define	AUE_P_ONLINE		262
 #define	AUE_PROCESSOR_BIND	263
 #define	AUE_INST_SYNC		264
-#define	AUE_SETAUDIT_ADDR	266	/* XXXRW: Not in audit_event */
-#define	AUE_GETAUDIT_ADDR	267	/* XXXRW: Not in audit_event */
+#define	AUE_SETAUDIT_ADDR	266
+#define	AUE_GETAUDIT_ADDR	267
 #define	AUE_GETFSSTAT		301
 #define	AUE_PTRACE		302
 #define	AUE_CHFLAGS		303
@@ -276,7 +276,7 @@
 #define	AUE_SETTIMEOFDAY	313	/* XXX: See AUE_SOLARIS_SETTIMEOFDAY. */
 #define	AUE_FLOCK		314	/* XXX: See AUE_SOLARIS_FLOCK. */
 #define	AUE_MKFIFO		315
-#define	AUE_POLL		316	/* XXXRW: Not in audit_event */
+#define	AUE_POLL		316
 #define	AUE_SOCKETPAIR		317	/* XXXRW: What about 186? */
 #define	AUE_FUTIMES		318
 #define	AUE_SETSID		319
@@ -318,8 +318,8 @@
 #define	AUE_PTHREADKILL		350
 #define	AUE_PTHREADSIGMASK	351
 #define	AUE_AUDITCTL		352
-#define	AUE_RFORK		353	/* XXXRW: Not in audit_event */
-#define	AUE_LCHMOD		354	/* XXXRW: Not in audit_event */
+#define	AUE_RFORK		353
+#define	AUE_LCHMOD		354
 #define	AUE_SWAPOFF		355
 #define	AUE_INITPROCESS		356
 #define	AUE_MAPFD		357
@@ -341,9 +341,9 @@
 #define	AUE_FHOPEN		373	/* FreeBSD */
 #define	AUE_FHSTAT		374	/* FreeBSD */
 #define	AUE_JAIL		375	/* FreeBSD */
-#define	AUE_EACCESS		376	/* FreeBSD XXXRW: Not in audit_event */
-#define	AUE_KQUEUE		377	/* FreeBSD XXXRW: Not in audit_event */
-#define	AUE_KEVENT		378	/* FreeBSD XXXRW: Not in audit_event */
+#define	AUE_EACCESS		376	/* FreeBSD */
+#define	AUE_KQUEUE		377	/* FreeBSD */
+#define	AUE_KEVENT		378	/* FreeBSD */
 
 /*
  * XXXRW: Values not yet assigned.
@@ -443,6 +443,5 @@
 #define	AUE_TABLE		AUE_NULL
 #define	AUE_WAITEVENT		AUE_NULL
 #define	AUE_WATCHEVENT		AUE_NULL
-#define	AU_WAIT4		AUE_NULL
 
 #endif /* !_BSM_AUDIT_KEVENTS_H_ */
