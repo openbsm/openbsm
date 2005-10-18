@@ -490,6 +490,104 @@ print_header32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw, char sfrm)
 
 /*
  * record byte count       4 bytes
+ * version #               1 byte     [2]
+ * event type              2 bytes
+ * event modifier          2 bytes
+ * address type/length     1 byte
+ * machine address         4 bytes/16 bytes (IPv4/IPv6 address)
+ * seconds of time         4 bytes/8 bytes  (32/64-bits)
+ * nanoseconds of time     4 bytes/8 bytes  (32/64-bits)
+ */
+static int
+fetch_header32_ex_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.size, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.hdr32_ex.version, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT16(buf, len, tok->tt.hdr32_ex.e_type, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT16(buf, len, tok->tt.hdr32_ex.e_mod, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.hdr32_ex.ad_type, tok->len, err);
+	if (err)
+		return (-1);
+
+	bzero(tok->tt.hdr32_ex.addr, sizeof(tok->tt.hdr32_ex.addr));
+	switch (tok->tt.hdr32_ex.ad_type) {
+	case AF_INET:
+		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[0],
+		    tok->len, err);
+		if (err)
+			return (-1);
+		break;
+
+	case AF_INET6:
+		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[0],
+		    tok->len, err);
+		if (err)
+			return (-1);
+		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[1],
+		    tok->len, err);
+		if (err)
+			return (-1);
+		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[2],
+		    tok->len, err);
+		if (err)
+			return (-1);
+		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[3],
+		    tok->len, err);
+		if (err)
+			return (-1);
+		break;
+	}
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.s, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.ms, tok->len, err);
+	if (err)
+		return (-1);
+
+	return (0);
+}
+
+static void
+print_header32_ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
+    char sfrm)
+{
+
+	print_tok_type(fp, tok->id, "header_ex", raw);
+	print_delim(fp, del);
+	print_4_bytes(fp, tok->tt.hdr32_ex.size, "%u");
+	print_delim(fp, del);
+	print_1_byte(fp, tok->tt.hdr32_ex.version, "%u");
+	print_delim(fp, del);
+	print_event(fp, tok->tt.hdr32_ex.e_type, raw, sfrm);
+	print_delim(fp, del);
+	print_evmod(fp, tok->tt.hdr32_ex.e_mod, raw);
+	print_delim(fp, del);
+	print_ip_ex_address(fp, tok->tt.hdr32_ex.ad_type,
+	    tok->tt.hdr32_ex.addr);
+	print_delim(fp, del);
+	print_sec32(fp, tok->tt.hdr32_ex.s, raw);
+	print_delim(fp, del);
+	print_msec32(fp, tok->tt.hdr32_ex.ms, raw);
+}
+
+/*
+ * record byte count       4 bytes
  * event type              2 bytes
  * event modifier          2 bytes
  * seconds of time         4 bytes/8 bytes (32-bit/64-bit value)
@@ -2211,7 +2309,8 @@ print_invalid_tok(FILE *fp, tokenstr_t *tok, char *del, char raw, char sfrm)
 /*
  * Reads the token beginning at buf into tok.
  */
-int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
+int
+au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 
 	if (len <= 0)
@@ -2224,6 +2323,9 @@ int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 	switch(tok->id) {
 	case AUT_HEADER32:
 		return (fetch_header32_tok(tok, buf, len));
+
+	case AUT_HEADER32_EX:
+		return (fetch_header32_ex_tok(tok, buf, len));
 
 	case AUT_HEADER64:
 		return (fetch_header64_tok(tok, buf, len));
@@ -2339,6 +2441,9 @@ au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 	switch(tok->id) {
 	case AUT_HEADER32:
 		return (print_header32_tok(outfp, tok, del, raw, sfrm));
+
+	case AUT_HEADER32_EX:
+		return (print_header32_ex_tok(outfp, tok, del, raw, sfrm));
 
 	case AUT_HEADER64:
 		return (print_header64_tok(outfp, tok, del, raw, sfrm));
