@@ -348,7 +348,7 @@ typedef struct {
 	u_char version;
 	u_int16_t e_type;
 	u_int16_t e_mod;
-	u_char ad_type;
+	u_int32_t ad_type;
 	u_int32_t addr[4];
 	u_int32_t s;
 	u_int32_t ms;

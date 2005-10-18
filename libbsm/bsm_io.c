@@ -366,15 +366,19 @@ print_ip_ex_address(FILE *fp, u_int32_t type, u_int32_t *ipaddr)
 	char dst[INET6_ADDRSTRLEN];
 	const char *ret = NULL;
 
-	if (type == AF_INET) {
+	switch (type) {
+	case AU_IPv4:
 		ipv4.s_addr = (in_addr_t)(ipaddr[0]);
-		ret = inet_ntop(type, &ipv4, dst, INET6_ADDRSTRLEN);
-	} else if (type == AF_INET6) {
+		ret = inet_ntop(AF_INET, &ipv4, dst, INET6_ADDRSTRLEN);
+		break;
+
+	case AU_IPv6:
 		ipv6.__u6_addr.__u6_addr32[0] = ipaddr[0];
 		ipv6.__u6_addr.__u6_addr32[1] = ipaddr[1];
 		ipv6.__u6_addr.__u6_addr32[2] = ipaddr[2];
 		ipv6.__u6_addr.__u6_addr32[3] = ipaddr[3];
-		ret = inet_ntop(type, &ipv6, dst, INET6_ADDRSTRLEN);
+		ret = inet_ntop(AF_INET6, &ipv6, dst, INET6_ADDRSTRLEN);
+		break;
 	}
 
 	if (ret != NULL) {
@@ -489,11 +493,19 @@ print_header32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw, char sfrm)
 }
 
 /*
+ * The Solaris specifications for AUE_HEADER32_EX seem to differ a bit
+ * depending on the bit of the specifications found.  The OpenSolaris source
+ * code uses a 4-byte address length, followed by some number of bytes of
+ * address data.  This contrasts with the Solaris audit.log.5 man page, which
+ * specifies a 1-byte length field.  We use the Solaris 10 definition so that
+ * we can parse audit trails from that system.
+ *
  * record byte count       4 bytes
  * version #               1 byte     [2]
  * event type              2 bytes
  * event modifier          2 bytes
- * address type/length     1 byte
+ * address type/length     4 bytes
+ *   [ Solaris man page: address type/length     1 byte]
  * machine address         4 bytes/16 bytes (IPv4/IPv6 address)
  * seconds of time         4 bytes/8 bytes  (32/64-bits)
  * nanoseconds of time     4 bytes/8 bytes  (32/64-bits)
@@ -519,36 +531,22 @@ fetch_header32_ex_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_CHAR(buf, len, tok->tt.hdr32_ex.ad_type, tok->len, err);
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.ad_type, tok->len, err);
 	if (err)
 		return (-1);
 
 	bzero(tok->tt.hdr32_ex.addr, sizeof(tok->tt.hdr32_ex.addr));
 	switch (tok->tt.hdr32_ex.ad_type) {
-	case AF_INET:
-		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[0],
-		    tok->len, err);
+	case AU_IPv4:
+		READ_TOKEN_BYTES(buf, len, &tok->tt.hdr32_ex.addr[0],
+		    sizeof(tok->tt.hdr32_ex.addr[0]), tok->len, err);
 		if (err)
 			return (-1);
 		break;
 
-	case AF_INET6:
-		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[0],
-		    tok->len, err);
-		if (err)
-			return (-1);
-		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[1],
-		    tok->len, err);
-		if (err)
-			return (-1);
-		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[2],
-		    tok->len, err);
-		if (err)
-			return (-1);
-		READ_TOKEN_U_INT32(buf, len, tok->tt.hdr32_ex.addr[3],
-		    tok->len, err);
-		if (err)
-			return (-1);
+	case AU_IPv6:
+		READ_TOKEN_BYTES(buf, len, &tok->tt.hdr32_ex.addr,
+		    sizeof(tok->tt.hdr32_ex.addr), tok->len, err);
 		break;
 	}
 
@@ -1249,12 +1247,12 @@ fetch_inaddr_ex_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	if (tok->tt.inaddr_ex.type == AF_INET) {
+	if (tok->tt.inaddr_ex.type == AU_IPv4) {
 		READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr_ex.addr[0],
 		    sizeof(tok->tt.inaddr_ex.addr[0]), tok->len, err);
 		if (err)
 			return (-1);
-	} else if (tok->tt.inaddr_ex.type == AF_INET6) {
+	} else if (tok->tt.inaddr_ex.type == AU_IPv6) {
 		READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr_ex.addr,
 		    sizeof(tok->tt.inaddr_ex.addr), tok->len, err);
 		if (err)
@@ -1662,12 +1660,12 @@ fetch_process32ex_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	if (tok->tt.proc32_ex.tid.type == AF_INET) {
+	if (tok->tt.proc32_ex.tid.type == AU_IPv4) {
 		READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.addr[0],
 		    sizeof(tok->tt.proc32_ex.tid.addr[0]), tok->len, err);
 		if (err)
 			return (-1);
-	} else if (tok->tt.proc32_ex.tid.type == AF_INET6) {
+	} else if (tok->tt.proc32_ex.tid.type == AU_IPv6) {
 		READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.addr,
 		    sizeof(tok->tt.proc32_ex.tid.addr), tok->len, err);
 		if (err)
@@ -2134,12 +2132,12 @@ fetch_subject32ex_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	if (tok->tt.subj32_ex.tid.type == AF_INET) {
+	if (tok->tt.subj32_ex.tid.type == AU_IPv4) {
 		READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.addr[0],
 		    sizeof(tok->tt.subj32_ex.tid.addr[0]), tok->len, err);
 		if (err)
 			return (-1);
-	} else if (tok->tt.subj32_ex.tid.type == AF_INET6) {
+	} else if (tok->tt.subj32_ex.tid.type == AU_IPv6) {
 		READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.addr,
 		    sizeof(tok->tt.subj32_ex.tid.addr), tok->len, err);
 		if (err)
