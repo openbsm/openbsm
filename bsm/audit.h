@@ -157,6 +157,13 @@
 
 #define	AU_FS_MINFREE	20   /* default min filesystem freespace, in percent */
 
+/*
+ * Type definitions used indicating the length of variable length addresses
+ * in tokens containing addresses, such as header fields.
+ */
+#define	AU_IPv4		4
+#define	AU_IPv6		16
+
 __BEGIN_DECLS
 
 typedef uid_t au_id_t;
