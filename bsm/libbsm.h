@@ -337,7 +337,7 @@ typedef struct {
  * version #               1 byte     [2]
  * event type              2 bytes
  * event modifier          2 bytes
- * address type/length     1 byte
+ * address type/length     1 byte (XXX: actually, 4 bytes)
  * machine address         4 bytes/16 bytes (IPv4/IPv6 address)
  * seconds of time         4 bytes/8 bytes  (32/64-bits)
  * nanoseconds of time     4 bytes/8 bytes  (32/64-bits)
@@ -365,6 +365,19 @@ typedef struct {
 	u_int64_t ms;
 
 } au_header64_t;
+
+typedef struct {
+
+	u_int32_t size;
+	u_char version;
+	u_int16_t e_type;
+	u_int16_t e_mod;
+	u_int32_t ad_type;
+	u_int32_t addr[4];
+	u_int64_t s;
+	u_int64_t ms;
+
+} au_header64_ex_t;
 
 
 /*
@@ -765,6 +778,7 @@ struct tokenstr {
 		au_header32_t		hdr32;
 		au_header32_ex_t	hdr32_ex;
 		au_header64_t		hdr64;
+		au_header64_ex_t	hdr64_ex;
 		au_inaddr_t		inaddr;
 		au_inaddr_ex_t		inaddr_ex;
 		au_ip_t			ip;

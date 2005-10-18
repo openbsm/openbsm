@@ -642,6 +642,92 @@ print_header64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw, char sfrm)
 	print_delim(fp, del);
 	print_msec64(fp, tok->tt.hdr64.ms, raw);
 }
+/*
+ * record byte count       4 bytes
+ * version #               1 byte     [2]
+ * event type              2 bytes
+ * event modifier          2 bytes
+ * address type/length     4 bytes
+ *   [ Solaris man page: address type/length     1 byte]
+ * machine address         4 bytes/16 bytes (IPv4/IPv6 address)
+ * seconds of time         4 bytes/8 bytes  (32/64-bits)
+ * nanoseconds of time     4 bytes/8 bytes  (32/64-bits)
+ *
+ * XXXAUDIT: See comment by fetch_header32_ex_tok() for details on the
+ * accuracy of the BSM spec.
+ */
+static int
+fetch_header64_ex_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr64_ex.size, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.hdr64_ex.version, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT16(buf, len, tok->tt.hdr64_ex.e_type, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT16(buf, len, tok->tt.hdr64_ex.e_mod, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.hdr64_ex.ad_type, tok->len, err);
+	if (err)
+		return (-1);
+
+	bzero(tok->tt.hdr64_ex.addr, sizeof(tok->tt.hdr64_ex.addr));
+	switch (tok->tt.hdr64_ex.ad_type) {
+	case AU_IPv4:
+		READ_TOKEN_BYTES(buf, len, &tok->tt.hdr64_ex.addr[0],
+		    sizeof(tok->tt.hdr64_ex.addr[0]), tok->len, err);
+		if (err)
+			return (-1);
+		break;
+
+	case AU_IPv6:
+		READ_TOKEN_BYTES(buf, len, &tok->tt.hdr64_ex.addr,
+		    sizeof(tok->tt.hdr64_ex.addr), tok->len, err);
+		break;
+	}
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.hdr64_ex.s, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.hdr64_ex.ms, tok->len, err);
+	if (err)
+		return (-1);
+
+	return (0);
+}
+
+static void
+print_header64_ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw, char sfrm)
+{
+
+	print_tok_type(fp, tok->id, "header_ex", raw);
+	print_delim(fp, del);
+	print_4_bytes(fp, tok->tt.hdr64_ex.size, "%u");
+	print_delim(fp, del);
+	print_1_byte(fp, tok->tt.hdr64_ex.version, "%u");
+	print_delim(fp, del);
+	print_event(fp, tok->tt.hdr64_ex.e_type, raw, sfrm);
+	print_delim(fp, del);
+	print_evmod(fp, tok->tt.hdr64_ex.e_mod, raw);
+	print_delim(fp, del);
+	print_ip_ex_address(fp, tok->tt.hdr64_ex.ad_type,
+	    tok->tt.hdr64_ex.addr);
+	print_delim(fp, del);
+	print_sec64(fp, tok->tt.hdr64_ex.s, raw);
+	print_delim(fp, del);
+	print_msec64(fp, tok->tt.hdr64_ex.ms, raw);
+}
 
 /*
  * trailer magic                        2 bytes
@@ -2328,6 +2414,9 @@ au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 	case AUT_HEADER64:
 		return (fetch_header64_tok(tok, buf, len));
 
+	case AUT_HEADER64_EX:
+		return (fetch_header64_ex_tok(tok, buf, len));
+
 	case AUT_TRAILER:
 		return (fetch_trailer_tok(tok, buf, len));
 
@@ -2445,6 +2534,9 @@ au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 
 	case AUT_HEADER64:
 		return (print_header64_tok(outfp, tok, del, raw, sfrm));
+
+	case AUT_HEADER64_EX:
+		return (print_header64_ex_tok(outfp, tok, del, raw, sfrm));
 
 	case AUT_TRAILER:
 		return (print_trailer_tok(outfp, tok, del, raw, sfrm));
