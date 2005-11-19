@@ -1108,8 +1108,8 @@ au_to_subject64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 }
 
 token_t *
-au_to_subject_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
-    pid_t pid, au_asid_t sid, au_tid_addr_t *tid)
+au_to_subject_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
+    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_addr_t *tid)
 {
 
 	return (au_to_subject32_ex(auid, euid, egid, ruid, rgid, pid, sid,
