@@ -28,6 +28,7 @@
 
 #include <bsm/libbsm.h>
 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -45,8 +46,10 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 	struct au_class_ent *c;
 	char *last;
 
-	if ((auditstr == NULL) || (masks == NULL))
+	if ((auditstr == NULL) || (masks == NULL)) {
+		errno = EINVAL;
 		return (-1);
+	}
 
 	masks->am_success = 0;
 	masks->am_failure = 0;
@@ -76,8 +79,10 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 			else
 				ADD_TO_MASK(masks, c->ac_class, sel);
 			free_au_class_ent(c);
-		} else
+		} else {
+			errno = EINVAL;
 			return (-1);
+		}
 
 		/* Get the next class. */
 		tok = strtok_r(NULL, delim, &last);
@@ -89,6 +94,9 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
  * Convert the au_mask_t fields into a string value.  If verbose is non-zero
  * the long flag names are used else the short (2-character)flag names are
  * used.
+ *
+ * XXXRW: If bits are specified that are not matched by any class, they are
+ * omitted rather than rejected with EINVAL.
  */
 int
 getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
@@ -97,8 +105,10 @@ getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 	char *strptr = auditstr;
 	u_char sel;
 
-	if ((auditstr == NULL) || (masks == NULL))
+	if ((auditstr == NULL) || (masks == NULL)) {
+		return (EINVAL);
 		return (-1);
+	}
 
 	/*
 	 * Enumerate the class entries, check if each is selected in either
