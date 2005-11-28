@@ -146,10 +146,18 @@ getauclassent(void)
 		return (NULL);
 	}
 
-	if (fgets(linestr, AU_LINE_MAX, fp) == NULL) {
-		pthread_mutex_unlock(&mutex);
-		return (NULL);
+	/*
+	 * Read until next non-comment line is found, or EOF.
+	 */
+	while (1) {
+		if (fgets(linestr, AU_LINE_MAX, fp) == NULL) {
+			pthread_mutex_unlock(&mutex);
+			return (NULL);
+		}
+		if (linestr[0] != '#')
+			break;
 	}
+
 	/* Remove trailing new line character. */
 	if ((nl = strrchr(linestr, '\n')) != NULL)
 		*nl = '\0';
@@ -180,7 +188,6 @@ struct au_class_ent *
 getauclassnam(const char *name)
 {
 	struct au_class_ent *c;
-	char *nl;
 
 	if (name == NULL)
 		return (NULL);
@@ -201,24 +208,16 @@ getauclassnam(const char *name)
 		return (NULL);
 	}
 
-	while(fgets(linestr, AU_LINE_MAX, fp) != NULL) {
-		/* Remove trailing new line character */
-		if ((nl = strrchr(linestr, '\n')) != NULL)
-			*nl = '\0';
-
-		/* parse tokptr to au_class_ent components */
-		if (classfromstr(linestr, delim, c) != NULL) {
-			if (!strcmp(name, c->ac_name)) {
-				pthread_mutex_unlock(&mutex);
-				return (c);
-			}
+	while ((c = getauclassent()) != NULL) {
+		if (strcmp(name, c->ac_name) == 0) {
+			pthread_mutex_unlock(&mutex);
+			return (c);
 		}
+		free_au_class_ent(c);
 	}
 
-	free_au_class_ent(c);
 	pthread_mutex_unlock(&mutex);
 	return (NULL);
-
 }
 
 /*
