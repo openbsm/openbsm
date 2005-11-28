@@ -68,22 +68,33 @@ getstrfromtype(char *name, char **str)
 		return (0); /* Error */
 	}
 
-	/* Search for the line beginning with the given name. */
-	while (fgets(linestr, AU_LINE_MAX, fp) != NULL) {
-		/* Remove trailing new line character. */
-		if ((nl = strrchr(linestr, '\n')) != NULL)
-			*nl = '\0';
+	while (1) {
+		if (fgets(linestr, AU_LINE_MAX, fp) == NULL) {
+			pthread_mutex_unlock(&mutex);
+			if (ferror(fp))
+				return (-1);
+			return (0);
+		}
 
-		tokptr = linestr;
-		if ((type = strtok_r(tokptr, delim, &last)) != NULL) {
-			if (!strcmp(name, type)) {
-				/* Found matching name. */
-				*str = strtok_r(NULL, delim, &last);
-				pthread_mutex_unlock(&mutex);
-				if (*str == NULL)
-					return (1); /* Parse error in file */
-				return (0); /* Success */
+		if (linestr[0] != '#')
+			break;
+	}
+
+	/* Remove trailing new line character. */
+	if ((nl = strrchr(linestr, '\n')) != NULL)
+		*nl = '\0';
+
+	tokptr = linestr;
+	if ((type = strtok_r(tokptr, delim, &last)) != NULL) {
+		if (!strcmp(name, type)) {
+			/* Found matching name. */
+			*str = strtok_r(NULL, delim, &last);
+			pthread_mutex_unlock(&mutex);
+			if (*str == NULL) {
+				errno = EINVAL;
+				return (-1); /* Parse error in file */
 			}
+			return (0); /* Success */
 		}
 	}
 
@@ -150,7 +161,7 @@ getacdir(char *name, int len)
 
 	pthread_mutex_unlock(&mutex);
 
-	if (getstrfromtype(DIR_CONTROL_ENTRY, &dir) == 1)
+	if (getstrfromtype(DIR_CONTROL_ENTRY, &dir) < 0)
 		return (-3);
 
 	if (dir == NULL)
@@ -179,7 +190,7 @@ getacmin(int *min_val)
 		return (-2);
 	}
 
-	if (getstrfromtype(MINFREE_CONTROL_ENTRY, &min) == 1)
+	if (getstrfromtype(MINFREE_CONTROL_ENTRY, &min) < 0)
 		return (-3);
 
 	if (min == NULL)
@@ -205,7 +216,7 @@ getacflg(char *auditstr, int len)
 		return (-2);
 	}
 
-	if (getstrfromtype(FLAGS_CONTROL_ENTRY, &str) == 1)
+	if (getstrfromtype(FLAGS_CONTROL_ENTRY, &str) < 0)
 		return (-3);
 
 	if (str == NULL)
@@ -234,7 +245,7 @@ getacna(char *auditstr, int len)
 		return (-2);
 	}
 
-	if (getstrfromtype(NA_CONTROL_ENTRY, &str) == 1)
+	if (getstrfromtype(NA_CONTROL_ENTRY, &str) < 0)
 		return (-3);
 
 	if (str == NULL)
