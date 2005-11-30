@@ -46,7 +46,8 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 /*
  * XXX The reentrant versions of the following functions is TBD
  * XXX struct au_class_ent *getclassent_r(au_class_ent_t *class_int);
- * XXX struct au_class_ent *getclassnam_r(au_class_ent_t *class_int, const char *name);
+ * XXX struct au_class_ent *getclassnam_r(au_class_ent_t *class_int, const
+ *         char *name);
  */
 
 /*
@@ -132,28 +133,24 @@ classfromstr(char *str, char *delim, struct au_class_ent *c)
 /*
  * Return the next au_class_ent structure from the file setauclass should be
  * called before invoking this function for the first time.
+ *
+ * Must be called with mutex held.
  */
-struct au_class_ent *
-getauclassent(void)
+static struct au_class_ent *
+getauclassent_locked(void)
 {
 	struct au_class_ent *c;
 	char *tokptr, *nl;
 
-	pthread_mutex_lock(&mutex);
-
-	if ((fp == NULL) && ((fp = fopen(AUDIT_CLASS_FILE, "r")) == NULL)) {
-		pthread_mutex_unlock(&mutex);
+	if ((fp == NULL) && ((fp = fopen(AUDIT_CLASS_FILE, "r")) == NULL))
 		return (NULL);
-	}
 
 	/*
 	 * Read until next non-comment line is found, or EOF.
 	 */
 	while (1) {
-		if (fgets(linestr, AU_LINE_MAX, fp) == NULL) {
-			pthread_mutex_unlock(&mutex);
+		if (fgets(linestr, AU_LINE_MAX, fp) == NULL)
 			return (NULL);
-		}
 		if (linestr[0] != '#')
 			break;
 	}
@@ -165,26 +162,55 @@ getauclassent(void)
 	tokptr = linestr;
 
 	c = get_class_area(); /* allocate */
-	if (c == NULL) {
-		pthread_mutex_unlock(&mutex);
+	if (c == NULL)
 		return (NULL);
-	}
 
 	/* Parse tokptr to au_class_ent components. */
 	if (classfromstr(tokptr, delim, c) == NULL) {
 		free_au_class_ent(c);
-		pthread_mutex_unlock(&mutex);
 		return (NULL);
 	}
 
+	return (c);
+}
+
+struct au_class_ent *
+getauclassent(void)
+{
+	struct au_class_ent *c;
+
+	pthread_mutex_lock(&mutex);
+	c = getauclassent_locked();
 	pthread_mutex_unlock(&mutex);
 	return (c);
 }
 
 /*
+ * Rewind to the beginning of the enumeration.
+ *
+ * Must be called with mutex held.
+ */
+static void
+setauclass_locked(void)
+{
+
+	if (fp != NULL)
+		fseek(fp, 0, SEEK_SET);
+}
+
+void
+setauclass(void)
+{
+
+	pthread_mutex_lock(&mutex);
+	setauclass_locked();
+	pthread_mutex_unlock(&mutex);
+}
+
+/*
  * Return the next au_class_entry having the given class name.
  */
-struct au_class_ent *
+au_class_ent_t *
 getauclassnam(const char *name)
 {
 	struct au_class_ent *c;
@@ -192,22 +218,8 @@ getauclassnam(const char *name)
 	if (name == NULL)
 		return (NULL);
 
-	/* Rewind to beginning of file. */
-	setauclass();
-
 	pthread_mutex_lock(&mutex);
-
-	if ((fp == NULL) && ((fp = fopen(AUDIT_CLASS_FILE, "r")) == NULL)) {
-		pthread_mutex_unlock(&mutex);
-		return (NULL);
-	}
-
-	c = get_class_area(); /* allocate */
-	if (c == NULL) {
-		pthread_mutex_unlock(&mutex);
-		return (NULL);
-	}
-
+	setauclass_locked();
 	while ((c = getauclassent()) != NULL) {
 		if (strcmp(name, c->ac_name) == 0) {
 			pthread_mutex_unlock(&mutex);
@@ -215,22 +227,29 @@ getauclassnam(const char *name)
 		}
 		free_au_class_ent(c);
 	}
-
 	pthread_mutex_unlock(&mutex);
 	return (NULL);
 }
 
 /*
- * Rewind to the beginning of the enumeration.
+ * Return the next au_class_entry having the given class number.
+ *
+ * OpenBSM extension.
  */
-void
-setauclass(void)
+au_class_ent_t *
+getauclassnum(au_class_t class_number)
 {
+	au_class_ent_t *c;
 
 	pthread_mutex_lock(&mutex);
-	if (fp != NULL)
-		fseek(fp, 0, SEEK_SET);
+	setauclass_locked();
+	while ((c = getauclassent()) != NULL) {
+		if (class_number == c->ac_class)
+			return (c);
+		free_au_class_ent(c);
+	}
 	pthread_mutex_unlock(&mutex);
+	return (NULL);
 }
 
 /*
