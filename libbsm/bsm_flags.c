@@ -97,6 +97,11 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
  *
  * XXXRW: If bits are specified that are not matched by any class, they are
  * omitted rather than rejected with EINVAL.
+ *
+ * XXXRW: This is not thread-safe as it relies on atomicity between
+ * setauclass() and sequential calls to getauclassent().  This could be
+ * fixed by iterating through the bitmask fields rather than iterating
+ * through the classes.
  */
 int
 getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
