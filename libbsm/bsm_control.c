@@ -65,7 +65,7 @@ getstrfromtype(char *name, char **str)
 	if ((fp == NULL) && ((fp = fopen(AUDIT_CONTROL_FILE, "r")) ==
 	    NULL)) {
 		pthread_mutex_unlock(&mutex);
-		return (0); /* Error */
+		return (-1); /* Error */
 	}
 
 	while (1) {
@@ -73,28 +73,29 @@ getstrfromtype(char *name, char **str)
 			pthread_mutex_unlock(&mutex);
 			if (ferror(fp))
 				return (-1);
-			return (0);
+			return (0);	/* EOF */
 		}
 
-		if (linestr[0] != '#')
-			break;
-	}
+		if (linestr[0] == '#')
+			continue;
 
-	/* Remove trailing new line character. */
-	if ((nl = strrchr(linestr, '\n')) != NULL)
-		*nl = '\0';
 
-	tokptr = linestr;
-	if ((type = strtok_r(tokptr, delim, &last)) != NULL) {
-		if (!strcmp(name, type)) {
-			/* Found matching name. */
-			*str = strtok_r(NULL, delim, &last);
-			pthread_mutex_unlock(&mutex);
-			if (*str == NULL) {
-				errno = EINVAL;
-				return (-1); /* Parse error in file */
+		/* Remove trailing new line character. */
+		if ((nl = strrchr(linestr, '\n')) != NULL)
+			*nl = '\0';
+
+		tokptr = linestr;
+		if ((type = strtok_r(tokptr, delim, &last)) != NULL) {
+			if (strcmp(name, type) == 0) {
+				/* Found matching name. */
+				*str = strtok_r(NULL, delim, &last);
+				pthread_mutex_unlock(&mutex);
+				if (*str == NULL) {
+					errno = EINVAL;
+					return (-1); /* Parse error in file */
+				}
+				return (0); /* Success */
 			}
-			return (0); /* Success */
 		}
 	}
 
@@ -162,7 +163,7 @@ getacdir(char *name, int len)
 	pthread_mutex_unlock(&mutex);
 
 	if (getstrfromtype(DIR_CONTROL_ENTRY, &dir) < 0)
-		return (-3);
+		return (-2);
 
 	if (dir == NULL)
 		return (-1);
@@ -191,7 +192,7 @@ getacmin(int *min_val)
 	}
 
 	if (getstrfromtype(MINFREE_CONTROL_ENTRY, &min) < 0)
-		return (-3);
+		return (-2);
 
 	if (min == NULL)
 		return (1);
@@ -217,7 +218,7 @@ getacflg(char *auditstr, int len)
 	}
 
 	if (getstrfromtype(FLAGS_CONTROL_ENTRY, &str) < 0)
-		return (-3);
+		return (-2);
 
 	if (str == NULL)
 		return (1);
@@ -246,7 +247,7 @@ getacna(char *auditstr, int len)
 	}
 
 	if (getstrfromtype(NA_CONTROL_ENTRY, &str) < 0)
-		return (-3);
+		return (-2);
 
 	if (str == NULL)
 		return (1);
