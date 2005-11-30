@@ -50,9 +50,11 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 /*
  * Returns the string value corresponding to the given label from the
  * configuration file.
+ *
+ * Must be called with mutex held.
  */
 static int
-getstrfromtype(char *name, char **str)
+getstrfromtype_locked(char *name, char **str)
 {
 	char *type, *nl;
 	char *tokptr;
@@ -60,17 +62,11 @@ getstrfromtype(char *name, char **str)
 
 	*str = NULL;
 
-	pthread_mutex_lock(&mutex);
-
-	if ((fp == NULL) && ((fp = fopen(AUDIT_CONTROL_FILE, "r")) ==
-	    NULL)) {
-		pthread_mutex_unlock(&mutex);
+	if ((fp == NULL) && ((fp = fopen(AUDIT_CONTROL_FILE, "r")) == NULL))
 		return (-1); /* Error */
-	}
 
 	while (1) {
 		if (fgets(linestr, AU_LINE_MAX, fp) == NULL) {
-			pthread_mutex_unlock(&mutex);
 			if (ferror(fp))
 				return (-1);
 			return (0);	/* EOF */
@@ -89,7 +85,6 @@ getstrfromtype(char *name, char **str)
 			if (strcmp(name, type) == 0) {
 				/* Found matching name. */
 				*str = strtok_r(NULL, delim, &last);
-				pthread_mutex_unlock(&mutex);
 				if (*str == NULL) {
 					errno = EINVAL;
 					return (-1); /* Parse error in file */
@@ -99,7 +94,6 @@ getstrfromtype(char *name, char **str)
 		}
 	}
 
-	pthread_mutex_unlock(&mutex);
 	return (0); /* EOF */
 }
 
@@ -160,10 +154,13 @@ getacdir(char *name, int len)
 		ret = 2;
 	}
 
-	pthread_mutex_unlock(&mutex);
 
-	if (getstrfromtype(DIR_CONTROL_ENTRY, &dir) < 0)
+	if (getstrfromtype_locked(DIR_CONTROL_ENTRY, &dir) < 0) {
+		pthread_mutex_unlock(&mutex);
 		return (-2);
+	}
+
+	pthread_mutex_unlock(&mutex);
 
 	if (dir == NULL)
 		return (-1);
@@ -191,8 +188,14 @@ getacmin(int *min_val)
 		return (-2);
 	}
 
-	if (getstrfromtype(MINFREE_CONTROL_ENTRY, &min) < 0)
+	pthread_mutex_lock(&mutex);
+
+	if (getstrfromtype_locked(MINFREE_CONTROL_ENTRY, &min) < 0) {
+		pthread_mutex_unlock(&mutex);
 		return (-2);
+	}
+
+	pthread_mutex_unlock(&mutex);
 
 	if (min == NULL)
 		return (1);
@@ -217,8 +220,14 @@ getacflg(char *auditstr, int len)
 		return (-2);
 	}
 
-	if (getstrfromtype(FLAGS_CONTROL_ENTRY, &str) < 0)
+	pthread_mutex_lock(&mutex);
+
+	if (getstrfromtype_locked(FLAGS_CONTROL_ENTRY, &str) < 0) {
+		pthread_mutex_unlock(&mutex);
 		return (-2);
+	}
+
+	pthread_mutex_unlock(&mutex);
 
 	if (str == NULL)
 		return (1);
@@ -246,8 +255,13 @@ getacna(char *auditstr, int len)
 		return (-2);
 	}
 
-	if (getstrfromtype(NA_CONTROL_ENTRY, &str) < 0)
+	pthread_mutex_lock(&mutex);
+
+	if (getstrfromtype_locked(NA_CONTROL_ENTRY, &str) < 0) {
+		pthread_mutex_unlock(&mutex);
 		return (-2);
+	}
+	pthread_mutex_unlock(&mutex);
 
 	if (str == NULL)
 		return (1);
