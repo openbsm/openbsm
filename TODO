@@ -5,3 +5,4 @@
   type and then compares the results with known good data.  Make sure to
   test that things work properly with respect to endianness of the local
   platform.
+- Document contents of libbsm "public" data structures in libbsm man pages.
