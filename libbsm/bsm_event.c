@@ -135,13 +135,20 @@ eventfromstr(char *str, char *delim, struct au_event_ent *e)
 /*
  * Rewind the audit_event file.
  */
+static void
+setauevent_locked(void)
+{
+
+	if (fp != NULL)
+		fseek(fp, 0, SEEK_SET);
+}
+
 void
 setauevent(void)
 {
 
 	pthread_mutex_lock(&mutex);
-	if (fp != NULL)
-		fseek(fp, 0, SEEK_SET);
+	setauevent_locked();
 	pthread_mutex_unlock(&mutex);
 }
 
@@ -213,10 +220,10 @@ getauevnam(char *name)
 	if (name == NULL)
 		return (NULL);
 
-	/* Rewind to beginning of the file. */
-	setauevent();
-
 	pthread_mutex_lock(&mutex);
+
+	/* Rewind to beginning of the file. */
+	setauevent_locked();
 
 	if ((fp == NULL) && ((fp = fopen(AUDIT_EVENT_FILE, "r")) == NULL)) {
 		pthread_mutex_unlock(&mutex);
@@ -242,8 +249,10 @@ getauevnam(char *name)
 		}
 	}
 
-	free_au_event_ent(e);
 	pthread_mutex_unlock(&mutex);
+
+	free_au_event_ent(e);
+
 	return (NULL);
 }
 
@@ -255,10 +264,10 @@ struct au_event_ent *getauevnum(au_event_t event_number)
 	struct au_event_ent *e;
 	char *nl;
 
-	/* Rewind to beginning of the file. */
-	setauevent();
-
 	pthread_mutex_lock(&mutex);
+
+	/* Rewind to beginning of the file. */
+	setauevent_locked();
 
 	if ((fp == NULL) && ((fp = fopen(AUDIT_EVENT_FILE, "r")) == NULL)) {
 		pthread_mutex_unlock(&mutex);
@@ -284,8 +293,8 @@ struct au_event_ent *getauevnum(au_event_t event_number)
 		}
 	}
 
-	free_au_event_ent(e);
 	pthread_mutex_unlock(&mutex);
+	free_au_event_ent(e);
 	return (NULL);
 
 }
