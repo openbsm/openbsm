@@ -42,11 +42,14 @@ static int		firsttime = 1;
  * XXX ev_cache, once created, sticks around until the calling program exits.
  * This may or may not be a problem as far as absolute memory usage goes, but
  * at least there don't appear to be any leaks in using the cache.
+ *
+ * XXXRW: Note that despite (mutex), load_event_table() could race with
+ * other consumers of the getauevents() API.
  */
 static LIST_HEAD(, audit_event_map)	ev_cache;
 
 static int
-load_event_table(VOID)
+load_event_table(void)
 {
 	struct au_event_ent *ev;
 	struct audit_event_map *elem;
@@ -64,7 +67,7 @@ load_event_table(VOID)
 
 	/* Enumerate the events. */
 	while ((ev = getauevent()) != NULL) {
-		elem = malloc (sizeof (struct audit_event_map));
+		elem = malloc(sizeof(struct audit_event_map));
 		if (elem == NULL) {
 			free_au_event_ent(ev);
 			pthread_mutex_unlock(&mutex);
@@ -126,7 +129,7 @@ read_from_cache(au_event_t event)
 	LIST_FOREACH(elem, &ev_cache, ev_list) {
 		if (elem->ev->ae_number == event) {
 			pthread_mutex_unlock(&mutex);
-			return elem->ev;
+			return (elem->ev);
 		}
 	}
 	pthread_mutex_unlock(&mutex);
