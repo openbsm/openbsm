@@ -305,6 +305,7 @@
 376:AUE_EACCESS:eaccess(2):fa
 377:AUE_KQUEUE:kqueue(2):no
 378:AUE_KEVENT:kevent(2):no
+379:AUE_FSYNC:fsync(2):fm
 6152:AUE_login:login - local:lo
 6153:AUE_logout:logout - local:lo
 6159:AUE_su:su(1):lo
