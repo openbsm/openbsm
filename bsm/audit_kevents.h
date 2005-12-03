@@ -354,6 +354,7 @@
 #define	AUE_EACCESS		376	/* FreeBSD */
 #define	AUE_KQUEUE		377	/* FreeBSD */
 #define	AUE_KEVENT		378	/* FreeBSD */
+#define	AUE_FSYNC		379
 
 /*
  * XXXRW: Values not yet assigned.
@@ -361,7 +362,6 @@
 #define	AUE_DUP			AUE_NULL
 #define	AUE_FSCTL		AUE_NULL
 #define	AUE_FSTATV		AUE_NULL
-#define	AUE_FSYNC		AUE_NULL
 #define	AUE_GCCONTROL		AUE_NULL
 #define	AUE_GETDTABLESIZE	AUE_NULL
 #define	AUE_GETEGID		AUE_NULL
