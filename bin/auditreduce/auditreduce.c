@@ -41,11 +41,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <sysexits.h>
+#include <grp.h>
+#include <pwd.h>
 #include <string.h>
 #include <time.h>
-#include <pwd.h>
-#include <grp.h>
+#include <unistd.h>
 
 #include "auditreduce.h"
 
@@ -53,30 +54,31 @@
 extern char *optarg;
 extern int optind, optopt, opterr,optreset;
 
-au_mask_t maskp; /* Used while selecting based on class */
-time_t p_atime;/* select records created after this time */
-time_t p_btime;/* select records created before this time */
-uint16_t p_evtype; /* The event that we are searching for */
-int p_auid; /* audit id */ 
-int p_euid; /* effective user id */
-int p_egid; /* effective group id */ 
-int p_rgid; /* real group id */ 
-int p_ruid; /* real user id */ 
-int p_subid; /* subject id */
+static au_mask_t maskp; /* Used while selecting based on class */
+static time_t p_atime;/* select records created after this time */
+static time_t p_btime;/* select records created before this time */
+static uint16_t p_evtype; /* The event that we are searching for */
+static int p_auid; /* audit id */ 
+static int p_euid; /* effective user id */
+static int p_egid; /* effective group id */ 
+static int p_rgid; /* real group id */ 
+static int p_ruid; /* real user id */ 
+static int p_subid; /* subject id */
 
 /* Following are the objects (-o option) that we can select upon */
-char *p_fileobj = NULL;
-char *p_msgqobj = NULL;
-char *p_pidobj = NULL;
-char *p_semobj = NULL;
-char *p_shmobj = NULL;
-char *p_sockobj = NULL; 
+static char *p_fileobj = NULL;
+static char *p_msgqobj = NULL;
+static char *p_pidobj = NULL;
+static char *p_semobj = NULL;
+static char *p_shmobj = NULL;
+static char *p_sockobj = NULL; 
 
 
-uint32_t opttochk = 0;
+static uint32_t opttochk = 0;
 
 
-static void usage(const char *msg)
+static void
+usage(const char *msg)
 {
 	fprintf(stderr, "%s\n", msg);
 	fprintf(stderr, "Usage: auditreduce [options] audit-trail-file [....] \n");
@@ -99,7 +101,7 @@ static void usage(const char *msg)
 	fprintf(stderr, "\t\t shmid=<ID>\n");
 	fprintf(stderr, "\t-r <uid|name> : real user\n");
 	fprintf(stderr, "\t-u <uid|name> : audit user\n");
-	exit(1);
+	exit(EX_USAGE);
 }
 
 /*
@@ -531,172 +533,179 @@ void parse_object_type(char *name, char *val)
 }
 
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
-	char ch;
-	int i;
-	FILE  *fp;
-	char *objval;
+	struct group *grp;
+	struct passwd *pw;
 	struct tm tm;
 	au_event_t *n;
-	struct passwd *pw;
-	struct group *grp;
+	FILE  *fp;
+	int i;
+	char *objval, *converr;
+	char ch;
+	char timestr[128];
 
-	char *converr = NULL;
-	char timestr[100];
+	converr = NULL;
 
-	while((ch = getopt(argc, argv, "Aa:b:c:d:e:f:g:j:m:o:r:u:")) != -1) {
-
+	while ((ch = getopt(argc, argv, "Aa:b:c:d:e:f:g:j:m:o:r:u:")) != -1) {
 		switch(ch) {
+		case 'A':
+			SETOPT(opttochk, OPT_A);
+			break;
+		case 'a':
+			if (ISOPTSET(opttochk, OPT_a)) {
+				usage("d is exclusive with a and b");
+			}
+			SETOPT(opttochk, OPT_a);
+			strptime(optarg, "%Y%m%d%H%M%S", &tm);
+			strftime(timestr, sizeof(timestr), "%Y%m%d%H%M%S", &tm);
+			//fprintf(stderr, "Time converted = %s\n", timestr);
+			p_atime = mktime(&tm);
+			break; 	
+		case 'b':
+			if (ISOPTSET(opttochk, OPT_b)) {
+				usage("d is exclusive with a and b");
+			}
+			SETOPT(opttochk, OPT_b);
+			strptime(optarg, "%Y%m%d%H%M%S", &tm);
+			strftime(timestr, sizeof(timestr), "%Y%m%d%H%M%S", &tm);
+			//fprintf(stderr, "Time converted = %s\n", timestr);
+			p_btime = mktime(&tm);
+			break; 	
+		case 'c':
+			if(0 != getauditflagsbin(optarg, &maskp)) {
+				/* Incorrect class */
+				usage("Incorrect class");
+			}
+			SETOPT(opttochk, OPT_c);
+			break;
 
-			case 'A':	SETOPT(opttochk, OPT_A);
+		case 'd':
+			if (ISOPTSET(opttochk, OPT_b) || ISOPTSET(opttochk, OPT_a)) {
+				usage("'d' is exclusive with 'a' and 'b'");
+			}
+			SETOPT(opttochk, OPT_d);
+			strptime(optarg, "%Y%m%d", &tm);
+			strftime(timestr, sizeof(timestr), "%Y%m%d", &tm);
+			//fprintf(stderr, "Time converted = %s\n", timestr);
+			p_atime = mktime(&tm);
+
+			tm.tm_hour = 23;
+			tm.tm_min = 59;
+			tm.tm_sec = 59;
+			strftime(timestr, sizeof(timestr), "%Y%m%d", &tm);
+			//fprintf(stderr, "Time converted = %s\n", timestr);
+			p_btime = mktime(&tm);
+			break;
+
+		case 'e':
+			p_euid = strtol(optarg, &converr, 10);
+			if (*converr != '\0') {
+				/* Try the actual name */
+				if ((pw = getpwnam(optarg)) == NULL) {
 					break;
+				}
+				p_euid = pw->pw_uid;
+			}
+			SETOPT(opttochk, OPT_e);
+			break;
 
-
-			case 'a':	if(ISOPTSET(opttochk, OPT_a)) {
-						usage("d is exclusive with a and b");
-					}
-					SETOPT(opttochk, OPT_a);
-					strptime(optarg, "%Y%m%d%H%M%S", &tm);
-					strftime(timestr, 99, "%Y%m%d%H%M%S", &tm);
-					//fprintf(stderr, "Time converted = %s\n", timestr);
-					p_atime = mktime(&tm);
-					break; 	
-
-			case 'b':	if(ISOPTSET(opttochk, OPT_b)) {
-						usage("d is exclusive with a and b");
-					}
-					SETOPT(opttochk, OPT_b);
-					strptime(optarg, "%Y%m%d%H%M%S", &tm); 
-					strftime(timestr, 99, "%Y%m%d%H%M%S", &tm);
-					//fprintf(stderr, "Time converted = %s\n", timestr);
-					p_btime = mktime(&tm);
-					break; 	
-
-			case 'c':	if(0 != getauditflagsbin(optarg, &maskp)) {
-						/* Incorrect class */
-						usage("Incorrect class");
-					}
-					SETOPT(opttochk, OPT_c);
+		case 'f':
+			p_egid = strtol(optarg, &converr, 10);
+			if (*converr != '\0') {
+				/* try actual group name */
+				if ((grp = getgrnam(optarg)) == NULL) {
 					break;
+				}
+				p_egid = grp->gr_gid;
+			}
+			SETOPT(opttochk, OPT_f);
+			break;
 
-			case 'd':	if(ISOPTSET(opttochk, OPT_b) || ISOPTSET(opttochk, OPT_a)) {
-						usage("d is exclusive with a and b");
-					}
-					SETOPT(opttochk, OPT_d);
-					strptime(optarg, "%Y%m%d", &tm);
-					strftime(timestr, 99, "%Y%m%d", &tm);
-					//fprintf(stderr, "Time converted = %s\n", timestr);
-					p_atime = mktime(&tm);
-
-					tm.tm_hour = 23; tm.tm_min = 59; tm.tm_sec = 59;
-					strftime(timestr, 99, "%Y%m%d", &tm);
-					//fprintf(stderr, "Time converted = %s\n", timestr);
-					p_btime = mktime(&tm);
+		case 'g':
+			p_rgid = strtol(optarg, &converr, 10);
+			if (*converr != '\0') {
+				/* try actual group name */
+				if ((grp = getgrnam(optarg)) == NULL) {
 					break;
+				}
+				p_rgid = grp->gr_gid;
+			}
+			SETOPT(opttochk, OPT_g);
+			break;
 
-			case 'e':	p_euid = strtol(optarg, &converr, 10);
-					if(*converr != '\0') {
-						/* Try the actual name */
-						if((pw = getpwnam(optarg)) == NULL) {
-							break;
-						}
-						p_euid = pw->pw_uid;
-					}
-					SETOPT(opttochk, OPT_e);
+		case 'j':
+			p_subid = strtol(optarg, (char **)NULL, 10);
+			SETOPT(opttochk, OPT_j);
+			break;
+
+		case 'm':
+			p_evtype = strtol(optarg, (char **)NULL, 10);
+			if (p_evtype == 0) {
+				/* Could be the string representation */
+				n = getauevnonam(optarg);
+				if(n == NULL) {
+					usage("Incorrect event name");
+				}
+				p_evtype = *n;
+				free(n);
+			}
+			SETOPT(opttochk, OPT_m);
+			break;
+
+		case 'o':
+			objval = strchr(optarg, '=');
+			if (objval != NULL) {
+				*objval = '\0';
+				objval += 1;			
+				parse_object_type(optarg, objval);
+			}
+			break;
+
+		case 'r':
+			p_ruid = strtol(optarg, &converr, 10);
+			if (*converr != '\0') {
+				if ((pw = getpwnam(optarg)) == NULL) {
 					break;
+				}
+				p_ruid = pw->pw_uid;
+			}
+			SETOPT(opttochk, OPT_r);
+			break;
 
-			case 'f':	p_egid = strtol(optarg, &converr, 10);
-					if(*converr != '\0') {
-						/* try actual group name */
-						if((grp = getgrnam(optarg)) == NULL) {
-							break;
-						}
-						p_egid = grp->gr_gid;
-					}
-					SETOPT(opttochk, OPT_f);
+		case 'u':
+			p_auid = strtol(optarg, &converr, 10);
+			if (*converr != '\0') {
+				if ((pw = getpwnam(optarg)) == NULL) {
 					break;
-
-			case 'g':	p_rgid = strtol(optarg, &converr, 10);
-					if(*converr != '\0') {
-						/* try actual group name */
-						if((grp = getgrnam(optarg)) == NULL) {
-							break;
-						}
-						p_rgid = grp->gr_gid;
-					}
-					SETOPT(opttochk, OPT_g);
-					break;
-
-			case 'j':	p_subid = strtol(optarg, (char **)NULL, 10);
-					SETOPT(opttochk, OPT_j);
-					break;
-
-			case 'm': 	p_evtype = strtol(optarg, (char **)NULL, 10);
-					if(p_evtype == 0) {
-						/* Could be the string representation */
-						n = getauevnonam(optarg);
-						if(n == NULL) {
-							usage("Incorrect event name");
-						}
-						p_evtype = *n;
-						free(n);
-					}
-					SETOPT(opttochk, OPT_m);
-					break;
-
-			case 'o':	objval = strchr(optarg, '=');
-					if(objval != NULL) {
-					 	*objval = '\0';
-						objval += 1;			
-						parse_object_type(optarg, objval);
-					}
-					break;
-
-			case 'r':	p_ruid = strtol(optarg, &converr, 10);
-					if(*converr != '\0') {
-						if((pw = getpwnam(optarg)) == NULL) {
-							break;
-						}
-						p_ruid = pw->pw_uid;
-					}
-					SETOPT(opttochk, OPT_r);
-					break;
-
-			case 'u':	p_auid = strtol(optarg, &converr, 10);
-					if(*converr != '\0') {
-						if((pw = getpwnam(optarg)) == NULL) {
-							break;
-						}
-						p_auid = pw->pw_uid;
-					}
-					SETOPT(opttochk, OPT_u);
-					break;
-
-			case '?':
-			default :
-					usage("Unknown option");
+				}
+				p_auid = pw->pw_uid;
+			}
+			SETOPT(opttochk, OPT_u);
+			break;
+		case '?':
+		default :
+			usage("Unknown option");
 		}
 	}
+	argv += optind;
+	argc -= optind;
 
-	if (optind + 2 != argc)
-		usage("Unknown option");
+	if (argc == 0)
+		usage("Filename needed");
 
-	/* For each of the files passed as arguments dump the contents */
-	if(optind == argc) {
-		// XXX should look in the default directory for audit trail files
-		return -1;
-	}
-
-	// XXX we should actually be merging records here
-	for (i = optind; i < argc; i++) {
-		fp = fopen(argv[i], "r");
-		if((fp == NULL) || (-1 == select_records(fp))) {
-			perror(argv[i]);
+	/*
+	 * XXX: We should actually be merging records here
+	 */
+	for (i = 0;i < argc; i++) {
+		fp = fopen(*argv, "r");
+		if (fp == NULL)
+			errx(EXIT_FAILURE, "Couldn't open %s", *argv);
+		if (select_records(fp) == -1) {
+			errx(EXIT_FAILURE, "Couldn't select records %s", *argv);
 		}
-		if(fp != NULL)
-			fclose(fp);	
+		fclose(fp);
 	}
-
-	return 1;
+	exit(EXIT_SUCCESS);
 }
