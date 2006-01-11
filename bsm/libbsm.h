@@ -827,6 +827,7 @@ void setauclass();
 void endauclass();
 struct au_class_ent *getauclassent();
 struct au_class_ent *getauclassnam(const char *name);
+struct au_class_ent *getauclassnum(au_class_t class_number);
 /*
  * Free the au_class_ent structure
  */

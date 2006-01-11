@@ -57,7 +57,7 @@ get_user_area(void)
 {
 	struct au_user_ent *u;
 
-	u = (struct au_user_ent *) malloc (sizeof(struct au_user_ent));
+	u = (struct au_user_ent *) malloc(sizeof(struct au_user_ent));
 	if (u == NULL)
 		return (NULL);
 	u->au_name = (char *)malloc(AU_USER_NAME_MAX * sizeof(char));
@@ -112,13 +112,20 @@ userfromstr(char *str, char *delim, struct au_user_ent *u)
 /*
  * Rewind to beginning of the file
  */
+static void
+setauuser_locked(void)
+{
+
+	if (fp != NULL)
+		fseek(fp, 0, SEEK_SET);
+}
+
 void
 setauuser(void)
 {
 
 	pthread_mutex_lock(&mutex);
-	if (fp != NULL)
-		fseek(fp, 0, SEEK_SET);
+	setauuser_locked();
 	pthread_mutex_unlock(&mutex);
 }
 
@@ -140,41 +147,42 @@ endauuser(void)
 /*
  * Enumerate the au_user_ent structures from the file
  */
-struct au_user_ent *
-getauuserent(void)
+static struct au_user_ent *
+getauuserent_locked(void)
 {
 	struct au_user_ent *u;
 	char *nl;
 
-	pthread_mutex_lock(&mutex);
-
-	if ((fp == NULL) && ((fp = fopen(AUDIT_USER_FILE, "r")) == NULL)) {
-		pthread_mutex_unlock(&mutex);
+	if ((fp == NULL) && ((fp = fopen(AUDIT_USER_FILE, "r")) == NULL))
 		return (NULL);
-	}
 
-	if (fgets(linestr, AU_LINE_MAX, fp) == NULL) {
-		pthread_mutex_unlock(&mutex);
+	if (fgets(linestr, AU_LINE_MAX, fp) == NULL)
 		return (NULL);
-	}
 
 	/* Remove new lines. */
 	if ((nl = strrchr(linestr, '\n')) != NULL)
 		*nl = '\0';
 
 	u = get_user_area();
-	if (u == NULL) {
-		pthread_mutex_unlock(&mutex);
+	if (u == NULL)
 		return (NULL);
-	}
 
 	/* Get the next structure. */
 	if (userfromstr(linestr, delim, u) == NULL) {
 		destroy_user_area(u);
-		pthread_mutex_unlock(&mutex);
 		return (NULL);
 	}
 
+	return (u);
+}
+
+struct au_user_ent *
+getauuserent(void)
+{
+	struct au_user_ent *u;
+
+	pthread_mutex_lock(&mutex);
+	u = getauuserent_locked();
 	pthread_mutex_unlock(&mutex);
 	return (u);
 }
@@ -186,40 +194,21 @@ struct au_user_ent *
 getauusernam(const char *name)
 {
 	struct au_user_ent *u;
-	char *nl;
 
 	if (name == NULL)
 		return (NULL);
 
-	setauuser();
-
 	pthread_mutex_lock(&mutex);
 
-	if ((fp == NULL) && ((fp = fopen(AUDIT_USER_FILE, "r")) == NULL)) {
-		pthread_mutex_unlock(&mutex);
-		return (NULL);
-	}
-
-	u = get_user_area();
-	if (u == NULL) {
-		pthread_mutex_unlock(&mutex);
-		return (NULL);
-	}
-
-	while (fgets(linestr, AU_LINE_MAX, fp) != NULL) {
-		/* Remove new lines. */
-		if ((nl = strrchr(linestr, '\n')) != NULL)
-			*nl = '\0';
-
-		if (userfromstr(linestr, delim, u) != NULL) {
-			if (!strcmp(name, u->au_name)) {
-				pthread_mutex_unlock(&mutex);
-				return (u);
-			}
+	setauuser_locked();
+	while ((u = getauuserent()) != NULL) {
+		if (strcmp(name, u->au_name) == 0) {
+			pthread_mutex_unlock(&mutex);
+			return (u);
 		}
+		destroy_user_area(u);
 	}
 
-	destroy_user_area(u);
 	pthread_mutex_unlock(&mutex);
 	return (NULL);
 
