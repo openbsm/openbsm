@@ -243,8 +243,8 @@ au_user_mask(char *username, au_mask_t *mask_p)
 }
 
 /*
- * Generate the process audit state by combining the audit maks passed as
- * parameters with the sustem audit masks.
+ * Generate the process audit state by combining the audit masks passed as
+ * parameters with the system audit masks.
  */
 int
 getfauditflags(au_mask_t *usremask, au_mask_t *usrdmask, au_mask_t *lastmask)
