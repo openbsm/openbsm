@@ -257,9 +257,11 @@ getfauditflags(au_mask_t *usremask, au_mask_t *usrdmask, au_mask_t *lastmask)
 	lastmask->am_success = 0;
 	lastmask->am_failure = 0;
 
-	/* get the system mask */
-	if (getacflg(auditstring, MAX_AUDITSTRING_LEN) == 0)
-		getauditflagsbin(auditstring, lastmask);
+	/* Get the system mask. */
+	if (getacflg(auditstring, MAX_AUDITSTRING_LEN) == 0) {
+		if (getauditflagsbin(auditstring, lastmask) != 0)
+			return (-1);
+	}
 
 	ADDMASK(lastmask, usremask);
 	SUBMASK(lastmask, usrdmask);
