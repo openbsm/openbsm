@@ -46,6 +46,10 @@ static int		firsttime = 1;
  * XXXRW: Note that despite (mutex), load_event_table() could race with
  * other consumers of the getauevents() API.
  */
+struct audit_event_map {
+	struct au_event_ent		*ev;
+	LIST_ENTRY(audit_event_map)	 ev_list;
+};
 static LIST_HEAD(, audit_event_map)	ev_cache;
 
 static int

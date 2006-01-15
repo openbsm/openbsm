@@ -133,10 +133,6 @@ __END_DECLS
 } while(0)
 
 __BEGIN_DECLS
-struct audit_event_map {
-	struct au_event_ent		*ev;
-	LIST_ENTRY(audit_event_map)	 ev_list;
-};
 
 /*
  * Internal representation of audit user in libnsl.
