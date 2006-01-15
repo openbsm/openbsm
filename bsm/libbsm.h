@@ -695,18 +695,6 @@ struct tokenstr {
 typedef struct tokenstr tokenstr_t;
 
 /*
- * Functions relating to querying audit event information.
- */
-void			 setauevent(void);
-void			 endauevent(void);
-struct au_event_ent	*getauevent(void);
-struct au_event_ent	*getauevnam(char *name);
-struct au_event_ent	*getauevnum(au_event_t event_number);
-void			 free_au_event_ent(struct au_event_ent *e);
-au_event_t		*getauevnonam(char *event_name);
-void			 free_au_event(au_event_t *e);
-
-/*
  * Functions relating to querying audit class information.
  */
 void			 setauclass(void);
@@ -725,12 +713,24 @@ int			 getacdir(char *name, int len);
 int			 getacmin(int *min_val);
 int			 getacflg(char *auditstr, int len);
 int			 getacna(char *auditstr, int len);
-
 int			 getauditflagsbin(char *auditstr, au_mask_t *masks);
 int			 getauditflagschar(char *auditstr, au_mask_t *masks,
 			    int verbose);
+int			au_preselect(au_event_t event, au_mask_t *mask_p,
+			    int sorf, int flag);
 
-int au_preselect(au_event_t event, au_mask_t *mask_p, int sorf, int flag);
+/*
+ * Functions relating to querying audit event information.
+ */
+void			 setauevent(void);
+void			 endauevent(void);
+struct au_event_ent	*getauevent(void);
+struct au_event_ent	*getauevnam(char *name);
+struct au_event_ent	*getauevnum(au_event_t event_number);
+void			 free_au_event_ent(struct au_event_ent *e);
+au_event_t		*getauevnonam(char *event_name);
+void			 free_au_event(au_event_t *e);
+
 
 /*
  * Functions relating to querying audit user information.
