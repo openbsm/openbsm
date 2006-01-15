@@ -245,10 +245,18 @@ print_group(FILE *fp, u_int32_t grp, char raw)
 static void
 print_event(FILE *fp, u_int16_t ev, char raw, char sfrm)
 {
-	struct au_event_ent *e;
+	char event_ent_name[AU_EVENT_NAME_MAX];
+	char event_ent_desc[AU_EVENT_DESC_MAX];
+	struct au_event_ent e, *ep;
 
-	e = getauevnum(ev);
-	if (e == NULL) {
+	bzero(&e, sizeof(e));
+	bzero(event_ent_name, sizeof(event_ent_name));
+	bzero(event_ent_desc, sizeof(event_ent_desc));
+	e.ae_name = event_ent_name;
+	e.ae_desc = event_ent_desc;
+
+	ep = getauevnum_r(&e, ev);
+	if (ep == NULL) {
 		fprintf(fp, "%u", ev);
 		return;
 	}
@@ -256,11 +264,9 @@ print_event(FILE *fp, u_int16_t ev, char raw, char sfrm)
 	if (raw)
 		fprintf(fp, "%u", ev);
 	else if (sfrm)
-		fprintf(fp, "%s", e->ae_name);
+		fprintf(fp, "%s", e.ae_name);
 	else
-		fprintf(fp, "%s", e->ae_desc);
-
-	free_au_event_ent(e);
+		fprintf(fp, "%s", e.ae_desc);
 }
 
 

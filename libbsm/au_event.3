@@ -1,5 +1,5 @@
 .\"-
-.\" Copyright (c) 2005 Robert N. M. Watson
+.\" Copyright (c) 2005-2006 Robert N. M. Watson
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -30,20 +30,21 @@
 .Os
 .Sh NAME
 .Nm free_au_event_ent ,
-.Nm setauevent   ,
-.Nm endauevent   ,
+.Nm setauevent ,
+.Nm endauevent ,
 .Nm getauevent ,
+.Nm getauevent_r ,
 .Nm getauevnam ,
+.Nm getauevnam_r ,
 .Nm getauevnum ,
+.Nm getauevnum_r ,
 .Nm getauevnonam ,
-.Nm free_au_event
+.Nm getauevnonam_r ,
 .Nd "Look up information from the audit_event database"
 .Sh LIBRARY
 .Lb libbsm
 .Sh SYNOPSIS
 .In libbsm.h
-.Ft void
-.Fn free_au_event_ent "struct au_event_ent *e"
 .Ft void
 .Fn setauevent "void"
 .Ft void
@@ -51,13 +52,19 @@
 .Ft "struct au_event_ent *"
 .Fn getauevent "void"
 .Ft "struct au_event_ent *"
+.Fn getauevent_r "struct au_event_ent *e"
+.Ft "struct au_event_ent *"
 .Fn getauevnam "char *name"
 .Ft "struct au_event_ent *"
+.Fn getauevnam_r "struct au_event_ent *e" "char *name"
+.Ft "struct au_event_ent *"
 .Fn getauevnum "au_event_t event_number"
+.Ft "struct au_event_ent *"
+.Fn getauevnum_r "struct au_event_ent *e" "au_event_t event_number"
 .Ft "au_event_t *"
 .Fn getauevnonam "char *event_name"
-.Ft void
-.Fn free_au_event "au_event_t *e"
+.Ft "au_event_t *"
+.Fn getauevnonam_r "au_event_t *ev" "char *event_name"
 .Sh DESCRIPTION
 These interfaces may be used to look up information from the
 .Xr audit_event 5
@@ -69,20 +76,8 @@ entries, which are returned by calls to
 .Fn getauevnam ,
 or
 .Fn getauevnum .
-They must be freed with a call to
-.Fn free_au_event_ent .
 It is also possible look up an event number via a call to
-.Nm getauevnonam ,
-which must be freed with a call to
-.Fn free_au_event .
-.Pp
-.Fn free_au_event_ent
-frees an audit event description structure that has been allocated by an
-earlier call to
-.Fn getauevent ,
-.Fn getauevnam ,
-or
-.Fn getauevnum .
+.Nm getauevnonam .
 .Pp
 .Fn setauevent
 resets the database access session for
@@ -99,39 +94,32 @@ database session.
 .Fn getauevent
 returns a reference to the next entry in the
 .Xr audit_event 5
-database, which much be freed with a call to
-.Fn free_au_event_ent .
+database.
 .Pp
 .Fn getauevnam
 returns a reference to the entry in the
 .Xr audit_event 5
 database with a name of
-.Va name ,
-which must be freed with a call to
-.Fn free_au_event_ent .
+.Va name .
 .Pp
 .Fn getauevnum
 returns a reference to the entry in the
 .Xr audit_event 5
 database with an event number of
-.Va event_number ,
-which must be freed with a call to
-.Fn free_au_event_ent .
+.Va event_number .
 .Pp
 .Fn getauevnonam
 returns a reference to an audit event number using the
 .Xr audit_event 5
-database, which must be freed with a call to
-.Fn free_au_event .
-.Pp
-.Fn free_au_event
-frees a reference to an audit event number that was allocated by
-.Fn getauevnonam .
+database.
 .Sh RETURN VALUES
 Functions
 .Fn getauevent ,
+.Fn getauevent_r ,
 .Fn getauevnam ,
+.Fn getauevnam_r ,
 .Fn getauevnum ,
+.Fn getauevnum_r ,
 and
 .Fn getauevnuam
 will return a reference to a

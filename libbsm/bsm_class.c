@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
+ * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2006 Robert N. M. Watson
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,56 +44,6 @@ static char	linestr[AU_LINE_MAX];
 static char	*delim = ":";
 
 static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
-
-/*
- * XXX The reentrant versions of the following functions is TBD
- * XXX struct au_class_ent *getclassent_r(au_class_ent_t *class_int);
- * XXX struct au_class_ent *getclassnam_r(au_class_ent_t *class_int, const
- *         char *name);
- */
-
-/*
- * Allocate a au_class_ent structure.
- */
-static struct au_class_ent *
-get_class_area(void)
-{
-	struct au_class_ent *c;
-
-	c = malloc(sizeof(struct au_class_ent));
-	if (c == NULL)
-		return (NULL);
-	c->ac_name = malloc(AU_CLASS_NAME_MAX * sizeof(char));
-	if (c->ac_name == NULL) {
-		free(c);
-		return (NULL);
-	}
-	c->ac_desc = malloc(AU_CLASS_DESC_MAX * sizeof(char));
-	if (c->ac_desc == NULL) {
-		free(c->ac_name);
-		free(c);
-		return (NULL);
-	}
-
-	return (c);
-}
-
-
-/*
- * Free the au_class_ent structure.
- */
-void
-free_au_class_ent(struct au_class_ent *c)
-{
-
-	if (c) {
-		if (c->ac_name)
-			free(c->ac_name);
-		if (c->ac_desc)
-			free(c->ac_desc);
-		free(c);
-	}
-}
 
 /*
  * Parse a single line from the audit_class file passed in str to the struct
@@ -137,9 +89,8 @@ classfromstr(char *str, char *delim, struct au_class_ent *c)
  * Must be called with mutex held.
  */
 static struct au_class_ent *
-getauclassent_locked(void)
+getauclassent_r_locked(struct au_class_ent *c)
 {
-	struct au_class_ent *c;
 	char *tokptr, *nl;
 
 	if ((fp == NULL) && ((fp = fopen(AUDIT_CLASS_FILE, "r")) == NULL))
@@ -161,28 +112,41 @@ getauclassent_locked(void)
 
 	tokptr = linestr;
 
-	c = get_class_area(); /* allocate */
-	if (c == NULL)
-		return (NULL);
-
 	/* Parse tokptr to au_class_ent components. */
-	if (classfromstr(tokptr, delim, c) == NULL) {
-		free_au_class_ent(c);
+	if (classfromstr(tokptr, delim, c) == NULL)
 		return (NULL);
-	}
 
 	return (c);
 }
 
 struct au_class_ent *
-getauclassent(void)
+getauclassent_r(struct au_class_ent *c)
 {
-	struct au_class_ent *c;
+	struct au_class_ent *cp;
 
 	pthread_mutex_lock(&mutex);
-	c = getauclassent_locked();
+	cp = getauclassent_r_locked(c);
 	pthread_mutex_unlock(&mutex);
-	return (c);
+	return (cp);
+}
+
+struct au_class_ent *
+getauclassent(void)
+{
+	static char class_ent_name[AU_CLASS_NAME_MAX];
+	static char class_ent_desc[AU_CLASS_DESC_MAX];
+	static struct au_class_ent c, *cp;
+
+	bzero(&c, sizeof(c));
+	bzero(class_ent_name, sizeof(class_ent_name));
+	bzero(class_ent_desc, sizeof(class_ent_desc));
+	c.ac_name = class_ent_name;
+	c.ac_desc = class_ent_desc;
+
+	pthread_mutex_lock(&mutex);
+	cp = getauclassent_r_locked(&c);
+	pthread_mutex_unlock(&mutex);
+	return (cp);
 }
 
 /*
@@ -210,52 +174,84 @@ setauclass(void)
 /*
  * Return the next au_class_entry having the given class name.
  */
-au_class_ent_t *
-getauclassnam(const char *name)
+struct au_class_ent *
+getauclassnam_r(struct au_class_ent *c, const char *name)
 {
-	struct au_class_ent *c;
+	struct au_class_ent *cp;
 
 	if (name == NULL)
 		return (NULL);
 
 	pthread_mutex_lock(&mutex);
 	setauclass_locked();
-	while ((c = getauclassent()) != NULL) {
-		if (strcmp(name, c->ac_name) == 0) {
+	while ((cp = getauclassent_r_locked(c)) != NULL) {
+		if (strcmp(name, cp->ac_name) == 0) {
 			pthread_mutex_unlock(&mutex);
-			return (c);
+			return (cp);
 		}
-		free_au_class_ent(c);
 	}
 	pthread_mutex_unlock(&mutex);
 	return (NULL);
 }
+
+struct au_class_ent *
+getauclassnam(const char *name)
+{
+	static char class_ent_name[AU_CLASS_NAME_MAX];
+	static char class_ent_desc[AU_CLASS_DESC_MAX];
+	static struct au_class_ent c;
+
+	bzero(&c, sizeof(c));
+	bzero(class_ent_name, sizeof(class_ent_name));
+	bzero(class_ent_desc, sizeof(class_ent_desc));
+	c.ac_name = class_ent_name;
+	c.ac_desc = class_ent_desc;
+
+	return (getauclassnam_r(&c, name));
+}
+
 
 /*
  * Return the next au_class_entry having the given class number.
  *
  * OpenBSM extension.
  */
-au_class_ent_t *
-getauclassnum(au_class_t class_number)
+struct au_class_ent *
+getauclassnum_r(struct au_class_ent *c, au_class_t class_number)
 {
-	au_class_ent_t *c;
+	struct au_class_ent *cp;
 
 	pthread_mutex_lock(&mutex);
 	setauclass_locked();
-	while ((c = getauclassent()) != NULL) {
-		if (class_number == c->ac_class)
-			return (c);
-		free_au_class_ent(c);
+	while ((cp = getauclassent_r_locked(c)) != NULL) {
+		if (class_number == cp->ac_class)
+			return (cp);
 	}
 	pthread_mutex_unlock(&mutex);
 	return (NULL);
 }
 
+struct au_class_ent *
+getauclassnum(au_class_t class_number)
+{
+	static char class_ent_name[AU_CLASS_NAME_MAX];
+	static char class_ent_desc[AU_CLASS_DESC_MAX];
+	static struct au_class_ent c;
+
+	bzero(&c, sizeof(c));
+	bzero(class_ent_name, sizeof(class_ent_name));
+	bzero(class_ent_desc, sizeof(class_ent_desc));
+	c.ac_name = class_ent_name;
+	c.ac_desc = class_ent_desc;
+
+	return (getauclassnum_r(&c, class_number));
+}
+
 /*
  * audit_class processing is complete; close any open files.
  */
-void endauclass(void)
+void
+endauclass(void)
 {
 
 	pthread_mutex_lock(&mutex);

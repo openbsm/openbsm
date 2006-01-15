@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
+ * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2006 Robert N. M. Watson
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,43 +44,6 @@ static char	linestr[AU_LINE_MAX];
 static char	*delim = ":";
 
 static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
-
-/*
- * XXX The reentrant versions of the following functions is TBD
- * XXX struct au_user_ent *getauusernam_r(au_user_ent_t *u, const char *name);
- * XXX struct au_user_ent *getauuserent_r(au_user_ent_t *u);
- */
-
-/*
- * Allocate a user area structure.
- */
-static struct au_user_ent *
-get_user_area(void)
-{
-	struct au_user_ent *u;
-
-	u = (struct au_user_ent *) malloc(sizeof(struct au_user_ent));
-	if (u == NULL)
-		return (NULL);
-	u->au_name = (char *)malloc(AU_USER_NAME_MAX * sizeof(char));
-	if (u->au_name == NULL) {
-		free(u);
-		return (NULL);
-	}
-
-	return (u);
-}
-
-/*
- * Destroy a user area structure
- */
-static void
-destroy_user_area(struct au_user_ent *u)
-{
-
-	free(u->au_name);
-	free(u);
-}
 
 /*
  * Parse one line from the audit_user file into the au_user_ent structure.
@@ -148,9 +113,8 @@ endauuser(void)
  * Enumerate the au_user_ent structures from the file
  */
 static struct au_user_ent *
-getauuserent_locked(void)
+getauuserent_r_locked(struct au_user_ent *u)
 {
-	struct au_user_ent *u;
 	char *nl;
 
 	if ((fp == NULL) && ((fp = fopen(AUDIT_USER_FILE, "r")) == NULL))
@@ -163,37 +127,44 @@ getauuserent_locked(void)
 	if ((nl = strrchr(linestr, '\n')) != NULL)
 		*nl = '\0';
 
-	u = get_user_area();
-	if (u == NULL)
-		return (NULL);
-
 	/* Get the next structure. */
-	if (userfromstr(linestr, delim, u) == NULL) {
-		destroy_user_area(u);
+	if (userfromstr(linestr, delim, u) == NULL)
 		return (NULL);
-	}
 
 	return (u);
 }
 
 struct au_user_ent *
-getauuserent(void)
+getauuserent_r(struct au_user_ent *u)
 {
-	struct au_user_ent *u;
+	struct au_user_ent *up;
 
 	pthread_mutex_lock(&mutex);
-	u = getauuserent_locked();
+	up = getauuserent_r_locked(u);
 	pthread_mutex_unlock(&mutex);
-	return (u);
+	return (up);
+}
+
+struct au_user_ent *
+getauuserent(void)
+{
+	static char user_ent_name[AU_USER_NAME_MAX];
+	static struct au_user_ent u;
+
+	bzero(&u, sizeof(u));
+	bzero(user_ent_name, sizeof(user_ent_name));
+	u.au_name = user_ent_name;
+
+	return (getauuserent_r(&u));
 }
 
 /*
  * Find a au_user_ent structure matching the given user name.
  */
 struct au_user_ent *
-getauusernam(const char *name)
+getauusernam_r(struct au_user_ent *u, const char *name)
 {
-	struct au_user_ent *u;
+	struct au_user_ent *up;
 
 	if (name == NULL)
 		return (NULL);
@@ -201,17 +172,29 @@ getauusernam(const char *name)
 	pthread_mutex_lock(&mutex);
 
 	setauuser_locked();
-	while ((u = getauuserent()) != NULL) {
+	while ((up = getauuserent_r_locked(u)) != NULL) {
 		if (strcmp(name, u->au_name) == 0) {
 			pthread_mutex_unlock(&mutex);
 			return (u);
 		}
-		destroy_user_area(u);
 	}
 
 	pthread_mutex_unlock(&mutex);
 	return (NULL);
 
+}
+
+struct au_user_ent *
+getauusernam(const char *name)
+{
+	static char user_ent_name[AU_USER_NAME_MAX];
+	static struct au_user_ent u;
+
+	bzero(&u, sizeof(u));
+	bzero(user_ent_name, sizeof(user_ent_name));
+	u.au_name = user_ent_name;
+
+	return (getauusernam_r(&u, name));
 }
 
 /*
@@ -221,12 +204,17 @@ getauusernam(const char *name)
 int
 au_user_mask(char *username, au_mask_t *mask_p)
 {
-	struct au_user_ent *u;
 	char auditstring[MAX_AUDITSTRING_LEN + 1];
+	char user_ent_name[AU_USER_NAME_MAX];
+	struct au_user_ent u, *up;
+
+	bzero(&u, sizeof(u));
+	bzero(user_ent_name, sizeof(user_ent_name));
+	u.au_name = user_ent_name;
 
 	/* Get user mask. */
-	if ((u = getauusernam(username)) != NULL) {
-		if (-1 == getfauditflags(&u->au_always, &u->au_never, mask_p))
+	if ((up = getauusernam_r(&u, username)) != NULL) {
+		if (-1 == getfauditflags(&u.au_always, &u.au_never, mask_p))
 			return (-1);
 		return (0);
 	}
@@ -267,14 +255,4 @@ getfauditflags(au_mask_t *usremask, au_mask_t *usrdmask, au_mask_t *lastmask)
 	SUBMASK(lastmask, usrdmask);
 
 	return (0);
-}
-
-/*
- * Allow the caller to free an au_user_ent.
- */
-void
-free_au_user_ent(struct au_user_ent *u)
-{
-
-	destroy_user_area(u);
 }

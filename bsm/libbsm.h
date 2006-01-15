@@ -697,9 +697,13 @@ typedef struct tokenstr tokenstr_t;
 void			 setauclass(void);
 void			 endauclass(void);
 struct au_class_ent	*getauclassent(void);
+struct au_class_ent	*getauclassent_r(au_class_ent_t *class_int);
 struct au_class_ent	*getauclassnam(const char *name);
+struct au_class_ent	*getauclassnam_r(au_class_ent_t *class_int,
+			    const char *name);
 struct au_class_ent	*getauclassnum(au_class_t class_number);
-void			 free_au_class_ent(struct au_class_ent *c);
+struct au_class_ent	*getauclassnum_r(au_class_ent_t *class_int,
+			    au_class_t class_number);
 
 /*
  * Functions relating to querying audit control information.
@@ -713,21 +717,27 @@ int			 getacna(char *auditstr, int len);
 int			 getauditflagsbin(char *auditstr, au_mask_t *masks);
 int			 getauditflagschar(char *auditstr, au_mask_t *masks,
 			    int verbose);
-int			au_preselect(au_event_t event, au_mask_t *mask_p,
+int			 au_preselect(au_event_t event, au_mask_t *mask_p,
 			    int sorf, int flag);
 
 /*
  * Functions relating to querying audit event information.
+ *
+ * XXXRW: getauevnonam() has no _r version?
  */
 void			 setauevent(void);
 void			 endauevent(void);
 struct au_event_ent	*getauevent(void);
-struct au_event_ent	*getauevnam(char *name);
+struct au_event_ent	*getauevent_r(struct au_event_ent *e);
+struct au_event_ent	*getauevnam(const char *name);
+struct au_event_ent	*getauevnam_r(struct au_event_ent *e,
+			    const char *name);
 struct au_event_ent	*getauevnum(au_event_t event_number);
-void			 free_au_event_ent(struct au_event_ent *e);
-au_event_t		*getauevnonam(char *event_name);
-void			 free_au_event(au_event_t *e);
-
+struct au_event_ent	*getauevnum_r(struct au_event_ent *e,
+			    au_event_t event_number);
+au_event_t		*getauevnonam(const char *event_name);
+au_event_t		*getauevnonam_r(au_event_t *ev,
+			    const char *event_name);
 
 /*
  * Functions relating to querying audit user information.
@@ -735,11 +745,13 @@ void			 free_au_event(au_event_t *e);
 void			 setauuser(void);
 void			 endauuser(void);
 struct au_user_ent	*getauuserent(void);
+struct au_user_ent	*getauuserent_r(struct au_user_ent *u);
 struct au_user_ent	*getauusernam(const char *name);
+struct au_user_ent	*getauusernam_r(struct au_user_ent *u,
+			    const char *name);
 int			 au_user_mask(char *username, au_mask_t *mask_p);
 int			 getfauditflags(au_mask_t *usremask,
 			    au_mask_t *usrdmask, au_mask_t *lastmask);
-void			 free_au_user_ent(struct au_user_ent *u);
 
 /*
  * Functions for reading and printing records and tokens from audit trails.

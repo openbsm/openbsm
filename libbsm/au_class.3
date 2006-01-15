@@ -1,5 +1,5 @@
 .\"-
-.\" Copyright (c) 2005 Robert N. M. Watson
+.\" Copyright (c) 2005-2006 Robert N. M. Watson
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,10 @@
 .Dt AU_CLASS 3
 .Os
 .Sh NAME
-.Nm free_au_class_ent ,
 .Nm getauclassent ,
+.Nm getauclassent_r ,
 .Nm getauclassnam ,
+.Nm getauclassnam_r ,
 .Nm setauclass ,
 .Nm endauclass
 .Nd "Look up information from the audit_class database"
@@ -39,12 +40,14 @@
 .Lb libbsm
 .Sh SYNOPSIS
 .In libbsm.h
-.Ft void
-.Fn free_au_class_ent "struct au_class_ent *c"
 .Ft struct au_class_ent *
 .Fn getauclassent "void"
 .Ft struct au_class_ent *
+.Fn getauclassent_r "struct au_class_ent *e"
+.Ft struct au_class_ent *
 .Fn getauclassnam "const char *name"
+.Ft struct au_class_ent *
+.Fn getauclassnam_r "struct au_class_ent *e" "const char *name"
 .Ft void
 .Fn setauclass "void"
 .Ft void
@@ -56,31 +59,16 @@ database, which describes audit event classes.
 Audit event classes are described by
 .Vt struct au_class_ent .
 .Pp
-.Fn free_au_class_ent
-frees a previously allocated
-.Vt struct au_class_ent
-returned by
-.Fn getauclassent
-or
-.Fn getauclassnam .
 .Pp
 .Fn getauclassent
 will return the next class found in the
 .Xr audit_class 5
 database, or the first if the function has not yet been called.
-The returned
-.Vt struct au_class_ent
-must be freed by calling
-.Fn free_au_class_ent .
 .Dv NULL
 will be returned if no further records are available.
 .Pp
 .Fn getauclassnam
 looks up a class by name.
-The returned
-.Vt struct au_class_ent
-must be freed by calling
-.Fn free_au_class_ent .
 .Dv NULL
 will be returned if no matching class can be found.
 .Pp

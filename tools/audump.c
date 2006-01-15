@@ -36,17 +36,37 @@ static void
 usage(void)
 {
 
-	fprintf(stderr, "usage: dump [class|control|event|user]\n");
+	fprintf(stderr, "usage: dump [class|class_r|control|event|event_r|"
+	    "user|user_r]\n");
 	exit(-1);
 }
 
 static void
 audump_class(void)
 {
-	au_class_ent_t *c;
+	au_class_ent_t *cp;
 
-	while ((c = getauclassent()) != NULL)
-		printf("0x%08x:%s:%s\n", c->ac_class, c->ac_name, c->ac_desc);
+	while ((cp = getauclassent()) != NULL)
+		printf("0x%08x:%s:%s\n", cp->ac_class, cp->ac_name,
+		    cp->ac_desc);
+}
+
+static void
+audump_class_r(void)
+{
+	char class_ent_name[AU_CLASS_NAME_MAX];
+	char class_ent_desc[AU_CLASS_DESC_MAX];
+	au_class_ent_t c, *cp;
+
+	bzero(&c, sizeof(c));
+	bzero(class_ent_name, sizeof(class_ent_name));
+	bzero(class_ent_desc, sizeof(class_ent_desc));
+	c.ac_name = class_ent_name;
+	c.ac_desc = class_ent_desc;
+
+	while ((cp = getauclassent_r(&c)) != NULL)
+		printf("0x%08x:%s:%s\n", cp->ac_class, cp->ac_name,
+		    cp->ac_desc);
 }
 
 static void
@@ -108,10 +128,9 @@ printf_classmask(au_class_t classmask)
 			else
 				printf(",");
 			c = getauclassnum(2 << i);
-			if (c != NULL) {
+			if (c != NULL)
 				printf("%s", c->ac_name);
-				free_au_class_ent(c);
-			} else
+			else
 				printf("0x%x", 2 << i);
 		}
 	}
@@ -120,26 +139,64 @@ printf_classmask(au_class_t classmask)
 static void
 audump_event(void)
 {
-	au_event_ent_t *e;
+	au_event_ent_t *ep;
 
-	while ((e = getauevent()) != NULL) {
-		printf("%d:%s:%s:", e->ae_number, e->ae_name, e->ae_desc);
-		printf_classmask(e->ae_class);
+	while ((ep = getauevent()) != NULL) {
+		printf("%d:%s:%s:", ep->ae_number, ep->ae_name, ep->ae_desc);
+		printf_classmask(ep->ae_class);
 		printf("\n");
-		free_au_event_ent(e);
+	}
+}
+
+static void
+audump_event_r(void)
+{
+	char event_ent_name[AU_EVENT_NAME_MAX];
+	char event_ent_desc[AU_EVENT_DESC_MAX];
+	au_event_ent_t e, *ep;
+
+	bzero(&e, sizeof(e));
+	bzero(event_ent_name, sizeof(event_ent_name));
+	bzero(event_ent_desc, sizeof(event_ent_desc));
+	e.ae_name = event_ent_name;
+	e.ae_desc = event_ent_desc;
+
+	while ((ep = getauevent_r(&e)) != NULL) {
+		printf("%d:%s:%s:", ep->ae_number, ep->ae_name, ep->ae_desc);
+		printf_classmask(ep->ae_class);
+		printf("\n");
 	}
 }
 
 static void
 audump_user(void)
 {
-	au_user_ent_t *u;
+	au_user_ent_t *up;
 
-	while ((u = getauuserent()) != NULL) {
-		printf("%s:", u->au_name);
-		printf_classmask(u->au_always);
+	while ((up = getauuserent()) != NULL) {
+		printf("%s:", up->au_name);
+		// printf_classmask(up->au_always);
 		printf(":");
-		printf_classmask(u->au_never);
+		// printf_classmask(up->au_never);
+		printf("\n");
+	}
+}
+
+static void
+audump_user_r(void)
+{
+	char user_ent_name[AU_USER_NAME_MAX];
+	au_user_ent_t u, *up;
+
+	bzero(&u, sizeof(u));
+	bzero(user_ent_name, sizeof(user_ent_name));
+	u.au_name = user_ent_name;
+
+	while ((up = getauuserent_r(&u)) != NULL) {
+		printf("%s:", up->au_name);
+		// printf_classmask(up->au_always);
+		printf(":");
+		// printf_classmask(up->au_never);
 		printf("\n");
 	}
 }
@@ -153,12 +210,18 @@ main(int argc, char *argv[])
 
 	if (strcmp(argv[1], "class") == 0)
 		audump_class();
+	else if (strcmp(argv[1], "class_r") == 0)
+		audump_class_r();
 	else if (strcmp(argv[1], "control") == 0)
 		audump_control();
 	else if (strcmp(argv[1], "event") == 0)
 		audump_event();
+	else if (strcmp(argv[1], "event_r") == 0)
+		audump_event_r();
 	else if (strcmp(argv[1], "user") == 0)
 		audump_user();
+	else if (strcmp(argv[1], "user_r") == 0)
+		audump_user_r();
 	else
 		usage();
 

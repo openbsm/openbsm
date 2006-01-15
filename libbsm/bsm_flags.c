@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc. All rights reserved.
+ * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2006 Robert N. M. Watson
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,15 +43,24 @@ static const char	*delim = ",";
 int
 getauditflagsbin(char *auditstr, au_mask_t *masks)
 {
+	char class_ent_name[AU_CLASS_NAME_MAX];
+	char class_ent_desc[AU_CLASS_DESC_MAX];
+	struct au_class_ent c, *cp;
 	char *tok;
 	char sel, sub;
-	struct au_class_ent *c;
 	char *last;
+
 
 	if ((auditstr == NULL) || (masks == NULL)) {
 		errno = EINVAL;
 		return (-1);
 	}
+
+	bzero(&c, sizeof(c));
+	bzero(class_ent_name, sizeof(class_ent_name));
+	bzero(class_ent_desc, sizeof(class_ent_desc));
+	c.ac_name = class_ent_name;
+	c.ac_desc = class_ent_desc;
 
 	masks->am_success = 0;
 	masks->am_failure = 0;
@@ -73,12 +84,11 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 		} else
 			sel = AU_PRS_BOTH;
 
-		if ((c = getauclassnam(tok)) != NULL) {
+		if ((cp = getauclassnam_r(&c, tok)) != NULL) {
 			if (sub)
-				SUB_FROM_MASK(masks, c->ac_class, sel);
+				SUB_FROM_MASK(masks, c.ac_class, sel);
 			else
-				ADD_TO_MASK(masks, c->ac_class, sel);
-			free_au_class_ent(c);
+				ADD_TO_MASK(masks, c.ac_class, sel);
 		} else {
 			errno = EINVAL;
 			return (-1);
@@ -106,7 +116,9 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 int
 getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 {
-	struct au_class_ent *c;
+	char class_ent_name[AU_CLASS_NAME_MAX];
+	char class_ent_desc[AU_CLASS_DESC_MAX];
+	struct au_class_ent c, *cp;
 	char *strptr = auditstr;
 	u_char sel;
 
@@ -115,21 +127,27 @@ getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 		return (-1);
 	}
 
+	bzero(&c, sizeof(c));
+	bzero(class_ent_name, sizeof(class_ent_name));
+	bzero(class_ent_desc, sizeof(class_ent_desc));
+	c.ac_name = class_ent_name;
+	c.ac_desc = class_ent_desc;
+
 	/*
 	 * Enumerate the class entries, check if each is selected in either
 	 * the success or failure masks.
 	 */
-	for (setauclass(); (c = getauclassent()) != NULL;
-	    free_au_class_ent(c)) {
+	setauclass();
+	while ((cp = getauclassent_r(&c)) != NULL) {
 		sel = 0;
 
 		/* Dont do anything for class = no. */
-		if (c->ac_class == 0)
+		if (c.ac_class == 0)
 			continue;
 
-		sel |= ((c->ac_class & masks->am_success) == c->ac_class) ?
+		sel |= ((c.ac_class & masks->am_success) == c.ac_class) ?
 		    AU_PRS_SUCCESS : 0;
-		sel |= ((c->ac_class & masks->am_failure) == c->ac_class) ?
+		sel |= ((c.ac_class & masks->am_failure) == c.ac_class) ?
 		    AU_PRS_FAILURE : 0;
 
 		/*
@@ -148,11 +166,11 @@ getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 
 		if (sel != 0) {
 			if (verbose) {
-				strcpy(strptr, c->ac_desc);
-				strptr += strlen(c->ac_desc);
+				strcpy(strptr, c.ac_desc);
+				strptr += strlen(c.ac_desc);
 			} else {
-				strcpy(strptr, c->ac_name);
-				strptr += strlen(c->ac_name);
+				strcpy(strptr, c.ac_name);
+				strptr += strlen(c.ac_name);
 			}
 			*strptr = ','; /* delimiter */
 			strptr = strptr + 1;

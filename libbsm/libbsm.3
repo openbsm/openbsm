@@ -1,5 +1,5 @@
 .\"-
-.\" Copyright (c) Robert N. M. Watson
+.\" Copyright (c) 2005-2006 Robert N. M. Watson
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -69,9 +69,10 @@ event streams:
 Audit class interfaces support the look up of information from the
 .Xr audit_class 5
 database:
-.Xr free_au_class_ent 3 ,
 .Xr getauclassent 3 ,
+.Xr getauclassent_r 3 ,
 .Xr getauclassnam 3 ,
+.Xr getauclassnam_r 3 ,
 .Xr setauclass 3 ,
 .Xr endauclass 3 .
 .Ss Audit Control Interfaces
@@ -88,14 +89,16 @@ database:
 Audit event interfaces support the look up of information from the
 .Xr audit_event 5
 database:
-.Xr free_au_event_ent 3 ,
 .Xr setauevent 3 ,
 .Xr endauevent 3 ,
 .Xr getauevent 3 ,
+.Xr getauevent_r 3 ,
 .Xr getauevnam 3 ,
+.Xr getauevnam_r 3 ,
 .Xr getauevnum 3 ,
+.Xr getauevnum_r 3 ,
 .Xr getauevnonam 3 ,
-.Xr free_au_event 3 .
+.Xr getauevnonam_r 3 ,
 .Ss Audit I/O Interfaces
 Audit I/O interfaces support the processing and printing of tokens, as well
 as the reading of audit records:
@@ -177,7 +180,9 @@ database:
 .Xr setauuser 3 ,
 .Xr endauuser 3 ,
 .Xr getauuserent 3 ,
+.Xr getauuserent_r 3 ,
 .Xr getauusernam 3 ,
+.Xr getauusernam_r 3 ,
 .Xr au_user_mask 3 ,
 .Xr getfauditflags 3 .
 .Sh SEE ALSO
