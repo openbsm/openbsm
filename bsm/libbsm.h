@@ -45,6 +45,7 @@
 #include <bsm/audit_record.h>
 
 #include <stdio.h>
+#include <stdint.h>
 
 #ifdef __APPLE__
 #include <mach/mach.h>		/* audit_token_t */
