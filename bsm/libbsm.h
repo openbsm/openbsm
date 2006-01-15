@@ -157,9 +157,9 @@ typedef struct au_tid64 {
 } au_tid64_t;
 
 typedef struct au_tidaddr32 {
-	u_int32_t port;
-	u_int32_t type;
-	u_int32_t addr[4];
+	u_int32_t	port;
+	u_int32_t	type;
+	u_int32_t	addr[4];
 } au_tidaddr32_t;
 
 /*
@@ -169,17 +169,17 @@ typedef struct au_tidaddr32 {
  * text                    N bytes + 1 terminating NULL byte
  */
 typedef struct {
-	u_char no;
-	u_int32_t val;
-	u_int16_t len;
-	char *text;
+	u_char		 no;
+	u_int32_t	 val;
+	u_int16_t	 len;
+	char		*text;
 } au_arg32_t;
 
 typedef struct {
-	u_char no;
-	u_int64_t val;
-	u_int16_t len;
-	char *text;
+	u_char		 no;
+	u_int64_t	 val;
+	u_int16_t	 len;
+	char		*text;
 } au_arg64_t;
 
 /*
@@ -189,10 +189,10 @@ typedef struct {
  * data items              (depends on basic unit)
  */
 typedef struct {
-	u_char howtopr;
-	u_char bu;
-	u_char uc;
-	u_char *data;
+	u_char	 howtopr;
+	u_char	 bu;
+	u_char	 uc;
+	u_char	*data;
 } au_arb_t;
 
 /*
@@ -204,21 +204,21 @@ typedef struct {
  * device                  4 bytes/8 bytes (32-bit/64-bit)
  */
 typedef struct {
-	u_int32_t mode;
-   	u_int32_t uid;
-	u_int32_t gid;
-	u_int32_t fsid;
-	u_int64_t nid;
-	u_int32_t dev;
+	u_int32_t	mode;
+   	u_int32_t	uid;
+	u_int32_t	gid;
+	u_int32_t	fsid;
+	u_int64_t	nid;
+	u_int32_t	dev;
 } au_attr32_t;
 
 typedef struct {
-	u_int32_t mode;
-   	u_int32_t uid;
-	u_int32_t gid;
-	u_int32_t fsid;
-	u_int64_t nid;
-	u_int64_t dev;
+	u_int32_t	mode;
+   	u_int32_t	uid;
+	u_int32_t	gid;
+	u_int32_t	fsid;
+	u_int64_t	nid;
+	u_int64_t	dev;
 } au_attr64_t;
 
 /*
@@ -226,8 +226,8 @@ typedef struct {
  * text                    count null-terminated string(s)
  */
 typedef struct {
-	u_int32_t count;
-	char *text[MAX_ARGS];
+	u_int32_t	 count;
+	char		*text[MAX_ARGS];
 } au_execarg_t;
 
 /*
@@ -235,8 +235,8 @@ typedef struct {
  * text                    count null-terminated string(s)
  */
 typedef struct {
-	u_int32_t count;
-	char *text[MAX_ENV];
+	u_int32_t	 count;
+	char		*text[MAX_ENV];
 } au_execenv_t;
 
 /*
@@ -244,8 +244,8 @@ typedef struct {
  * return value            4 bytes
  */
 typedef struct {
-	u_int32_t status;
-	u_int32_t ret;
+	u_int32_t	status;
+	u_int32_t	ret;
 } au_exit_t;
 
 /*
@@ -255,10 +255,10 @@ typedef struct {
  * file pathname           N bytes + 1 terminating NULL byte
  */
 typedef struct {
-	u_int32_t s;
-	u_int32_t ms;
-	u_int16_t len;
-	char *name;
+	u_int32_t	 s;
+	u_int32_t	 ms;
+	u_int16_t	 len;
+	char		*name;
 } au_file_t;
 
 
@@ -267,8 +267,8 @@ typedef struct {
  * group list              N * 4 bytes
  */
 typedef struct {
-	u_int16_t no;
-	u_int32_t list[BSM_MAX_GROUPS];
+	u_int16_t	no;
+	u_int32_t	list[BSM_MAX_GROUPS];
 } au_groups_t;
 
 /*
@@ -280,12 +280,12 @@ typedef struct {
  * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
  */
 typedef struct {
-	u_int32_t size;
-	u_char version;
-	u_int16_t e_type;
-	u_int16_t e_mod;
-	u_int32_t s;
-	u_int32_t ms;
+	u_int32_t	size;
+	u_char		version;
+	u_int16_t	e_type;
+	u_int16_t	e_mod;
+	u_int32_t	s;
+	u_int32_t	ms;
 } au_header32_t;
 
 /*
@@ -299,41 +299,41 @@ typedef struct {
  * nanoseconds of time     4 bytes/8 bytes  (32/64-bits)
  */
 typedef struct {
-	u_int32_t size;
-	u_char version;
-	u_int16_t e_type;
-	u_int16_t e_mod;
-	u_int32_t ad_type;
-	u_int32_t addr[4];
-	u_int32_t s;
-	u_int32_t ms;
+	u_int32_t	size;
+	u_char		version;
+	u_int16_t	e_type;
+	u_int16_t	e_mod;
+	u_int32_t	ad_type;
+	u_int32_t	addr[4];
+	u_int32_t	s;
+	u_int32_t	ms;
 } au_header32_ex_t;
 
 typedef struct {
-	u_int32_t size;
-	u_char version;
-	u_int16_t e_type;
-	u_int16_t e_mod;
-	u_int64_t s;
-	u_int64_t ms;
+	u_int32_t	size;
+	u_char		version;
+	u_int16_t	e_type;
+	u_int16_t	e_mod;
+	u_int64_t	s;
+	u_int64_t	ms;
 } au_header64_t;
 
 typedef struct {
-	u_int32_t size;
-	u_char version;
-	u_int16_t e_type;
-	u_int16_t e_mod;
-	u_int32_t ad_type;
-	u_int32_t addr[4];
-	u_int64_t s;
-	u_int64_t ms;
+	u_int32_t	size;
+	u_char		version;
+	u_int16_t	e_type;
+	u_int16_t	e_mod;
+	u_int32_t	ad_type;
+	u_int32_t	addr[4];
+	u_int64_t	s;
+	u_int64_t	ms;
 } au_header64_ex_t;
 
 /*
  * internet address        4 bytes
  */
 typedef struct {
-	u_int32_t addr;
+	u_int32_t	addr;
 } au_inaddr_t;
 
 /*
@@ -341,8 +341,8 @@ typedef struct {
  * internet address     16 bytes
  */
 typedef struct {
-	u_int32_t type;
-	u_int32_t addr[4];
+	u_int32_t	type;
+	u_int32_t	addr[4];
 } au_inaddr_ex_t;
 
 /*
@@ -358,16 +358,16 @@ typedef struct {
  * destination address     4 bytes
  */
 typedef struct {
-	u_char version;
-	u_char tos;
-	u_int16_t len;
-	u_int16_t id;
-	u_int16_t offset;
-	u_char ttl;
-	u_char prot;
-	u_int16_t chksm;
-	u_int32_t src;
-	u_int32_t dest;
+	u_char		version;
+	u_char		tos;
+	u_int16_t	len;
+	u_int16_t	id;
+	u_int16_t	offset;
+	u_char		ttl;
+	u_char		prot;
+	u_int16_t	chksm;
+	u_int32_t	src;
+	u_int32_t	dest;
 } au_ip_t;
 
 /*
@@ -375,8 +375,8 @@ typedef struct {
  * object ID               4 bytes
  */
 typedef struct {
-	u_char type;
-	u_int32_t id;
+	u_char		type;
+	u_int32_t	id;
 } au_ipc_t;
 
 /*
@@ -389,20 +389,20 @@ typedef struct {
  * key                     4 bytes
  */
 typedef struct {
-	u_int32_t uid;
-	u_int32_t gid;
-	u_int32_t puid;
-	u_int32_t pgid;
-	u_int32_t mode;
-	u_int32_t seq;
-	u_int32_t key;
+	u_int32_t	uid;
+	u_int32_t	gid;
+	u_int32_t	puid;
+	u_int32_t	pgid;
+	u_int32_t	mode;
+	u_int32_t	seq;
+	u_int32_t	key;
 } au_ipcperm_t;
 
 /*
  * port IP address         2 bytes
  */
 typedef struct {
-	u_int16_t port;
+	u_int16_t	port;
 } au_iport_t;
 
 /*
@@ -410,8 +410,8 @@ typedef struct {
  * data			length bytes
  */
 typedef struct {
-	u_int16_t size;
-	char *data;
+	u_int16_t	 size;
+	char		*data;
 } au_opaque_t;
 
 /*
@@ -419,8 +419,8 @@ typedef struct {
  * path                    N bytes + 1 terminating NULL byte
  */
 typedef struct {
-	u_int16_t len;
-	char *path;
+	u_int16_t	 len;
+	char		*path;
 } au_path_t;
 
 /*
@@ -436,25 +436,25 @@ typedef struct {
  * machine address       4 bytes
  */
 typedef struct {
-	u_int32_t auid;
-	u_int32_t euid;
-	u_int32_t egid;
-	u_int32_t ruid;
-	u_int32_t rgid;
-	u_int32_t pid;
-	u_int32_t sid;
-	au_tid32_t tid;
+	u_int32_t	auid;
+	u_int32_t	euid;
+	u_int32_t	egid;
+	u_int32_t	ruid;
+	u_int32_t	rgid;
+	u_int32_t	pid;
+	u_int32_t	sid;
+	au_tid32_t	tid;
 } au_proc32_t;
 
 typedef struct {
-	u_int32_t auid;
-	u_int32_t euid;
-	u_int32_t egid;
-	u_int32_t ruid;
-	u_int32_t rgid;
-	u_int32_t pid;
-	u_int32_t sid;
-	au_tid64_t tid;
+	u_int32_t	auid;
+	u_int32_t	euid;
+	u_int32_t	egid;
+	u_int32_t	ruid;
+	u_int32_t	rgid;
+	u_int32_t	pid;
+	u_int32_t	sid;
+	au_tid64_t	tid;
 } au_proc64_t;
 
 /*
@@ -471,14 +471,14 @@ typedef struct {
  * machine address       16 bytes
  */
 typedef struct {
-	u_int32_t auid;
-	u_int32_t euid;
-	u_int32_t egid;
-	u_int32_t ruid;
-	u_int32_t rgid;
-	u_int32_t pid;
-	u_int32_t sid;
-	au_tidaddr32_t tid;
+	u_int32_t	auid;
+	u_int32_t	euid;
+	u_int32_t	egid;
+	u_int32_t	ruid;
+	u_int32_t	rgid;
+	u_int32_t	pid;
+	u_int32_t	sid;
+	au_tidaddr32_t	tid;
 } au_proc32ex_t;
 
 /*
@@ -486,20 +486,20 @@ typedef struct {
  * return value            4 bytes/8 bytes (32-bit/64-bit value)
  */
 typedef struct {
-	u_char status;
-	u_int32_t ret;
+	u_char		status;
+	u_int32_t	ret;
 } au_ret32_t;
 
 typedef struct {
-	u_char err;
-	u_int64_t val;
+	u_char		err;
+	u_int64_t	val;
 } au_ret64_t;
 
 /*
  * sequence number         4 bytes
  */
 typedef struct {
-	u_int32_t seqno;
+	u_int32_t	seqno;
 } au_seq_t;
 
 /*
@@ -510,11 +510,11 @@ typedef struct {
  * remote Internet address 4 bytes
  */
 typedef struct {
-	u_int16_t type;
-	u_int16_t l_port;
-	u_int32_t l_addr;
-	u_int16_t r_port;
-	u_int32_t r_addr;
+	u_int16_t	type;
+	u_int16_t	l_port;
+	u_int32_t	l_addr;
+	u_int16_t	r_port;
+	u_int32_t	r_addr;
 } au_socket_t;
 
 /*
@@ -527,13 +527,13 @@ typedef struct {
  * remote Internet address 4 bytes/16 bytes (IPv4/IPv6 address)
  */
 typedef struct {
-	u_int16_t type;
-	u_int16_t l_port;
-	u_int32_t l_ad_type;
-	u_int32_t l_addr;
-	u_int32_t r_port;
-	u_int32_t r_ad_type;
-	u_int32_t r_addr;
+	u_int16_t	type;
+	u_int16_t	l_port;
+	u_int32_t	l_ad_type;
+	u_int32_t	l_addr;
+	u_int32_t	r_port;
+	u_int32_t	r_ad_type;
+	u_int32_t	r_addr;
 } au_socket_ex32_t;
 
 /*
@@ -542,9 +542,9 @@ typedef struct {
  * socket address          4 bytes/16 bytes (IPv4/IPv6 address)
  */
 typedef struct {
-	u_int16_t family;
-	u_int16_t port;
-	u_int32_t addr;
+	u_int16_t	family;
+	u_int16_t	port;
+	u_int32_t	addr;
 } au_socketinet32_t;
 
 /*
@@ -552,8 +552,8 @@ typedef struct {
  * path                    104 bytes
  */
 typedef struct {
-	u_int16_t family;
-	char path[104];
+	u_int16_t	family;
+	char		path[104];
 } au_socketunix_t;
 
 /*
@@ -569,25 +569,25 @@ typedef struct {
  * 	machine address       4 bytes
  */
 typedef struct {
-	u_int32_t auid;
-	u_int32_t euid;
-	u_int32_t egid;
-	u_int32_t ruid;
-	u_int32_t rgid;
-	u_int32_t pid;
-	u_int32_t sid;
-	au_tid32_t tid;
+	u_int32_t	auid;
+	u_int32_t	euid;
+	u_int32_t	egid;
+	u_int32_t	ruid;
+	u_int32_t	rgid;
+	u_int32_t	pid;
+	u_int32_t	sid;
+	au_tid32_t	tid;
 } au_subject32_t;
 
 typedef struct {
-	u_int32_t auid;
-	u_int32_t euid;
-	u_int32_t egid;
-	u_int32_t ruid;
-	u_int32_t rgid;
-	u_int32_t pid;
-	u_int32_t sid;
-	au_tid64_t tid;
+	u_int32_t	auid;
+	u_int32_t	euid;
+	u_int32_t	egid;
+	u_int32_t	ruid;
+	u_int32_t	rgid;
+	u_int32_t	pid;
+	u_int32_t	sid;
+	au_tid64_t	tid;
 } au_subject64_t;
 
 /*
@@ -604,14 +604,14 @@ typedef struct {
  * machine address       16 bytes
  */
 typedef struct {
-	u_int32_t auid;
-	u_int32_t euid;
-	u_int32_t egid;
-	u_int32_t ruid;
-	u_int32_t rgid;
-	u_int32_t pid;
-	u_int32_t sid;
-	au_tidaddr32_t tid;
+	u_int32_t	auid;
+	u_int32_t	euid;
+	u_int32_t	egid;
+	u_int32_t	ruid;
+	u_int32_t	rgid;
+	u_int32_t	pid;
+	u_int32_t	sid;
+	au_tidaddr32_t	tid;
 } au_subject32ex_t;
 
 /*
@@ -619,21 +619,21 @@ typedef struct {
  * text                    N bytes + 1 terminating NULL byte
  */
 typedef struct {
-	u_int16_t len;
-	char *text;
+	u_int16_t	 len;
+	char		*text;
 } au_text_t;
 
 typedef struct {
-	u_int32_t ident;
-	u_int16_t filter;
-	u_int16_t flags;
-	u_int32_t fflags;
-	u_int32_t data;
+	u_int32_t	ident;
+	u_int16_t	filter;
+	u_int16_t	flags;
+	u_int32_t	fflags;
+	u_int32_t	data;
 } au_kevent_t;
 
 typedef struct {
-	u_int16_t length;
-	char *data;
+	u_int16_t	 length;
+	char		*data;
 } au_invalid_t;
 
 /*
@@ -641,14 +641,14 @@ typedef struct {
  * record byte count       4 bytes
  */
 typedef struct {
-	u_int16_t magic;
-	u_int32_t count;
+	u_int16_t	magic;
+	u_int32_t	count;
 } au_trailer_t;
 
 struct tokenstr {
-	u_char id;
-	u_char *data;
-	size_t	len;
+	u_char	 id;
+	u_char	*data;
+	size_t	 len;
 	union {
 		au_arg32_t		arg32;
 		au_arg64_t		arg64;
@@ -697,59 +697,61 @@ typedef struct tokenstr tokenstr_t;
 /*
  * Functions relating to querying audit event information.
  */
-void setauevent(void);
-void endauevent(void);
-struct au_event_ent *getauevent(void);
-struct au_event_ent *getauevnam(char *name);
-struct au_event_ent *getauevnum(au_event_t event_number);
-void free_au_event_ent(struct au_event_ent *e);
-au_event_t *getauevnonam(char *event_name);
-void free_au_event(au_event_t *e);
+void			 setauevent(void);
+void			 endauevent(void);
+struct au_event_ent	*getauevent(void);
+struct au_event_ent	*getauevnam(char *name);
+struct au_event_ent	*getauevnum(au_event_t event_number);
+void			 free_au_event_ent(struct au_event_ent *e);
+au_event_t		*getauevnonam(char *event_name);
+void			 free_au_event(au_event_t *e);
 
 /*
  * Functions relating to querying audit class information.
  */
-void setauclass(void);
-void endauclass(void);
-struct au_class_ent *getauclassent(void);
-struct au_class_ent *getauclassnam(const char *name);
-struct au_class_ent *getauclassnum(au_class_t class_number);
-void free_au_class_ent(struct au_class_ent *c);
+void			 setauclass(void);
+void			 endauclass(void);
+struct au_class_ent	*getauclassent(void);
+struct au_class_ent	*getauclassnam(const char *name);
+struct au_class_ent	*getauclassnum(au_class_t class_number);
+void			 free_au_class_ent(struct au_class_ent *c);
 
 /*
  * Functions relating to querying audit control information.
  */
-void setac(void);
-void endac(void);
-int getacdir(char *name, int len);
-int getacmin(int *min_val);
-int getacflg(char *auditstr, int len);
-int getacna(char *auditstr, int len);
+void			 setac(void);
+void			 endac(void);
+int			 getacdir(char *name, int len);
+int			 getacmin(int *min_val);
+int			 getacflg(char *auditstr, int len);
+int			 getacna(char *auditstr, int len);
 
-int getauditflagsbin(char *auditstr, au_mask_t *masks);
-int getauditflagschar(char *auditstr, au_mask_t *masks, int verbose);
+int			 getauditflagsbin(char *auditstr, au_mask_t *masks);
+int			 getauditflagschar(char *auditstr, au_mask_t *masks,
+			    int verbose);
 
 int au_preselect(au_event_t event, au_mask_t *mask_p, int sorf, int flag);
 
 /*
  * Functions relating to querying audit user information.
  */
-void setauuser(void);
-void endauuser(void);
-struct au_user_ent *getauuserent(void);
-struct au_user_ent *getauusernam(const char *name);
-int au_user_mask(char *username, au_mask_t *mask_p);
-int getfauditflags(au_mask_t *usremask, au_mask_t *usrdmask,
-                                au_mask_t *lastmask);
-void free_au_user_ent(struct au_user_ent *u);
+void			 setauuser(void);
+void			 endauuser(void);
+struct au_user_ent	*getauuserent(void);
+struct au_user_ent	*getauusernam(const char *name);
+int			 au_user_mask(char *username, au_mask_t *mask_p);
+int			 getfauditflags(au_mask_t *usremask,
+			    au_mask_t *usrdmask, au_mask_t *lastmask);
+void			 free_au_user_ent(struct au_user_ent *u);
 
 /*
  * Functions for reading and printing records and tokens from audit trails.
  */
-int au_read_rec(FILE *fp, u_char **buf);
-int au_fetch_tok(tokenstr_t *tok, u_char *buf, int len);
+int			 au_read_rec(FILE *fp, u_char **buf);
+int			 au_fetch_tok(tokenstr_t *tok, u_char *buf, int len);
 //XXX The following interface has different prototype from BSM
-void au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm);
+void			 au_print_tok(FILE *outfp, tokenstr_t *tok,
+			    char *del, char raw, char sfrm);
 __END_DECLS
 
 #ifdef __APPLE__
@@ -764,7 +766,7 @@ __END_DECLS
  **************************************************************************/
 
 #ifdef __APPLE_API_PRIVATE
-#define	__BSM_INTERNAL_NOTIFY_KEY "com.apple.audit.change"
+#define	__BSM_INTERNAL_NOTIFY_KEY	"com.apple.audit.change"
 #endif /* __APPLE_API_PRIVATE */
 
 /*
@@ -784,22 +786,20 @@ __END_DECLS
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-enum
-{
-    kAUNoErr			= 0,
-	kAUBadParamErr		= -66049,
+enum {
+	kAUNoErr			= 0,
+	kAUBadParamErr			= -66049,
 	kAUStatErr,
 	kAUSysctlErr,
-    kAUOpenErr,
-    kAUMakeSubjectTokErr,
-    kAUWriteSubjectTokErr,
-    kAUWriteCallerTokErr,
-    kAUMakeReturnTokErr,
-    kAUWriteReturnTokErr,
-    kAUCloseErr,
-    kAUMakeTextTokErr,
-
-    kAULastErr
+	kAUOpenErr,
+	kAUMakeSubjectTokErr,
+	kAUWriteSubjectTokErr,
+	kAUWriteCallerTokErr,
+	kAUMakeReturnTokErr,
+	kAUWriteReturnTokErr,
+	kAUCloseErr,
+	kAUMakeTextTokErr,
+	kAULastErr
 };
 
 #ifdef __APPLE__
@@ -816,7 +816,6 @@ enum
 #define	AU_UNIMPL	NOTIFY_STATUS_FAILED + 1	/* audit unimplemented */
 #endif /* __APPLE_API_PRIVATE */
 #endif /* !__APPLE__ */
-
 
 __BEGIN_DECLS
 /*
@@ -840,7 +839,7 @@ __BEGIN_DECLS
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-void au_free_token(token_t *tok);
+void	au_free_token(token_t *tok);
 
 /*
  * Lightweight check to determine if auditing is enabled.  If a client
@@ -856,11 +855,11 @@ void au_free_token(token_t *tok);
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-int au_get_state(void);
+int	au_get_state(void);
 __END_DECLS
 
 /* OpenSSH compatibility */
-#define	cannot_audit(x) (!(au_get_state() == AUC_AUDITING))
+#define	cannot_audit(x)	(!(au_get_state() == AUC_AUDITING))
 
 __BEGIN_DECLS
 /*
@@ -877,7 +876,7 @@ __BEGIN_DECLS
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-int audit_set_terminal_id(au_tid_t *tid);
+int	audit_set_terminal_id(au_tid_t *tid);
 
 /*
  * BEGIN au_write() WRAPPERS
@@ -932,8 +931,8 @@ int audit_set_terminal_id(au_tid_t *tid);
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-int audit_write(short event_code, token_t *subject, token_t *misctok, char
-		retval, int errcode);
+int	audit_write(short event_code, token_t *subject, token_t *misctok,
+	    char retval, int errcode);
 
 /*
  * audit_write_success()
@@ -976,9 +975,9 @@ int audit_write(short event_code, token_t *subject, token_t *misctok, char
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-int audit_write_success(short event_code, token_t *misctok, au_id_t auid,
-			uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
-			pid_t pid, au_asid_t sid, au_tid_t *tid);
+int	audit_write_success(short event_code, token_t *misctok, au_id_t auid,
+	    uid_t euid, gid_t egid, uid_t ruid, gid_t rgid, pid_t pid,
+	    au_asid_t sid, au_tid_t *tid);
 
 /*
  * audit_write_success_self()
@@ -999,7 +998,7 @@ int audit_write_success(short event_code, token_t *misctok, au_id_t auid,
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-int audit_write_success_self(short event_code, token_t *misctok);
+int	audit_write_success_self(short event_code, token_t *misctok);
 
 /*
  * audit_write_failure()
@@ -1045,10 +1044,9 @@ int audit_write_success_self(short event_code, token_t *misctok);
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-int audit_write_failure(short event_code, char *errmsg, int errret,
-			au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
-			gid_t rgid, pid_t pid, au_asid_t sid,
-			au_tid_t *tid);
+int	audit_write_failure(short event_code, char *errmsg, int errret,
+	    au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
+	    pid_t pid, au_asid_t sid, au_tid_t *tid);
 
 /*
  * audit_write_failure_self()
@@ -1072,7 +1070,7 @@ int audit_write_failure(short event_code, char *errmsg, int errret,
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-int audit_write_failure_self(short event_code, char *errmsg, int errret);
+int	audit_write_failure_self(short event_code, char *errmsg, int errret);
 
 /*
  * audit_write_failure_na()
@@ -1104,11 +1102,10 @@ int audit_write_failure_self(short event_code, char *errmsg, int errret);
  *
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
-int audit_write_failure_na(short event_code, char *errmsg, int errret,
-			   uid_t euid, gid_t egid, pid_t pid, au_tid_t *tid);
+int	audit_write_failure_na(short event_code, char *errmsg, int errret,
+	    uid_t euid, gid_t egid, pid_t pid, au_tid_t *tid);
 
 /* END au_write() WRAPPERS */
-
 
 #ifdef  __APPLE__
 /*
@@ -1150,15 +1147,15 @@ int audit_write_failure_na(short event_code, char *errmsg, int errret,
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
 void audit_token_to_au32(
-	audit_token_t	atoken,
-	uid_t			*auidp,
-	uid_t			*euidp,
-	gid_t			*egidp,
-	uid_t			*ruidp,
-	gid_t			*rgidp,
-	pid_t			*pidp,
-	au_asid_t		*asidp,
-	au_tid_t		*tidp);
+	audit_token_t	 atoken,
+	uid_t		*auidp,
+	uid_t		*euidp,
+	gid_t		*egidp,
+	uid_t		*ruidp,
+	gid_t		*rgidp,
+	pid_t		*pidp,
+	au_asid_t	*asidp,
+	au_tid_t	*tidp);
 #endif /* !__APPLE__ */
 
 __END_DECLS
