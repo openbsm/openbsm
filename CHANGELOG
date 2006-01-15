@@ -41,3 +41,24 @@ OpenBSM 1.0
   to run praudit(1) on basic Solaris BSM streams.
 - Switched to Solaris spelling of token names; Darwin spellings are now
   deprecated and will be removed in a future version of OpenBSM.
+- Adopt Solaris model for representing IPv4 and IPv6 addresses.
+- Prefer C99 types.
+- Attempt to universally adopt the BSD style(9) coding style for
+  consistency.
+- auditreduce(1) now has a usage message.
+- Update support for auditctl(2) system call to support FreeBSD.
+- Add support for /dev/audit as the trigger source on FreeBSD.
+- Add additional event types for Darwin, FreeBSD, and Solaris.  Annotate
+  conflicts (there are a few, unfortunately).  Correct spellings, comment,
+  sort, etc.  These include {get,set}res[ug]id(), sendfile(), lchflags(),
+  eaccess(), kqueue(), kevent(), poll(), lchmod().
+- Relicensed under a BSD license, many thanks to Apple, Inc!
+- Many bug fixes, cleanups, thread safety in the class, control, event,
+  and user system audit databases.  Annotate some persisting atomicity
+  bugs associated with the API and implementation.
+- Add audump test tool.
+- Adopt OpenSolaris BSM API memory semantics: caller allocates memory,
+  or static memory is returned for non-_r() versions of API calls.
+  _free() calls dropped as a result, and source code compatibility with
+  OpenSolaris improved significantly.
+
