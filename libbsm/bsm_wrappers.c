@@ -239,6 +239,7 @@ audit_write_failure(short event_code, char *errmsg, int errcode, au_id_t auid,
 
 	/* tokenize and save the error message */
 	if ((errtok = au_to_text(errmsg)) == NULL) {
+		au_free_token(subject);
 		syslog(LOG_ERR, "%s: au_to_text() failed", func);
 		return (kAUMakeTextTokErr);
 	}
