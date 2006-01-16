@@ -214,7 +214,8 @@ au_user_mask(char *username, au_mask_t *mask_p)
 
 	/* Get user mask. */
 	if ((up = getauusernam_r(&u, username)) != NULL) {
-		if (-1 == getfauditflags(&u.au_always, &u.au_never, mask_p))
+		if (-1 == getfauditflags(&up->au_always, &up->au_never,
+		    mask_p))
 			return (-1);
 		return (0);
 	}
