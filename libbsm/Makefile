@@ -34,7 +34,6 @@ MAN=	libbsm.3							\
 	au_user.3
 
 MLINKS=	libbsm.3 bsm.3							\
-	au_class.3 free_au_class_ent.3					\
 	au_class.3 getauclassent.3					\
 	au_class.3 getauclassnam.3					\
 	au_class.3 setauclass.3						\
@@ -45,21 +44,18 @@ MLINKS=	libbsm.3 bsm.3							\
 	au_control.3 getacmin.3						\
 	au_control.3 getacflg.3						\
 	au_control.3 getacna.3						\
-	au_event.3 free_au_event_ent.3					\
 	au_event.3 setauevent.3						\
 	au_event.3 endauevent.3						\
 	au_event.3 getauevent.3						\
 	au_event.3 getauevnam.3						\
 	au_event.3 getauevnum.3						\
 	au_event.3 getauevnonam.3					\
-	au_event.3 free_au_event.3					\
 	au_io.3	au_fetch_tok.3						\
 	au_io.3	au_print_tok.3						\
 	au_io.3	au_read_rec.3						\
 	au_mask.3 au_preselect.3					\
 	au_mask.3 getauditflagsbin.3					\
 	au_mask.3 getauditflagschar.3					\
-	au_user.3 free_au_user_ent.3					\
 	au_user.3 setauuser.3						\
 	au_user.3 endauuser.3						\
 	au_user.3 getauuserent.3					\
