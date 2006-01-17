@@ -56,9 +56,14 @@ to the development of OpenBSM:
     SPARTA, Inc.
     Robert Watson
     Wayne Salamon
+    Suresh Krishnaswamy
+    Kevin Van Vechten
     Tom Rhodes
     Wojciech Koszek
     Chunyang Yuan
+
+In addition, Coverity, Inc.'s Prevent(tm) static analysis tool was used to
+identify a number of bugs in the OpenBSM implementation.
 
   Contributions
 
