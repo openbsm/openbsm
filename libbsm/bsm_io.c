@@ -308,14 +308,14 @@ print_sec32(FILE *fp, u_int32_t sec, char raw)
 static void
 print_sec64(FILE *fp, u_int64_t sec, char raw)
 {
-	time_t time;
+	time_t timestamp;
 	char timestr[26];
 
 	if (raw)
 		fprintf(fp, "%u", (u_int32_t)sec);
 	else {
-		time = (time_t)sec;
-		ctime_r(&time, timestr);
+		timestamp = (time_t)sec;
+		ctime_r(&timestamp, timestr);
 		timestr[24] = '\0'; /* No new line */
 		fprintf(fp, "%s", timestr);
 	}
