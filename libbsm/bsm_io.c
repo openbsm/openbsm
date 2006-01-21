@@ -46,7 +46,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
-#include <fcntl.h>
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -2534,111 +2533,146 @@ au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 	switch(tok->id) {
 	case AUT_HEADER32:
 		print_header32_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_HEADER32_EX:
 		print_header32_ex_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_HEADER64:
 		print_header64_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_HEADER64_EX:
 		print_header64_ex_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_TRAILER:
 		print_trailer_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_ARG32:
 		print_arg32_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_ARG64:
 		print_arg64_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_DATA:
 		print_arb_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_ATTR32:
 		print_attr32_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_ATTR64:
 		print_attr64_tok(outfp, tok, del, raw, sfrm);
 
 	case AUT_EXIT:
 		print_exit_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_EXEC_ARGS:
 		print_execarg_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_EXEC_ENV:
 		print_execenv_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_OTHER_FILE32:
 		print_file_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_NEWGROUPS:
 		print_newgroups_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_IN_ADDR:
 		print_inaddr_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_IN_ADDR_EX:
 		print_inaddr_ex_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_IP:
 		print_ip_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_IPC:
 		print_ipc_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_IPC_PERM:
 		print_ipcperm_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_IPORT:
 		print_iport_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_OPAQUE:
 		print_opaque_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_PATH:
 		print_path_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_PROCESS32:
 		print_process32_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_PROCESS32_EX:
 		print_process32ex_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_RETURN32:
 		print_return32_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_RETURN64:
 		print_return64_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_SEQ:
 		print_seq_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_SOCKET:
 		print_socket_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_SOCKINET32:
 		print_sock_inet32_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_SOCKUNIX:
 		print_sock_unix_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_SUBJECT32:
 		print_subject32_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_SUBJECT64:
 		print_subject64_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_SUBJECT32_EX:
 		print_subject32ex_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_TEXT:
 		print_text_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_SOCKET_EX:
 		print_socketex32_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	default:
 		print_invalid_tok(outfp, tok, del, raw, sfrm);
