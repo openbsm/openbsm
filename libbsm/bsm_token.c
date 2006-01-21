@@ -151,8 +151,8 @@ au_to_attr32(struct vnode_au_info *vni)
 	u_int16_t pad0_16 = 0;
 	u_int16_t pad0_32 = 0;
 
-	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2*sizeof(u_int16_t) +
-	    3*sizeof(u_int32_t) + sizeof(u_int64_t) + sizeof(u_int32_t));
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2 * sizeof(u_int16_t) +
+	    3 * sizeof(u_int32_t) + sizeof(u_int64_t) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -296,7 +296,8 @@ au_to_newgroups(u_int16_t n, gid_t *groups)
 	u_char *dptr = NULL;
 	int i;
 
-	GET_TOKEN_AREA(t, dptr, n * 4 + 3);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) +
+	    n * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -318,7 +319,7 @@ au_to_in_addr(struct in_addr *internet_addr)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	GET_TOKEN_AREA(t, dptr, 5);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -340,7 +341,7 @@ au_to_in_addr_ex(struct in6_addr *internet_addr)
 	u_char *dptr = NULL;
 	u_int32_t type = AF_INET6;
 
-	GET_TOKEN_AREA(t, dptr, 21);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 5 * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -389,7 +390,7 @@ au_to_ipc(char type, int id)
 	u_char *dptr = NULL;
 
 
-	GET_TOKEN_AREA(t, dptr, 6);
+	GET_TOKEN_AREA(t, dptr, 2 * sizeof(u_char) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -449,7 +450,6 @@ au_to_ipc_perm(struct ipc_perm *perm)
 
 	return (t);
 }
-
 
 /*
  * token ID                1 byte
