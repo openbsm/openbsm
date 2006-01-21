@@ -45,7 +45,7 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 {
 	char class_ent_name[AU_CLASS_NAME_MAX];
 	char class_ent_desc[AU_CLASS_DESC_MAX];
-	struct au_class_ent c, *cp;
+	struct au_class_ent c;
 	char *tok;
 	char sel, sub;
 	char *last;
@@ -84,7 +84,7 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 		} else
 			sel = AU_PRS_BOTH;
 
-		if ((cp = getauclassnam_r(&c, tok)) != NULL) {
+		if ((getauclassnam_r(&c, tok)) != NULL) {
 			if (sub)
 				SUB_FROM_MASK(masks, c.ac_class, sel);
 			else
@@ -118,7 +118,7 @@ getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 {
 	char class_ent_name[AU_CLASS_NAME_MAX];
 	char class_ent_desc[AU_CLASS_DESC_MAX];
-	struct au_class_ent c, *cp;
+	struct au_class_ent c;
 	char *strptr = auditstr;
 	u_char sel;
 
@@ -138,7 +138,7 @@ getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 	 * the success or failure masks.
 	 */
 	setauclass();
-	while ((cp = getauclassent_r(&c)) != NULL) {
+	while ((getauclassent_r(&c)) != NULL) {
 		sel = 0;
 
 		/* Dont do anything for class = no. */
