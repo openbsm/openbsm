@@ -86,8 +86,8 @@ au_to_arg32(char n, char *text, u_int32_t v)
 	textlen = strlen(text);
 	textlen += 1;
 
-	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_char) +
-	    sizeof(u_int32_t) + sizeof(u_int16_t) + textlen);
+	GET_TOKEN_AREA(t, dptr, 2 * sizeof(u_char) + sizeof(u_int32_t) +
+	    sizeof(u_int16_t) + textlen);
 	if (t == NULL)
 		return (NULL);
 
@@ -111,8 +111,8 @@ au_to_arg64(char n, char *text, u_int64_t v)
 	textlen = strlen(text);
 	textlen += 1;
 
-	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_char) +
-	    sizeof(u_int64_t) + sizeof(u_int16_t) + textlen);
+	GET_TOKEN_AREA(t, dptr, 2 * sizeof(u_char) + sizeof(u_int64_t) +
+	    sizeof(u_int16_t) + textlen);
 	if (t == NULL)
 		return (NULL);
 
