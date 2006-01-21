@@ -25,8 +25,11 @@
  */
 
 #include <bsm/libbsm.h>
+#include <string.h>
+#include <err.h>
 #include <limits.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /*
  * Simple tool to dump various /etc/security databases using the defined APIs.
