@@ -83,11 +83,6 @@ au_to_arg32(char n, char *text, u_int32_t v)
 	u_char *dptr = NULL;
 	u_int16_t textlen;
 
-	if (text == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
-
 	textlen = strlen(text);
 	textlen += 1;
 
@@ -112,11 +107,6 @@ au_to_arg64(char n, char *text, u_int64_t v)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t textlen;
-
-	if (text == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	textlen = strlen(text);
 	textlen += 1;
@@ -160,11 +150,6 @@ au_to_attr32(struct vnode_au_info *vni)
 	u_char *dptr = NULL;
 	u_int16_t pad0_16 = 0;
 	u_int16_t pad0_32 = 0;
-
-	if (vni == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2*sizeof(u_int16_t) +
 	    3*sizeof(u_int32_t) + sizeof(u_int64_t) + sizeof(u_int32_t));
@@ -232,11 +217,6 @@ au_to_data(char unit_print, char unit_type, char unit_count, char *p)
 	token_t *t;
 	u_char *dptr = NULL;
 	size_t datasize, totdata;
-
-	if (p == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	/* Determine the size of the basic unit. */
 	switch (unit_type) {
@@ -316,11 +296,6 @@ au_to_newgroups(u_int16_t n, gid_t *groups)
 	u_char *dptr = NULL;
 	int i;
 
-	if (groups == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
-
 	GET_TOKEN_AREA(t, dptr, n * 4 + 3);
 	if (t == NULL)
 		return (NULL);
@@ -343,11 +318,6 @@ au_to_in_addr(struct in_addr *internet_addr)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	if (internet_addr == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
-
 	GET_TOKEN_AREA(t, dptr, 5);
 	if (t == NULL)
 		return (NULL);
@@ -369,11 +339,6 @@ au_to_in_addr_ex(struct in6_addr *internet_addr)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int32_t type = AF_INET6;
-
-	if (internet_addr == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, 21);
 	if (t == NULL)
@@ -398,11 +363,6 @@ au_to_ip(struct ip *ip)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-
-	if (ip == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(struct ip));
 	if (t == NULL)
@@ -457,12 +417,6 @@ au_to_ipc_perm(struct ipc_perm *perm)
 	u_char *dptr = NULL;
 	u_int16_t pad0 = 0;
 
-
-	if (perm == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
-
 	GET_TOKEN_AREA(t, dptr, 12 * sizeof(u_int16_t) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
@@ -507,7 +461,6 @@ au_to_iport(u_int16_t iport)
 	token_t *t;
 	u_char *dptr = NULL;
 
-
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t));
 	if (t == NULL)
 		return (NULL);
@@ -529,11 +482,6 @@ au_to_opaque(char *data, u_int16_t bytes)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-
-	if (data == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) + bytes);
 	if (t == NULL)
@@ -572,10 +520,6 @@ au_to_file(char *file)
 		return (NULL);
 #endif
 
-	if (file == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 	filelen = strlen(file);
 	filelen += 1;
 
@@ -607,10 +551,6 @@ au_to_text(char *text)
 	u_char *dptr = NULL;
 	u_int16_t textlen;
 
-	if (text == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 	textlen = strlen(text);
 	textlen += 1;
 
@@ -637,10 +577,6 @@ au_to_path(char *text)
 	u_char *dptr = NULL;
 	u_int16_t textlen;
 
-	if (text == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 	textlen = strlen(text);
 	textlen += 1;
 
@@ -674,11 +610,6 @@ au_to_process32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 {
 	token_t *t;
 	u_char *dptr = NULL;
-
-	if (tid == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 9 * sizeof(u_int32_t));
 	if (t == NULL)
@@ -736,11 +667,6 @@ au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 {
 	token_t *t;
 	u_char *dptr = NULL;
-
-	if (tid == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 13 * sizeof(u_int32_t));
 	if (t == NULL)
@@ -903,9 +829,6 @@ au_to_sock_unix(struct sockaddr_un *so)
 	token_t *t;
 	u_char *dptr;
 
-	if (so == NULL)
-		return (NULL);
-
 	GET_TOKEN_AREA(t, dptr, 3 * sizeof(u_char) + strlen(so->sun_path) + 1);
 	if (t == NULL)
 		return (NULL);
@@ -931,11 +854,6 @@ au_to_sock_inet32(struct sockaddr_in *so)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	if (so == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
-
 	GET_TOKEN_AREA(t, dptr, 3 * sizeof(u_char) + sizeof(u_int16_t) +
 	    sizeof(u_int32_t));
 	if (t == NULL)
@@ -960,11 +878,6 @@ au_to_sock_inet128(struct sockaddr_in6 *so)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-
-	if (so == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, 3 * sizeof(u_char) + sizeof(u_int16_t) +
 	    4 * sizeof(u_int32_t));
@@ -1015,11 +928,6 @@ au_to_subject32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 {
 	token_t *t;
 	u_char *dptr = NULL;
-
-	if (tid == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 9 * sizeof(u_int32_t));
 	if (t == NULL)
@@ -1077,11 +985,6 @@ au_to_subject32_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 {
 	token_t *t;
 	u_char *dptr = NULL;
-
-	if (tid == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 13 * sizeof(u_int32_t));
 	if (t == NULL)
@@ -1155,11 +1058,6 @@ au_to_exec_args(const char **args)
 	int i, count = 0;
 	size_t totlen = 0;
 
-	if (args == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
-
 	nextarg = *args;
 
 	while (nextarg != NULL) {
@@ -1200,11 +1098,6 @@ au_to_exec_env(const char **env)
 	int i, count = 0;
 	size_t totlen = 0;
 	const char *nextenv;
-
-	if (env == NULL) {
-		errno = EINVAL;
-		return (NULL);
-	}
 
 	nextenv = *env;
 
