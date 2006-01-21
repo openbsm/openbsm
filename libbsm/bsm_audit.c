@@ -237,7 +237,7 @@ au_teardown(au_record_t *rec)
 	token_t *tok;
 
 	/* Free the token list */
-	while ((tok = TAILQ_FIRST(&rec->token_q))) {
+	while ((tok = TAILQ_FIRST(&rec->token_q)) != NULL) {
 		TAILQ_REMOVE(&rec->token_q, tok, tokens);
 		free(tok->t_data);
 		free(tok);
