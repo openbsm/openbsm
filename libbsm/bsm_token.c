@@ -58,17 +58,17 @@
 #include <bsm/libbsm.h>
 
 #define	GET_TOKEN_AREA(t, dptr, length) do {				\
-	t = malloc (sizeof(token_t));					\
+	t = malloc(sizeof(token_t));					\
 	if (t != NULL) {						\
 		t->len = (length);					\
-		t->t_data = malloc ((length) * sizeof(u_char));		\
-		if ((dptr = t->t_data) == NULL) {			\
+		dptr = t->t_data = malloc ((length) * sizeof(u_char));	\
+		if (dptr == NULL) {					\
 			free(t);					\
 			t = NULL;					\
 		} else							\
 			memset(dptr, 0, (length));			\
-	}								\
-	assert(t == NULL || dptr != NULL);				\
+	} else								\
+		dptr = NULL;						\
 } while (0)
 
 /*
