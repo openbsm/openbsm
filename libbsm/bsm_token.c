@@ -89,11 +89,12 @@ au_to_arg32(char n, char *text, u_int32_t v)
 	}
 
 	textlen = strlen(text);
-	GET_TOKEN_AREA(t, dptr, 9 + textlen);
+	textlen += 1;
+
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_char) +
+	    sizeof(u_int32_t) + sizeof(u_int16_t) + textlen);
 	if (t == NULL)
 		return (NULL);
-
-	textlen += 1;
 
 	ADD_U_CHAR(dptr, AUT_ARG32);
 	ADD_U_CHAR(dptr, n);
@@ -118,11 +119,12 @@ au_to_arg64(char n, char *text, u_int64_t v)
 	}
 
 	textlen = strlen(text);
-	GET_TOKEN_AREA(t, dptr, 13 + textlen);
+	textlen += 1;
+
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_char) +
+	    sizeof(u_int64_t) + sizeof(u_int16_t) + textlen);
 	if (t == NULL)
 		return (NULL);
-
-	textlen += 1;
 
 	ADD_U_CHAR(dptr, AUT_ARG64);
 	ADD_U_CHAR(dptr, n);
@@ -164,7 +166,8 @@ au_to_attr32(struct vnode_au_info *vni)
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 29);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2*sizeof(u_int16_t) +
+	    3*sizeof(u_int32_t) + sizeof(u_int64_t) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -256,7 +259,7 @@ au_to_data(char unit_print, char unit_type, char unit_count, char *p)
 
 	totdata = datasize * unit_count;
 
-	GET_TOKEN_AREA(t, dptr, totdata + 4);
+	GET_TOKEN_AREA(t, dptr, totdata + 4 * sizeof(u_char));
 	if (t == NULL)
 		return (NULL);
 
@@ -281,7 +284,7 @@ au_to_exit(int retval, int err)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	GET_TOKEN_AREA(t, dptr, 9);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2 * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -460,7 +463,7 @@ au_to_ipc_perm(struct ipc_perm *perm)
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 29);
+	GET_TOKEN_AREA(t, dptr, 12 * sizeof(u_int16_t) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -505,7 +508,7 @@ au_to_iport(u_int16_t iport)
 	u_char *dptr = NULL;
 
 
-	GET_TOKEN_AREA(t, dptr, 3);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -532,7 +535,7 @@ au_to_opaque(char *data, u_int16_t bytes)
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, bytes + 3);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) + bytes);
 	if (t == NULL)
 		return (NULL);
 
@@ -574,11 +577,13 @@ au_to_file(char *file)
 		return (NULL);
 	}
 	filelen = strlen(file);
-	GET_TOKEN_AREA(t, dptr, filelen + 12);
+	filelen += 1;
+
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2 * sizeof(u_int32_t) +
+	    sizeof(u_int16_t) + filelen);
 	if (t == NULL)
 		return (NULL);
 
-	filelen += 1;
 	timems = tm.tv_usec/1000;
 
 	ADD_U_CHAR(dptr, AUT_OTHER_FILE32);
@@ -607,11 +612,11 @@ au_to_text(char *text)
 		return (NULL);
 	}
 	textlen = strlen(text);
-	GET_TOKEN_AREA(t, dptr, textlen + 4);
+	textlen += 1;
+
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) + textlen);
 	if (t == NULL)
 		return (NULL);
-
-	textlen += 1;
 
 	ADD_U_CHAR(dptr, AUT_TEXT);
 	ADD_U_INT16(dptr, textlen);
@@ -637,11 +642,11 @@ au_to_path(char *text)
 		return (NULL);
 	}
 	textlen = strlen(text);
-	GET_TOKEN_AREA(t, dptr, textlen + 4);
+	textlen += 1;
+
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) + textlen);
 	if (t == NULL)
 		return (NULL);
-
-	textlen += 1;
 
 	ADD_U_CHAR(dptr, AUT_PATH);
 	ADD_U_INT16(dptr, textlen);
@@ -675,7 +680,7 @@ au_to_process32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 37);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 9 * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -737,7 +742,7 @@ au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 53);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 13 * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -788,7 +793,7 @@ au_to_return32(char status, u_int32_t ret)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	GET_TOKEN_AREA(t, dptr, 6);
+	GET_TOKEN_AREA(t, dptr, 2 * sizeof(u_char) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -805,7 +810,7 @@ au_to_return64(char status, u_int64_t ret)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	GET_TOKEN_AREA(t, dptr, 10);
+	GET_TOKEN_AREA(t, dptr, 2 * sizeof(u_char) + sizeof(u_int64_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -833,7 +838,7 @@ au_to_seq(long audit_count)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	GET_TOKEN_AREA(t, dptr, 5);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -901,7 +906,7 @@ au_to_sock_unix(struct sockaddr_un *so)
 	if (so == NULL)
 		return (NULL);
 
-	GET_TOKEN_AREA(t, dptr, 107);
+	GET_TOKEN_AREA(t, dptr, 3 * sizeof(u_char) + strlen(so->sun_path) + 1);
 	if (t == NULL)
 		return (NULL);
 
@@ -909,7 +914,7 @@ au_to_sock_unix(struct sockaddr_un *so)
 	/* BSM token has two bytes for family */
 	ADD_U_CHAR(dptr, 0);
 	ADD_U_CHAR(dptr, so->sun_family);
-	ADD_STRING(dptr, so->sun_path, strlen(so->sun_path));
+	ADD_STRING(dptr, so->sun_path, strlen(so->sun_path) + 1);
 
 	return (t);
 }
@@ -931,7 +936,8 @@ au_to_sock_inet32(struct sockaddr_in *so)
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 9);
+	GET_TOKEN_AREA(t, dptr, 3 * sizeof(u_char) + sizeof(u_int16_t) +
+	    sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -960,7 +966,8 @@ au_to_sock_inet128(struct sockaddr_in6 *so)
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 21);
+	GET_TOKEN_AREA(t, dptr, 3 * sizeof(u_char) + sizeof(u_int16_t) +
+	    4 * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -1014,7 +1021,7 @@ au_to_subject32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 37);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 9 * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -1076,7 +1083,7 @@ au_to_subject32_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 53);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 13 * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -1164,7 +1171,8 @@ au_to_exec_args(const char **args)
 		nextarg = *(args + count);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 5 + totlen);
+	totlen += count * sizeof(char);	/* nul terminations. */
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) + totlen);
 	if (t == NULL)
 		return (NULL);
 
@@ -1209,7 +1217,8 @@ au_to_exec_env(const char **env)
 		nextenv = *(env + count);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 5 + totlen);
+	totlen += sizeof(char) * count;
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) + totlen);
 	if (t == NULL)
 		return (NULL);
 
@@ -1252,7 +1261,8 @@ au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 		return (NULL);
 #endif
 
-	GET_TOKEN_AREA(t, dptr, 18);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) +
+	    sizeof(u_char) + 2 * sizeof(u_int16_t) + 2 * sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
@@ -1297,7 +1307,8 @@ au_to_trailer(int rec_size)
 	u_char *dptr = NULL;
 	u_int16_t magic = TRAILER_PAD_MAGIC;
 
-	GET_TOKEN_AREA(t, dptr, 7);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) +
+	    sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
