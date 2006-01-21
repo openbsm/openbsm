@@ -39,9 +39,9 @@
  * Parse the contents of the audit_user file into au_user_ent structures.
  */
 
-static FILE	*fp = NULL;
-static char	linestr[AU_LINE_MAX];
-static char	*delim = ":";
+static FILE		*fp = NULL;
+static char		 linestr[AU_LINE_MAX];
+static const char	*user_delim = ":";
 
 static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -49,14 +49,14 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
  * Parse one line from the audit_user file into the au_user_ent structure.
  */
 static struct au_user_ent *
-userfromstr(char *str, char *delim, struct au_user_ent *u)
+userfromstr(char *str, struct au_user_ent *u)
 {
 	char *username, *always, *never;
 	char *last;
 
-	username = strtok_r(str, delim, &last);
-	always = strtok_r(NULL, delim, &last);
-	never = strtok_r(NULL, delim, &last);
+	username = strtok_r(str, user_delim, &last);
+	always = strtok_r(NULL, user_delim, &last);
+	never = strtok_r(NULL, user_delim, &last);
 
 	if ((username == NULL) || (always == NULL) || (never == NULL))
 		return (NULL);
@@ -128,7 +128,7 @@ getauuserent_r_locked(struct au_user_ent *u)
 		*nl = '\0';
 
 	/* Get the next structure. */
-	if (userfromstr(linestr, delim, u) == NULL)
+	if (userfromstr(linestr, u) == NULL)
 		return (NULL);
 
 	return (u);
