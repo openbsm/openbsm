@@ -2372,7 +2372,7 @@ fetch_invalid_tok(tokenstr_t *tok, char *buf, int len)
 	int err = 0;
 	int recoversize;
 
-	recoversize = len - tok->len - BSM_TRAILER_SIZE;
+	recoversize = len - (tok->len + BSM_TRAILER_SIZE);
 	if (recoversize <= 0)
 		return (-1);
 
@@ -2737,7 +2737,7 @@ au_read_rec(FILE *fp, u_char **buf)
 		bptr += sizeof(u_int32_t);
 
 		/* now read remaining record bytes */
-		bytestoread = recsize - sizeof(u_int32_t) - sizeof(u_char);
+		bytestoread = recsize - (sizeof(u_int32_t) + sizeof(u_char));
 
 		if (fread(bptr, 1, bytestoread, fp) < bytestoread) {
 			free(*buf);
