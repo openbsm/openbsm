@@ -389,7 +389,6 @@ au_to_ipc(char type, int id)
 	token_t *t;
 	u_char *dptr = NULL;
 
-
 	GET_TOKEN_AREA(t, dptr, 2 * sizeof(u_char) + sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
@@ -470,7 +469,6 @@ au_to_iport(u_int16_t iport)
 
 	return (t);
 }
-
 
 /*
  * token ID                1 byte
