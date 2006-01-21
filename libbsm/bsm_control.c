@@ -94,8 +94,6 @@ getstrfromtype_locked(char *name, char **str)
 			}
 		}
 	}
-
-	return (0); /* EOF */
 }
 
 /*
