@@ -61,9 +61,11 @@ to the development of OpenBSM:
     Tom Rhodes
     Wojciech Koszek
     Chunyang Yuan
+    Poul-Henning Kamp
 
-In addition, Coverity, Inc.'s Prevent(tm) static analysis tool was used to
-identify a number of bugs in the OpenBSM implementation.
+In addition, Coverity, Inc.'s Prevent(tm) static analysis tool and Gimpel
+Software's FlexeLint tool were used to identify a number of bugs in the
+OpenBSM implementation.
 
   Contributions
 
