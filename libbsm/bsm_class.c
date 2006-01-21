@@ -39,9 +39,9 @@
  * Parse the contents of the audit_class file to return struct au_class_ent
  * entries.
  */
-static FILE	*fp = NULL;
-static char	linestr[AU_LINE_MAX];
-static char	*delim = ":";
+static FILE		*fp = NULL;
+static char		 linestr[AU_LINE_MAX];
+static const char	*classdelim = ":";
 
 static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -50,15 +50,15 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
  * au_class_ent elements; store the result in c.
  */
 static struct au_class_ent *
-classfromstr(char *str, char *delim, struct au_class_ent *c)
+classfromstr(char *str, struct au_class_ent *c)
 {
 	char *classname, *classdesc, *classflag;
 	char *last;
 
 	/* Each line contains flag:name:desc. */
-	classflag = strtok_r(str, delim, &last);
-	classname = strtok_r(NULL, delim, &last);
-	classdesc = strtok_r(NULL, delim, &last);
+	classflag = strtok_r(str, classdelim, &last);
+	classname = strtok_r(NULL, classdelim, &last);
+	classdesc = strtok_r(NULL, classdelim, &last);
 
 	if ((classflag == NULL) || (classname == NULL) || (classdesc == NULL))
 		return (NULL);
@@ -113,7 +113,7 @@ getauclassent_r_locked(struct au_class_ent *c)
 	tokptr = linestr;
 
 	/* Parse tokptr to au_class_ent components. */
-	if (classfromstr(tokptr, delim, c) == NULL)
+	if (classfromstr(tokptr, c) == NULL)
 		return (NULL);
 
 	return (c);
