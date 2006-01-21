@@ -47,6 +47,7 @@
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
 
+#include <assert.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
@@ -67,6 +68,7 @@
 		} else							\
 			memset(dptr, 0, (length));			\
 	}								\
+	assert(t == NULL || dptr != NULL);				\
 } while (0)
 
 /*
