@@ -401,7 +401,7 @@ au_to_ip(struct ip *ip)
 		return (NULL);
 	}
 
-	GET_TOKEN_AREA(t, dptr, 21);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(struct ip));
 	if (t == NULL)
 		return (NULL);
 
