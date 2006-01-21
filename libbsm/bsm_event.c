@@ -39,9 +39,9 @@
  * Parse the contents of the audit_event file to return
  * au_event_ent entries
  */
-static FILE	*fp = NULL;
-static char	linestr[AU_LINE_MAX];
-static char	*delim = ":";
+static FILE		*fp = NULL;
+static char		 linestr[AU_LINE_MAX];
+static const char	*eventdelim = ":";
 
 static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -49,16 +49,16 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
  * Parse one line from the audit_event file into the au_event_ent structure.
  */
 static struct au_event_ent *
-eventfromstr(char *str, char *delim, struct au_event_ent *e)
+eventfromstr(char *str, struct au_event_ent *e)
 {
 	char *evno, *evname, *evdesc, *evclass;
 	struct au_mask evmask;
 	char *last;
 
-	evno = strtok_r(str, delim, &last);
-	evname = strtok_r(NULL, delim, &last);
-	evdesc = strtok_r(NULL, delim, &last);
-	evclass = strtok_r(NULL, delim, &last);
+	evno = strtok_r(str, eventdelim, &last);
+	evname = strtok_r(NULL, eventdelim, &last);
+	evdesc = strtok_r(NULL, eventdelim, &last);
+	evclass = strtok_r(NULL, eventdelim, &last);
 
 	if ((evno == NULL) || (evname == NULL) || (evdesc == NULL) ||
 	    (evclass == NULL))
@@ -144,7 +144,7 @@ getauevent_r_locked(struct au_event_ent *e)
 	 * XXXRW: Perhaps we should keep reading lines until we find a valid
 	 * one, rather than stopping when we hit an invalid one?
 	 */
-	if (eventfromstr(linestr, delim, e) == NULL)
+	if (eventfromstr(linestr, e) == NULL)
 		return (NULL);
 
 	return (e);
@@ -200,7 +200,7 @@ getauevnam_r_locked(struct au_event_ent *e, const char *name)
 		if ((nl = strrchr(linestr, '\n')) != NULL)
 			*nl = '\0';
 
-		if (eventfromstr(linestr, delim, e) != NULL) {
+		if (eventfromstr(linestr, e) != NULL) {
 			if (strcmp(name, e->ae_name) == 0)
 				return (e);
 		}
@@ -254,7 +254,7 @@ getauevnum_r_locked(struct au_event_ent *e, au_event_t event_number)
 		if ((nl = strrchr(linestr, '\n')) != NULL)
 			*nl = '\0';
 
-		if (eventfromstr(linestr, delim, e) != NULL) {
+		if (eventfromstr(linestr, e) != NULL) {
 			if (event_number == e->ae_number)
 				return (e);
 		}
