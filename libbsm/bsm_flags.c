@@ -50,12 +50,6 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 	char sel, sub;
 	char *last;
 
-
-	if ((auditstr == NULL) || (masks == NULL)) {
-		errno = EINVAL;
-		return (-1);
-	}
-
 	bzero(&c, sizeof(c));
 	bzero(class_ent_name, sizeof(class_ent_name));
 	bzero(class_ent_desc, sizeof(class_ent_desc));
@@ -121,11 +115,6 @@ getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 	struct au_class_ent c;
 	char *strptr = auditstr;
 	u_char sel;
-
-	if ((auditstr == NULL) || (masks == NULL)) {
-		return (EINVAL);
-		return (-1);
-	}
 
 	bzero(&c, sizeof(c));
 	bzero(class_ent_name, sizeof(class_ent_name));
