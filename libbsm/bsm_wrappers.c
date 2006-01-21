@@ -34,7 +34,6 @@
 
 #include <unistd.h>
 #include <syslog.h>
-#include <stdarg.h>
 #include <string.h>
 #include <errno.h>
 
