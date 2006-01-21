@@ -1140,7 +1140,8 @@ print_exit_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * count                   4 bytes
  * text                    count null-terminated string(s)
  */
-static int fetch_execarg_tok(tokenstr_t *tok, char *buf, int len)
+static int
+fetch_execarg_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 	int i;
@@ -1150,7 +1151,7 @@ static int fetch_execarg_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	for (i = 0; i< tok->tt.execarg.count; i++) {
+	for (i = 0; i < tok->tt.execarg.count; i++) {
 		bptr = buf + tok->len;
 		tok->tt.execarg.text[i] = bptr;
 
@@ -1355,7 +1356,7 @@ fetch_inaddr_ex_tok(tokenstr_t *tok, char *buf, int len)
 		if (err)
 			return (-1);
 	} else if (tok->tt.inaddr_ex.type == AU_IPv6) {
-		READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr_ex.addr,
+		READ_TOKEN_BYTES(buf, len, tok->tt.inaddr_ex.addr,
 		    sizeof(tok->tt.inaddr_ex.addr), tok->len, err);
 		if (err)
 			return (-1);
@@ -1776,7 +1777,7 @@ fetch_process32ex_tok(tokenstr_t *tok, char *buf, int len)
 		if (err)
 			return (-1);
 	} else if (tok->tt.proc32_ex.tid.type == AU_IPv6) {
-		READ_TOKEN_BYTES(buf, len, &tok->tt.proc32_ex.tid.addr,
+		READ_TOKEN_BYTES(buf, len, tok->tt.proc32_ex.tid.addr,
 		    sizeof(tok->tt.proc32_ex.tid.addr), tok->len, err);
 		if (err)
 			return (-1);
@@ -1951,7 +1952,7 @@ static int fetch_sock_unix_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.sockunix.path, 104, tok->len,
+	READ_TOKEN_BYTES(buf, len, tok->tt.sockunix.path, 104, tok->len,
 	    err);
 	if (err)
 		return (-1);
@@ -2596,6 +2597,7 @@ au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 
 	case AUT_ATTR64:
 		print_attr64_tok(outfp, tok, del, raw, sfrm);
+		return;
 
 	case AUT_EXIT:
 		print_exit_tok(outfp, tok, del, raw, sfrm);
