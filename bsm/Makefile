@@ -13,6 +13,7 @@ TARGET=	${DESTDIR}/usr/include/bsm
 
 all:
 default:
+depend:
 clean:
 
 install:
