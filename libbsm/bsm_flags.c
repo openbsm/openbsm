@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static const char	*delim = ",";
+static const char	*flagdelim = ",";
 
 /*
  * Convert the character representation of audit values into the au_mask_t
@@ -65,7 +65,7 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 	masks->am_success = 0;
 	masks->am_failure = 0;
 
-	tok = strtok_r(auditstr, delim, &last);
+	tok = strtok_r(auditstr, flagdelim, &last);
 	while (tok != NULL) {
 		/* Check for the events that should not be audited. */
 		if (tok[0] == '^') {
@@ -95,7 +95,7 @@ getauditflagsbin(char *auditstr, au_mask_t *masks)
 		}
 
 		/* Get the next class. */
-		tok = strtok_r(NULL, delim, &last);
+		tok = strtok_r(NULL, flagdelim, &last);
 	}
 	return (0);
 }
