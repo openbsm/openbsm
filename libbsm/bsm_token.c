@@ -630,8 +630,9 @@ au_to_process32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 }
 
 token_t *
-au_to_process64(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
-    pid_t pid, au_asid_t sid, au_tid_t *tid)
+au_to_process64(__unused au_id_t auid, __unused uid_t euid,
+    __unused gid_t egid, __unused uid_t ruid, __unused gid_t rgid,
+    __unused pid_t pid, __unused au_asid_t sid, __unused au_tid_t *tid)
 {
 
 	errno = ENOTSUP;
@@ -639,8 +640,9 @@ au_to_process64(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 }
 
 token_t *
-au_to_process(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
-    pid_t pid, au_asid_t sid, au_tid_t *tid)
+au_to_process(__unused au_id_t auid, __unused uid_t euid,
+    __unused gid_t egid, __unused uid_t ruid, __unused gid_t rgid,
+    __unused pid_t pid, __unused au_asid_t sid, __unused au_tid_t *tid)
 {
 
 	return (au_to_process32(auid, euid, egid, ruid, rgid, pid, sid,
@@ -1174,7 +1176,8 @@ au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 }
 
 token_t *
-au_to_header64(int rec_size, au_event_t e_type, au_emod_t e_mod)
+au_to_header64(__unused int rec_size, __unused au_event_t e_type,
+    __unused au_emod_t e_mod)
 {
 
 	errno = ENOTSUP;
