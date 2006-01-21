@@ -355,6 +355,7 @@
 #define	AUE_KQUEUE		377	/* FreeBSD */
 #define	AUE_KEVENT		378	/* FreeBSD */
 #define	AUE_FSYNC		379
+#define AUE_NMOUNT		380	/* FreeBSD */
 
 /*
  * XXXRW: Values not yet assigned.
