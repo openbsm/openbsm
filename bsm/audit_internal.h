@@ -63,33 +63,33 @@
  */
 #define	ADD_U_CHAR(loc, val)						\
 	do {								\
-		*loc = val;						\
-		loc += sizeof(u_char);					\
+		*(loc) = (val);						\
+		(loc) += sizeof(u_char);				\
 	} while(0)
 
 
 #define	ADD_U_INT16(loc, val)						\
 	do {								\
-		be16enc(loc, val);					\
-		loc += sizeof(u_int16_t);				\
+		be16enc((loc), (val));					\
+		(loc) += sizeof(u_int16_t);				\
 	} while(0)
 
 #define	ADD_U_INT32(loc, val)						\
 	do {								\
-		be32enc(loc, val);					\
-		loc += sizeof(u_int32_t);				\
+		be32enc((loc), (val));					\
+		(loc) += sizeof(u_int32_t);				\
 	} while(0)
 
 #define	ADD_U_INT64(loc, val)						\
 	do {								\
-		be64enc(loc, val);					\
-		loc += sizeof(u_int64_t); 				\
+		be64enc((loc), (val));					\
+		(loc) += sizeof(u_int64_t); 				\
 	} while(0)
 
 #define	ADD_MEM(loc, data, size)					\
 	do {								\
-		memcpy(loc, data, size);				\
-		loc += size;						\
+		memcpy((loc), (data), (size));				\
+		(loc) += size;						\
 	} while(0)
 
 #define	ADD_STRING(loc, data, size)	ADD_MEM(loc, data, size)
