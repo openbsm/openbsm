@@ -37,7 +37,7 @@
 #define	AUDIT_RECORD_MAGIC	0x828a0f1b
 #define MAX_AUDIT_RECORDS	20
 #define MAX_AUDIT_RECORD_SIZE	4096
-#define MIN_AUDIT_FILE_SIZE	512 * 1024
+#define MIN_AUDIT_FILE_SIZE	(512 * 1024)
 
 /*
  * Triggers for the audit daemon
