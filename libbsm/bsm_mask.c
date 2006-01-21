@@ -165,7 +165,10 @@ au_preselect(au_event_t event, au_mask_t *mask_p, int sorf, int flag)
 	switch (flag) {
 	case AU_PRS_REREAD:
 		flush_cache();
-		load_event_table();
+		if (load_event_table() == -1) {
+			pthread_mutex_unlock(&mutex);
+			return (-1);
+		}
 		ev = read_from_cache(event);
 		break;
 	case AU_PRS_USECACHE:
