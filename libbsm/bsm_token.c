@@ -59,13 +59,13 @@
 #define	GET_TOKEN_AREA(t, dptr, length) do {				\
 	t = malloc (sizeof(token_t));					\
 	if (t != NULL) {						\
-		t->len = length;					\
-		t->t_data = malloc (length * sizeof(u_char));		\
+		t->len = (length);					\
+		t->t_data = malloc ((length) * sizeof(u_char));		\
 		if ((dptr = t->t_data) == NULL) {			\
 			free(t);					\
 			t = NULL;					\
 		} else							\
-			memset(dptr, 0, length);			\
+			memset(dptr, 0, (length));			\
 	}								\
 } while (0)
 
@@ -527,7 +527,7 @@ au_to_opaque(char *data, u_int16_t bytes)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	if ((data == NULL) || (bytes <= 0)) {
+	if (data == NULL) {
 		errno = EINVAL;
 		return (NULL);
 	}
