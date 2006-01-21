@@ -2255,7 +2255,7 @@ fetch_subject32ex_tok(tokenstr_t *tok, char *buf, int len)
 		if (err)
 			return (-1);
 	} else if (tok->tt.subj32_ex.tid.type == AU_IPv6) {
-		READ_TOKEN_BYTES(buf, len, &tok->tt.subj32_ex.tid.addr,
+		READ_TOKEN_BYTES(buf, len, tok->tt.subj32_ex.tid.addr,
 		    sizeof(tok->tt.subj32_ex.tid.addr), tok->len, err);
 		if (err)
 			return (-1);
