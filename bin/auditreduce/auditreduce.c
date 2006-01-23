@@ -28,7 +28,7 @@
 
 /* 
  * Tool used to merge and select audit records from audit trail files 
- */    
+ */
 
 /*
  * XXX Currently we do not support merging of records from multiple
@@ -313,7 +313,7 @@ select_hdr32(tokenstr_t tok, uint32_t *optchkd)
 		if (au_preselect(tok.tt.hdr32.e_type, &maskp, AU_PRS_BOTH,
 		    AU_PRS_USECACHE) != 1)
 			return (0);
-	}  
+	}
 
 	/* Check if event matches. */
 	if (ISOPTSET(opttochk, OPT_m)) {
@@ -394,7 +394,7 @@ select_records(FILE *fp)
 	u_char *buf;
 	tokenstr_t tok;
 	int reclen;
-   	int bytesread;
+	int bytesread;
 	int selected;
 	uint32_t optchkd;
 
@@ -523,7 +523,7 @@ main(int argc, char **argv)
 	struct passwd *pw;
 	struct tm tm;
 	au_event_t *n;
-	FILE  *fp;
+	FILE *fp;
 	int i;
 	char *objval, *converr;
 	char ch;
