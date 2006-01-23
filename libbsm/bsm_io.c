@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2004, Apple Computer, Inc.
  * Copyright (c) 2005 SPARTA, Inc.
+ * Copyright (c) 2006 Robert N. M. Watson
  * All rights reserved.
  *
  * This code was developed in part by Robert N. M. Watson, Senior Principal
