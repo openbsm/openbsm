@@ -40,14 +40,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-extern char *optarg;
-extern int optind, optopt, opterr,optreset;
+extern char	*optarg;
+extern int	 optind, optopt, opterr,optreset;
 
-static char *del = ",";	/* Default delimiter. */
-static int oneline = 0;
-static int raw = 0;
-static int shortfrm = 0;
-static int partial = 0;
+static char	*del = ",";	/* Default delimiter. */
+static int	 oneline = 0;
+static int	 raw = 0;
+static int	 shortfrm = 0;
+static int	 partial = 0;
 
 static void
 usage()
@@ -66,7 +66,7 @@ print_tokens(FILE *fp)
 	u_char *buf;
 	tokenstr_t tok;
 	int reclen;
-   	int bytesread;
+	int bytesread;
 
 	/* Allow tail -f | praudit to work. */
 	if (partial) {
@@ -104,7 +104,7 @@ main(int argc, char **argv)
 {
 	char ch;
 	int i;
-	FILE  *fp;
+	FILE *fp;
 
 	while ((ch = getopt(argc, argv, "lprsd:")) != -1) {
 		switch(ch) {
