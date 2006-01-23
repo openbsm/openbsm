@@ -545,6 +545,7 @@ main(int argc, char **argv)
 	char *objval, *converr;
 	char ch;
 	char timestr[128];
+	char *fname;
 
 	converr = NULL;
 
@@ -698,12 +699,14 @@ main(int argc, char **argv)
 	/*
 	 * XXX: We should actually be merging records here
 	 */
-	for (i = 0;i < argc; i++) {
-		fp = fopen(*argv, "r");
+	for (i = 0; i < argc; i++) {
+		fname = argv[i];
+		fp = fopen(fname, "r");
 		if (fp == NULL)
-			errx(EXIT_FAILURE, "Couldn't open %s", *argv);
+			errx(EXIT_FAILURE, "Couldn't open %s", fname);
 		if (select_records(fp) == -1) {
-			errx(EXIT_FAILURE, "Couldn't select records %s", *argv);
+			errx(EXIT_FAILURE, "Couldn't select records %s",
+			    fname);
 		}
 		fclose(fp);
 	}
