@@ -6,5 +6,7 @@
   test that things work properly with respect to endianness of the local
   platform.
 - Document contents of libbsm "public" data structures in libbsm man pages.
+- The audit.log.5 man page is incomplete, as it does not describe all
+  token types.
 
-$P4: //depot/projects/trustedbsd/openbsm/TODO#3 $
+$P4: //depot/projects/trustedbsd/openbsm/TODO#4 $
