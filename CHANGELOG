@@ -61,4 +61,6 @@ OpenBSM 1.0
   or static memory is returned for non-_r() versions of API calls.
   _free() calls dropped as a result, and source code compatibility with
   OpenSolaris improved significantly.
+- Annotate BSM events with origin OS and compatibility information.
 
+$P4: //depot/projects/trustedbsd/openbsm/CHANGELOG#4 $

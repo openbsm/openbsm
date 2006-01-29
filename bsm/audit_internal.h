@@ -33,6 +33,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
+ *
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#7 $
  */
 
 #ifndef _LIBBSM_INTERNAL_H

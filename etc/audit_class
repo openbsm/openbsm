@@ -1,4 +1,6 @@
 #
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_class#3 $
+#
 # This file must match audit.h
 #
 0x00000000:no:invalid class

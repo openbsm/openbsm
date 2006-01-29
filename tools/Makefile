@@ -1,5 +1,5 @@
 #
-# $FreeBSD$
+# $P4: //depot/projects/trustedbsd/openbsm/tools/Makefile#3 $
 #
 
 CFLAGS+=	-I- -I .. -I ../libbsm -L ../libbsm -I.

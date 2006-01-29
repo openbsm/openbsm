@@ -1,5 +1,5 @@
 #
-# $FreeBSD$
+# $P4: //depot/projects/trustedbsd/openbsm/man/Makefile#4 $
 #
 
 MAN=	audit.2								\

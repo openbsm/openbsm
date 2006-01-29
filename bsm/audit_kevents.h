@@ -29,6 +29,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
+ *
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#28 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_

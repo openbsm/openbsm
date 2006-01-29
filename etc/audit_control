@@ -1,3 +1,6 @@
+#
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_control#2 $
+#
 dir:/var/audit
 flags:lo,ad,-all,^-fa,^-fc,^-cl
 minfree:20

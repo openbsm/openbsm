@@ -1,5 +1,5 @@
 #
-#
+# $P4: //depot/projects/trustedbsd/openbsm/bsm/Makefile#7 $
 #
 
 INCS=	audit.h								\

@@ -1,7 +1,7 @@
 #
 # OpenBSM libbsm
 #
-# $FreeBSD$
+# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile#11 $
 #
 
 LIB=		bsm

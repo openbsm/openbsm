@@ -1,5 +1,5 @@
 #
-# $FreeBSD$
+# $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/Makefile#4 $
 #
 
 CFLAGS+=	-I- -I ../.. -I ../../libbsm -L ../../libbsm -I.
