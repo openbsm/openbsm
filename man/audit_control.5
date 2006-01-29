@@ -25,17 +25,17 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#4 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#5 $
 .\"
 .Dd Jan 24, 2004
 .Dt AUDIT_CONTROL 5
-.Os "Mac OS X"
+.Os
 .Sh NAME
 .Nm audit_control
 .Nd "contains audit system parameters"
 .Sh DESCRIPTION
 The
-.Nm 
+.Nm
 file contains several audit system parameters.
 Each line of this file is of the form:
 .Dl parameter:value.
@@ -107,3 +107,15 @@ or closing files.
 .Xr auditd 8 ,
 .Xr audit_class 5 ,
 .Xr audit_user 5
+.Sh AUTHORS
+This software was created by McAfee Research, the security research division
+of McAfee, Inc., under contract to Apple Computer Inc.
+Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
+.Pp
+The Basic Security Module (BSM) interface to audit records and audit event
+stream format were defined by Sun Microsystems.
+.Sh HISTORY
+The OpenBSM implementation was created by McAfee Research, the security
+division of McAfee Inc., under contract to Apple Computer Inc. in 2004.
+It was subsequently adopted by the TrustedBSD Project as the foundation for
+the OpenBSM distribution.

@@ -25,7 +25,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditon.2#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditon.2#6 $
 .\"
 .Dd April 19, 2005
 .Dt AUDITON 2
@@ -252,6 +252,12 @@ Illegal argument was passed by a system call.
 The process does not have sufficient permission to complete
 the operation.
 .El
+.Pp
+The
+.Dv A_SENDTRIGGER
+command is specific to the
+.Fx
+and Mac OS X implementations, and is not present in Solaris.
 .Sh SEE ALSO
 .Xr audit 2 ,
 .Xr auditctl 2 ,
@@ -280,8 +286,3 @@ The OpenBSM implementation was created by McAfee Research, the security
 division of McAfee Inc., under contract to Apple Computer Inc. in 2003.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
-.Pp
-The
-.Fn auditon
-function first appeared in
-.Fx 6.0 .

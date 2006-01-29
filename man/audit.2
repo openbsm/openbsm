@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit.2#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit.2#6 $
 .\"
 .Dd April 19, 2005
 .Dt AUDIT 2
@@ -37,7 +37,7 @@
 .Ft int
 .Fn audit "const char *record" "u_int length"
 .Sh DESCRIPTION
-.Nm
+.Fn audit
 submits a completed BSM audit record to the system audit log.
 .Pp
 .Fa record
@@ -88,11 +88,6 @@ The OpenBSM implementation was created by McAfee Research, the security
 division of McAfee Inc., under contract to Apple Computer Inc. in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
-.Pp
-The
-.Fn audit
-function first appeared in
-.Fx
 .Sh BUGS
 The
 .Fx

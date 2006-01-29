@@ -1,5 +1,5 @@
 .\"-
-.\" Copyright (c) 2005 Robert N. M. Watson
+.\" Copyright (c) 2005-2006 Robert N. M. Watson
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditctl.2#3 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditctl.2#4 $
 .\"
 .Dd April 19, 2005
 .Dt AUDITCTL 2
@@ -34,26 +34,33 @@
 .Sh SYNOPSIS
 .In bsm/audit.h
 .Ft int
-.Fn auditon "int cmd" "char *path"
+.Fn auditon "const char *path"
 .Sh DESCRIPTION
-
-XXXXXXXXXXXXXXXX
-
+The
+.Fn auditctl
+system call directs the kernel to open a new audit trail log file.
+.Fn auditctl
+requires appropriate privilege.
+In the
+.Fx
+implementation,
+.Fn auditctl
+opens new files, but
+.Fn auditon
+is used to disable the audit log.
+In the Mac OS X implementation, passing
+.Va NULL
+to
+.Fn auditctl
+will disable the audit log.
 .Sh RETURN VALUES
 .Nm
 returns 0 on success, or returns -1 on failure, providing additional error
 information via
 .Va errno .
 .Sh SEE ALSO
-.Xr audit 2 ,
-.Xr auditon 2 ,
-.Xr getauid 2 ,
-.Xr setauid 2 ,
-.Xr getaudit 2 ,
-.Xr setaudit 2 ,
-.Xr getaudit_addr 2 ,
-.Xr setaudit_addr 2 ,
-.Xr libbsm 3
+.Xr libbsm 3 ,
+.Xr auditd 8
 .Sh AUTHORS
 This software was created by McAfee Research, the security research division
 of McAfee, Inc., under contract to Apple Computer Inc.
@@ -61,9 +68,11 @@ Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
+.Pp
+This manual page was written by
+.An Robert Watson Aq rwatson@FreeBSD.org .
 .Sh HISTORY
 The OpenBSM implementation was created by McAfee Research, the security
 division of McAfee Inc., under contract to Apple Computer Inc. in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
-.Sh BUGS

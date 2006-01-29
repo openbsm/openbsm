@@ -25,7 +25,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.1#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.1#6 $
 .\"
 .Dd Jan 24, 2004
 .Dt AUDITREDUCE 1
@@ -139,3 +139,15 @@ events from that log:
 .Xr audit_control 5 ,
 .Xr audit_event 5 ,
 .Xr praudit 1
+.Sh AUTHORS
+This software was created by McAfee Research, the security research division
+of McAfee, Inc., under contract to Apple Computer Inc.
+Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
+.Pp
+The Basic Security Module (BSM) interface to audit records and audit event
+stream format were defined by Sun Microsystems.
+.Sh HISTORY
+The OpenBSM implementation was created by McAfee Research, the security
+division of McAfee Inc., under contract to Apple Computer Inc. in 2004.
+It was subsequently adopted by the TrustedBSD Project as the foundation for
+the OpenBSM distribution.

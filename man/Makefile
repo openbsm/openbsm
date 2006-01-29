@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/man/Makefile#4 $
+# $P4: //depot/projects/trustedbsd/openbsm/man/Makefile#5 $
 #
 
 MAN=	audit.2								\
@@ -14,7 +14,6 @@ MAN=	audit.2								\
 	audit_control.5							\
 	audit_event.5							\
 	audit_user.5							\
-	audit_warn.5							\
-	event_code.5
+	audit_warn.5
 
 .include <bsd.prog.mk>
