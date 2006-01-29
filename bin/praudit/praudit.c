@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2004 Apple Computer, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/praudit.c#6 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/praudit.c#7 $
  */
 
 /*

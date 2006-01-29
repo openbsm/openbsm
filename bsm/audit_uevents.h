@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2004 Apple Computer, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_uevents.h#4 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_uevents.h#5 $
  */
 
 #ifndef _BSM_AUDIT_UEVENTS_H_

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004, Apple Computer, Inc.
+ * Copyright (c) 2004 Apple Computer, Inc.
  * Copyright (c) 2005 SPARTA, Inc.
  * All rights reserved.
  *
@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#17 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#18 $
  */
 
 #include <sys/types.h>
