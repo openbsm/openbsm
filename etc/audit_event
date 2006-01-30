@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#9 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#10 $
 #
 0:AUE_NULL:indir system call:no
 1:AUE_EXIT:exit(2):pc
@@ -125,6 +125,8 @@
 133:AUE_SETAUDIT:setaudit(2):ad
 134:AUE_GETUSERAUDIT:getuseraudit(2):ad
 135:AUE_SETUSERAUDIT:setuseraudit(2):ad
+136:AUE_AUDITSVC:auditsvc(2):ad
+137:AUE_AUDITUSER:audituser(2):ad
 138:AUE_AUDITON:auditon(2):ad
 139:AUE_AUDITON_GTERMID:auditon(2) - GETTERMID command:ad
 140:AUE_AUDITON_STERMID:auditon(2) - SETTERMID command:ad
@@ -164,12 +166,12 @@
 197:AUE_NFS:nfs server:ad
 198:AUE_READV:readv(2):no
 199:AUE_OSTAT:old stat(2):fa
-200:AUE_OSETUID:old setuid(2):pc
+200:AUE_SETUID:setuid(2):pc
 201:AUE_STIME:old stime(2):ad
 202:AUE_UTIME:old utime(2):fm
 203:AUE_NICE:old nice(2):pc
 204:AUE_OSETPGRP:old setpgrp(2):pc
-205:AUE_SETGID:old setgid(2):pc
+205:AUE_SETGID:setgid(2):pc
 206:AUE_READL:readl(2):no
 207:AUE_READVL:readvl(2):no
 209:AUE_DUP2:dup2(2):no
@@ -230,6 +232,8 @@
 264:AUE_INST_SYNC:inst_sync(2):ad
 266:AUE_SETAUDIT_ADDR:setaudit_addr(2):ad
 267:AUE_GETAUDIT_ADDR:getaudit_addr(2):ad
+268:AUE_CLOCK_SETTIME:clock_settime(2):ad
+269:AUE_NTP_ADJTIME:ntp_adjtime(2):ad
 301:AUE_GETFSSTAT:getfsstat(2):fa
 302:AUE_PTRACE:ptrace(2):pc
 303:AUE_CHFLAGS:chflags(2):fm
@@ -237,29 +241,29 @@
 305:AUE_PROFILE:profil(2):pc
 306:AUE_KTRACE:ktrace(2):pc
 307:AUE_SETLOGIN:setlogin(2):pc
-308:AUE_REBOOT:reboot(2):ad
+308:AUE_DARWIN_REBOOT:reboot(2):ad
 309:AUE_REVOKE:revoke(2):cl
 310:AUE_UMASK:umask(2):pc
 311:AUE_MPROTECT:mprotect(2):fm
-312:AUE_SETPRIORITY:setpriority(2):pc,ot
-313:AUE_SETTIMEOFDAY:settimeofday(2):ad
-314:AUE_FLOCK:flock(2):fm
+312:AUE_DARWIN_SETPRIORITY:setpriority(2):pc,ot
+313:AUE_DARWIN_SETTIMEOFDAY:settimeofday(2):ad
+314:AUE_DARWIN_FLOCK:flock(2):fm
 315:AUE_MKFIFO:mkfifo(2):fc
 316:AUE_POLL:poll(2):no
-317:AUE_SOCKETPAIR:socketpair(2):nt
+317:AUE_DARWIN_SOCKETPAIR:socketpair(2):nt
 318:AUE_FUTIMES:futimes(2):fm
 319:AUE_SETSID:setsid(2):pc
 320:AUE_SETPRIVEXEC:setprivexec(2):pc
-321:AUE_NFSSVC:nfssvc(2):ad
-322:AUE_GETFH:getfh(2):fa
-323:AUE_QUOTACTL:quotactl(2):ad
+321:AUE_DARWIN_NFSSVC:nfssvc(2):ad
+322:AUE_DARWIN_GETFH:getfh(2):fa
+323:AUE_DARWIN_QUOTACTL:quotactl(2):ad
 324:AUE_ADDPROFILE:system call:pc
 325:AUE_KDEBUGTRACE:system call:pc
 326:AUE_FSTAT:fstat(2):fa
 327:AUE_FPATHCONF:fpathconf(2):fa
 328:AUE_GETDIRENTRIES:getdirentries(2):fr
-329:AUE_TRUNCATE:truncate(2):fw
-330:AUE_FTRUNCATE:ftruncate(2):fw
+329:AUE_DARWIN_TRUNCATE:truncate(2):fw
+330:AUE_DARWIN_FTRUNCATE:ftruncate(2):fw
 331:AUE_SYSCTL:sysctl(3):ad
 332:AUE_MLOCK:mlock(2):pc
 333:AUE_MUNLOCK:munlock(2):pc
