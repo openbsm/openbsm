@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_event.c#9 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_event.c#10 $
  */
 
 #include <bsm/libbsm.h>
@@ -133,21 +133,29 @@ getauevent_r_locked(struct au_event_ent *e)
 	if ((fp == NULL) && ((fp = fopen(AUDIT_EVENT_FILE, "r")) == NULL))
 		return (NULL);
 
-	if (fgets(linestr, AU_LINE_MAX, fp) == NULL)
-		return (NULL);
+	while (1) {
+		if (fgets(linestr, AU_LINE_MAX, fp) == NULL)
+			return (NULL);
 
-	/* Remove new lines. */
-	if ((nl = strrchr(linestr, '\n')) != NULL)
-		*nl = '\0';
+		/* Remove new lines. */
+		if ((nl = strrchr(linestr, '\n')) != NULL)
+			*nl = '\0';
 
-	/*
-	 * Get the next event structure.
-	 *
-	 * XXXRW: Perhaps we should keep reading lines until we find a valid
-	 * one, rather than stopping when we hit an invalid one?
-	 */
-	if (eventfromstr(linestr, e) == NULL)
-		return (NULL);
+		/* Skip comments. */
+		if (linestr[0] == '#')
+			continue;
+
+		/*
+		 * Get the next event structure.
+		 *
+		 * XXXRW: Perhaps we should keep reading lines until we find
+		 * a valid one, rather than stopping when we hit an invalid
+		 * one?
+		 */
+		if (eventfromstr(linestr, e) == NULL)
+			return (NULL);
+		break;
+	}
 
 	return (e);
 }
