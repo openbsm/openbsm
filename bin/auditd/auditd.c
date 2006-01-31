@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#7 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#8 $
  */
 
 #include <sys/dirent.h>
@@ -520,6 +520,8 @@ handle_audit_trigger(int trigger)
 		syslog(LOG_INFO, "Got read file trigger\n");
 		if (read_control_file() == -1)
 			syslog(LOG_ERR, "Error in audit control file\n");
+		if (config_audit_controls() == -1)
+			syslog(LOG_ERR, "Error setting audit controls\n");
 		break;
 
 	default:
