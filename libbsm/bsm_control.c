@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#12 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#13 $
  */
 
 #include <bsm/libbsm.h>
@@ -77,7 +77,6 @@ getstrfromtype_locked(char *name, char **str)
 
 		if (linestr[0] == '#')
 			continue;
-
 
 		/* Remove trailing new line character. */
 		if ((nl = strrchr(linestr, '\n')) != NULL)

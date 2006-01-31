@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_class.c#10 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_class.c#11 $
  */
 
 #include <bsm/libbsm.h>
@@ -104,19 +104,21 @@ getauclassent_r_locked(struct au_class_ent *c)
 	while (1) {
 		if (fgets(linestr, AU_LINE_MAX, fp) == NULL)
 			return (NULL);
-		if (linestr[0] != '#')
-			break;
+
+		/* Skip comments. */
+		if (linestr[0] == '#')
+			continue;
+
+		/* Remove trailing new line character. */
+		if ((nl = strrchr(linestr, '\n')) != NULL)
+			*nl = '\0';
+
+		/* Parse tokptr to au_class_ent components. */
+		tokptr = linestr;
+		if (classfromstr(tokptr, c) == NULL)
+			return (NULL);
+		break;
 	}
-
-	/* Remove trailing new line character. */
-	if ((nl = strrchr(linestr, '\n')) != NULL)
-		*nl = '\0';
-
-	tokptr = linestr;
-
-	/* Parse tokptr to au_class_ent components. */
-	if (classfromstr(tokptr, c) == NULL)
-		return (NULL);
 
 	return (c);
 }

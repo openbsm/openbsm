@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_event.c#10 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_event.c#11 $
  */
 
 #include <bsm/libbsm.h>
@@ -145,13 +145,7 @@ getauevent_r_locked(struct au_event_ent *e)
 		if (linestr[0] == '#')
 			continue;
 
-		/*
-		 * Get the next event structure.
-		 *
-		 * XXXRW: Perhaps we should keep reading lines until we find
-		 * a valid one, rather than stopping when we hit an invalid
-		 * one?
-		 */
+		/* Get the next event structure. */
 		if (eventfromstr(linestr, e) == NULL)
 			return (NULL);
 		break;
