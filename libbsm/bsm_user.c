@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_user.c#13 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_user.c#14 $
  */
 
 #include <bsm/libbsm.h>
@@ -122,16 +122,23 @@ getauuserent_r_locked(struct au_user_ent *u)
 	if ((fp == NULL) && ((fp = fopen(AUDIT_USER_FILE, "r")) == NULL))
 		return (NULL);
 
-	if (fgets(linestr, AU_LINE_MAX, fp) == NULL)
-		return (NULL);
+	while (1) {
+		if (fgets(linestr, AU_LINE_MAX, fp) == NULL)
+			return (NULL);
 
-	/* Remove new lines. */
-	if ((nl = strrchr(linestr, '\n')) != NULL)
-		*nl = '\0';
+		/* Remove new lines. */
+		if ((nl = strrchr(linestr, '\n')) != NULL)
+			*nl = '\0';
 
-	/* Get the next structure. */
-	if (userfromstr(linestr, u) == NULL)
-		return (NULL);
+		/* Skip comments. */
+		if (linestr[0] == '#')
+			continue;
+
+		/* Get the next structure. */
+		if (userfromstr(linestr, u) == NULL)
+			return (NULL);
+		break;
+	}
 
 	return (u);
 }
