@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2005 Apple Computer, Inc. All rights reserved.
+ * Copyright (c) 2005 Apple Computer, Inc.
+ * All rights reserved.
  *
  * @APPLE_BSD_LICENSE_HEADER_START@
  * 
@@ -28,6 +29,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * @APPLE_BSD_LICENSE_HEADER_END@
+ *
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/audit_warn.c#4 $
  */
 
 #include <sys/types.h>
