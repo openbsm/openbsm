@@ -37,7 +37,7 @@
 #include "auditd.h"
 
 /*
- * Write to the audit log.
+ * Write an audit-related error to the system log via syslog(3).
  */
 static int
 auditwarnlog(char *args[])
@@ -59,7 +59,8 @@ auditwarnlog(char *args[])
 		 * Child.
 		 */
 		execv(AUDITWARN_SCRIPT, loc_args);
-		syslog(LOG_ERR, "Could not exec %s\n", AUDITWARN_SCRIPT);
+		syslog(LOG_ERR, "Could not exec %s (%m)\n",
+		    AUDITWARN_SCRIPT);
 		exit(1);
 	}
 	/*
@@ -104,6 +105,7 @@ audit_warn_allsoft(void)
 /*
  * Indicates that someone other than the audit daemon turned off auditing.
  * XXX Its not clear at this point how this function will be invoked.
+ *
  * XXXRW: This function is not used.
  */
 int
