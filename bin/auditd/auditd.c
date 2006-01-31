@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#5 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#6 $
  */
 
 #include <sys/dirent.h>
@@ -62,6 +62,8 @@ static int	 ret, minval;
 static char	*lastfile = NULL;
 static int	 allhardcount = 0;
 static int	 triggerfd = 0;
+static int	 sighups, sighups_handled;
+static int	 sigterms, sigterms_handled;
 
 static TAILQ_HEAD(, dir_ent)	dir_q;
 
@@ -351,12 +353,15 @@ close_all(void)
  * be done in the signal handler itself.  Instead,  we send a message to the
  * main servicing loop to do proper handling from a non-signal-handler
  * context.
- *
- * XXXRW: I don't see that happening here.
  */
 static void
 relay_signal(int signal)
 {
+
+	if (signal == SIGHUP)
+		sighups++;
+	if (signal == SIGTERM)
+		sigterms++;
 }
 
 /*
@@ -378,6 +383,11 @@ register_daemon(void)
 	if (signal(SIGCHLD, relay_signal) == SIG_ERR) {
 		syslog(LOG_ERR,
 		    "Could not set signal handler for SIGCHLD\n");
+		fail_exit();
+	}
+	if (signal(SIGHUP, relay_signal) == SIG_ERR) {
+		syslog(LOG_ERR,
+		    "Could not set signal handler for SIGHUP\n");
 		fail_exit();
 	}
 
@@ -534,6 +544,10 @@ wait_for_triggers(void)
 			syslog(LOG_INFO, "%s: read EOF\n", __FUNCTION__);
 			return (-1);
 		}
+		if (sigterms != sigterms_handled) {
+			syslog(LOG_INFO, "%s: SIGTERM", __FUNCTION__);
+			break;
+		}
 		syslog(LOG_INFO, "%s: read %d\n", __FUNCTION__, trigger);
 		if (trigger == AUDIT_TRIGGER_CLOSE_AND_DIE)
 			break;
@@ -592,6 +606,7 @@ config_audit_controls(long flags)
 		return (-1);
 	}
 	evp = &ev;
+	setauevent();
 	while ((evp = getauevent_r(evp)) != NULL) {
 		evc_map.ec_number = evp->ae_number;
 		evc_map.ec_class = evp->ae_class;
