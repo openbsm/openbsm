@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#6 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#7 $
  */
 
 #include <sys/dirent.h>
@@ -64,8 +64,11 @@ static int	 allhardcount = 0;
 static int	 triggerfd = 0;
 static int	 sighups, sighups_handled;
 static int	 sigterms, sigterms_handled;
+static long	 global_flags;
 
 static TAILQ_HEAD(, dir_ent)	dir_q;
+
+static int	config_audit_controls(void);
 
 /*
  * Error starting auditd
@@ -525,6 +528,14 @@ handle_audit_trigger(int trigger)
 	}
 }
 
+static void
+handle_sighup(void)
+{
+
+	sighups_handled = sighups;
+	config_audit_controls();
+}
+
 /*
  * Read the control file for triggers and handle appropriately.
  */
@@ -540,13 +551,19 @@ wait_for_triggers(void)
 			syslog(LOG_ERR, "%s: error %d\n", __FUNCTION__, errno);
 			return (-1);
 		}
-		if (num == 0) {
-			syslog(LOG_INFO, "%s: read EOF\n", __FUNCTION__);
-			return (-1);
-		}
 		if (sigterms != sigterms_handled) {
 			syslog(LOG_INFO, "%s: SIGTERM", __FUNCTION__);
 			break;
+		}
+		if (sighups != sighups_handled) {
+			syslog(LOG_INFO, "%s: SIGHUP", __FUNCTION__);
+			handle_sighup();
+		}
+		if ((num == -1) && (errno == EINTR))
+			continue;
+		if (num == 0) {
+			syslog(LOG_INFO, "%s: read EOF\n", __FUNCTION__);
+			return (-1);
 		}
 		syslog(LOG_INFO, "%s: read %d\n", __FUNCTION__, trigger);
 		if (trigger == AUDIT_TRIGGER_CLOSE_AND_DIE)
@@ -582,7 +599,7 @@ reap_children(void)
  * kernel preselection mask, etc.
  */
 static int
-config_audit_controls(long flags)
+config_audit_controls(void)
 {
 	au_event_ent_t ev, *evp;
 	au_evclass_map_t evc_map;
@@ -646,14 +663,14 @@ config_audit_controls(long flags)
 	/*
 	 * Set the audit policy flags based on passed in parameter values.
 	 */
-	if (auditon(A_SETPOLICY, &flags, sizeof(flags)))
+	if (auditon(A_SETPOLICY, &global_flags, sizeof(global_flags)))
 		syslog(LOG_ERR, "Failed to set audit policy.");
 
 	return (0);
 }
 
 static void
-setup(long flags)
+setup(void)
 {
 	int aufd;
 	token_t *tok;
@@ -680,7 +697,7 @@ setup(long flags)
 			    "Could not close audit startup event.\n");
 	}
 
-	if (config_audit_controls(flags) == 0)
+	if (config_audit_controls() == 0)
 		syslog(LOG_INFO, "Audit controls init successful\n");
 	else
 		syslog(LOG_INFO, "Audit controls init failed\n");
@@ -690,10 +707,10 @@ int
 main(int argc, char **argv)
 {
 	char ch;
-	long flags = AUDIT_CNT;
 	int debug = 0;
 	int rc;
 
+	global_flags |= AUDIT_CNT;
 	while ((ch = getopt(argc, argv, "dhs")) != -1) {
 		switch(ch) {
 		case 'd':
@@ -703,12 +720,12 @@ main(int argc, char **argv)
 
 		case 's':
 			/* Fail-stop option. */
-			flags &= ~(AUDIT_CNT);
+			global_flags &= ~(AUDIT_CNT);
 			break;
 
 		case 'h':
 			/* Halt-stop option. */
-			flags |= AUDIT_AHLT;
+			global_flags |= AUDIT_AHLT;
 			break;
 
 		case '?':
@@ -732,7 +749,7 @@ main(int argc, char **argv)
 		exit(1);
 	}
 
-	setup(flags);
+	setup();
 
 	rc = wait_for_triggers();
 	syslog(LOG_INFO, "auditd exiting.\n");
