@@ -1,4 +1,5 @@
-.\" Copyright (c) 2004, Apple Computer, Inc.  All rights reserved.
+.\" Copyright (c) 2004 Apple Computer, Inc.
+.\" All rights reserved.
 .\"
 .\" @APPLE_BSD_LICENSE_HEADER_START@
 .\" 
@@ -27,6 +28,8 @@
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\" 
 .\" @APPLE_BSD_LICENSE_HEADER_END@
+.\"
+.\" $P4: //depot/projects/trustedbsd/openbsm/bin/audit/audit.8#2 $
 .\"
 .Dd Jan 24, 2004
 .Dt AUDIT 8
@@ -69,3 +72,15 @@ Default audit policy file used to configure the auditing system.
 .Sh SEE ALSO
 .Xr auditd 8
 .Xr audit_control 5
+.Sh AUTHORS
+This software was created by McAfee Research, the security research division
+of McAfee, Inc., under contract to Apple Computer Inc.
+Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
+.Pp
+The Basic Security Module (BSM) interface to audit records and audit event
+stream format were defined by Sun Microsystems.
+.Sh HISTORY
+The OpenBSM implementation was created by McAfee Research, the security
+division of McAfee Inc., under contract to Apple Computer Inc. in 2004.
+It was subsequently adopted by the TrustedBSD Project as the foundation for
+the OpenBSM distribution.

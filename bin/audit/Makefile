@@ -1,5 +1,5 @@
 # 
-# $P4: //depot/projects/trustedbsd/openbsm/bin/audit/Makefile#1 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/audit/Makefile#2 $
 #
 
 CFLAGS+=	-I- -I ../.. -I ../../libbsm -L ../../libbsm -I.
