@@ -3,20 +3,20 @@
  * All rights reserved.
  *
  * @APPLE_BSD_LICENSE_HEADER_START@
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1.  Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer. 
+ *     notice, this list of conditions and the following disclaimer.
  * 2.  Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution. 
+ *     documentation and/or other materials provided with the distribution.
  * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
  *     its contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission. 
- * 
+ *     from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,10 +27,10 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#4 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#5 $
  */
 
 #include <sys/dirent.h>
@@ -84,7 +84,7 @@ free_dir_q()
 {
 	struct dir_ent *dirent;
 
-	while ((dirent = TAILQ_FIRST(&dir_q))) {       
+	while ((dirent = TAILQ_FIRST(&dir_q))) {
 		TAILQ_REMOVE(&dir_q, dirent, dirs);
 		free(dirent->dirname);
 		free(dirent);
@@ -114,7 +114,7 @@ getTSstr(char *buf, int len)
  * XXX We should affix the hostname also
  */
 static char *
-affixdir(char *name, struct dir_ent *dirent) 
+affixdir(char *name, struct dir_ent *dirent)
 {
 	char *fn;
 	char *curdir;
@@ -149,7 +149,7 @@ close_lastfile(char *TS)
 
 		/* Rename the last file -- append timestamp. */
 		if ((ptr = strstr(lastfile, NOT_TERMINATED)) != NULL) {
-			*ptr = '.'; 
+			*ptr = '.';
 			strcpy(ptr+1, TS);
 			if (rename(oldname, lastfile) != 0)
 				syslog(LOG_ERR, "Could not rename %s to %s \n",
@@ -158,7 +158,7 @@ close_lastfile(char *TS)
 				syslog(LOG_INFO, "renamed %s to %s \n",
 				    oldname, lastfile);
 		}
-		free(lastfile); 
+		free(lastfile);
 		free(oldname);
 		lastfile = NULL;
 	}
@@ -186,7 +186,7 @@ swap_audit_file(void)
 	/* Try until we succeed. */
 	while ((dirent = TAILQ_FIRST(&dir_q))) {
 		if ((fn = affixdir(timestr, dirent)) == NULL) {
-			syslog(LOG_INFO, "Failed to swap log  at time %s\n", 
+			syslog(LOG_INFO, "Failed to swap log  at time %s\n",
 				timestr);
 			return (-1);
 		}
@@ -201,11 +201,11 @@ swap_audit_file(void)
 			perror("File open");
 		else if (auditctl(fn) != 0) {
 			syslog(LOG_ERR,
-			    "auditctl failed setting log file! : %s\n", 
+			    "auditctl failed setting log file! : %s\n",
 			    strerror(errno));
 			close(fd);
 		} else {
-			/* Success. */ 
+			/* Success. */
 			close_lastfile(TS);
 			lastfile = fn;
 			close(fd);
@@ -214,7 +214,7 @@ swap_audit_file(void)
 
 		/*
 		 * Tell the administrator about lack of permissions for dir.
-		 */ 
+		 */
 		audit_warn_getacdir(dirent->dirname);
 
 		/* Try again with a different directory. */
@@ -264,10 +264,10 @@ read_control_file(void)
 
 	allhardcount = 0;
 	if (swap_audit_file() == -1) {
-		syslog(LOG_ERR, "Could not swap audit file\n");	
+		syslog(LOG_ERR, "Could not swap audit file\n");
 		/*
-		 * XXX Faulty directory listing? - user should be given 
-		 * XXX an opportunity to change the audit_control file 
+		 * XXX Faulty directory listing? - user should be given
+		 * XXX an opportunity to change the audit_control file
 		 * XXX switch to a reduced mode of auditing?
 		 */
 		return (-1);
@@ -276,7 +276,7 @@ read_control_file(void)
 	/*
 	 * XXX There are synchronization problems here
  	 * XXX what should we do if a trigger for the earlier limit
-	 * XXX is generated here? 
+	 * XXX is generated here?
 	 */
 	if (0 == (ret = getacmin(&minval))) {
 		syslog(LOG_INFO, "min free = %d\n", minval);
@@ -286,8 +286,8 @@ read_control_file(void)
 				return (-1);
 		}
 		qctrl.aq_minfree = minval;
-		if (auditon(A_SETQCTRL, &qctrl, sizeof(qctrl)) != 0) { 
-			syslog(LOG_ERR, 
+		if (auditon(A_SETQCTRL, &qctrl, sizeof(qctrl)) != 0) {
+			syslog(LOG_ERR,
 			    "could not set audit queue settings\n");
 			return (-1);
 		}
@@ -300,7 +300,7 @@ read_control_file(void)
  * Close all log files, control files, and tell the audit system.
  */
 static int
-close_all(void) 
+close_all(void)
 {
 	int err_ret = 0;
 	char TS[POSTFIX_LEN];
@@ -323,7 +323,7 @@ close_all(void)
 	cond = AUC_DISABLED;
 	err_ret = auditon(A_SETCOND, &cond, sizeof(cond));
 	if (err_ret != 0) {
-		syslog(LOG_ERR, "Disabling audit failed! : %s\n", 
+		syslog(LOG_ERR, "Disabling audit failed! : %s\n",
 		    strerror(errno));
 		err_ret = 1;
 	}
@@ -371,18 +371,18 @@ register_daemon(void)
 
 	/* Set up the signal hander. */
 	if (signal(SIGTERM, relay_signal) == SIG_ERR) {
-		syslog(LOG_ERR, 
+		syslog(LOG_ERR,
 		    "Could not set signal handler for SIGTERM\n");
 		fail_exit();
 	}
 	if (signal(SIGCHLD, relay_signal) == SIG_ERR) {
-		syslog(LOG_ERR, 
+		syslog(LOG_ERR,
 		    "Could not set signal handler for SIGCHLD\n");
 		fail_exit();
 	}
 
 	if ((pidfile = fopen(AUDITD_PIDFILE, "a")) == NULL) {
-		syslog(LOG_ERR, 
+		syslog(LOG_ERR,
 		    "Could not open PID file\n");
 		audit_warn_tmpfile();
 		return (-1);
@@ -391,7 +391,7 @@ register_daemon(void)
 	/* Attempt to lock the pid file; if a lock is present, exit. */
 	fd = fileno(pidfile);
 	if (flock(fd, LOCK_EX | LOCK_NB) < 0) {
-		syslog(LOG_ERR, 
+		syslog(LOG_ERR,
 		    "PID file is locked (is another auditd running?).\n");
 		audit_warn_ebusy();
 		return (-1);
@@ -423,7 +423,7 @@ handle_audit_trigger(int trigger)
 	int rc;
 
 	/*
-	 * Suppres duplicate messages from the kernel within the specified 
+	 * Suppres duplicate messages from the kernel within the specified
 	 * interval.
 	 */
 	struct timeval ts;
@@ -432,17 +432,17 @@ handle_audit_trigger(int trigger)
 
 	if (gettimeofday(&ts, &tzp) == 0) {
 		tt = (time_t)ts.tv_sec;
-		if ((trigger == last_trigger) && 
+		if ((trigger == last_trigger) &&
 		    (tt < (last_time + DUPLICATE_INTERVAL)))
 			return;
 		last_trigger = trigger;
 		last_time = tt;
 	}
 
-	/* 
+	/*
 	 * Message processing is done here.
  	 */
-	dirent = TAILQ_FIRST(&dir_q); 
+	dirent = TAILQ_FIRST(&dir_q);
 	switch(trigger) {
 
 	case AUDIT_TRIGGER_LOW_SPACE:
@@ -453,12 +453,12 @@ handle_audit_trigger(int trigger)
 				TAILQ_INSERT_TAIL(&dir_q, dirent, dirs);
 				audit_warn_soft(dirent->dirname);
 				dirent->softlim = 1;
-						
-			if (TAILQ_NEXT(TAILQ_FIRST(&dir_q), dirs) != NULL && 
+
+			if (TAILQ_NEXT(TAILQ_FIRST(&dir_q), dirs) != NULL &&
 			    swap_audit_file() == -1)
 				syslog(LOG_ERR, "Error swapping audit file\n");
 
-			/* 
+			/*
 			 * Check if the next dir has already reached its soft
 			 * limit.
 			 */
@@ -468,7 +468,7 @@ handle_audit_trigger(int trigger)
 				audit_warn_allsoft();
 			}
 		} else {
-			/* 
+			/*
 			 * Continue auditing to the current file.  Also
 			 * generate  an allsoft warning.
 			 * XXX do we want to do this ?
@@ -487,7 +487,7 @@ handle_audit_trigger(int trigger)
 		free(dirent);
 
 		if (swap_audit_file() == -1)
-			syslog(LOG_ERR, "Error swapping audit file\n");	
+			syslog(LOG_ERR, "Error swapping audit file\n");
 
 		/* We are out of log directories. */
 		audit_warn_allhard(++allhardcount);
@@ -500,7 +500,7 @@ handle_audit_trigger(int trigger)
 		 */
 		syslog(LOG_INFO, "Got open new trigger\n");
 		if (swap_audit_file() == -1)
-			syslog(LOG_ERR, "Error swapping audit file\n");	
+			syslog(LOG_ERR, "Error swapping audit file\n");
 		break;
 
 	case AUDIT_TRIGGER_READ_FILE:
@@ -535,7 +535,7 @@ wait_for_triggers(void)
 			return (-1);
 		}
 		syslog(LOG_INFO, "%s: read %d\n", __FUNCTION__, trigger);
-		if (trigger == AUDIT_TRIGGER_CLOSE_AND_DIE) 
+		if (trigger == AUDIT_TRIGGER_CLOSE_AND_DIE)
 			break;
 		else
 			handle_audit_trigger(trigger);
@@ -558,7 +558,7 @@ reap_children(void)
 		syslog(LOG_INFO, "warn process [pid=%d] %s %d.\n", child,
 		    ((WIFEXITED(wstatus)) ? "exited with non-zero status" :
 		    "exited as a result of signal"),
-		    ((WIFEXITED(wstatus)) ? WEXITSTATUS(wstatus) : 
+		    ((WIFEXITED(wstatus)) ? WEXITSTATUS(wstatus) :
 		    WTERMSIG(wstatus)));
 	}
 }
@@ -597,7 +597,7 @@ config_audit_controls(long flags)
 		evc_map.ec_class = evp->ae_class;
 		if (auditon(A_SETCLASS, &evc_map, sizeof(au_evclass_map_t))
 		    != 0)
-			syslog(LOG_ERR, 
+			syslog(LOG_ERR,
 				"Failed to register class mapping for event %s",
 				 evp->ae_name);
 		else
@@ -707,7 +707,7 @@ main(int argc, char **argv)
 	openlog("auditd", LOG_CONS | LOG_PID, LOG_SECURITY);
 	syslog(LOG_INFO, "starting...\n");
 
-        if (debug == 0 && daemon(0, 0) == -1) {
+	if (debug == 0 && daemon(0, 0) == -1) {
 		syslog(LOG_ERR, "Failed to daemonize\n");
 		exit(1);
 	}
