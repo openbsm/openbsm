@@ -36,36 +36,44 @@
 
 #include "auditd.h"
 
-/* Write to the audit log. */
-static int auditwarnlog(char *args[])
+/*
+ * Write to the audit log.
+ */
+static int
+auditwarnlog(char *args[])
 { 
 	char *loc_args[9];
-	int i;
 	pid_t pid;
+	int i;
 
 	loc_args[0] = AUDITWARN_SCRIPT;
-	for (i = 0; args[i] != NULL && i < 8; i++) {
+	for (i = 0; args[i] != NULL && i < 8; i++)
 		loc_args[i+1] = args[i];
-	}
 	loc_args[i+1] = NULL;
         
 	pid = fork();
-	if (pid == 0) {		// child
+	if (pid == -1)
+		return (-1);
+	if (pid == 0) {
+		/*
+		 * Child.
+		 */
 		execv(AUDITWARN_SCRIPT, loc_args);
 		syslog(LOG_ERR, "Could not exec %s\n", AUDITWARN_SCRIPT);
-		exit (1);	// if we reach here, the exec failed
-	} else if (pid == -1) {
-		return -1;
-	} else {		// parent
-		return 0;
+		exit(1);
 	}
+	/*
+	 * Parent.
+	 */
+	return (0);
 }
 
 /*
- * Indicates that the hard limit for all filesystems 
- * has been exceeded count times
+ * Indicates that the hard limit for all filesystems has been exceeded count
+ * times.
  */
-int audit_warn_allhard(int count)
+int
+audit_warn_allhard(int count)
 {
 	char intstr[12];
 	char *args[3];
@@ -76,61 +84,62 @@ int audit_warn_allhard(int count)
 	args[1] = intstr; 	
 	args[2] = NULL;
 
-	return auditwarnlog(args);
+	return (auditwarnlog(args));
 }
 
 /*
- * Indicates that the soft limit for all filesystems 
- * has been exceeded 
+ * Indicates that the soft limit for all filesystems has been exceeded.
  */
-int audit_warn_allsoft()
+int
+audit_warn_allsoft(void)
 {
 	char *args[2];
 	
 	args[0] = SOFTLIM_ALL_WARN;
 	args[1] = NULL;
 
-	return auditwarnlog(args);
+	return (auditwarnlog(args));
 }
 
 /*
- * Indicates that someone other than the audit daemon 
- * turned off auditing
- * XXX Its not clear at this point how this function will 
- * XXX be invoked
+ * Indicates that someone other than the audit daemon turned off auditing.
+ * XXX Its not clear at this point how this function will be invoked.
+ * XXXRW: This function is not used.
  */
-int audit_warn_auditoff()
+int
+audit_warn_auditoff(void)
 {
 	char *args[2];
 	
 	args[0] = AUDITOFF_WARN;
 	args[1] = NULL;
 
-	return auditwarnlog(args);
+	return (auditwarnlog(args));
 }
 
 /*
  * Indicates that the audit deammn is already running
  */
-int audit_warn_ebusy()
+int
+audit_warn_ebusy(void)
 {
 	char *args[2];
 	
 	args[0] = EBUSY_WARN;
 	args[1] = NULL;
 
-	return auditwarnlog(args);
-
+	return (auditwarnlog(args));
 }
 
 /*
- * Indicates that there is a problem getting the directory 
- * from audit_control
+ * Indicates that there is a problem getting the directory from
+ * audit_control.
  *
- * XXX Note that we take the filename instead of a count 
- * XXX as the argument here (different from BSM)
+ * XXX Note that we take the filename instead of a count as the argument here
+ * (different from BSM).
  */
-int audit_warn_getacdir(char *filename)
+int
+audit_warn_getacdir(char *filename)
 {
 	char *args[3];
 	
@@ -138,15 +147,14 @@ int audit_warn_getacdir(char *filename)
 	args[1] = filename; 	
 	args[2] = NULL;
 
-	return auditwarnlog(args);
+	return (auditwarnlog(args));
 }
 
-
 /*
- * Indicates that the hard limit for this file has been
- * exceeded
+ * Indicates that the hard limit for this file has been exceeded.
  */
-int audit_warn_hard(char *filename)
+int
+audit_warn_hard(char *filename)
 {
 	char *args[3];
 	
@@ -154,42 +162,43 @@ int audit_warn_hard(char *filename)
 	args[1] = filename; 	
 	args[2] = NULL;
 
-	return auditwarnlog(args);
-
+	return (auditwarnlog(args));
 }
 
 /*
- * Indicates that auditing could not be started
+ * Indicates that auditing could not be started.
  */
-int audit_warn_nostart()
+int
+audit_warn_nostart(void)
 {
 	char *args[2];
 	
 	args[0] = NOSTART_WARN;
 	args[1] = NULL;
 
-	return auditwarnlog(args);
+	return (auditwarnlog(args));
 }
 
 /*
- * Indicaes that an error occrred during the orderly shutdown 
- * of the audit daemon
+ * Indicaes that an error occrred during the orderly shutdown of the audit
+ * daemon.
  */
-int audit_warn_postsigterm()
+int
+audit_warn_postsigterm(void)
 {
 	char *args[2];
 	
 	args[0] = POSTSIGTERM_WARN;
 	args[1] = NULL;
 
-	return auditwarnlog(args);
+	return (auditwarnlog(args));
 }
 
 /*
- * Indicates that the soft limit for this file has been
- * exceeded
+ * Indicates that the soft limit for this file has been exceeded.
  */
-int audit_warn_soft(char *filename)
+int
+audit_warn_soft(char *filename)
 {
 	char *args[3];
 	
@@ -197,20 +206,20 @@ int audit_warn_soft(char *filename)
 	args[1] = filename; 	
 	args[2] = NULL;
 
-	return auditwarnlog(args);
-
+	return (auditwarnlog(args));
 }
 
 /*
- * Indicates that the temporary audit file already exists 
- * indicating a fatal error
+ * Indicates that the temporary audit file already exists indicating a fatal
+ * error.
  */
-int audit_warn_tmpfile()
+int
+audit_warn_tmpfile(void)
 {
 	char *args[2];
 	
 	args[0] = TMPFILE_WARN;
 	args[1] = NULL;
 
-	return auditwarnlog(args);
+	return (auditwarnlog(args));
 }

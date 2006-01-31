@@ -44,9 +44,9 @@
 #define NOT_TERMINATED	".not_terminated" 
 
 struct dir_ent {
-	char *dirname;
-	char softlim;
-	TAILQ_ENTRY(dir_ent) dirs;
+	char			*dirname;
+	char			 softlim;
+	TAILQ_ENTRY(dir_ent)	 dirs;
 };
 
 #define HARDLIM_ALL_WARN        "allhard"
@@ -63,16 +63,15 @@ struct dir_ent {
 #define AUDITWARN_SCRIPT        "/etc/security/audit_warn"
 #define AUDITD_PIDFILE		"/var/run/auditd.pid"
 
-int audit_warn_allhard(int count);
-int audit_warn_allsoft();
-int audit_warn_auditoff();
-int audit_warn_ebusy();
-int audit_warn_getacdir(char *filename);
-int audit_warn_hard(char *filename);
-int audit_warn_nostart();
-int audit_warn_postsigterm();
-int audit_warn_soft(char *filename);
-int audit_warn_tmpfile();
+int	audit_warn_allhard(int count);
+int	audit_warn_allsoft(void);
+int	audit_warn_auditoff(void);
+int	audit_warn_ebusy(void);
+int	audit_warn_getacdir(char *filename);
+int	audit_warn_hard(char *filename);
+int	audit_warn_nostart(void);
+int	audit_warn_postsigterm(void);
+int	audit_warn_soft(char *filename);
+int	audit_warn_tmpfile(void);
 
 #endif /* !_AUDITD_H_ */
-
