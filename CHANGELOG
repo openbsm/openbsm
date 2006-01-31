@@ -62,5 +62,6 @@ OpenBSM 1.0
   _free() calls dropped as a result, and source code compatibility with
   OpenSolaris improved significantly.
 - Annotate BSM events with origin OS and compatibility information.
+- auditd(8) added to the OpenBSM distribution.
 
-$P4: //depot/projects/trustedbsd/openbsm/CHANGELOG#4 $
+$P4: //depot/projects/trustedbsd/openbsm/CHANGELOG#5 $
