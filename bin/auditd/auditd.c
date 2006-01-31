@@ -53,15 +53,15 @@
 #include <syslog.h>
 
 #include "auditd.h"
-#define NA_EVENT_STR_SIZE 25
 
-static int ret, minval;
-static char *lastfile = NULL;
+#define	NA_EVENT_STR_SIZE	25
 
-static int allhardcount = 0;
-static int triggerfd = 0;
+static int	 ret, minval;
+static char	*lastfile = NULL;
+static int	 allhardcount = 0;
+static int	 triggerfd = 0;
 
-static TAILQ_HEAD(, dir_ent) dir_q;
+static TAILQ_HEAD(, dir_ent)	dir_q;
 
 /*
  * Error starting auditd
@@ -297,7 +297,8 @@ read_control_file(void)
 /*
  * Close all log files, control files, and tell the audit system.
  */
-int close_all() 
+static int
+close_all(void) 
 {
 	int err_ret = 0;
 	char TS[POSTFIX_LEN];
@@ -305,31 +306,27 @@ int close_all()
 	token_t *tok;
 	long cond;
 
-	/* Generate an audit record */
-	if ((aufd = au_open()) == -1) {
+	/* Generate an audit record. */
+	if ((aufd = au_open()) == -1)
 		syslog(LOG_ERR, "Could not create audit shutdown event.\n");
-	} else {
-
-		if ((tok = au_to_text("auditd::Audit shutdown")) != NULL) {
+	else {
+		if ((tok = au_to_text("auditd::Audit shutdown")) != NULL)
 			au_write(aufd, tok);
-		}
-
-		if (au_close(aufd, 1, AUE_audit_shutdown) == -1) {
-			syslog(LOG_ERR, "Could not close audit shutdown event.\n");
-		}
+		if (au_close(aufd, 1, AUE_audit_shutdown) == -1)
+			syslog(LOG_ERR,
+			    "Could not close audit shutdown event.\n");
 	}
 
-	/* flush contents */
+	/* Flush contents. */
 	cond = AUC_DISABLED;
 	err_ret = auditon(A_SETCOND, &cond, sizeof(cond));
 	if (err_ret != 0) {
 		syslog(LOG_ERR, "Disabling audit failed! : %s\n", 
-			strerror(errno));
+		    strerror(errno));
 		err_ret = 1;
 	}
-	if (getTSstr(TS, POSTFIX_LEN) == 0) {
+	if (getTSstr(TS, POSTFIX_LEN) == 0)
 		close_lastfile(TS);
-	}
 	if (lastfile != NULL)
 		free(lastfile);
 
@@ -341,9 +338,8 @@ int close_all()
 	}
 	endac();
 
-	if (close(triggerfd) != 0) {
+	if (close(triggerfd) != 0)
 		syslog(LOG_ERR, "Error closing control file\n");
-	}
 	syslog(LOG_INFO, "Finished.\n");
 	return (0);
 }
@@ -415,7 +411,7 @@ register_daemon(void)
  * enough to time to rotate log files without thrashing from soft warnings
  * generated before the log is actually rotated.
  */
-#define DUPLICATE_INTERVAL 30
+#define	DUPLICATE_INTERVAL	30
 static void
 handle_audit_trigger(int trigger)
 {
