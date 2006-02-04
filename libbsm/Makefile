@@ -1,7 +1,7 @@
 #
 # OpenBSM libbsm
 #
-# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile#12 $
+# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile#13 $
 #
 
 LIB=		bsm
@@ -54,6 +54,7 @@ MLINKS=	libbsm.3 bsm.3							\
 	au_event.3 getauevnam_r.3					\
 	au_event.3 getauevnum.3						\
 	au_event.3 getauevnum_r.3					\
+	au_event.3 getauevnonam.3					\
 	au_event.3 getauevnonam_r.3					\
 	au_io.3	au_fetch_tok.3						\
 	au_io.3	au_print_tok.3						\
