@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#34 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#35 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -428,6 +428,7 @@
 #define	AUE_O_RECVFROM		AUE_RECVFROM	/* Darwin */
 #define	AUE_O_SETREUID		AUE_SETREUID	/* Darwin */
 #define	AUE_O_SETREGID		AUE_SETREGID	/* Darwin */
+#define	AUE_O_GETDIRENTRIES	AUE_GETDIRENTRIES	/* Darwin */
 #define	AUE_O_TRUNCATE		AUE_TRUNCATE	/* Darwin */
 #define	AUE_O_FTRUNCATE		AUE_FTRUNCATE	/* Darwin */
 #define	AUE_O_GETPEERNAME	AUE_NULL	/* Darwin */
