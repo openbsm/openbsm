@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#8 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#9 $
  */
 
 #include <sys/dirent.h>
@@ -708,7 +708,7 @@ setup(void)
 int
 main(int argc, char **argv)
 {
-	char ch;
+	signed char ch;
 	int debug = 0;
 	int rc;
 
