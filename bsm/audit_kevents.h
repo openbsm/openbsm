@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#35 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#36 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -360,7 +360,7 @@
 #define	AUE_NMOUNT		380	/* FreeBSD-specific. */
 #define	AUE_BDFLUSH		381	/* Linux-specific. */
 #define	AUE_SETFSUID		382	/* Linux-specific. */
-#define	AUE_GETFSUID		383	/* Linux-specific. */
+#define	AUE_SETFSGID		383	/* Linux-specific. */
 #define	AUE_PERSONALITY		384	/* Linux-specific. */
 #define	AUE_SCHED_GETSCHEDULER	385	/* POSIX.1b. */
 #define	AUE_SCHED_SETSCHEDULER	386	/* POSIX.1b. */
