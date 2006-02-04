@@ -25,9 +25,9 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#6 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#7 $
 .\"
-.Dd Jan 24, 2004
+.Dd Jan 04, 2006
 .Dt AUDIT_CONTROL 5
 .Os
 .Sh NAME
@@ -64,7 +64,8 @@ Not currently used as the value of 20 percent is chosen by the kernel.
 .El
 .Sh AUDIT FLAGS
 Audit flags are a comma-delimited list of audit classes as defined in the
-audit_class file.
+.Pa audit_class
+file.
 See
 .Xr audit_class 5
 for details.
@@ -88,7 +89,7 @@ The following settings appear in the default
 file:
 .Bd -literal -offset indent
 dir:/var/audit
-flags:lo,ad,-all,^-fc,^-cl
+flags:lo
 minfree:20
 naflags:lo
 .Ed
@@ -96,8 +97,7 @@ naflags:lo
 The
 .Va flags
 parameter above specifies the system-wide mask corresponding to login/logout
-events, administrative events, and all failures except for failures in creating
-or closing files.
+events.
 .Sh FILES
 .Bl -tag -width "/etc/security/audit_control" -compact
 .It Pa /etc/security/audit_control
