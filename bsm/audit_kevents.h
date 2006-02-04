@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#32 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#33 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -372,7 +372,7 @@
 #define	AUE_PIVOT_ROOT		391	/* Linux-specific. */
 #define	AUE_RTPRIO		392	/* FreeBSD-specific. */
 #define	AUE_SCHED_GETPARAM	393	/* POSIX.1b. */
-#define	AUE_SCHED_GETPARAM	394	/* POSIX.1b. */
+#define	AUE_SCHED_SETPARAM	394	/* POSIX.1b. */
 #define	AUE_SCHED_GET_PRIORITY_MAX	395	/* POSIX.1b. */
 #define	AUE_SCHED_GET_PRIORITY_MIN	396	/* POSIX.1b. */
 #define	AUE_SCHED_RR_GET_INTERVAL	397	/* POSIX.1b. */
