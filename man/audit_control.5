@@ -25,7 +25,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#6 $
 .\"
 .Dd Jan 24, 2004
 .Dt AUDIT_CONTROL 5
@@ -63,7 +63,7 @@ When the free space falls below this limit a warning will be issued.
 Not currently used as the value of 20 percent is chosen by the kernel.
 .El
 .Sh AUDIT FLAGS
-Audit flags are a comma delimited list of audit classes as defined in the
+Audit flags are a comma-delimited list of audit classes as defined in the
 audit_class file.
 See
 .Xr audit_class 5
@@ -78,9 +78,9 @@ Record failed events
 .It ^
 Record both successful and failed events
 .It ^+
-Don't record successful events
+Do not record successful events
 .It ^-
-Don't record failed events
+Do not record failed events
 .El
 .Sh DEFAULT
 The following settings appear in the default
@@ -104,9 +104,9 @@ or closing files.
 .El
 .Sh SEE ALSO
 .Xr audit 1 ,
-.Xr auditd 8 ,
 .Xr audit_class 5 ,
-.Xr audit_user 5
+.Xr audit_user 5 ,
+.Xr auditd 8
 .Sh AUTHORS
 This software was created by McAfee Research, the security research division
 of McAfee, Inc., under contract to Apple Computer Inc.
