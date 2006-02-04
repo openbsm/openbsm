@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#31 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#32 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -493,6 +493,8 @@
 #define	AUE_MUNLOCKALL		AUE_NULL
 #define	AUE_PREAD		AUE_NULL
 #define	AUE_PWRITE		AUE_NULL
+#define	AUE_PREADV		AUE_NULL
+#define	AUE_PWRITEV		AUE_NULL
 #define	AUE_SBRK		AUE_NULL
 #define	AUE_SELECT		AUE_NULL
 #define	AUE_SEMDESTROY		AUE_NULL
