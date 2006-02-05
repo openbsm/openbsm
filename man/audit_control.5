@@ -25,7 +25,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#8 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#9 $
 .\"
 .Dd January 4, 2006
 .Dt AUDIT_CONTROL 5
@@ -38,7 +38,9 @@ The
 .Nm
 file contains several audit system parameters.
 Each line of this file is of the form:
-.Dl parameter:value.
+.Pp
+.Dl parameter:value
+.Pp
 The parameters are:
 .Bl -tag -width Ds
 .It Pa dir
@@ -71,6 +73,7 @@ See
 for details.
 Event classes may be preceded by a prefix which changes their interpretation.
 The following prefixes may be used for each class:
+.Pp
 .Bl -tag -width Ds -compact -offset indent
 .It +
 Record successful events
@@ -103,9 +106,9 @@ events.
 .It Pa /etc/security/audit_control
 .El
 .Sh SEE ALSO
-.Xr audit 1 ,
 .Xr audit_class 5 ,
 .Xr audit_user 5 ,
+.Xr audit 8 ,
 .Xr auditd 8
 .Sh AUTHORS
 This software was created by McAfee Research, the security research division
