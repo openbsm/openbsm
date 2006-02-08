@@ -26,12 +26,12 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#15 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#16 $
  */
 
 #ifdef __APPLE__
 #define	_SYS_AUDIT_H		/* Prevent include of sys/audit.h. */
-#endf
+#endif
 
 #include <sys/param.h>
 #include <sys/stat.h>
