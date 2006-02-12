@@ -46,6 +46,10 @@ Darwin
     % bsdmake
     # bsdmake install
 
+In both cases, you will need to manually propagate openbsm/etc/* into /etc
+on your system; this is not done automatically so as to avoid disrupting
+the current configuration.
+
   Credits
 
 The following organizations and individuals have contributed substantially 
@@ -86,4 +90,4 @@ Information on TrustedBSD may be found on the TrustedBSD home page:
 
     http://www.TrustedBSD.org/
 
-$P4: //depot/projects/trustedbsd/openbsm/README#14 $
+$P4: //depot/projects/trustedbsd/openbsm/README#15 $
