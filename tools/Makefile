@@ -1,8 +1,8 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/tools/Makefile#3 $
+# $P4: //depot/projects/trustedbsd/openbsm/tools/Makefile#4 $
 #
 
-CFLAGS+=	-I- -I .. -I ../libbsm -L ../libbsm -I.
+CFLAGS+=	-I- -I .. -I ../libbsm -L../libbsm -I.
 PROG=		audump
 NO_MAN=
 DPADD=		/usr/lib/libbsm.a

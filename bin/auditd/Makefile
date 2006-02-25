@@ -1,8 +1,8 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/Makefile#2 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/Makefile#3 $
 #
 
-CFLAGS+=	-I- -I ../.. -I ../../libbsm -L ../../libbsm -I.
+CFLAGS+=	-I- -I ../.. -I ../../libbsm -L../../libbsm -I.
 PROG=		auditd
 SRCS=		audit_warn.c auditd.c
 MAN=		auditd.8
