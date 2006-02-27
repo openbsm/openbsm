@@ -34,7 +34,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#7 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#8 $
  */
 
 #ifndef _LIBBSM_INTERNAL_H
@@ -47,6 +47,22 @@
  * broken with future releases of OpenBSM, which may delete, modify, or
  * otherwise break these interfaces or the assumptions they rely on.
  */
+struct au_token {
+	u_char			*t_data;
+	size_t			 len;
+	TAILQ_ENTRY(au_token)	 tokens;
+};
+
+struct au_record {
+	char			 used;		/* Record currently in use? */
+	int			 desc;		/* Descriptor for record. */
+	TAILQ_HEAD(, au_token)	 token_q;	/* Queue of BSM tokens. */
+	u_char			*data;
+	size_t			 len;
+	LIST_ENTRY(au_record)	 au_rec_q;
+};
+typedef	struct au_record	au_record_t;
+
 
 /* We could determined the header and trailer sizes by
  * defining appropriate structures. We hold off that approach
