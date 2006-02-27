@@ -30,15 +30,31 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#35 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#36 $
  */
 
 #include <sys/types.h>
+
+#ifdef HAVE_CONFIG_H
+#include <config/config.h>
 #ifdef HAVE_SYS_ENDIAN_H
 #include <sys/endian.h>
-#else
+#else /* !HAVE_SYS_ENDIAN_H */
+#ifdef HAVE_MACHINE_ENDIAN_H
+#include <machine/endian.h>
+#else /* !HAVE_MACHINE_ENDIAN_H */
+#ifdef HAVE_ENDIAN_H
+#include <endian.h>
+#else /* !HAVE_ENDIAN_H */
+#error "No supported endian.h"
+#endif /* !HAVE_ENDIAN_H */
+#endif /* !HAVE_MACHINE_ENDIAN_H */
 #include <compat/endian.h>
-#endif
+#endif /* !HAVE_SYS_ENDIANG_H */
+#else /* !HAVE_CONFIG_H */
+#include <sys/endian.h>
+#endif /* !HAVE_CONFIG_H */
+
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/un.h>

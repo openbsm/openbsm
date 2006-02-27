@@ -25,20 +25,11 @@
  * SUCH DAMAGE.
  *
  * Derived from FreeBSD src/sys/sys/endian.h:1.6.
- * $P4: //depot/projects/trustedbsd/openbsm/compat/endian.h#6 $
+ * $P4: //depot/projects/trustedbsd/openbsm/compat/endian.h#7 $
  */
 
 #ifndef _COMPAT_ENDIAN_H_
 #define _COMPAT_ENDIAN_H_
-
-/*
- * Pick up value of BYTE_ORDER/_BYTE_ORDER if not yet included.
- */
-#ifdef __linux__
-#include <endian.h>
-#else
-#include <machine/endian.h>
-#endif
 
 /*
  * Some systems will have the uint/int types defined here already, others
