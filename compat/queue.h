@@ -29,11 +29,11 @@
  *	@(#)queue.h	8.5 (Berkeley) 8/20/94
  *
  * Derived from FreeBSD src/sys/sys/queue.h:1.63.
- * $P4: //depot/projects/trustedbsd/openbsm/compat/queue.h#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/compat/queue.h#3 $
  */
 
-#ifndef _SYS_QUEUE_H_
-#define	_SYS_QUEUE_H_
+#ifndef _COMPAT_QUEUE_H_
+#define	_COMPAT_QUEUE_H_
 
 #include <sys/cdefs.h>
 
@@ -539,4 +539,4 @@ struct {								\
 	QMD_TRACE_ELEM(&(elm)->field);					\
 } while (0)
 
-#endif /* !_SYS_QUEUE_H_ */
+#endif /* !_COMPAT_QUEUE_H_ */
