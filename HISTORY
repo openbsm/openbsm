@@ -94,4 +94,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/CHANGELOG#12 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#1 $
