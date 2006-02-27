@@ -31,15 +31,15 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#29 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#30 $
  */
 
 #include <sys/types.h>
-#ifdef __APPLE__
-#include <compat/endian.h>
-#else /* !__APPLE__ */
+#ifdef HAVE_SYS_ENDIAN_H
 #include <sys/endian.h>
-#endif /* __APPLE__*/
+#else
+#include <compat/endian.h>
+#endif
 #include <sys/stat.h>
 #include <sys/socket.h>
 

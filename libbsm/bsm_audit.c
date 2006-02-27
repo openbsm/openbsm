@@ -30,11 +30,10 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#18 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#19 $
  */
 
 #include <sys/types.h>
-#include <sys/queue.h>
 
 #include <bsm/audit_internal.h>
 #include <bsm/libbsm.h>
