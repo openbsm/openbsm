@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#16 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#17 $
  */
 
 #ifndef _LIBBSM_H_
@@ -45,6 +45,7 @@
 #include <sys/queue.h>
 
 #include <stdint.h>		/* Required for audit.h. */
+#include <time.h>		/* Required for clock_t on Linux. */
 
 #include <bsm/audit.h>
 #include <bsm/audit_record.h>
