@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#6 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#7 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -23,7 +23,7 @@ AC_CHECK_LIB([bsm], [main])
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([endian.h mach/mach.h sys/endian.h])
+AC_CHECK_HEADERS([endian.h mach/mach.h machine/endian.h sys/endian.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

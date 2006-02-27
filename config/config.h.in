@@ -33,6 +33,9 @@
 /* Define to 1 if you have the `bsm' library (-lbsm). */
 #undef HAVE_LIBBSM
 
+/* Define to 1 if you have the <machine/endian.h> header file. */
+#undef HAVE_MACHINE_ENDIAN_H
+
 /* Define to 1 if you have the <mach/mach.h> header file. */
 #undef HAVE_MACH_MACH_H
 
