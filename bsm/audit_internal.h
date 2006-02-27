@@ -34,11 +34,13 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#9 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#10 $
  */
 
 #ifndef _AUDIT_INTERNAL_H
 #define	_AUDIT_INTERNAL_H
+
+#include <sys/queue.h>
 
 /*
  * audit_internal.h contains private interfaces that are shared by user space
