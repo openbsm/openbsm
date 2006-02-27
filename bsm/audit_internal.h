@@ -34,11 +34,11 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#8 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#9 $
  */
 
-#ifndef _LIBBSM_INTERNAL_H
-#define	_LIBBSM_INTERNAL_H
+#ifndef _AUDIT_INTERNAL_H
+#define	_AUDIT_INTERNAL_H
 
 /*
  * audit_internal.h contains private interfaces that are shared by user space
@@ -112,4 +112,4 @@ typedef	struct au_record	au_record_t;
 
 #define	ADD_STRING(loc, data, size)	ADD_MEM(loc, data, size)
 
-#endif /* !_LIBBSM_INTERNAL_H_ */
+#endif /* !_AUDIT_INTERNAL_H_ */
