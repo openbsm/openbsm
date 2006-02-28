@@ -1,10 +1,13 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/Makefile.am#1 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/Makefile.am#2 $
 #
 
 SUBDIRS =		\
-	audit		\
-	auditd		\
 	auditreduce	\
-	praudit	
+	praudit
 
+if HAVE_AUDIT_SYSCALLS
+SUBDIRS +=		\
+	audit		\
+	auditd
+endif

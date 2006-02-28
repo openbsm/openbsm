@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.am#1 $
+# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.am#2 $
 #
 
 INCLUDES = -I$(top_srcdir)
@@ -14,10 +14,14 @@ libbsm_la_SOURCES =	\
 	bsm_flags.c	\
 	bsm_io.c	\
 	bsm_mask.c	\
-	bsm_notify.c	\
 	bsm_token.c	\
-	bsm_user.c	\
+	bsm_user.c
+
+if HAVE_AUDIT_SYSCALLS
+libbsm_la_SOURCES +=	\
+	bsm_notify.c	\
 	bsm_wrappers.c
+endif
 
 man3_MANS =		\
 	au_class.3	\
