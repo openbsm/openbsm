@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#40 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#41 $
  */
 
 #include <sys/types.h>
@@ -1012,7 +1012,7 @@ au_to_subject_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	    tid));
 }
 
-#if !defined(_KERNEL) && !defined(KERNEL)
+#if !defined(_KERNEL) && !defined(KERNEL) && defined(HAVE_AUDIT_SYSCALLS)
 /*
  * Collects audit information for the current process
  * and creates a subject token from it
