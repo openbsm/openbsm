@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#8 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#9 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -47,7 +47,7 @@ AC_CHECK_FUNCS([bzero ftruncate gettimeofday inet_ntoa memset strchr strerror st
 # sys/queue.h exists on most systems, but its capabilities vary a great deal.
 # test for LIST_FIRST, which appears to not exist in all of them, and is
 # necessary for OpenBSM.
-AC_TRY_COMPILE([
+AC_TRY_LINK([
 	#include <sys/queue.h>
 ], [
 	struct foo {
