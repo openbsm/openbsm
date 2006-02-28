@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#15 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#16 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -80,8 +80,9 @@ AC_DEFINE(HAVE_FULL_QUEUE_H,, Define if queue.h includes LIST_FIRST)
 # depend on them or it will generate link-time or run-time errors.  Test for
 # just one.
 AC_TRY_LINK([
-	#include <sys/types.h>
-	#include <bsm/libbsm.h>
+	#include <stdlib.h>
+
+	extern int auditon(int, void *, int);
 ], [
 	int err;
 
