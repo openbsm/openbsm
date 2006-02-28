@@ -1,3 +1,33 @@
+OpenBSM 1.0 alpha 5
+
+- Update install notes to indicate /etc files are to be installed manually.
+- On systems without LOG_SECURITY, use LOG_AUTH.
+- Convert to autoconf/automake in order to move to a more portable (not
+  BSD-specific) build infrastructure, and more easy conditional building of
+  components.  Currently, the primary feature loss is that automake does
+  not have native support for manual symlinks.  This will be addressed in a
+  future OpenBSM release.
+- Add compat/queue.h, to be used on systems dated BSD queue macro libraries
+  (as found on Linux).
+- Rename CHANGELOG to HISTORY, as our change log doesn't follow some of the
+  existing conventions for a CHANGELOG.
+- Some private data structures moved from audit.h to audit_internal.h to
+  prevent inappropriate use by applications and name space pollution.
+- Improved detection and use of endian macros using autoconf.
+- Avoid non-portable use of struct in6_addr, which is largely opaque.
+- Avoid leaking BSD kernel socket related token code to user space in
+  bsm_token.c.
+- Teach System V IPC calls to look for Linux naming variations for certain
+  struct ipc_perm fields.
+- Test for audit system calls, and if not present, don't build
+  bsm_wrappers.c, bsm_notify.c, audit(8), and auditd(8), which rely on
+  those system calls.
+- au_close() is not implemented on systems that don't have audit system
+  calls, but au_close_buffer() is.
+- Work around missing BSDisms in bsm_wrapper.c.
+- Fix nested includes so including libbsm.h in an application on Linux
+  picks up the necessary definitions.
+
 OpenBSM 1.0 alpha 4
 
 - Remove "audit" user example from audit_user, as it's not present on most
@@ -94,4 +124,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#1 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#2 $
