@@ -33,6 +33,12 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define if ipc_perm.__key instead of key */
+#undef HAVE_IPC_PERM___KEY
+
+/* Define if ipc_perm.__seq instead of seq */
+#undef HAVE_IPC_PERM___SEQ
+
 /* Define to 1 if you have the `bsm' library (-lbsm). */
 #undef HAVE_LIBBSM
 
