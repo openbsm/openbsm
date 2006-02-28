@@ -31,7 +31,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#31 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#32 $
  */
 
 #include <sys/types.h>
@@ -397,10 +397,7 @@ print_ip_ex_address(FILE *fp, u_int32_t type, u_int32_t *ipaddr)
 		break;
 
 	case AU_IPv6:
-		ipv6.__u6_addr.__u6_addr32[0] = ipaddr[0];
-		ipv6.__u6_addr.__u6_addr32[1] = ipaddr[1];
-		ipv6.__u6_addr.__u6_addr32[2] = ipaddr[2];
-		ipv6.__u6_addr.__u6_addr32[3] = ipaddr[3];
+		bcopy(ipaddr, &ipv6, sizeof(ipv6));
 		fprintf(fp, "%s", inet_ntop(AF_INET6, &ipv6, dst,
 		    INET6_ADDRSTRLEN));
 		break;
