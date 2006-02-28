@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/tools/Makefile.in#2 $
+# $P4: //depot/projects/trustedbsd/openbsm/tools/Makefile.in#3 $
 #
 
 srcdir = @srcdir@
@@ -101,6 +101,8 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+HAVE_AUDIT_SYSCALLS_FALSE = @HAVE_AUDIT_SYSCALLS_FALSE@
+HAVE_AUDIT_SYSCALLS_TRUE = @HAVE_AUDIT_SYSCALLS_TRUE@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@

@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.in#2 $
+# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.in#3 $
 #
 
 srcdir = @srcdir@
@@ -40,6 +40,10 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@HAVE_AUDIT_SYSCALLS_TRUE@am__append_1 = \
+@HAVE_AUDIT_SYSCALLS_TRUE@	bsm_notify.c	\
+@HAVE_AUDIT_SYSCALLS_TRUE@	bsm_wrappers.c
+
 subdir = libbsm
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -59,9 +63,14 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(man3dir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libbsm_la_LIBADD =
+am__libbsm_la_SOURCES_DIST = bsm_audit.c bsm_class.c bsm_control.c \
+	bsm_event.c bsm_flags.c bsm_io.c bsm_mask.c bsm_token.c \
+	bsm_user.c bsm_notify.c bsm_wrappers.c
+@HAVE_AUDIT_SYSCALLS_TRUE@am__objects_1 = bsm_notify.lo \
+@HAVE_AUDIT_SYSCALLS_TRUE@	bsm_wrappers.lo
 am_libbsm_la_OBJECTS = bsm_audit.lo bsm_class.lo bsm_control.lo \
-	bsm_event.lo bsm_flags.lo bsm_io.lo bsm_mask.lo bsm_notify.lo \
-	bsm_token.lo bsm_user.lo bsm_wrappers.lo
+	bsm_event.lo bsm_flags.lo bsm_io.lo bsm_mask.lo bsm_token.lo \
+	bsm_user.lo $(am__objects_1)
 libbsm_la_OBJECTS = $(am_libbsm_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/config
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -75,7 +84,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libbsm_la_SOURCES)
-DIST_SOURCES = $(libbsm_la_SOURCES)
+DIST_SOURCES = $(am__libbsm_la_SOURCES_DIST)
 man3dir = $(mandir)/man3
 NROFF = nroff
 MANS = $(man3_MANS)
@@ -111,6 +120,8 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+HAVE_AUDIT_SYSCALLS_FALSE = @HAVE_AUDIT_SYSCALLS_FALSE@
+HAVE_AUDIT_SYSCALLS_TRUE = @HAVE_AUDIT_SYSCALLS_TRUE@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -183,19 +194,9 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 INCLUDES = -I$(top_srcdir)
 lib_LTLIBRARIES = libbsm.la
-libbsm_la_SOURCES = \
-	bsm_audit.c	\
-	bsm_class.c	\
-	bsm_control.c	\
-	bsm_event.c	\
-	bsm_flags.c	\
-	bsm_io.c	\
-	bsm_mask.c	\
-	bsm_notify.c	\
-	bsm_token.c	\
-	bsm_user.c	\
-	bsm_wrappers.c
-
+libbsm_la_SOURCES = bsm_audit.c bsm_class.c bsm_control.c bsm_event.c \
+	bsm_flags.c bsm_io.c bsm_mask.c bsm_token.c bsm_user.c \
+	$(am__append_1)
 man3_MANS = \
 	au_class.3	\
 	au_control.3	\
