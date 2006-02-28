@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#13 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#14 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -86,7 +86,11 @@ AC_TRY_LINK([
 	err = auditon(0, NULL, 0);
 ], [
 AC_DEFINE(HAVE_AUDIT_SYSCALLS,, Define if audit system calls present)
+have_audit_syscalls=true
+], [
+have_audit_syscalls=false
 ])
+AM_CONDITIONAL(HAVE_AUDIT_SYSCALLS, $have_audit_syscalls)
 
 AC_CONFIG_FILES([Makefile
                  bin/Makefile

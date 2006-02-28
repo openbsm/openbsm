@@ -3,6 +3,9 @@
 /* Define to 1 if you have the `alarm' function. */
 #undef HAVE_ALARM
 
+/* Define if audit system calls present */
+#undef HAVE_AUDIT_SYSCALLS
+
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
 
