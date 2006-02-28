@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#38 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#39 $
  */
 
 #include <sys/types.h>
@@ -796,50 +796,6 @@ au_to_seq(long audit_count)
 	ADD_U_INT32(dptr, audit_count);
 
 	return (t);
-}
-
-/*
- * token ID                1 byte
- * socket type             2 bytes
- * local port              2 bytes
- * local Internet address  4 bytes
- * remote port             2 bytes
- * remote Internet address 4 bytes
- */
-token_t *
-au_to_socket(struct socket *so)
-{
-
-	errno = ENOTSUP;
-	return (NULL);
-}
-
-/*
- * token ID                1 byte
- * socket type             2 bytes
- * local port              2 bytes
- * address type/length     4 bytes
- * local Internet address  4 bytes/16 bytes (IPv4/IPv6 address)
- * remote port             4 bytes
- * address type/length     4 bytes
- * remote Internet address 4 bytes/16 bytes (IPv4/IPv6 address)
- */
-token_t *
-au_to_socket_ex_32(u_int16_t lp, u_int16_t rp, struct sockaddr *la,
-    struct sockaddr *ra)
-{
-
-	errno = ENOTSUP;
-	return (NULL);
-}
-
-token_t *
-au_to_socket_ex_128(u_int16_t lp, u_int16_t rp, struct sockaddr *la,
-    struct sockaddr *ra)
-{
-
-	errno = ENOTSUP;
-	return (NULL);
 }
 
 /*
