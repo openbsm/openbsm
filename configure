@@ -20491,6 +20491,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
+#include <sys/types.h>
 #include <sys/ipc.h>
 
 
@@ -20538,6 +20539,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
+#include <sys/types.h>
 #include <sys/ipc.h>
 
 
@@ -20607,6 +20609,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
+#include <sys/types.h>
 #include <sys/ipc.h>
 
 
@@ -20654,6 +20657,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
+#include <sys/types.h>
 #include <sys/ipc.h>
 
 

@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#14 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#15 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -35,12 +35,14 @@ AC_CHECK_MEMBERS([struct stat.st_rdev])
 AC_CHECK_MEMBER([struct ipc_perm.__key],
 [AC_DEFINE(HAVE_IPC_PERM___KEY,, Define if ipc_perm.__key instead of key)],
 [],[
+#include <sys/types.h>
 #include <sys/ipc.h>
 ])
 
 AC_CHECK_MEMBER([struct ipc_perm.__seq],
 [AC_DEFINE(HAVE_IPC_PERM___SEQ,, Define if ipc_perm.__seq instead of seq)],
 [],[
+#include <sys/types.h>
 #include <sys/ipc.h>
 ])
 
