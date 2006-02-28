@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#11 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#12 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -32,15 +32,17 @@ AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_CHECK_MEMBERS([struct stat.st_rdev])
 
-AC_CHECK_MEMBER([struct ipc_perm.__key],,,[
+AC_CHECK_MEMBER([struct ipc_perm.__key],
+[AC_DEFINE(HAVE_IPC_PERM___KEY,, Define if ipc_perm.__key instead of key)],
+[],[
 #include <sys/ipc.h>
-], AC_DEFINE(HAVE_IPC_PERM___KEY,, Define if ipc_perm.__key instead of key)
-)
+])
 
-AC_CHECK_MEMBER([struct ipc_perm.__seq],,,[
+AC_CHECK_MEMBER([struct ipc_perm.__seq],
+[AC_DEFINE(HAVE_IPC_PERM___SEQ,, Define if ipc_perm.__seq instead of seq)],
+[],[
 #include <sys/ipc.h>
-], AC_DEFINE(HAVE_IPC_PERM___SEQ,, Define if ipc_perm.__seq instead of seq)
-)
+])
 
 AC_HEADER_TIME
 AC_STRUCT_TM
