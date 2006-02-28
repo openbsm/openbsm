@@ -34,19 +34,14 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#12 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_internal.h#13 $
  */
 
 #ifndef _AUDIT_INTERNAL_H
 #define	_AUDIT_INTERNAL_H
 
-#ifdef __linux__
-#include <compat/queue.h>
-#ifndef __unused
+#if defined(__linux__) && !defined(__unused)
 #define	__unused
-#endif /* !__unused */
-#else
-#include <sys/queue.h>
 #endif
 
 /*
