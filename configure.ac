@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#12 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#13 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -72,6 +72,20 @@ AC_TRY_LINK([
 	foo = LIST_FIRST(&foo_list);
 ], [
 AC_DEFINE(HAVE_FULL_QUEUE_H,, Define if queue.h includes LIST_FIRST)
+])
+
+# Systems may not define key audit system calls, in which case libbsm cannot
+# depend on them or it will generate link-time or run-time errors.  Test for
+# just one.
+AC_TRY_LINK([
+	#include <sys/types.h>
+	#include <bsm/libbsm.h>
+], [
+	int err;
+
+	err = auditon(0, NULL, 0);
+], [
+AC_DEFINE(HAVE_AUDIT_SYSCALLS,, Define if audit system calls present)
 ])
 
 AC_CONFIG_FILES([Makefile
