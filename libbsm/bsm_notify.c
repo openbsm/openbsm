@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_notify.c#10 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_notify.c#11 $
  */
 
 /*
@@ -34,21 +34,12 @@
  */
 #include <sys/types.h>
 
-#ifdef HAVE_CONFIG_H
-
 #include <config/config.h>
-
 #ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
 #else /* !HAVE_FULL_QUEUE_H */
 #include <compat/queue.h>
 #endif /* !HAVE_FULL_QUEUE_H */
-
-#else /* !HAVE_CONFIG_H */
-
-#include <sys/queue.h>
-
-#endif /* !HAVE_CONFIG_H */
 
 #include <bsm/audit_internal.h>
 #include <bsm/libbsm.h>
