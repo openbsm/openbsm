@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#42 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#43 $
  */
 
 #include <sys/types.h>
@@ -49,7 +49,7 @@
 #endif /* !HAVE_ENDIAN_H */
 #endif /* !HAVE_MACHINE_ENDIAN_H */
 #include <compat/endian.h>
-#endif /* !HAVE_SYS_ENDIANG_H */
+#endif /* !HAVE_SYS_ENDIAN_H */
 #ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
 #else /* !HAVE_FULL_QUEUE_H */
