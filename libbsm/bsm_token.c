@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#46 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#47 $
  */
 
 #include <sys/types.h>
@@ -347,12 +347,12 @@ au_to_in_addr(struct in_addr *internet_addr)
 	token_t *t;
 	u_char *dptr = NULL;
 
-	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t));
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(uint32_t));
 	if (t == NULL)
 		return (NULL);
 
 	ADD_U_CHAR(dptr, AUT_IN_ADDR);
-	ADD_U_INT32(dptr, internet_addr->s_addr);
+	ADD_MEM(dptr, &internet_addr->s_addr, sizeof(uint32_t));
 
 	return (t);
 }
@@ -369,13 +369,13 @@ au_to_in_addr_ex(struct in6_addr *internet_addr)
 	u_char *dptr = NULL;
 	u_int32_t type = AF_INET6;
 
-	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 5 * sizeof(u_int32_t));
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 5 * sizeof(uint32_t));
 	if (t == NULL)
 		return (NULL);
 
 	ADD_U_CHAR(dptr, AUT_IN_ADDR_EX);
 	ADD_U_INT32(dptr, type);
-	ADD_MEM(dptr, internet_addr, sizeof(*internet_addr));
+	ADD_MEM(dptr, internet_addr, 5 * sizeof(uint32_t));
 
 	return (t);
 }
@@ -832,21 +832,28 @@ au_to_sock_inet32(struct sockaddr_in *so)
 {
 	token_t *t;
 	u_char *dptr = NULL;
+	uint16_t family;
 
-	GET_TOKEN_AREA(t, dptr, 3 * sizeof(u_char) + sizeof(u_int16_t) +
-	    sizeof(u_int32_t));
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2 * sizeof(uint16_t) +
+	    sizeof(uint32_t));
 	if (t == NULL)
 		return (NULL);
 
 	ADD_U_CHAR(dptr, AUT_SOCKINET32);
 	/*
-	 * In Darwin, sin_family is one octet, but BSM defines the token
- 	 * to store two. So we copy in a 0 first.
+	 * BSM defines the family field as 16 bits, but many operating
+	 * systems have an 8-bit sin_family field.  Extend to 16 bits before
+	 * writing into the token.  Assume that both the port and the address
+	 * in the sockaddr_in are already in network byte order, but family
+	 * is in local byte order.
+	 *
+	 * XXXRW: Should a name space conversion be taking place on the value
+	 * of sin_family?
  	 */
-	ADD_U_CHAR(dptr, 0);
-	ADD_U_CHAR(dptr, so->sin_family);
-	ADD_U_INT16(dptr, so->sin_port);
-	ADD_U_INT32(dptr, so->sin_addr.s_addr);
+	family = so->sin_family;
+	ADD_U_INT16(dptr, family);
+	ADD_MEM(dptr, &so->sin_port, sizeof(uint16_t));
+	ADD_MEM(dptr, &so->sin_addr.s_addr, sizeof(uint32_t));
 
 	return (t);
 
@@ -872,7 +879,7 @@ au_to_sock_inet128(struct sockaddr_in6 *so)
 	ADD_U_CHAR(dptr, so->sin6_family);
 
 	ADD_U_INT16(dptr, so->sin6_port);
-	ADD_MEM(dptr, &so->sin6_addr, sizeof(so->sin6_addr));
+	ADD_MEM(dptr, &so->sin6_addr, 4 * sizeof(uint32_t));
 
 	return (t);
 

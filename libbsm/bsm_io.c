@@ -31,7 +31,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#36 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#37 $
  */
 
 #include <sys/types.h>
@@ -1356,7 +1356,8 @@ fetch_inaddr_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_U_INT32(buf, len, tok->tt.inaddr.addr, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.inaddr.addr, sizeof(uint32_t),
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -1430,15 +1431,18 @@ fetch_ip_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.ip.len, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.len, sizeof(uint16_t),
+	    tok->len, err);
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.ip.id, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.id, sizeof(uint16_t),
+	    tok->len, err);
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.ip.offset, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.offset, sizeof(uint16_t),
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -1450,7 +1454,8 @@ fetch_ip_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.ip.chksm, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.ip.chksm, sizeof(uint16_t),
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -1478,17 +1483,17 @@ print_ip_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	print_delim(fp, del);
 	print_mem(fp, (u_char *)(&tok->tt.ip.tos), sizeof(u_char));
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.ip.len, "%u");
+	print_2_bytes(fp, ntohs(tok->tt.ip.len), "%u");
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.ip.id, "%u");
+	print_2_bytes(fp, ntohs(tok->tt.ip.id), "%u");
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.ip.offset, "%u");
+	print_2_bytes(fp, ntohs(tok->tt.ip.offset), "%u");
 	print_delim(fp, del);
 	print_mem(fp, (u_char *)(&tok->tt.ip.ttl), sizeof(u_char));
 	print_delim(fp, del);
 	print_mem(fp, (u_char *)(&tok->tt.ip.prot), sizeof(u_char));
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.ip.chksm, "%u");
+	print_2_bytes(fp, ntohs(tok->tt.ip.chksm), "%u");
 	print_delim(fp, del);
 	print_ip_address(fp, tok->tt.ip.src);
 	print_delim(fp, del);
@@ -1602,7 +1607,8 @@ fetch_iport_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.iport.port, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.iport.port, sizeof(uint16_t),
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -1616,7 +1622,7 @@ print_iport_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 
 	print_tok_type(fp, tok->id, "ip port", raw);
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.iport.port, "%#x");
+	print_2_bytes(fp, ntohs(tok->tt.iport.port), "%#x");
 }
 
 /*
@@ -1952,7 +1958,8 @@ fetch_sock_inet32_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.sockinet32.port, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.sockinet32.port,
+	    sizeof(uint16_t), tok->len, err);
 	if (err)
 		return (-1);
 
@@ -1973,7 +1980,7 @@ print_sock_inet32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	print_delim(fp, del);
 	print_2_bytes(fp, tok->tt.sockinet32.family, "%u");
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.sockinet32.port, "%u");
+	print_2_bytes(fp, ntohs(tok->tt.sockinet32.port), "%u");
 	print_delim(fp, del);
 	print_ip_address(fp, tok->tt.sockinet32.addr);
 }
@@ -1982,7 +1989,8 @@ print_sock_inet32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * socket family           2 bytes
  * path                    104 bytes
  */
-static int fetch_sock_unix_tok(tokenstr_t *tok, char *buf, int len)
+static int
+fetch_sock_unix_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
@@ -2018,7 +2026,8 @@ print_sock_unix_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * remote port             2 bytes
  * remote address          4 bytes
  */
-static int fetch_socket_tok(tokenstr_t *tok, char *buf, int len)
+static int
+fetch_socket_tok(tokenstr_t *tok, char *buf, int len)
 {
 	int err = 0;
 
@@ -2026,7 +2035,8 @@ static int fetch_socket_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.socket.l_port, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.l_port, sizeof(uint16_t),
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -2035,7 +2045,8 @@ static int fetch_socket_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.socket.r_port, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.r_port, sizeof(uint16_t),
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -2056,11 +2067,11 @@ print_socket_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	print_delim(fp, del);
 	print_2_bytes(fp, tok->tt.socket.type, "%u");
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.socket.l_port, "%u");
+	print_2_bytes(fp, ntohs(tok->tt.socket.l_port), "%u");
 	print_delim(fp, del);
 	print_ip_address(fp, tok->tt.socket.l_addr);
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.socket.r_port, "%u");
+	print_2_bytes(fp, ntohs(tok->tt.socket.r_port), "%u");
 	print_delim(fp, del);
 	print_ip_address(fp, tok->tt.socket.r_addr);
 }
@@ -2380,8 +2391,8 @@ fetch_socketex32_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT16(buf, len, tok->tt.socket_ex32.l_port, tok->len,
-	    err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.l_port,
+	    sizeof(uint16_t), tok->len, err);
 	if (err)
 		return (-1);
 
@@ -2395,8 +2406,8 @@ fetch_socketex32_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT32(buf, len, tok->tt.socket_ex32.r_port, tok->len,
-	    err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket_ex32.r_port,
+	    sizeof(uint16_t), tok->len, err);
 	if (err)
 		return (-1);
 
@@ -2422,11 +2433,11 @@ print_socketex32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	print_delim(fp, del);
 	print_2_bytes(fp, tok->tt.socket_ex32.type, "%#x");
 	print_delim(fp, del);
-	print_2_bytes(fp, tok->tt.socket_ex32.l_port, "%#x");
+	print_2_bytes(fp, ntohs(tok->tt.socket_ex32.l_port), "%#x");
 	print_delim(fp, del);
 	print_ip_address(fp, tok->tt.socket_ex32.l_addr);
 	print_delim(fp, del);
-	print_4_bytes(fp, tok->tt.socket_ex32.r_port, "%#x");
+	print_4_bytes(fp, ntohs(tok->tt.socket_ex32.r_port), "%#x");
 	print_delim(fp, del);
 	print_ip_address(fp, tok->tt.socket_ex32.r_addr);
 }
