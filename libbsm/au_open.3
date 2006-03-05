@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_open.3#2 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_open.3#3 $
 .\"
 .Dd March 4, 2006
 .Dt AU_OPEN 3
@@ -66,8 +66,8 @@ owns the token memory, and does not need to free it directly via a call to
 .Pp
 The
 .Fn au_close
-is used to commit an audit record to the system audit log, or abandon the
-record.
+function is used to commit an audit record to the system audit log, or
+abandon the record.
 In either cases, all resources associated with the record will be released.
 The
 .Va keep
@@ -82,6 +82,7 @@ tokens added to the record, using the event identifier passed via
 and a trailer added to the end.
 Committing a record to the system audit log requires privilege.
 .Pp
+The
 .Fn au_close_buffer
 function writes the resulting record to an in-memory buffer of size
 .Va *buflen ;
@@ -93,7 +94,7 @@ is the event identifier to use in the record header.
 The function
 .Fn au_open
 returns a non-negative audit record descriptor number on success, or a
-negative value on failure, along with error information in.
+negative value on failure, along with error information in
 .Va errno .
 .Pp
 The functions
@@ -119,7 +120,7 @@ division of McAfee Inc., under contract to Apple Computer, Inc., in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Sh BUGS
-There is currently no interface to extract a single token without wrapping
+There is currently no interface to extract a single token without
 it being automatically wrapped in a header and trailer.
 .Pp
 Currently,
@@ -134,4 +135,4 @@ Ideally,
 .Fn au_open
 would reserve resources necessary to commit any submitted record, releasing
 them on
-.Fn au_close.
+.Fn au_close .
