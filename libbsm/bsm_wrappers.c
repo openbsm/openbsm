@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#18 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#19 $
  */
 
 #ifdef __APPLE__
@@ -130,7 +130,7 @@ audit_set_terminal_id(au_tid_t *tid)
  * tok = au_to_random_token_2(...);
  * au_write(aufd, tok);
  * ...
- * au_close(aufd, 1, AUE_your_event_type);
+ * au_close(aufd, AU_TO_WRITE, AUE_your_event_type);
  *
  * Assumes, like all wrapper calls, that the caller has previously checked
  * that auditing is enabled via the audit_get_state() call.
@@ -156,7 +156,7 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
 	if (subject && au_write(aufd, subject) == -1) {
 		au_free_token(subject);
 		au_free_token(misctok);
-		(void)au_close(aufd, 0, event_code);
+		(void)au_close(aufd, AU_TO_WRITE, event_code);
 		syslog(LOG_ERR, "%s: write of subject failed", func);
 		return (kAUWriteSubjectTokErr);
 	}
@@ -164,31 +164,30 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
 	/* Save the event-specific token. */
 	if (misctok && au_write(aufd, misctok) == -1) {
 		au_free_token(misctok);
-		(void)au_close(aufd, 0, event_code);
+		(void)au_close(aufd, AU_NO_WRITE, event_code);
 		syslog(LOG_ERR, "%s: write of caller token failed", func);
 		return (kAUWriteCallerTokErr);
 	}
 
 	/* Tokenize and save the return value. */
 	if ((rettok = au_to_return32(retval, errcode)) == NULL) {
-		(void)au_close(aufd, 0, event_code);
+		(void)au_close(aufd, AU_NO_WRITE, event_code);
 		syslog(LOG_ERR, "%s: au_to_return32() failed", func);
 		return (kAUMakeReturnTokErr);
 	}
 
 	if (au_write(aufd, rettok) == -1) {
 		au_free_token(rettok);
-		(void)au_close(aufd, 0, event_code);
+		(void)au_close(aufd, AU_NO_WRITE, event_code);
 		syslog(LOG_ERR, "%s: write of return code failed", func);
 		return (kAUWriteReturnTokErr);
 	}
 
 	/*
-	 * au_close()'s second argument is "keep": if keep == 0, the record is
-	 * discarded.  We assume the caller wouldn't have bothered with this
+	 * We assume the caller wouldn't have bothered with this
 	 * function if it hadn't already decided to keep the record.
 	 */
-	if (au_close(aufd, 1, event_code) < 0) {
+	if (au_close(aufd, AU_TO_WRITE, event_code) < 0) {
 		syslog(LOG_ERR, "%s: au_close() failed", func);
 		return (kAUCloseErr);
 	}

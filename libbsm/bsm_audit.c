@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#22 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#23 $
  */
 
 #include <sys/types.h>
@@ -280,11 +280,10 @@ au_close(int d, int keep, short event)
 		return (-1); /* Invalid descriptor */
 	}
 
-	if (!keep) {
+	if (keep == AU_NO_WRITE) {
 		retval = 0;
 		goto cleanup;
 	}
-
 
 	tot_rec_size = rec->len + BSM_HEADER_SIZE + BSM_TRAILER_SIZE;
 
