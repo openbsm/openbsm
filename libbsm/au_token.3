@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_token.3#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_token.3#6 $
 .\"
 .Dd April 19, 2005
 .Dt AU_TOKEN 3
@@ -116,9 +116,7 @@
 .Ft token_t *
 .Fn au_to_opaque "char *data" "u_int64_t bytes"
 .Ft token_t *
-.Fn au_to_file "char *file"
-.Ft token_t *
-.Fn au_to_file "char *file"
+.Fn au_to_file "char *file" "struct timeval tm"
 .Ft token_t *
 .Fn au_to_text "char *text"
 .Ft token_t *

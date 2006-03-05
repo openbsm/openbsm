@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#43 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#44 $
  */
 
 #include <sys/types.h>
@@ -243,6 +243,7 @@ au_to_data(char unit_print, char unit_type, char unit_count, char *p)
 	/* Determine the size of the basic unit. */
 	switch (unit_type) {
 	case AUR_BYTE:
+	/* case AUR_CHAR: */
 		datasize = AUR_BYTE_SIZE;
 		break;
 
@@ -250,8 +251,13 @@ au_to_data(char unit_print, char unit_type, char unit_count, char *p)
 		datasize = AUR_SHORT_SIZE;
 		break;
 
-	case AUR_LONG:
-		datasize = AUR_LONG_SIZE;
+	case AUR_INT32:
+	/* case AUR_INT: */
+		datasize = AUR_INT32_SIZE;
+		break;
+
+	case AUR_INT64:
+		datasize = AUR_INT64_SIZE;
 		break;
 
 	default:
@@ -261,7 +267,7 @@ au_to_data(char unit_print, char unit_type, char unit_count, char *p)
 
 	totdata = datasize * unit_count;
 
-	GET_TOKEN_AREA(t, dptr, totdata + 4 * sizeof(u_char));
+	GET_TOKEN_AREA(t, dptr, 4 * sizeof(u_char) + totdata);
 	if (t == NULL)
 		return (NULL);
 
@@ -528,23 +534,12 @@ au_to_opaque(char *data, u_int16_t bytes)
  * file pathname           N bytes + 1 terminating NULL byte
  */
 token_t *
-#if defined(KERNEL) || defined(_KERNEL)
 au_to_file(char *file, struct timeval tm)
-#else
-au_to_file(char *file)
-#endif
 {
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t filelen;
 	u_int32_t timems;
-#if !defined(KERNEL) && !defined(_KERNEL)
-	struct timeval tm;
-	struct timezone tzp;
-
-	if (gettimeofday(&tm, &tzp) == -1)
-		return (NULL);
-#endif
 
 	filelen = strlen(file);
 	filelen += 1;

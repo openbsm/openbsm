@@ -31,7 +31,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#34 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#35 $
  */
 
 #include <sys/types.h>
@@ -893,6 +893,7 @@ fetch_arb_tok(tokenstr_t *tok, char *buf, int len)
 	 */
 	switch(tok->tt.arb.bu) {
 	case AUR_BYTE:
+	/* case AUR_CHAR: */
 		datasize = AUR_BYTE_SIZE;
 		break;
 
@@ -900,8 +901,13 @@ fetch_arb_tok(tokenstr_t *tok, char *buf, int len)
 		datasize = AUR_SHORT_SIZE;
 		break;
 
-	case AUR_LONG:
-		datasize = AUR_LONG_SIZE;
+	case AUR_INT32:
+	/* case AUR_INT: */
+		datasize = AUR_INT32_SIZE;
+		break;
+
+	case AUR_INT64:
+		datasize = AUR_INT64_SIZE;
 		break;
 
 	default:
@@ -962,6 +968,7 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	print_delim(fp, del);
 	switch(tok->tt.arb.bu) {
 	case AUR_BYTE:
+	/* case AUR_CHAR: */
 		str = "byte";
 		size = AUR_BYTE_SIZE;
 		print_string(fp, str, strlen(str));
@@ -979,20 +986,33 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		print_delim(fp, del);
 		print_1_byte(fp, tok->tt.arb.uc, "%u");
 		print_delim(fp, del);
-		for (i = 0; i<tok->tt.arb.uc; i++)
+		for (i = 0; i < tok->tt.arb.uc; i++)
 			fprintf(fp, format, *((u_int16_t *)(tok->tt.arb.data +
 			    (size * i))));
 		break;
 
-	case AUR_LONG:
+	case AUR_INT32:
+	/* case AUR_INT: */
 		str = "int";
-		size = AUR_LONG_SIZE;
+		size = AUR_INT32_SIZE;
 		print_string(fp, str, strlen(str));
 		print_delim(fp, del);
 		print_1_byte(fp, tok->tt.arb.uc, "%u");
 		print_delim(fp, del);
-		for (i = 0; i<tok->tt.arb.uc; i++)
+		for (i = 0; i < tok->tt.arb.uc; i++)
 			fprintf(fp, format, *((u_int32_t *)(tok->tt.arb.data +
+			    (size * i))));
+		break;
+
+	case AUR_INT64:
+		str = "int64";
+		size = AUR_INT64_SIZE;
+		print_string(fp, str, strlen(str));
+		print_delim(fp, del);
+		print_1_byte(fp, tok->tt.arb.uc, "%u");
+		print_delim(fp, del);
+		for (i = 0; i < tok->tt.arb.uc; i++)
+			fprintf(fp, format, *((u_int64_t *)(tok->tt.arb.data +
 			    (size * i))));
 		break;
 

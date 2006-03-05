@@ -4,6 +4,15 @@ OpenBSM 1.0 alpha 6
   previously we used hard-coded 0 and 1 values.
 - Add man page for au_open(), au_write(), au_close(), and
   au_close_buffer().
+- Support a more complete range of data types for the arbitrary data token:
+  add AUR_CHAR (alias to AUR_BYTE), remove AUR_LONG, add AUR_INT32 (alias
+  to AUR_INT), add AUR_INT64.
+- Add au_close_token(), which allows writing a single token_t to a memory
+  buffer.  Not likely to be used much by applications, but useful for
+  writing test tools.
+- Modify au_to_file() so that it accepts a timeval in user space, not just
+  kernel -- this is not a Solaris BSM API so can be modified without
+  causing compatibility issues.
 
 OpenBSM 1.0 alpha 5
 
@@ -131,4 +140,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#3 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#4 $

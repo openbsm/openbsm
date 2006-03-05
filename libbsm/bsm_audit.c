@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#24 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#25 $
  */
 
 #include <sys/types.h>
@@ -359,4 +359,25 @@ au_close_buffer(int d, short event, u_char *buffer, size_t *buflen)
 cleanup:
 	au_teardown(rec);
 	return (retval);
+}
+
+/*
+ * au_close_token() returns the byte format of a token_t.  This won't
+ * generally be used by applications, but is quite useful for writing test
+ * tools.  Will free the token on either success or failure.
+ */
+int
+au_close_token(token_t *tok, u_char *buffer, size_t *buflen)
+{
+
+	if (tok->len > *buflen) {
+		au_free_token(tok);
+		errno = ENOMEM;
+		return (EINVAL);
+	}
+
+	memcpy(buffer, tok->t_data, tok->len);
+	*buflen = tok->len;
+	au_free_token(tok);
+	return (0);
 }

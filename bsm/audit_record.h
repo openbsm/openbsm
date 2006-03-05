@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#14 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#15 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -187,13 +187,19 @@
 
 /* data-types for the arbitrary token */
 #define AUR_BYTE        0
+#define AUR_CHAR        AUR_BYTE
 #define AUR_SHORT       1
-#define AUR_LONG        2
+#define AUR_INT32       2
+#define AUR_INT         AUR_INT
+#define AUR_INT64       3
 
 /* ... and their sizes */
 #define AUR_BYTE_SIZE       sizeof(u_char)
+#define AUR_CHAR_SIZE       AUR_BYTE_SIZE
 #define AUR_SHORT_SIZE      sizeof(uint16_t)
-#define AUR_LONG_SIZE       sizeof(uint32_t)
+#define AUR_INT32_SIZE      sizeof(uint32_t)
+#define AUR_INT_SIZE        AUR_INT32_SIZE
+#define AUR_INT64_SIZE      sizeof(uint64_t)
 
 /* Modifiers for the header token */
 #define PAD_NOTATTR  0x4000   /* nonattributable event */
@@ -230,12 +236,9 @@ int	 au_open(void);
 int	 au_write(int d, token_t *m);
 int	 au_close(int d, int keep, short event);
 int	 au_close_buffer(int d, short event, u_char *buffer, size_t *buflen);
+int	 au_close_token(token_t *tok, u_char *buffer, size_t *buflen);
 
-#if defined(KERNEL) || defined(_KERNEL)
 token_t	*au_to_file(char *file, struct timeval tm);
-#else
-token_t	*au_to_file(char *file);
-#endif
 
 #if defined(KERNEL) || defined(_KERNEL)
 token_t	*au_to_header(int rec_size, au_event_t e_type, au_emod_t e_mod,

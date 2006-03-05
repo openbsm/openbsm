@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_open.3#3 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_open.3#4 $
 .\"
 .Dd March 4, 2006
 .Dt AU_OPEN 3
@@ -46,6 +46,8 @@
 .Fn au_close "int d" "int keep" "short event"
 .Ft int
 .Fn au_close_buffer "int d" "short event" "u_char *buffer" "size_t *buflen"
+.Ft int
+.Fn au_close_token "token_t *tok" "u_char *buffer" "size_t *buflen"
 .Sh DESCRIPTION
 These interfaces allow applications to allocate audit records, construct a
 record using a series of tokens, and commit the audit record to the system
@@ -90,6 +92,17 @@ it will write back the filled buffer length into the same variable.
 The argument
 .Va short
 is the event identifier to use in the record header.
+.Pp
+The
+.Fn au_close_token
+function generates the BSM stream output for a single token,
+.Va tok ,
+in the passed buffer
+.Va buffer .
+The initial buffer size and resulting data size are passed via
+.Va *buflen .
+.Fn au_close_token
+will free the token before returning.
 .Sh RETURN VALUES
 The function
 .Fn au_open
@@ -100,8 +113,9 @@ negative value on failure, along with error information in
 The functions
 .Fn au_write ,
 .Fn au_close ,
+.Fn au_close_buffer ,
 and
-.Fn au_close_buffer
+.Fn au_close_token
 return 0 on success, or a negative value on failure, along with error
 information in
 .Va errno .
@@ -120,9 +134,6 @@ division of McAfee Inc., under contract to Apple Computer, Inc., in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Sh BUGS
-There is currently no interface to extract a single token without
-it being automatically wrapped in a header and trailer.
-.Pp
 Currently,
 .Fn au_open
 does not reserve kernel resources necessary to commit the record to the
