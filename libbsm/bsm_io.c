@@ -31,7 +31,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#35 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#36 $
  */
 
 #include <sys/types.h>
@@ -1732,7 +1732,8 @@ fetch_process32_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_U_INT32(buf, len, tok->tt.proc32.tid.addr, tok->len, err);
+	READ_TOKEN_BYTES(buf, len, &tok->tt.proc32.tid.addr,
+	    sizeof(tok->tt.proc32.tid.addr), tok->len, err);
 	if (err)
 		return (-1);
 

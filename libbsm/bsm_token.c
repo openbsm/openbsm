@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#45 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#46 $
  */
 
 #include <sys/types.h>
@@ -645,7 +645,7 @@ au_to_process32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 	ADD_U_INT32(dptr, pid);
 	ADD_U_INT32(dptr, sid);
 	ADD_U_INT32(dptr, tid->port);
-	ADD_U_INT32(dptr, tid->machine);
+	ADD_MEM(dptr, &tid->machine, sizeof(u_int32_t));
 
 	return (t);
 }
@@ -918,7 +918,7 @@ au_to_subject32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 	ADD_U_INT32(dptr, pid);
 	ADD_U_INT32(dptr, sid);
 	ADD_U_INT32(dptr, tid->port);
-	ADD_U_INT32(dptr, tid->machine);
+	ADD_MEM(dptr, &tid->machine, sizeof(u_int32_t));
 
 	return (t);
 }
