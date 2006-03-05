@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_open.3#1 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_open.3#2 $
 .\"
 .Dd March 4, 2006
 .Dt AU_OPEN 3
@@ -74,7 +74,7 @@ The
 argument determines the behavior: a value of
 .Dv AU_TO_WRITE
 causes the record to be committed; a value of
-.Dv AU_NO_WRITE
+.Dv AU_TO_NO_WRITE
 causes it to be abandoned.
 When the audit record is committed, a BSM header will be inserted before
 tokens added to the record, using the event identifier passed via

@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#19 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#20 $
  */
 
 #ifdef __APPLE__
@@ -164,21 +164,21 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
 	/* Save the event-specific token. */
 	if (misctok && au_write(aufd, misctok) == -1) {
 		au_free_token(misctok);
-		(void)au_close(aufd, AU_NO_WRITE, event_code);
+		(void)au_close(aufd, AU_TO_NO_WRITE, event_code);
 		syslog(LOG_ERR, "%s: write of caller token failed", func);
 		return (kAUWriteCallerTokErr);
 	}
 
 	/* Tokenize and save the return value. */
 	if ((rettok = au_to_return32(retval, errcode)) == NULL) {
-		(void)au_close(aufd, AU_NO_WRITE, event_code);
+		(void)au_close(aufd, AU_TO_NO_WRITE, event_code);
 		syslog(LOG_ERR, "%s: au_to_return32() failed", func);
 		return (kAUMakeReturnTokErr);
 	}
 
 	if (au_write(aufd, rettok) == -1) {
 		au_free_token(rettok);
-		(void)au_close(aufd, AU_NO_WRITE, event_code);
+		(void)au_close(aufd, AU_TO_NO_WRITE, event_code);
 		syslog(LOG_ERR, "%s: write of return code failed", func);
 		return (kAUWriteReturnTokErr);
 	}
