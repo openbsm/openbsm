@@ -20,8 +20,10 @@ OpenBSM 1.0 alpha 6
   definition.  Don't try to retrieve time zone information using
   gettimeofday(), as it's not needed, and introduces possible failure
   modes.
-- Always read and write process32 and subject32 machine/addr fields in
-  network byte order.
+- Don't perform byte order transformations on the addr/machine fields of
+  the terminal ID that appears in the process32/subject32 tokens.  These
+  are assumed to be IP addresses, and as such, to be in network byte
+  order.
 
 OpenBSM 1.0 alpha 5
 
@@ -149,4 +151,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#6 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#7 $
