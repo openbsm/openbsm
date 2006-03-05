@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#15 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#16 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -240,17 +240,14 @@ int	 au_close_token(token_t *tok, u_char *buffer, size_t *buflen);
 
 token_t	*au_to_file(char *file, struct timeval tm);
 
-#if defined(KERNEL) || defined(_KERNEL)
-token_t	*au_to_header(int rec_size, au_event_t e_type, au_emod_t e_mod,
+token_t	*au_to_header32_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 	    struct timeval tm);
-token_t	*au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod,
-	    struct timeval tm);
-#else
+#if !defined(KERNEL) && !defined(_KERNEL)
 token_t	*au_to_header(int rec_size, au_event_t e_type, au_emod_t e_mod);
 token_t	*au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod);
+token_t	*au_to_header64(int rec_size, au_event_t e_type, au_emod_t e_mod);
 #endif
 
-token_t	*au_to_header64(int rec_size, au_event_t e_type, au_emod_t e_mod);
 token_t	*au_to_me(void);
 token_t	*au_to_arg(char n, char *text, uint32_t v);
 token_t	*au_to_arg32(char n, char *text, uint32_t v);

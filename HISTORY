@@ -13,6 +13,13 @@ OpenBSM 1.0 alpha 6
 - Modify au_to_file() so that it accepts a timeval in user space, not just
   kernel -- this is not a Solaris BSM API so can be modified without
   causing compatibility issues.
+- Define a new API, au_to_header32_tm(), which adds a struct timeval
+  argument to the ordinary au_to_header32(), which is now implemented by
+  wrapping au_to_header32_tm() and calling gettimeofday().  #ifndef KERNEL
+  the APIs that invoke gettimeofday(), rather than having a variable
+  definition.  Don't try to retrieve time zone information using
+  gettimeofday(), as it's not needed, and introduces possible failure
+  modes.
 
 OpenBSM 1.0 alpha 5
 
@@ -140,4 +147,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#4 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#5 $

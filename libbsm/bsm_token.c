@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#44 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#45 $
  */
 
 #include <sys/types.h>
@@ -1112,23 +1112,12 @@ au_to_exec_env(const char **env)
  * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
  */
 token_t *
-#if defined(KERNEL) || defined(_KERNEL)
-au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod,
+au_to_header32_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
     struct timeval tm)
-#else
-au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
-#endif
 {
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int32_t timems;
-#if !defined(KERNEL) && !defined(_KERNEL)
-	struct timeval tm;
-	struct timezone tzp;
-
-	if (gettimeofday(&tm, &tzp) == -1)
-		return (NULL);
-#endif
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) +
 	    sizeof(u_char) + 2 * sizeof(u_int16_t) + 2 * sizeof(u_int32_t));
@@ -1149,6 +1138,17 @@ au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 	return (t);
 }
 
+#if !defined(KERNEL) && !defined(_KERNEL)
+token_t *
+au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
+{
+	struct timeval tm;
+
+	if (gettimeofday(&tm, NULL) == -1)
+		return (NULL);
+	return (au_to_header32_tm(rec_size, e_type, e_mod, tm));
+}
+
 token_t *
 au_to_header64(__unused int rec_size, __unused au_event_t e_type,
     __unused au_emod_t e_mod)
@@ -1164,6 +1164,7 @@ au_to_header(int rec_size, au_event_t e_type, au_emod_t e_mod)
 
 	return (au_to_header32(rec_size, e_type, e_mod));
 }
+#endif
 
 /*
  * token ID                1 byte
