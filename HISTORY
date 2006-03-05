@@ -1,3 +1,10 @@
+OpenBSM 1.0 alpha 6
+
+- Use AU_TO_WRITE and AU_NO_TO_WRITE for the 'keep' argument to au_close();
+  previously we used hard-coded 0 and 1 values.
+- Add man page for au_open(), au_write(), au_close(), and
+  au_close_buffer().
+
 OpenBSM 1.0 alpha 5
 
 - Update install notes to indicate /etc files are to be installed manually.
@@ -124,4 +131,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#2 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#3 $
