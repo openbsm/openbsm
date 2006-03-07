@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#16 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#17 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -104,6 +104,8 @@ AC_CONFIG_FILES([Makefile
                  bsm/Makefile
                  libbsm/Makefile
                  man/Makefile
+                 test/Makefile
+                 test/bsm/Makefile
                  tools/Makefile])
 
 AC_OUTPUT
