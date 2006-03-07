@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#2 $
  */
 
 /*
@@ -468,15 +468,6 @@ generate_arg32_token(const char *directory, const char *token_filename,
 }
 
 static void
-generate_socket_token(const char *directory, const char *token_filename,
-    const char *record_filename)
-{
-	token_t *socket_token;
-
-}
-
-
-static void
 generate_seq_token(const char *directory, const char *token_filename,
     const char *record_filename)
 {
@@ -592,7 +583,6 @@ main(int argc, char *argv[])
 	generate_iport_token(directory, "iport_token", "iport_record");
 
 	generate_arg32_token(directory, "arg32_token", "arg32_record");
-	generate_socket_token(directory, "socket_token", "socket_record");
 	generate_seq_token(directory, "seq_token", "seq_record");
 	generate_attr_token(directory,  "attr_token", "attr_record");
 	generate_ipc_perm_token(directory, "ipc_perm_token",
