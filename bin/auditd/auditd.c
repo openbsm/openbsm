@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#13 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#14 $
  */
 
 #include <sys/types.h>
@@ -596,10 +596,10 @@ handle_sighup(void)
 }
 
 /*
- * Read the control file for triggers and handle appropriately.
+ * Read the control file for triggers/signals and handle appropriately.
  */
 static int
-wait_for_triggers(void)
+wait_for_events(void)
 {
 	int num;
 	unsigned int trigger;
@@ -814,7 +814,7 @@ main(int argc, char **argv)
 
 	setup();
 
-	rc = wait_for_triggers();
+	rc = wait_for_events();
 	syslog(LOG_INFO, "auditd exiting.\n");
 
 	exit(rc);
