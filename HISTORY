@@ -29,6 +29,8 @@ OpenBSM 1.0 alpha 6
   network byte order when decoding.
 - Beginnings of an OpenBSM test framework can now be found in openbsm/test.
   This code is not built or installed by default.
+- auditd now assigns more appropriate syslog levels to its debugging and
+  error information.
 
 OpenBSM 1.0 alpha 5
 
@@ -156,4 +158,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#9 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#10 $
