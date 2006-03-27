@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#2 $
  */
 
 #include <sys/queue.h>
@@ -169,7 +169,7 @@ main(int argc, char *argv[])
 	const char *conffile;
 	FILE *trail_fp;
 	FILE *conf_fp;
-	int ch, debug;
+	int ch;
 
 	conffile = AUDITFILTERD_CONFFILE;
 	trailfile = AUDITFILTERD_TRAILFILE;
