@@ -22895,7 +22895,7 @@ else
 fi
 
 
-                                                                                                                        ac_config_files="$ac_config_files Makefile bin/Makefile bin/audit/Makefile bin/auditd/Makefile bin/auditreduce/Makefile bin/praudit/Makefile bsm/Makefile libbsm/Makefile man/Makefile test/Makefile test/bsm/Makefile tools/Makefile"
+                                                                                                                                                      ac_config_files="$ac_config_files Makefile bin/Makefile bin/audit/Makefile bin/auditd/Makefile bin/auditfilterd/Makefile bin/auditreduce/Makefile bin/praudit/Makefile bsm/Makefile libbsm/Makefile modules/Makefile modules/auditfilter_noop/Makefile man/Makefile test/Makefile test/bsm/Makefile tools/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -23472,10 +23472,13 @@ do
   "bin/Makefile" ) CONFIG_FILES="$CONFIG_FILES bin/Makefile" ;;
   "bin/audit/Makefile" ) CONFIG_FILES="$CONFIG_FILES bin/audit/Makefile" ;;
   "bin/auditd/Makefile" ) CONFIG_FILES="$CONFIG_FILES bin/auditd/Makefile" ;;
+  "bin/auditfilterd/Makefile" ) CONFIG_FILES="$CONFIG_FILES bin/auditfilterd/Makefile" ;;
   "bin/auditreduce/Makefile" ) CONFIG_FILES="$CONFIG_FILES bin/auditreduce/Makefile" ;;
   "bin/praudit/Makefile" ) CONFIG_FILES="$CONFIG_FILES bin/praudit/Makefile" ;;
   "bsm/Makefile" ) CONFIG_FILES="$CONFIG_FILES bsm/Makefile" ;;
   "libbsm/Makefile" ) CONFIG_FILES="$CONFIG_FILES libbsm/Makefile" ;;
+  "modules/Makefile" ) CONFIG_FILES="$CONFIG_FILES modules/Makefile" ;;
+  "modules/auditfilter_noop/Makefile" ) CONFIG_FILES="$CONFIG_FILES modules/auditfilter_noop/Makefile" ;;
   "man/Makefile" ) CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
   "test/bsm/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/bsm/Makefile" ;;
