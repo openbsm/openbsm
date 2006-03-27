@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd_conf.c#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd_conf.c#2 $
  */
 
 /*
@@ -40,7 +40,14 @@
  * and a call to its reinit method fails, we will detach it.
  */
 
+#include <sys/types.h>
+
+#include <config/config.h>
+#ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
+#else
+#include <compat/queue.h>
+#endif
 
 #include <bsm/libbsm.h>
 #include <bsm/audit_filter.h>

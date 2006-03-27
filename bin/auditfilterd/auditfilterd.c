@@ -25,11 +25,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#3 $
  */
 
-#include <sys/queue.h>
+#include <sys/types.h>
 #include <sys/time.h>
+
+#include <config/config.h>
+#ifdef HAVE_FULL_QUEUE_H
+#include <sys/queue.h>
+#else
+#include <compat/queue.h>
+#endif
 
 #include <bsm/libbsm.h>
 #include <bsm/audit_filter.h>
