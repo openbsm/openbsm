@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#15 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#16 $
  */
 
 #include <sys/types.h>
@@ -44,6 +44,7 @@
 #include <bsm/audit_uevents.h>
 #include <bsm/libbsm.h>
 
+#include <err.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <grp.h>
@@ -63,6 +64,7 @@ static int	 ret, minval;
 static char	*lastfile = NULL;
 static int	 allhardcount = 0;
 static int	 triggerfd = 0;
+static int	 sigchlds, sigchlds_handled;
 static int	 sighups, sighups_handled;
 static int	 sigterms, sigterms_handled;
 static long	 global_flags;
@@ -422,6 +424,8 @@ relay_signal(int signal)
 		sighups++;
 	if (signal == SIGTERM)
 		sigterms++;
+	if (signal == SIGCHLD)
+		sigchlds++;
 }
 
 /*
@@ -489,7 +493,6 @@ handle_audit_trigger(int trigger)
 	static int last_trigger;
 	static time_t last_time;
 	struct dir_ent *dirent;
-	int rc;
 
 	/*
 	 * Suppres duplicate messages from the kernel within the specified
@@ -595,6 +598,34 @@ handle_sighup(void)
 }
 
 /*
+ * Reap our children.
+ */
+static void
+reap_children(void)
+{
+	pid_t child;
+	int wstatus;
+
+	while ((child = waitpid(-1, &wstatus, WNOHANG)) > 0) {
+		if (!wstatus)
+			continue;
+		syslog(LOG_INFO, "warn process [pid=%d] %s %d.", child,
+		    ((WIFEXITED(wstatus)) ? "exited with non-zero status" :
+		    "exited as a result of signal"),
+		    ((WIFEXITED(wstatus)) ? WEXITSTATUS(wstatus) :
+		    WTERMSIG(wstatus)));
+	}
+}
+
+static void
+handle_sigchld(void)
+{
+
+	sigchlds_handled = sigchlds;
+	reap_children();
+}
+
+/*
  * Read the control file for triggers/signals and handle appropriately.
  */
 static int
@@ -613,6 +644,10 @@ wait_for_events(void)
 			syslog(LOG_DEBUG, "%s: SIGTERM", __FUNCTION__);
 			break;
 		}
+		if (sigchlds != sigchlds_handled) {
+			syslog(LOG_DEBUG, "%s: SIGCHLD", __FUNCTION__);
+			handle_sigchld();
+		}
 		if (sighups != sighups_handled) {
 			syslog(LOG_DEBUG, "%s: SIGHUP", __FUNCTION__);
 			handle_sighup();
@@ -630,26 +665,6 @@ wait_for_events(void)
 			handle_audit_trigger(trigger);
 	}
 	return (close_all());
-}
-
-/*
- * Reap our children.
- */
-static void
-reap_children(void)
-{
-	pid_t child;
-	int wstatus;
-
-	while ((child = waitpid(-1, &wstatus, WNOHANG)) > 0) {
-		if (!wstatus)
-			continue;
-		syslog(LOG_INFO, "warn process [pid=%d] %s %d.", child,
-		    ((WIFEXITED(wstatus)) ? "exited with non-zero status" :
-		    "exited as a result of signal"),
-		    ((WIFEXITED(wstatus)) ? WEXITSTATUS(wstatus) :
-		    WTERMSIG(wstatus)));
-	}
 }
 
 /*
@@ -730,11 +745,29 @@ config_audit_controls(void)
 static void
 setup(void)
 {
+	auditinfo_t auinfo;
 	int aufd;
 	token_t *tok;
 
 	if ((triggerfd = open(AUDIT_TRIGGER_FILE, O_RDONLY, 0)) < 0) {
 		syslog(LOG_ERR, "Error opening trigger file");
+		fail_exit();
+	}
+
+	/*
+	 * To provide event feedback cycles and avoid auditd becoming
+	 * stalled if auditing is suspended, auditd and its children run
+	 * without their events being audited.  We allow the uid, tid, and
+	 * mask fields to be implicitly set to zero, but do set the pid.  We
+	 * run this after opening the trigger device to avoid configuring
+	 * audit state without audit present in the system.
+	 *
+	 * XXXRW: Is there more to it than this?
+	 */
+	bzero(&auinfo, sizeof(auinfo));
+	auinfo.ai_asid = getpid();
+	if (setaudit(&auinfo) == -1) {
+		syslog(LOG_ERR, "Error setting audit stat");
 		fail_exit();
 	}
 
