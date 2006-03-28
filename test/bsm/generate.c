@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#3 $
  */
 
 /*
@@ -52,11 +52,13 @@
 #include <sysexits.h>
 #include <unistd.h>
 
+static int	do_records, do_tokens;
+
 static void
 usage(void)
 {
 
-	fprintf(stderr, "generate path\n");
+	fprintf(stderr, "generate [-rt] path\n");
 	exit(EX_USAGE);
 }
 
@@ -185,8 +187,7 @@ static char		*data_token_data = "SomeData";
 static char		 data_token_unit_count = sizeof("SomeData") + 1;
 
 static void
-generate_data_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_data_token(const char *directory, const char *token_filename)
 {
 	token_t *data_token;
 
@@ -195,6 +196,12 @@ generate_data_token(const char *directory, const char *token_filename,
 	if (data_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_data");
 	write_token(directory, token_filename, data_token);
+}
+
+static void
+generate_data_record(const char *directory, const char *record_filename)
+{
+	token_t *data_token;
 
 	data_token = au_to_data(data_token_unit_print, data_token_unit_type,
 	    data_token_unit_count, data_token_data);
@@ -207,8 +214,7 @@ static char		 ipc_type = AT_IPC_MSG;
 static int		 ipc_id = 0x12345678;
 
 static void
-generate_ipc_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_ipc_token(const char *directory, const char *token_filename)
 {
 	token_t *ipc_token;
 
@@ -216,6 +222,12 @@ generate_ipc_token(const char *directory, const char *token_filename,
 	if (ipc_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_ipc");
 	write_token(directory, token_filename, ipc_token);
+}
+
+static void
+generate_ipc_record(const char *directory, const char *record_filename)
+{
+	token_t *ipc_token;
 
 	ipc_token = au_to_ipc(ipc_type, ipc_id);
 	if (ipc_token == NULL)
@@ -226,8 +238,7 @@ generate_ipc_token(const char *directory, const char *token_filename,
 static char		*path_token_path = "/test/this/is/a/test";
 
 static void
-generate_path_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_path_token(const char *directory, const char *token_filename)
 {
 	token_t *path_token;
 
@@ -235,6 +246,12 @@ generate_path_token(const char *directory, const char *token_filename,
 	if (path_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_path");
 	write_token(directory, token_filename, path_token);
+}
+
+static void
+generate_path_record(const char *directory, const char *record_filename)
+{
+	token_t *path_token;
 
 	path_token = au_to_path(path_token_path);
 	if (path_token == NULL)
@@ -252,8 +269,7 @@ static au_asid_t	 subject32_sid = 0x97867564;
 static au_tid_t		 subject32_tid = { 0x16593746 };
 
 static void
-generate_subject32_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_subject32_token(const char *directory, const char *token_filename)
 {
 	token_t *subject32_token;
 
@@ -265,6 +281,14 @@ generate_subject32_token(const char *directory, const char *token_filename,
 	if (subject32_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_subject32");
 	write_token(directory, token_filename, subject32_token);
+}
+
+static void
+generate_subject32_record(const char *directory, const char *record_filename)
+{
+	token_t *subject32_token;
+
+	subject32_tid.machine = inet_addr("127.0.0.1");
 
 	subject32_token = au_to_subject32(subject32_auid, subject32_euid,
 	    subject32_egid, subject32_ruid, subject32_rgid, subject32_pid,
@@ -284,8 +308,7 @@ static au_asid_t	 process32_sid = 0x97867564;
 static au_tid_t		 process32_tid = { 0x16593746 };
 
 static void
-generate_process32_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_process32_token(const char *directory, const char *token_filename)
 {
 	token_t *process32_token;
 
@@ -297,6 +320,14 @@ generate_process32_token(const char *directory, const char *token_filename,
 	if (process32_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_process32");
 	write_token(directory, token_filename, process32_token);
+}
+
+static void
+generate_process32_record(const char *directory, const char *record_filename)
+{
+	token_t *process32_token;
+
+	process32_tid.machine = inet_addr("127.0.0.1");
 
 	process32_token = au_to_process32(process32_auid, process32_euid,
 	    process32_egid, process32_ruid, process32_rgid, process32_pid,
@@ -310,8 +341,7 @@ static char		 return32_status = 0xd7;
 static uint32_t		 return32_ret = 0x12345678;
 
 static void
-generate_return32_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_return32_token(const char *directory, const char *token_filename)
 {
 	token_t *return32_token;
 
@@ -319,6 +349,12 @@ generate_return32_token(const char *directory, const char *token_filename,
 	if (return32_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_return32");
 	write_token(directory, token_filename, return32_token);
+}
+
+static void
+generate_return32_record(const char *directory, const char *record_filename)
+{
+	token_t *return32_token;
 
 	return32_token = au_to_return32(return32_status, return32_ret);
 	if (return32_token == NULL)
@@ -329,8 +365,7 @@ generate_return32_token(const char *directory, const char *token_filename,
 static char		*text_token_text = "This is a test.";
 
 static void
-generate_text_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_text_token(const char *directory, const char *token_filename)
 {
 	token_t *text_token;
 
@@ -338,6 +373,12 @@ generate_text_token(const char *directory, const char *token_filename,
 	if (text_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_text");
 	write_token(directory, token_filename, text_token);
+}
+
+static void
+generate_text_record(const char *directory, const char *record_filename)
+{
+	token_t *text_token;
 
 	text_token = au_to_text(text_token_text);
 	if (text_token == NULL)
@@ -349,8 +390,7 @@ static char		 opaque_token_data[] = {0xaa, 0xbb, 0xcc, 0xdd};
 static int		 opaque_token_bytes = sizeof(opaque_token_data);
 
 static void
-generate_opaque_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_opaque_token(const char *directory, const char *token_filename)
 {
 	token_t *opaque_token;
 
@@ -358,6 +398,12 @@ generate_opaque_token(const char *directory, const char *token_filename,
 	if (opaque_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_opaque");
 	write_token(directory, token_filename, opaque_token);
+}
+
+static void
+generate_opaque_record(const char *directory, const char *record_filename)
+{
+	token_t *opaque_token;
 
 	opaque_token = au_to_opaque(opaque_token_data, opaque_token_bytes);
 	if (opaque_token == NULL)
@@ -368,8 +414,7 @@ generate_opaque_token(const char *directory, const char *token_filename,
 static struct in_addr	 in_addr_token_addr;
 
 static void
-generate_in_addr_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_in_addr_token(const char *directory, const char *token_filename)
 {
 	token_t *in_addr_token;
 
@@ -379,6 +424,14 @@ generate_in_addr_token(const char *directory, const char *token_filename,
 	if (in_addr_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_in_addr");
 	write_token(directory, token_filename, in_addr_token);
+}
+
+static void
+generate_in_addr_record(const char *directory, const char *record_filename)
+{
+	token_t *in_addr_token;
+
+	in_addr_token_addr.s_addr = inet_addr("192.168.100.15");
 
 	in_addr_token = au_to_in_addr(&in_addr_token_addr);
 	if (in_addr_token == NULL)
@@ -395,8 +448,7 @@ static struct in_addr	 ip_token_ip_src;
 static struct in_addr	 ip_token_ip_dst;
 
 static void
-generate_ip_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_ip_token(const char *directory, const char *token_filename)
 {
 	token_t *ip_token;
 
@@ -416,6 +468,24 @@ generate_ip_token(const char *directory, const char *token_filename,
 	if (ip_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_ip");
 	write_token(directory, token_filename, ip_token);
+}
+
+static void
+generate_ip_record(const char *directory, const char *record_filename)
+{
+	token_t *ip_token;
+
+	ip_token_ip_src.s_addr = inet_addr("192.168.100.155");
+	ip_token_ip_dst.s_addr = inet_addr("192.168.110.48");
+
+	memset(&ip_token_ip, 0, sizeof(ip_token_ip));
+	ip_token_ip.ip_v = ip_token_ip_v;
+	ip_token_ip.ip_len = htons(sizeof(ip_token_ip));
+	ip_token_ip.ip_id = htons(ip_token_ip_id);
+	ip_token_ip.ip_ttl = ip_token_ip_ttl;
+	ip_token_ip.ip_p = ip_token_ip_p;
+	ip_token_ip.ip_src = ip_token_ip_src;
+	ip_token_ip.ip_dst = ip_token_ip_dst;
 
 	ip_token = au_to_ip(&ip_token_ip);
 	if (ip_token == NULL)
@@ -426,8 +496,7 @@ generate_ip_token(const char *directory, const char *token_filename,
 static u_int16_t		 iport_token_iport;
 
 static void
-generate_iport_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_iport_token(const char *directory, const char *token_filename)
 {
 	token_t *iport_token;
 
@@ -437,6 +506,14 @@ generate_iport_token(const char *directory, const char *token_filename,
 	if (iport_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_iport");
 	write_token(directory, token_filename, iport_token);
+}
+
+static void
+generate_iport_record(const char *directory, const char *record_filename)
+{
+	token_t *iport_token;
+
+	iport_token_iport = htons(80);
 
 	iport_token = au_to_iport(iport_token_iport);
 	if (iport_token == NULL)
@@ -449,8 +526,7 @@ static char	*arg32_token_text = "test_arg32_token";
 static uint32_t	 arg32_token_v = 0xabcdef00;
 
 static void
-generate_arg32_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_arg32_token(const char *directory, const char *token_filename)
 {
 	token_t *arg32_token;
 
@@ -459,6 +535,12 @@ generate_arg32_token(const char *directory, const char *token_filename,
 	if (arg32_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_arg32");
 	write_token(directory, token_filename, arg32_token);
+}
+
+static void
+generate_arg32_record(const char *directory, const char *record_filename)
+{
+	token_t *arg32_token;
 
 	arg32_token = au_to_arg32(arg32_token_n, arg32_token_text,
 	    arg32_token_v);
@@ -467,12 +549,28 @@ generate_arg32_token(const char *directory, const char *token_filename,
 	write_record(directory, record_filename, arg32_token, AUE_NULL);
 }
 
+static long	 seq_audit_count = 0x12345678;
+
 static void
-generate_seq_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_seq_token(const char *directory, const char *token_filename)
 {
 	token_t *seq_token;
 
+	seq_token = au_to_seq(seq_audit_count);
+	if (seq_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_seq");
+	write_token(directory, token_filename, seq_token);
+}
+
+static void
+generate_seq_record(const char *directory, const char *record_filename)
+{
+	token_t *seq_token;
+
+	seq_token = au_to_seq(seq_audit_count);
+	if (seq_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_seq");
+	write_record(directory, record_filename, seq_token, AUE_NULL);
 }
 
 /*
@@ -480,16 +578,28 @@ generate_seq_token(const char *directory, const char *token_filename,
  */
 
 static void
-generate_attr_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_attr_token(const char *directory, const char *token_filename)
 {
 	token_t *attr_token;
 
 }
 
 static void
-generate_ipc_perm_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_attr_record(const char *directory, const char *record_filename)
+{
+	token_t *attr_token;
+
+}
+
+static void
+generate_ipc_perm_token(const char *directory, const char *token_filename)
+{
+	token_t *ipc_perm_token;
+
+}
+
+static void
+generate_ipc_perm_record(const char *directory, const char *record_filename)
 {
 	token_t *ipc_perm_token;
 
@@ -500,8 +610,14 @@ generate_ipc_perm_token(const char *directory, const char *token_filename,
  */
 
 static void
-generate_groups_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_groups_token(const char *directory, const char *token_filename)
+{
+	token_t *groups_token;
+
+}
+
+static void
+generate_groups_record(const char *directory, const char *record_filename)
 {
 	token_t *groups_token;
 
@@ -544,8 +660,14 @@ generate_groups_token(const char *directory, const char *token_filename,
  */
 
 static void
-generate_attr32_token(const char *directory, const char *token_filename,
-    const char *record_filename)
+generate_attr32_token(const char *directory, const char *token_filename)
+{
+	token_t *attr32_token;
+
+}
+
+static void
+generate_attr32_record(const char *directory, const char *record_filename)
 {
 	token_t *attr32_token;
 
@@ -555,41 +677,79 @@ int
 main(int argc, char *argv[])
 {
 	const char *directory;
+	int ch;
 
-	if (argc != 2)
+	while ((ch = getopt(argc, argv, "rt")) != -1) {
+		switch (ch) {
+		case 'r':
+			do_records++;
+			break;
+
+		case 't':
+			do_tokens++;
+			break;
+
+		default:
+			usage();
+		}
+	}
+
+	argc -= optind;
+	argv += optind;
+
+	if (argc != 1)
 		usage();
 
-	directory = argv[1];
+	directory = argv[0];
 
 	if (mkdir(directory, 0755) < 0 && errno != EEXIST)
 		err(EX_OSERR, "mkdir: %s", directory);
 
-	generate_file_token(directory, "file_token");
-	generate_trailer_token(directory, "trailer_token");
-	generate_header32_token(directory, "header32_token");
-	generate_data_token(directory, "data_token", "data_record");
-	generate_ipc_token(directory, "ipc_token", "ipc_record");
-	generate_path_token(directory, "path_token", "path_record");
-	generate_subject32_token(directory, "subject32_token",
-	    "subject32_record");
-	generate_process32_token(directory, "process32_token",
-	    "process32_record");
-	generate_return32_token(directory, "return32_token",
-	    "return32_record");
-	generate_text_token(directory, "text_token", "text_record");
-	generate_opaque_token(directory, "opaque_token", "opaque_record");
-	generate_in_addr_token(directory, "in_addr_token", "in_addr_record");
-	generate_ip_token(directory, "ip_token", "ip_record");
-	generate_iport_token(directory, "iport_token", "iport_record");
+	if (do_tokens) {
+		generate_file_token(directory, "file_token");
+		generate_trailer_token(directory, "trailer_token");
+		generate_header32_token(directory, "header32_token");
+		generate_data_token(directory, "data_token");
+		generate_ipc_token(directory, "ipc_token");
+		generate_path_token(directory, "path_token");
+		generate_subject32_token(directory, "subject32_token");
+		generate_process32_token(directory, "process32_token");
+		generate_return32_token(directory, "return32_token");
+		generate_text_token(directory, "text_token");
+		generate_opaque_token(directory, "opaque_token");
+		generate_in_addr_token(directory, "in_addr_token");
+		generate_ip_token(directory, "ip_token");
+		generate_iport_token(directory, "iport_token");
+		generate_arg32_token(directory, "arg32_token");
+		generate_seq_token(directory, "seq_token");
+		generate_attr_token(directory,  "attr_token");
+		generate_ipc_perm_token(directory, "ipc_perm_token");
+		generate_groups_token(directory, "groups_token");
+		generate_attr32_token(directory, "attr32_token");
+	}
 
-	generate_arg32_token(directory, "arg32_token", "arg32_record");
-	generate_seq_token(directory, "seq_token", "seq_record");
-	generate_attr_token(directory,  "attr_token", "attr_record");
-	generate_ipc_perm_token(directory, "ipc_perm_token",
-	    "ipc_perm_record");
-	generate_groups_token(directory, "groups_token", "groups_record");
-	generate_attr32_token(directory, "attr32_token", "attr32_record");
-
+	if (do_records) {
+		generate_file_token(directory, "file_token");
+		generate_trailer_token(directory, "trailer_token");
+		generate_header32_token(directory, "header32_token");
+		generate_data_token(directory, "data_record");
+		generate_ipc_token(directory, "ipc_record");
+		generate_path_token(directory, "path_record");
+		generate_subject32_token(directory, "subject32_record");
+		generate_process32_token(directory, "process32_record");
+		generate_return32_token(directory, "return32_record");
+		generate_text_token(directory, "text_record");
+		generate_opaque_token(directory, "opaque_record");
+		generate_in_addr_token(directory, "in_addr_record");
+		generate_ip_token(directory, "ip_record");
+		generate_iport_token(directory, "iport_record");
+		generate_arg32_token(directory, "arg32_record");
+		generate_seq_token(directory, "seq_record");
+		generate_attr_token(directory,  "attr_record");
+		generate_ipc_perm_token(directory, "ipc_perm_record");
+		generate_groups_token(directory, "groups_record");
+		generate_attr32_token(directory, "attr32_record");
+	}
 
 	return (0);
 }
