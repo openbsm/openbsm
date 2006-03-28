@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd_conf.c#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd_conf.c#3 $
  */
 
 /*
@@ -70,7 +70,6 @@
 static void
 auditfilter_module_free(struct auditfilter_module *am)
 {
-	int i;
 
 	if (am->am_modulename != NULL)
 		free(am->am_modulename);
@@ -106,7 +105,7 @@ auditfilter_module_detach(struct auditfilter_module *am)
 {
 
 	if (am->am_detach != NULL)
-		(*am->am_detach)(am->am_instance);
+		am->am_detach(am->am_instance);
 	am->am_instance = NULL;
 	(void)dlclose(am->am_dlhandle);
 	am->am_dlhandle = NULL;
@@ -155,8 +154,8 @@ auditfilter_module_attach(struct auditfilter_module *am)
 	am->am_detach = dlsym(am->am_dlhandle, AUDIT_FILTER_DETACH_STRING);
 
 	if (am->am_attach != NULL) {
-		if ((*am->am_attach)(&am->am_instance, am->am_argc,
-		    am->am_argv) != AUDIT_FILTER_SUCCESS) {
+		if (am->am_attach(&am->am_instance, am->am_argc, am->am_argv)
+		    != AUDIT_FILTER_SUCCESS) {
 			warnx("auditfilter_module_attach: %s: failed",
 			    am->am_modulename);
 			dlclose(am->am_dlhandle);
@@ -185,7 +184,7 @@ auditfilter_module_reinit(struct auditfilter_module *am)
 	if (am->am_reinit == NULL)
 		return (0);
 
-	if ((*am->am_reinit)(&am->am_instance, am->am_argc, am->am_argv) !=
+	if (am->am_reinit(&am->am_instance, am->am_argc, am->am_argv) !=
 	    AUDIT_FILTER_SUCCESS) {
 		warnx("auditfilter_module_reinit: %s: failed",
 		    am->am_modulename);

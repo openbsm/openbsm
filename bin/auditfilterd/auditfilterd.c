@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#3 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#4 $
  */
 
 #include <sys/types.h>
@@ -86,7 +86,6 @@ signal_handler(int signum)
 	case SIGQUIT:
 		quit++;
 		break;
-
 	}
 }
 
@@ -96,8 +95,8 @@ present_bsmrecord(struct timespec *ts, u_char *data, u_int len)
 	struct auditfilter_module *am;
 
 	TAILQ_FOREACH(am, &filter_list, am_list) {
-		if (am->am_record != NULL)
-			(*am->am_bsmrecord)(am->am_instance, ts, data, len);
+		if (am->am_bsmrecord != NULL)
+			(am->am_bsmrecord)(am->am_instance, ts, data, len);
 	}
 }
 
@@ -115,7 +114,8 @@ present_tokens(struct timespec *ts, u_char *data, u_int len)
 		bytesread += tok.len;
 	}
 	TAILQ_FOREACH(am, &filter_list, am_list) {
-
+		if (am->am_record != NULL)
+			(am->am_record)(am->am_instance, ts, 0, NULL);
 	}
 }
 
