@@ -31,6 +31,11 @@ OpenBSM 1.0 alpha 6
   This code is not built or installed by default.
 - auditd now assigns more appropriate syslog levels to its debugging and
   error information.
+- Support for audit filters introduced: audit filters are dynamically
+  loaded shared objects that run in the context of a new daemon,
+  auditfilterd.  The daemon reads from an audit pipe and feeds both BSM and
+  parsed versions of records to shared objects using a module API.  This
+  will provide a framework for the writing of intrusion detection services.
 
 OpenBSM 1.0 alpha 5
 
@@ -158,4 +163,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#10 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#11 $
