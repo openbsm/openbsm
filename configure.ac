@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.0a5], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#18 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#19 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -16,9 +16,7 @@ AC_PROG_LIBTOOL
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
-# Checks for libraries.
-# FIXME: Replace `main' with a function in `-lbsm':
-AC_CHECK_LIB([bsm], [main])
+AC_SEARCH_LIBS(dlsym, -ldl,,)
 
 # Checks for header files.
 AC_HEADER_STDC
