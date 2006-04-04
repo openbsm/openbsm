@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#4 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#5 $
  */
 
 #include <sys/types.h>
@@ -42,6 +42,7 @@
 #include <bsm/audit_filter.h>
 
 #include <err.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,8 +50,17 @@
 
 #include "auditfilterd.h"
 
+/*
+ * Global list of registered filters.
+ */
 struct auditfilter_module_list	filter_list;
-int debug, reread_config, quit;
+
+/*
+ * Configuration and signal->main flags.
+ */
+int	debug;		/* Debugging mode requested, don't detach. */
+int	reread_config;	/* SIGHUP has been received. */
+int	quit;		/* SIGQUIT/TERM/INT has been received. */
 
 static void
 usage(void)
@@ -89,6 +99,9 @@ signal_handler(int signum)
 	}
 }
 
+/*
+ * Present raw BSM to a set of registered and interested filters.
+ */
 static void
 present_bsmrecord(struct timespec *ts, u_char *data, u_int len)
 {
@@ -100,25 +113,39 @@ present_bsmrecord(struct timespec *ts, u_char *data, u_int len)
 	}
 }
 
+/*
+ * Parse the BSM into a set of tokens, which will be pased to registered
+ * and interested filters.
+ */
+#define	MAX_TOKENS	128	/* Maximum tokens we handle per record. */
 static void
 present_tokens(struct timespec *ts, u_char *data, u_int len)
 {
 	struct auditfilter_module *am;
+	tokenstr_t tokens[MAX_TOKENS];
 	u_int bytesread;
-	tokenstr_t tok;
+	int tokencount;
 
+	tokencount = 0;
 	while (bytesread < len) {
-		if (au_fetch_tok(&tok, data + bytesread, len - bytesread)
-		    == -1)
+		if (au_fetch_tok(&tokens[tokencount], data + bytesread,
+		    len - bytesread) == -1)
 			break;
-		bytesread += tok.len;
+		bytesread += tokens[tokencount].len;
+		tokencount++;
 	}
+
 	TAILQ_FOREACH(am, &filter_list, am_list) {
 		if (am->am_record != NULL)
-			(am->am_record)(am->am_instance, ts, 0, NULL);
+			(am->am_record)(am->am_instance, ts, tokencount,
+			    tokens);
 	}
 }
 
+/*
+ * The main loop spins pulling records out of the record source and passing
+ * them to modules for processing.
+ */
 static void
 mainloop(const char *conffile, const char *trailfile, FILE *trail_fp)
 {
@@ -172,10 +199,8 @@ mainloop(const char *conffile, const char *trailfile, FILE *trail_fp)
 int
 main(int argc, char *argv[])
 {
-	const char *trailfile;
-	const char *conffile;
-	FILE *trail_fp;
-	FILE *conf_fp;
+	const char *trailfile, *conffile;
+	FILE *trail_fp, *conf_fp;
 	int ch;
 
 	conffile = AUDITFILTERD_CONFFILE;
