@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#20 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#21 $
  */
 
 #ifdef __APPLE__
@@ -46,12 +46,117 @@
 
 #include <unistd.h>
 #include <syslog.h>
+#include <stdarg.h>
 #include <string.h>
 #include <errno.h>
 
 /* These are not advertised in libbsm.h */
 int audit_set_terminal_port(dev_t *p);
 int audit_set_terminal_host(uint32_t *m);
+
+/*
+ * General purpose audit submission mechanism for userspace.
+ */
+int
+audit_submit(short au_event, au_id_t au_ctx, char status,
+    int reterr, const char *fmt, ...)
+{
+	char text[MAX_AUDITSTRING_LEN];
+	au_tid_t termid;
+	token_t *token;
+	long acond;
+	va_list ap;
+	pid_t pid;
+	int error, afd;
+
+	if (auditon(A_GETCOND, &acond, sizeof(acond)) < 0) {
+		/*
+		 * If auditon(2) returns ENOSYS, then audit has not been
+		 * compiled into the kernel, so just return.
+		 */
+		if (errno == ENOSYS)
+			return (0);
+		error = errno;
+		syslog(LOG_AUTH | LOG_ERR, "audit: auditon failed: %s",
+		    strerror(errno));
+		errno = error;
+		return (-1);
+	}
+	if (acond == AUC_NOAUDIT)
+		return (0);
+	afd = au_open();
+	if (afd < 0) {
+		error = errno;
+		syslog(LOG_AUTH | LOG_ERR, "audit: au_open failed: %s",
+		    strerror(errno));
+		errno = error;
+		return (-1);
+	}
+	/* XXX what should we do for termid? */
+	bzero(&termid, sizeof(termid));
+	pid = getpid();
+	token = au_to_subject32(au_ctx, geteuid(), getegid(),
+	    getuid(), getgid(), pid, pid, &termid);
+	if (token == NULL) {
+		syslog(LOG_AUTH | LOG_ERR,
+		    "audit: unable to build subject token");
+		(void) au_close(afd, AU_TO_NO_WRITE, au_event);
+		errno = EPERM;
+		return (-1);
+	}
+	if (au_write(afd, token) < 0) {
+		error = errno;
+		syslog(LOG_AUTH | LOG_ERR,
+		    "audit: au_write failed: %s", strerror(errno));
+		(void) au_close(afd, AU_TO_NO_WRITE, au_event);
+		errno = error;
+		return (-1);
+	}
+	if (fmt != NULL) {
+		va_start(ap, fmt);
+		(void) vsnprintf(text, MAX_AUDITSTRING_LEN, fmt, ap);
+		va_end(ap);
+		token = au_to_text(text);
+		if (token == NULL) {
+			syslog(LOG_AUTH | LOG_ERR,
+			    "audit: failed to generate text token");
+			(void) au_close(afd, AU_TO_NO_WRITE, au_event);
+			errno = EPERM;
+			return (-1);
+		}
+		if (au_write(afd, token) < 0) {
+			error = errno;
+			syslog(LOG_AUTH | LOG_ERR,
+			    "audit: au_write failed: %s", strerror(errno));
+			(void) au_close(afd, AU_TO_NO_WRITE, au_event);
+			errno = error;
+			return (-1);
+		}
+	}
+	token = au_to_return32(status, reterr);
+	if (token == NULL) {
+		syslog(LOG_AUTH | LOG_ERR,
+		    "audit: enable to build return token");
+		(void) au_close(afd, AU_TO_NO_WRITE, au_event);
+		errno = EPERM;
+		return (-1);
+	}
+	if (au_write(afd, token) < 0) {
+		error = errno;
+		syslog(LOG_AUTH | LOG_ERR,
+		    "audit: au_write failed: %s", strerror(errno));
+		(void) au_close(afd, AU_TO_NO_WRITE, au_event);
+		errno = error;
+		return (-1);
+	}
+	if (au_close(afd, AU_TO_WRITE, au_event) < 0) {
+		error = errno;
+		syslog(LOG_AUTH | LOG_ERR, "audit: record not committed");
+		errno = error;
+		return (-1);
+	}
+	return (0);
+}
 
 int
 audit_set_terminal_port(dev_t *p)
