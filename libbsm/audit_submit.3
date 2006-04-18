@@ -39,9 +39,11 @@ is NULL, then no text token is created in the audit record.
 .Bd -literal -offset indent
 #include <bsm/audit.h>
 #include <bsm/libbsm.h>
+#include <bsm/audit_uevents.h>
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <errno.h>
 
 int
 audit_bad_su(char *from_login, char *to_login)
