@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#21 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#22 $
  */
 
 #ifdef __APPLE__
@@ -58,7 +58,7 @@ int audit_set_terminal_host(uint32_t *m);
  * General purpose audit submission mechanism for userspace.
  */
 int
-audit_submit(short au_event, au_id_t au_ctx, char status,
+audit_submit(short au_event, au_id_t auid, char status,
     int reterr, const char *fmt, ...)
 {
 	char text[MAX_AUDITSTRING_LEN];
@@ -95,7 +95,7 @@ audit_submit(short au_event, au_id_t au_ctx, char status,
 	/* XXX what should we do for termid? */
 	bzero(&termid, sizeof(termid));
 	pid = getpid();
-	token = au_to_subject32(au_ctx, geteuid(), getegid(),
+	token = au_to_subject32(auid, geteuid(), getegid(),
 	    getuid(), getgid(), pid, pid, &termid);
 	if (token == NULL) {
 		syslog(LOG_AUTH | LOG_ERR,

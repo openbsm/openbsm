@@ -26,7 +26,7 @@
 .\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/audit_submit.3#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/audit_submit.3#6 $
 .Dd April 11, 2006
 .Dt audit_submit 3
 .Os
@@ -38,7 +38,7 @@
 .Sh SYNOPSIS
 .In stdio.h
 .Ft int
-.Fn audit_submit "short au_event" "au_id_t au_ctx" "char status" "int reterr" "const char * restrict format" ...
+.Fn audit_submit "short au_event" "au_id_t auid" "char status" "int reterr" "const char * restrict format" ...
 .Sh DESCRIPTION
 The
 .Nm
