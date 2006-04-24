@@ -36,6 +36,8 @@ OpenBSM 1.0 alpha 6
   auditfilterd.  The daemon reads from an audit pipe and feeds both BSM and
   parsed versions of records to shared objects using a module API.  This
   will provide a framework for the writing of intrusion detection services.
+- New utility API, audit_submit(), added to capture common elements of audit
+  record submission for many applications.
 
 OpenBSM 1.0 alpha 5
 
@@ -163,4 +165,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#11 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#12 $
