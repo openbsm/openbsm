@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#22 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#23 $
  */
 
 #ifdef __APPLE__
@@ -62,12 +62,12 @@ audit_submit(short au_event, au_id_t auid, char status,
     int reterr, const char *fmt, ...)
 {
 	char text[MAX_AUDITSTRING_LEN];
-	au_tid_t termid;
 	token_t *token;
 	long acond;
 	va_list ap;
 	pid_t pid;
 	int error, afd;
+	struct auditinfo ai;
 
 	if (auditon(A_GETCOND, &acond, sizeof(acond)) < 0) {
 		/*
@@ -92,11 +92,16 @@ audit_submit(short au_event, au_id_t auid, char status,
 		errno = error;
 		return (-1);
 	}
-	/* XXX what should we do for termid? */
-	bzero(&termid, sizeof(termid));
+	if (getaudit(&ai) < 0) {
+		error = errno;
+		syslog(LOG_AUTH | LOG_ERR, "audit: getaudit failed: %s",
+		    strerror(errno));
+		errno = error;
+		return (-1);
+	}
 	pid = getpid();
 	token = au_to_subject32(auid, geteuid(), getegid(),
-	    getuid(), getgid(), pid, pid, &termid);
+	    getuid(), getgid(), pid, pid, &ai.ai_termid);
 	if (token == NULL) {
 		syslog(LOG_AUTH | LOG_ERR,
 		    "audit: unable to build subject token");
