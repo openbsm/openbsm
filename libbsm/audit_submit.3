@@ -26,7 +26,7 @@
 .\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/audit_submit.3#6 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/audit_submit.3#7 $
 .Dd April 11, 2006
 .Dt audit_submit 3
 .Os
@@ -65,6 +65,18 @@ are converted for output.
 If
 .Fa format
 is NULL, then no text token is created in the audit record.
+.Pp
+It should be noted that
+.Nm
+assumes that
+.Xr setaudit 2 ,
+or
+.Xr setaudit_addr 2 
+has already been called. As a direct result, the terminal ID for the
+subject will be retrieved from the kernel via
+.Xr getaudit 2 ,
+or
+.Xr getaudit_addr 2 .
 .Sh EXAMPLES
 .Bd -literal -offset indent
 #include <bsm/audit.h>
@@ -96,6 +108,7 @@ trailer,94
 .Ed
 .Sh SEE ALSO
 .Xr auditon 2 ,
+.Xr getaudit 2 ,
 .Xr libbsm 3 ,
 .Xr stdarg 3
 .Sh HISTORY
