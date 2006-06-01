@@ -25,10 +25,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#5 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#6 $
  */
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 
 #include <config/config.h>
@@ -66,12 +67,14 @@ static void
 usage(void)
 {
 
-	fprintf(stderr, "auditfilterd [-c conffile] [-d] [-t trailfile]\n");
+	fprintf(stderr, "auditfilterd [-c conffile] [-d] [-p pipefile]"
+	    " [-t trailfile]\n");
 	fprintf(stderr, "  -c    Specify configuration file (default: %s)\n",
 	    AUDITFILTERD_CONFFILE);
 	fprintf(stderr, "  -d    Debugging mode, don't daemonize\n");
-	fprintf(stderr, "  -t    Specify audit trail file (default: %s)",
-	    AUDITFILTERD_TRAILFILE);
+	fprintf(stderr, "  -p    Specify pipe file (default: %s)\n",
+	    AUDITFILTERD_PIPEFILE);
+	fprintf(stderr, "  -t    Specify audit trail file (default: none)\n");
 	exit(-1);
 }
 
@@ -147,7 +150,7 @@ present_tokens(struct timespec *ts, u_char *data, u_int len)
  * them to modules for processing.
  */
 static void
-mainloop(const char *conffile, const char *trailfile, FILE *trail_fp)
+mainloop_file(const char *conffile, const char *trailfile, FILE *trail_fp)
 {
 	struct timespec ts;
 	FILE *conf_fp;
@@ -184,10 +187,8 @@ mainloop(const char *conffile, const char *trailfile, FILE *trail_fp)
 		 * more at the right blocking and signal behavior here.
 		 */
 		reclen = au_read_rec(trail_fp, &buf);
-		if (reclen == -1) {
-			sleep(1);
+		if (reclen == -1)
 			continue;
-		}
 		if (clock_gettime(CLOCK_REALTIME, &ts) < 0)
 			err(-1, "clock_gettime");
 		present_bsmrecord(&ts, buf, reclen);
@@ -196,16 +197,68 @@ mainloop(const char *conffile, const char *trailfile, FILE *trail_fp)
 	}
 }
 
+/*
+ * The main loop spins pulling records out of the record source and passing
+ * them to modules for processing.  This version of the function accepts
+ * discrete record input from a file descriptor, as opposed to buffered input
+ * from a file stream.
+ */
+static void
+mainloop_pipe(const char *conffile, const char *pipefile, int pipe_fd)
+{
+	u_char record[MAX_AUDIT_RECORD_SIZE];
+	struct timespec ts;
+	FILE *conf_fp;
+	int reclen;
+
+	while (1) {
+		/*
+		 * On SIGHUP, we reread the configuration file.  Unlike with
+		 * a trail file, we don't reopen the pipe, as we don't want
+		 * to miss records which will be flushed if we do.
+		 */
+		if (reread_config) {
+			reread_config = 0;
+			warnx("rereading configuration");
+			conf_fp = fopen(conffile, "r");
+			if (conf_fp == NULL)
+				err(-1, "%s", conffile);
+			auditfilterd_conf(conffile, conf_fp);
+			fclose(conf_fp);
+		}
+		if (quit) {
+			warnx("quitting");
+			break;
+		}
+
+		/*
+		 * For now, be relatively unrobust about incomplete records,
+		 * but in the future will want to do better.  Need to look
+		 * more at the right blocking and signal behavior here.
+		 */
+		reclen = read(pipe_fd, record, MAX_AUDIT_RECORD_SIZE);
+		if (reclen < 0)
+			continue;
+		if (clock_gettime(CLOCK_REALTIME, &ts) < 0)
+			err(-1, "clock_gettime");
+		present_bsmrecord(&ts, record, reclen);
+		present_tokens(&ts, record, reclen);
+	}
+}
+
 int
 main(int argc, char *argv[])
 {
-	const char *trailfile, *conffile;
+	const char *pipefile, *trailfile, *conffile;
 	FILE *trail_fp, *conf_fp;
+	struct stat sb;
+	int pipe_fd;
 	int ch;
 
 	conffile = AUDITFILTERD_CONFFILE;
-	trailfile = AUDITFILTERD_TRAILFILE;
-	while ((ch = getopt(argc, argv, "c:dt:")) != -1) {
+	trailfile = NULL;
+	pipefile = NULL;
+	while ((ch = getopt(argc, argv, "c:dp:t:")) != -1) {
 		switch (ch) {
 		case 'c':
 			conffile = optarg;
@@ -216,7 +269,15 @@ main(int argc, char *argv[])
 			break;
 
 		case 't':
+			if (trailfile != NULL || pipefile != NULL)
+				usage();
 			trailfile = optarg;
+			break;
+
+		case 'p':
+			if (pipefile != NULL || trailfile != NULL)
+				usage();
+			pipefile = optarg;
 			break;
 
 		default:
@@ -230,9 +291,26 @@ main(int argc, char *argv[])
 	if (argc != 0)
 		usage();
 
-	trail_fp = fopen(trailfile, "r");
-	if (trail_fp == NULL)
-		err(-1, "%s", trailfile);
+	/*
+	 * We allow only one of a pipe or a trail to be used.  If none is
+	 * specified, we provide a default pipe path.
+	 */
+	if (pipefile == NULL && trailfile == NULL)
+		pipefile = AUDITFILTERD_PIPEFILE;
+
+	if (pipefile != NULL) {
+		pipe_fd = open(pipefile, O_RDONLY);
+		if (pipe_fd < 0)
+			err(-1, "open:%s", pipefile);
+		if (fstat(pipe_fd, &sb) < 0)
+			err(-1, "stat: %s", pipefile);
+		if (!S_ISCHR(sb.st_mode))
+			errx(-1, "fstat: %s not device", pipefile);
+	} else {
+		trail_fp = fopen(trailfile, "r");
+		if (trail_fp == NULL)
+			err(-1, "%s", trailfile);
+	}
 
 	conf_fp = fopen(conffile, "r");
 	if (conf_fp == NULL)
@@ -253,7 +331,10 @@ main(int argc, char *argv[])
 	signal(SIGQUIT, signal_handler);
 	signal(SIGTERM, signal_handler);
 
-	mainloop(conffile, trailfile, trail_fp);
+	if (pipefile != NULL)
+		mainloop_pipe(conffile, pipefile, pipe_fd);
+	else
+		mainloop_file(conffile, trailfile, trail_fp);
 
 	auditfilterd_conf_shutdown();
 	return (0);

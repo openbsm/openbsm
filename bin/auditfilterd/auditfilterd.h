@@ -25,11 +25,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.h#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.h#3 $
  */
 
 #define	AUDITFILTERD_CONFFILE	"/etc/security/audit_filter"
-#define	AUDITFILTERD_TRAILFILE	"/dev/auditpipe"
+#define	AUDITFILTERD_PIPEFILE	"/dev/auditpipe"
 
 /*
  * Limit on the number of arguments that can appear in an audit_filterd

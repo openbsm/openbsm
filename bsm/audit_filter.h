@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_filter.h#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_filter.h#2 $
  */
 
 #ifndef _BSM_AUDIT_FILTER_H_
@@ -48,7 +48,7 @@
 typedef int (*audit_filter_attach_t)(void **instance, int argc, char *argv[]);
 typedef int (*audit_filter_reinit_t)(void *instance, int argc, char *argv[]);
 typedef void (*audit_filter_record_t)(void *instance, struct timespec *ts,
-	    int token_count, const tokenstr_t *tok[]);
+	    int token_count, const tokenstr_t tok[]);
 typedef void (*audit_filter_bsmrecord_t)(void *instance, struct timespec *ts,
 	    void *data, u_int len);
 typedef void (*audit_filter_detach_t)(void *instance);
