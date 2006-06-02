@@ -30,23 +30,15 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#16 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#17 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
 #define _BSM_AUDIT_RECORD_H_
 
-/* Various token id types */
-
 /*
- * Values inside the comments are not documented in the BSM pages and
- * have been picked up from the header files
+ * Token type identifiers.
  */
-
-/*
- * Values marked as XXX do not have a value defined in the BSM header files
- */
-
 #define	AUT_INVALID		0x00
 #define	AUT_OTHER_FILE32	0x11
 #define	AUT_OHEADER		0x12
