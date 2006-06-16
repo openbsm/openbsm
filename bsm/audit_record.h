@@ -30,11 +30,13 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#18 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#19 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
 #define _BSM_AUDIT_RECORD_H_
+
+#include <sys/time.h>			/* struct timeval */
 
 /*
  * Token type identifiers.
@@ -220,7 +222,6 @@ struct kevent;
 struct sockaddr_in;
 struct sockaddr_in6;
 struct sockaddr_un;
-struct timeval;
 #if defined(_KERNEL) || defined(KERNEL)
 struct vnode_au_info;
 #endif
