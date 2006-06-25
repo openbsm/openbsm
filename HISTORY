@@ -6,6 +6,7 @@ OpenBSM 1.0 alpha 7
 - Prefer inttypes.h to stdint.h; enhance queue.h detection to test for
   TAILQ_FOREACH_SAFE(), which is present in recent BSD queue.h's, but not
   older ones.  OpenBSM now builds on some FreeBSD 4.x version.
+- New event types for extended attributes, ACLs, and scheduling.
 
 OpenBSM 1.0 alpha 6
 
@@ -174,4 +175,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#14 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#15 $
