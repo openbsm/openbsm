@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#19 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#20 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -184,7 +184,7 @@
 #define AUR_CHAR        AUR_BYTE
 #define AUR_SHORT       1
 #define AUR_INT32       2
-#define AUR_INT         AUR_INT
+#define AUR_INT         AUR_INT32
 #define AUR_INT64       3
 
 /* ... and their sizes */
