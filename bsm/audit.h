@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit.h#16 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit.h#17 $
  */
 
 #ifndef _BSM_AUDIT_H
@@ -146,6 +146,7 @@
 /*
  * Audit policy controls.
  */
+#ifdef OLD_WORLD_ORDER
 #define	AUDIT_CNT	0x0001
 #define	AUDIT_AHLT	0x0002
 #define	AUDIT_ARGV	0x0004
@@ -157,6 +158,22 @@
 #define	AUDIT_GROUP	0x0100
 #define	AUDIT_TRAIL	0x0200
 #define	AUDIT_PATH	0x0400
+#else	/* !OLD_WORLD_ORDER */
+#define	AUDIT_CNT	0x0001
+#define	AUDIT_AHLT	0x0002
+#define	AUDIT_ARGV	0x0004
+#define	AUDIT_ARGE	0x0008
+#define	AUDIT_SEQ	0x0010
+#define	AUDIT_WINDATA	0x0020
+#define	AUDIT_USER	0x0040
+#define	AUDIT_GROUP	0x0080
+#define	AUDIT_TRAIL	0x0100
+#define	AUDIT_PATH	0x0200
+#define	AUDIT_SCNT	0x0400
+#define	AUDIT_PUBLIC	0x0800
+#define	AUDIT_ZONENAME	0x1000
+#define	AUDIT_PERZONE	0x2000
+#endif	/* !OLD_WORLD_ORDER */
 
 /*
  * Audit queue control parameters
