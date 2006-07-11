@@ -31,7 +31,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#37 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#38 $
  */
 
 #include <sys/types.h>
@@ -1259,7 +1259,7 @@ print_execenv_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 {
 	int i;
 
-	print_tok_type(fp, tok->id, "exec arg", raw);
+	print_tok_type(fp, tok->id, "exec env", raw);
 	for (i = 0; i< tok->tt.execenv.count; i++) {
 		print_delim(fp, del);
 		print_string(fp, tok->tt.execenv.text[i],
