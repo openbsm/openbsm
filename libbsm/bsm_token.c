@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#49 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#50 $
  */
 
 #include <sys/types.h>
@@ -1155,7 +1155,7 @@ au_to_header32_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 
 	ADD_U_CHAR(dptr, AUT_HEADER32);
 	ADD_U_INT32(dptr, rec_size);
-	ADD_U_CHAR(dptr, HEADER_VERSION);
+	ADD_U_CHAR(dptr, BSM_HEADER_VERSION_OPENBSM);
 	ADD_U_INT16(dptr, e_type);
 	ADD_U_INT16(dptr, e_mod);
 
