@@ -5,6 +5,11 @@ OpenBSM 1.0 alpha 8
 - Arguments to au_to_exec_args() and au_to_exec_env() no longer const.
 - Add kernel versions of au_to_exec_args() and au_to_exec_env().
 - Fix exec argument type that is printed for env strings from 'arg' to 'env'.
+- New OpenBSM token version number assigned, constants added for other
+  commonly seen version numbers.
+- OpenBSM-specific events assigned numbers in the 43xxx range to avoid future
+  collisions with Solaris.  Darwin events renamed to AUE_DARWIN_foo, as they
+  are now deprecated numberings.
 
 OpenBSM 1.0 alpha 7
 
@@ -183,4 +188,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#19 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#20 $
