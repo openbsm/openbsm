@@ -10,6 +10,8 @@ OpenBSM 1.0 alpha 8
 - OpenBSM-specific events assigned numbers in the 43xxx range to avoid future
   collisions with Solaris.  Darwin events renamed to AUE_DARWIN_foo, as they
   are now deprecated numberings.
+- autoconf now detects clock_gettime(), which is not available on Darwin.
+- praudit output fixes relating to arg32 and arg64 tokens.
 
 OpenBSM 1.0 alpha 7
 
@@ -188,4 +190,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#20 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#21 $
