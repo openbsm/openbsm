@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#22 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#23 $
  */
 
 #ifndef _LIBBSM_H_
@@ -37,8 +37,8 @@
  * solely to allow OpenSSH to compile; Darwin/Apple code should not use them.
  */
 
-#define	MAX_ARGS	10
-#define	MAX_ENV		10
+#define	BSM_MAX_ARGS	10
+#define	BSM_MAX_ENV		10
 
 #include <sys/types.h>
 #include <sys/cdefs.h>
@@ -227,7 +227,7 @@ typedef struct {
  */
 typedef struct {
 	u_int32_t	 count;
-	char		*text[MAX_ARGS];
+	char		*text[BSM_MAX_ARGS];
 } au_execarg_t;
 
 /*
@@ -236,7 +236,7 @@ typedef struct {
  */
 typedef struct {
 	u_int32_t	 count;
-	char		*text[MAX_ENV];
+	char		*text[BSM_MAX_ENV];
 } au_execenv_t;
 
 /*
