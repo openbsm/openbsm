@@ -12,6 +12,8 @@ OpenBSM 1.0 alpha 8
   are now deprecated numberings.
 - autoconf now detects clock_gettime(), which is not available on Darwin.
 - praudit output fixes relating to arg32 and arg64 tokens.
+- Maximum record size updated to 64k-1 to match Solaris record size limit.
+- Various style and comment cleanups in include files.
 
 OpenBSM 1.0 alpha 7
 
@@ -190,4 +192,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#21 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#22 $
