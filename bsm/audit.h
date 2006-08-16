@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit.h#17 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit.h#18 $
  */
 
 #ifndef _BSM_AUDIT_H
@@ -38,7 +38,8 @@
 
 #define	AUDIT_RECORD_MAGIC	0x828a0f1b
 #define	MAX_AUDIT_RECORDS	20
-#define	MAX_AUDIT_RECORD_SIZE	4096
+#define	MAXAUDITDATA		(0x8000 - 1)
+#define	MAX_AUDIT_RECORD_SIZE	MAXAUDITDATA
 #define	MIN_AUDIT_FILE_SIZE	(512 * 1024)
 
 /*
