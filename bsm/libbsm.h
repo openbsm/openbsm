@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#24 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#25 $
  */
 
 #ifndef _LIBBSM_H_
@@ -719,8 +719,6 @@ int			 au_preselect(au_event_t event, au_mask_t *mask_p,
 
 /*
  * Functions relating to querying audit event information.
- *
- * XXXRW: getauevnonam() has no _r version?
  */
 void			 setauevent(void);
 void			 endauevent(void);
