@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#25 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#26 $
  */
 
 #ifndef _LIBBSM_H_
@@ -758,6 +758,11 @@ void			 au_print_tok(FILE *outfp, tokenstr_t *tok,
 			    char *del, char raw, char sfrm);
 __END_DECLS
 
+/*
+ * The remaining APIs are associated with Apple's BSM implementation, in
+ * particular as relates to Mach IPC auditing and triggers passed via Mach
+ * IPC.
+ */
 #ifdef __APPLE__
 #include <sys/appleapiopts.h>
 
