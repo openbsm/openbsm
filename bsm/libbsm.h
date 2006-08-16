@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#21 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#22 $
  */
 
 #ifndef _LIBBSM_H_
@@ -82,11 +82,10 @@
 #define	BSM_TEXTBUFSZ		MAX_AUDITSTRING_LEN	/* OpenSSH compatibility */
 
 /*
- * These are referenced in Solaris 9 au_open(3BSM); values are guesses.
- * Provided for OpenSSH compatibility.
+ * Arguments to au_close(3).
  */
-#define	AU_TO_NO_WRITE		0
-#define	AU_TO_WRITE		1
+#define	AU_TO_NO_WRITE		0	/* Abandon audit record. */
+#define	AU_TO_WRITE		1	/* Commit audit record. */
 
 __BEGIN_DECLS
 struct au_event_ent {
