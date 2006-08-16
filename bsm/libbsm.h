@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#23 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#24 $
  */
 
 #ifndef _LIBBSM_H_
@@ -38,7 +38,7 @@
  */
 
 #define	BSM_MAX_ARGS	10
-#define	BSM_MAX_ENV		10
+#define	BSM_MAX_ENV	10
 
 #include <sys/types.h>
 #include <sys/cdefs.h>
@@ -136,15 +136,6 @@ __END_DECLS
 } while(0)
 
 __BEGIN_DECLS
-
-/*
- * Internal representation of audit user in libnsl.
- */
-typedef struct au_user_str_s {
-	char	*au_name;
-	char	*au_always;
-	char	*au_never;
-} au_user_str_t;
 
 typedef struct au_tid32 {
 	u_int32_t	port;
