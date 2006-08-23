@@ -1,8 +1,13 @@
 OpenBSM 1.0 alpha 9
 
 - Rename many OpenBSM-specific constants and API elements containing the
-  strings "BSM" and "bsm" to "AUDIT" and "audit", observing that this is
-  true for almost all existing constants and APIs.
+  strings "BSM" and "bsm" to "AUDIT" and "audit", observing that this is true
+  for almost all existing constants and APIs.
+- Instead of passing a per-instance cookie directly into all audit filter
+  APIs, pass in the audit filter daemon state pointer, which is then used by
+  the module using an audit_filter_{get,set}cookie() API.  This will allow
+  future service APIs provided by the filter daemon to maintain their own
+  state -- for example, per-module preselection state.
 
 OpenBSM 1.0 alpha 8
 
@@ -198,4 +203,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#24 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#25 $
