@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd_conf.c#3 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd_conf.c#4 $
  */
 
 /*
@@ -149,8 +149,8 @@ auditfilter_module_attach(struct auditfilter_module *am)
 	am->am_attach = dlsym(am->am_dlhandle, AUDIT_FILTER_ATTACH_STRING);
 	am->am_reinit = dlsym(am->am_dlhandle, AUDIT_FILTER_REINIT_STRING);
 	am->am_record = dlsym(am->am_dlhandle, AUDIT_FILTER_RECORD_STRING);
-	am->am_bsmrecord = dlsym(am->am_dlhandle,
-	    AUDIT_FILTER_BSMRECORD_STRING);
+	am->am_auditrecord = dlsym(am->am_dlhandle,
+	    AUDIT_FILTER_AUDITRECORD_STRING);
 	am->am_detach = dlsym(am->am_dlhandle, AUDIT_FILTER_DETACH_STRING);
 
 	if (am->am_attach != NULL) {
@@ -163,7 +163,7 @@ auditfilter_module_attach(struct auditfilter_module *am)
 			am->am_attach = NULL;
 			am->am_reinit = NULL;
 			am->am_record = NULL;
-			am->am_bsmrecord = NULL;
+			am->am_auditrecord = NULL;
 			am->am_detach = NULL;
 			return (-1);
 		}

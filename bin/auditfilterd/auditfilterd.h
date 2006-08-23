@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.h#3 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.h#4 $
  */
 
 #define	AUDITFILTERD_CONFFILE	"/etc/security/audit_filter"
@@ -57,7 +57,7 @@ struct auditfilter_module {
 	audit_filter_attach_t				 am_attach;
 	audit_filter_reinit_t				 am_reinit;
 	audit_filter_record_t				 am_record;
-	audit_filter_bsmrecord_t			 am_bsmrecord;
+	audit_filter_auditrecord_t			 am_auditrecord;
 	audit_filter_detach_t				 am_detach;
 
 	/*
