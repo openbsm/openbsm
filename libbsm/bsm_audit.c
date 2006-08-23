@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#26 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#27 $
  */
 
 #include <sys/types.h>
@@ -174,7 +174,7 @@ au_write(int d, token_t *tok)
 		return (-1); /* Invalid descriptor */
 	}
 
-	if (rec->len + tok->len + BSM_TRAILER_SIZE > MAX_AUDIT_RECORD_SIZE) {
+	if (rec->len + tok->len + AUDIT_TRAILER_SIZE > MAX_AUDIT_RECORD_SIZE) {
 		errno = ENOMEM;
 		return (-1);
 	}
@@ -208,7 +208,7 @@ au_assemble(au_record_t *rec, short event)
 	u_char *dptr;
 	int error;
 
-	tot_rec_size = rec->len + BSM_HEADER_SIZE + BSM_TRAILER_SIZE;
+	tot_rec_size = rec->len + AUDIT_HEADER_SIZE + AUDIT_TRAILER_SIZE;
 	header = au_to_header32(tot_rec_size, event, 0);
 	if (header == NULL)
 		return (-1);
@@ -285,7 +285,7 @@ au_close(int d, int keep, short event)
 		goto cleanup;
 	}
 
-	tot_rec_size = rec->len + BSM_HEADER_SIZE + BSM_TRAILER_SIZE;
+	tot_rec_size = rec->len + AUDIT_HEADER_SIZE + AUDIT_TRAILER_SIZE;
 
 	if (tot_rec_size > MAX_AUDIT_RECORD_SIZE) {
 		/*
@@ -335,7 +335,7 @@ au_close_buffer(int d, short event, u_char *buffer, size_t *buflen)
 	}
 
 	retval = 0;
-	tot_rec_size = rec->len + BSM_HEADER_SIZE + BSM_TRAILER_SIZE;
+	tot_rec_size = rec->len + AUDIT_HEADER_SIZE + AUDIT_TRAILER_SIZE;
 	if ((tot_rec_size > MAX_AUDIT_RECORD_SIZE) ||
 	    (tot_rec_size > *buflen)) {
 		/*

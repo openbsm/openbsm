@@ -31,7 +31,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#39 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#40 $
  */
 
 #include <sys/types.h>
@@ -2448,7 +2448,7 @@ fetch_invalid_tok(tokenstr_t *tok, char *buf, int len)
 	int err = 0;
 	int recoversize;
 
-	recoversize = len - (tok->len + BSM_TRAILER_SIZE);
+	recoversize = len - (tok->len + AUDIT_TRAILER_SIZE);
 	if (recoversize <= 0)
 		return (-1);
 
