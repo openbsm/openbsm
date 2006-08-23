@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#22 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#23 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -199,7 +199,7 @@
 #define PAD_NOTATTR  0x4000   /* nonattributable event */
 #define PAD_FAILURE  0x8000   /* fail audit event */
 
-#define BSM_MAX_GROUPS      16
+#define AUDIT_MAX_GROUPS      16
 
 /*
  * A number of BSM versions are floating around and defined.  Here are
@@ -207,11 +207,11 @@
  * Solaris BSM version, but has a separate version number in order to
  * identify a potentially different event identifier name space.
  */
-#define	BSM_HEADER_VERSION_OLDDARWIN	1	/* In retrospect, a mistake. */
-#define	BSM_HEADER_VERSION_SOLARIS	2
-#define	BSM_HEADER_VERSION_TSOL25	3
-#define	BSM_HEADER_VERSION_TSOL		4
-#define	BSM_HEADER_VERSION_OPENBSM	10
+#define	AUDIT_HEADER_VERSION_OLDDARWIN	1	/* In retrospect, a mistake. */
+#define	AUDIT_HEADER_VERSION_SOLARIS	2
+#define	AUDIT_HEADER_VERSION_TSOL25	3
+#define	AUDIT_HEADER_VERSION_TSOL	4
+#define	AUDIT_HEADER_VERSION_OPENBSM	10
 
 /*
  * BSM define is AUT_TRAILER_MAGIC; Apple BSM define is TRAILER_PAD_MAGIC; we
