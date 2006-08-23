@@ -25,7 +25,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#7 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#8 $
+ */
+
+/*
+ * Main file for the audit filter daemon, which presents audit records to a
+ * set of run-time registered loadable modules.  This is the main event loop
+ * of the daemon, which handles starting up, waiting for records, and
+ * presenting records to configured modules.  auditfilterd_conf.c handles the
+ * reading and management of the configuration, module list and module state,
+ * etc.
  */
 
 #include <sys/types.h>
