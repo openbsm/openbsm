@@ -75,6 +75,7 @@ to the development of OpenBSM:
     Christian Peron
     Martin Fong
     Pawel Worach
+    Martin Englund
 
 In addition, Coverity, Inc.'s Prevent(tm) static analysis tool and Gimpel
 Software's FlexeLint tool were used to identify a number of bugs in the
@@ -96,4 +97,4 @@ Information on TrustedBSD may be found on the TrustedBSD home page:
 
     http://www.TrustedBSD.org/
 
-$P4: //depot/projects/trustedbsd/openbsm/README#18 $
+$P4: //depot/projects/trustedbsd/openbsm/README#19 $
