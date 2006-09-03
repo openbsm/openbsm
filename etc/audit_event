@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#12 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#13 $
 #
 0:AUE_NULL:indir system call:no
 1:AUE_EXIT:exit(2):pc
@@ -415,6 +415,8 @@
 43111:AUE_EXTATTR_SET_LINK:extattr_set_link(2):fm
 43112:AUE_EXTATTR_LIST_LINK:extattr_list_link(2):fa
 43113:AUE_EXTATTR_DELETE_LINK:extattr_delete_link(2):fm
+43114:AUE_KENV:kenv(8):ad
+43115:AUE_JAIL_ATTACH:jail_attach(2):ad
 #
 # User space system events.
 #
