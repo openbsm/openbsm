@@ -1,5 +1,23 @@
 OpenBSM 1.0 alpha 11
 
+- Reclassify certain read/write operations as having no class rather than the
+  fr/fw class; our default classes audit intent (open) not operations (read,
+  write).
+
+- Introduce AUE_SYSCTL_WRITE event so that BSD/Darwin systems can audit reads
+  and writes of sysctls as separate events.  Add additional kernel
+  environment and jail events for FreeBSD.
+
+- Break AUDIT_TRIGGER_OPEN_NEW into two events, AUDIT_TRIGGER_ROTATE_USER
+  (issued by the user audit(8) tool) and AUDIT_TRIGGER_ROTATE_KERNEL (issued
+  by the kernel audit implementation) so that they can be distinguished.
+
+- Disable rate limiting of rotate requests; as the kernel doesn't retransmit
+  a dropped request, the log file will otherwise grow indefinitely if the
+  trigger is dropped.
+
+- Improve auditd debugging output.
+
 OpenBSM 1.0 alpha 10
 
 - auditd now generates complete audit records for its events, as required for
@@ -211,4 +229,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#27 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#28 $
