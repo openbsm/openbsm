@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit.h#20 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit.h#21 $
  */
 
 #ifndef _BSM_AUDIT_H
@@ -55,10 +55,10 @@
 #define	AUDIT_TRIGGER_MAX		6
 
 /*
- * Special file that will be read for trigger events from the kernel
- * (FreeBSD).
+ * The special device filename (FreeBSD).
  */
-#define	AUDIT_TRIGGER_FILE	"/dev/audit"
+#define	AUDITDEV_FILENAME	"audit"
+#define	AUDIT_TRIGGER_FILE	("/dev/" AUDITDEV_FILENAME)
 
 /*
  * Pre-defined audit IDs
