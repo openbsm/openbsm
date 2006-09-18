@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#27 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#28 $
  */
 
 #ifndef _LIBBSM_H_
@@ -71,6 +71,7 @@
 #define	MINFREE_CONTROL_ENTRY	"minfree"
 #define	FLAGS_CONTROL_ENTRY	"flags"
 #define	NA_CONTROL_ENTRY	"naflags"
+#define	POLICY_CONTROL_ENTRY	"policy"
 
 #define	AU_CLASS_NAME_MAX	8
 #define	AU_CLASS_DESC_MAX	72
@@ -711,11 +712,14 @@ int			 getacdir(char *name, int len);
 int			 getacmin(int *min_val);
 int			 getacflg(char *auditstr, int len);
 int			 getacna(char *auditstr, int len);
+int			 getacpol(char *auditstr, size_t len);
 int			 getauditflagsbin(char *auditstr, au_mask_t *masks);
 int			 getauditflagschar(char *auditstr, au_mask_t *masks,
 			    int verbose);
 int			 au_preselect(au_event_t event, au_mask_t *mask_p,
 			    int sorf, int flag);
+ssize_t			 au_poltostr(long policy, size_t maxsize, char *buf);
+int			 au_strtopol(const char *polstr, long *policy);
 
 /*
  * Functions relating to querying audit event information.

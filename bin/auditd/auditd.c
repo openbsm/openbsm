@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#19 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#20 $
  */
 
 #include <sys/types.h>
@@ -59,6 +59,7 @@
 #include "auditd.h"
 
 #define	NA_EVENT_STR_SIZE	25
+#define	POL_STR_SIZE		128
 
 static int	 ret, minval;
 static char	*lastfile = NULL;
@@ -67,7 +68,6 @@ static int	 triggerfd = 0;
 static int	 sigchlds, sigchlds_handled;
 static int	 sighups, sighups_handled;
 static int	 sigterms, sigterms_handled;
-static long	 global_flags;
 
 static TAILQ_HEAD(, dir_ent)	dir_q;
 
@@ -725,6 +725,8 @@ config_audit_controls(void)
 	au_mask_t aumask;
 	int ctr = 0;
 	char naeventstr[NA_EVENT_STR_SIZE];
+	char polstr[POL_STR_SIZE];
+	long policy;
 
 	/*
 	 * Process the audit event file, obtaining a class mapping for each
@@ -787,15 +789,12 @@ config_audit_controls(void)
 		syslog(LOG_ERR,
 		    "Failed to obtain non-attributable event mask.");
 
-	/*
-	 * Set the audit policy flags based on passed in parameter values.
-	 *
-	 * XXXRW: This removes existing policy flags not related to cnt/ahlt.
-	 * We need a way to merge configuration policy and command line
-	 * argument policy.
-	 */
-	if (auditon(A_SETPOLICY, &global_flags, sizeof(global_flags)))
-		syslog(LOG_ERR, "Failed to set audit policy.");
+	if ((getacpol(polstr, POL_STR_SIZE) == 0) &&
+	    (au_strtopol(polstr, &policy) == 0)) {
+		if (auditon(A_SETPOLICY, &policy, sizeof(policy)))
+			syslog(LOG_ERR, "Failed to set audit policy.");
+	} else
+		syslog(LOG_ERR, "Failed to obtain policy flags.");
 
 	return (0);
 }
@@ -872,7 +871,6 @@ main(int argc, char **argv)
 	int debug = 0;
 	int rc;
 
-	global_flags |= AUDIT_CNT;
 	while ((ch = getopt(argc, argv, "dhs")) != -1) {
 		switch(ch) {
 		case 'd':
@@ -880,20 +878,10 @@ main(int argc, char **argv)
 			debug = 1;
 			break;
 
-		case 's':
-			/* Fail-stop option. */
-			global_flags &= ~(AUDIT_CNT);
-			break;
-
-		case 'h':
-			/* Halt-stop option. */
-			global_flags |= AUDIT_AHLT;
-			break;
-
 		case '?':
 		default:
 			(void)fprintf(stderr,
-			    "usage: auditd [-h | -s] [-d] \n");
+			    "usage: auditd [-d] \n");
 			exit(1);
 		}
 	}
