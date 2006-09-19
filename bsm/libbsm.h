@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#28 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#29 $
  */
 
 #ifndef _LIBBSM_H_
@@ -36,9 +36,6 @@
  * NB: definitions, etc., marked with "OpenSSH compatibility" were introduced
  * solely to allow OpenSSH to compile; Darwin/Apple code should not use them.
  */
-
-#define	AUDIT_MAX_ARGS	10
-#define	AUDIT_MAX_ENV	10
 
 #include <sys/types.h>
 #include <sys/cdefs.h>
@@ -55,12 +52,24 @@
 #include <mach/mach.h>		/* audit_token_t */
 #endif
 
+/*
+ * Size parsed token vectors for execve(2) arguments and environmental
+ * variables.  Note: changing these sizes affects the ABI of the token
+ * structure, and as the token structure is often placed in the caller stack,
+ * this is undesirable.
+ */
+#define	AUDIT_MAX_ARGS	128
+#define	AUDIT_MAX_ENV	128
+
+/*
+ * Arguments to au_preselect(3).
+ */
+#define	AU_PRS_USECACHE	0
+#define	AU_PRS_REREAD	1
+
 #define	AU_PRS_SUCCESS	1
 #define	AU_PRS_FAILURE	2
 #define	AU_PRS_BOTH	(AU_PRS_SUCCESS|AU_PRS_FAILURE)
-
-#define	AU_PRS_USECACHE	0
-#define	AU_PRS_REREAD	1
 
 #define	AUDIT_EVENT_FILE	"/etc/security/audit_event"
 #define	AUDIT_CLASS_FILE	"/etc/security/audit_class"

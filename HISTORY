@@ -25,6 +25,8 @@ OpenBSM 1.0 alpha 11
 - Update auditd to read the audit_control policy field and set the kernel
   policy to match it when configuring/reconfiguring.  Remove the -s and -h
   arguments as these policies are now set via the configuration file.
+- Fix bugs in the parsing of large execve(2) arguments and environmental
+  variable tokens; increase maximum parsed argument and variable count.
 
 OpenBSM 1.0 alpha 10
 
@@ -237,4 +239,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#29 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#30 $
