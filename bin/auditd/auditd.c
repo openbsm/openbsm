@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#20 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#21 $
  */
 
 #include <sys/types.h>
@@ -789,12 +789,22 @@ config_audit_controls(void)
 		syslog(LOG_ERR,
 		    "Failed to obtain non-attributable event mask.");
 
+	/*
+	 * If a policy is configured in audit_control(5), implement the
+	 * policy.  However, if one isn't defined, set AUDIT_CNT to avoid
+	 * leaving the system in a fragile state.
+	 */
 	if ((getacpol(polstr, POL_STR_SIZE) == 0) &&
 	    (au_strtopol(polstr, &policy) == 0)) {
 		if (auditon(A_SETPOLICY, &policy, sizeof(policy)))
-			syslog(LOG_ERR, "Failed to set audit policy.");
-	} else
-		syslog(LOG_ERR, "Failed to obtain policy flags.");
+			syslog(LOG_ERR, "Failed to set audit policy: %m");
+	} else {
+		syslog(LOG_ERR, "Failed to obtain policy flags: %m");
+		policy = AUDIT_CNT;
+		if (auditon(A_SETPOLICY, &policy, sizeof(policy)))
+			syslog(LOG_ERR,
+			    "Failed to set default audit policy: %m");
+	}
 
 	return (0);
 }
