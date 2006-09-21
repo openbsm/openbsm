@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#14 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#15 $
  */
 
 /* 
@@ -328,6 +328,24 @@ select_hdr32(tokenstr_t tok, uint32_t *optchkd)
 	return (1);
 }
 
+static int
+select_return32(tokenstr_t tok_ret32, tokenstr_t tok_hdr32, uint32_t *optchkd)
+{
+	int sorf;
+
+	SETOPT((*optchkd), (OPT_c));
+	if (tok_ret32.tt.ret32.status == 0)
+		sorf = AU_PRS_SUCCESS;
+	else
+		sorf = AU_PRS_FAILURE;
+	if (ISOPTSET(opttochk, OPT_c)) {
+		if (au_preselect(tok_hdr32.tt.hdr32.e_type, &maskp, sorf,
+		    AU_PRS_USECACHE) != 1)
+			return (0);
+	}
+	return (1);
+}
+
 /*
  * Return 1 if checks for the the following succeed
  * auid, 
@@ -395,6 +413,7 @@ select_subj32(tokenstr_t tok, uint32_t *optchkd)
 static int
 select_records(FILE *fp)
 {
+	tokenstr_t tok_hdr32_copy;
 	u_char *buf;
 	tokenstr_t tok;
 	int reclen;
@@ -423,6 +442,8 @@ select_records(FILE *fp)
 			case AU_HEADER_32_TOKEN:
 					selected = select_hdr32(tok,
 					    &optchkd);
+					bcopy(&tok, &tok_hdr32_copy,
+					    sizeof(tok));
 					break;
 
 			case AU_PROCESS_32_TOKEN:
@@ -451,6 +472,11 @@ select_records(FILE *fp)
 					    tok.tt.path.path, &optchkd);
 					break;	
 
+			case AU_RETURN_32_TOKEN:
+				selected = select_return32(tok,
+				    tok_hdr32_copy, &optchkd);
+				break;
+
 			/* 
 			 * The following tokens dont have any relevant
 			 * attributes that we can select upon.
@@ -465,7 +491,6 @@ select_records(FILE *fp)
 			case AU_IPCPERM_TOKEN:
 			case AU_IPORT_TOKEN:
 			case AU_OPAQUE_TOKEN:
-			case AU_RETURN_32_TOKEN:
 			case AU_SEQ_TOKEN:
 			case AU_TEXT_TOKEN:
 			case AU_ARB_TOKEN:
