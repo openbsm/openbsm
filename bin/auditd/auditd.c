@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#22 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#23 $
  */
 
 #include <sys/types.h>
@@ -163,9 +163,11 @@ close_lastfile(char *TS)
 				syslog(LOG_ERR,
 				    "Could not rename %s to %s: %m", oldname,
 				    lastfile);
-			else
+			else {
 				syslog(LOG_INFO, "renamed %s to %s",
 				    oldname, lastfile);
+				audit_warn_closefile(lastfile);
+			}
 		}
 		free(lastfile);
 		free(oldname);
