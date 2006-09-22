@@ -5,6 +5,8 @@ OpenBSM 1.0 alpha 12
   The problem stemmed from not having access to the return token at the time
   the initial preselection occurred, but now a second preselection process
   occurs while processing the return token.
+- getacfilesz(3) API added to read new audit_control(5) filesz setting,
+  which auditd(8) now sets the kernel audit trail rotation size to.
 
 OpenBSM 1.0 alpha 11
 
@@ -251,4 +253,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#35 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#36 $
