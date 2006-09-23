@@ -25,7 +25,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.1#10 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.1#11 $
 .\"
 .Dd January 24, 2004
 .Dt AUDITREDUCE 1
@@ -136,6 +136,11 @@ events from that log:
 .Pp
 .Nm
 -m AUE_SETLOGIN /var/audit/20031016184719.20031017122634
+.Pp
+Output from the above command lines will typically be piped to a new trail
+file, or via standard output to the
+.Xr praudit 1
+command.
 .Sh SEE ALSO
 .Xr praudit 1 ,
 .Xr audit_control 5 ,

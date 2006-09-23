@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#15 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#16 $
  */
 
 /* 
@@ -84,7 +84,7 @@ static void
 usage(const char *msg)
 {
 	fprintf(stderr, "%s\n", msg);
-	fprintf(stderr, "Usage: auditreduce [options] audit-trail-file [....] \n");
+	fprintf(stderr, "Usage: auditreduce [options] [file ...]\n");
 	fprintf(stderr, "\tOptions are : \n");
 	fprintf(stderr, "\t-A : all records\n");
 	fprintf(stderr, "\t-a YYYYMMDD[HH[[MM[SS]]] : after date\n");
@@ -704,8 +704,12 @@ main(int argc, char **argv)
 	argv += optind;
 	argc -= optind;
 
-	if (argc == 0)
-		usage("Filename needed");
+	if (argc == 0) {
+		if (select_records(stdin) == -1)
+			errx(EXIT_FAILURE,
+			    "Couldn't select records from stdin");
+		exit(EXIT_SUCCESS);
+	}
 
 	/*
 	 * XXX: We should actually be merging records here.

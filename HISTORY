@@ -7,6 +7,10 @@ OpenBSM 1.0 alpha 12
   occurs while processing the return token.
 - getacfilesz(3) API added to read new audit_control(5) filesz setting,
   which auditd(8) now sets the kernel audit trail rotation size to.
+- auditreduce(1) now uses stdin if no file names are specified on the command
+  line; this was the documented behavior previously, but it was not
+  implemented.  Be more specific in auditreduce(1)'s examples section about
+  what might be done with the output of auditreduce.
 
 OpenBSM 1.0 alpha 11
 
@@ -253,4 +257,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#36 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#37 $
