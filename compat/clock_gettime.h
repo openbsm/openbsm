@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/compat/clock_gettime.h#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/compat/clock_gettime.h#2 $
  */
 
 /*
@@ -49,6 +49,6 @@ clock_gettime(int clock_id, struct timespec *ts)
 	if (gettimeofday(&tv, NULL) < 0)
 		return (-1);
 	ts->tv_sec = tv.tv_sec;
-	ts->tv_nsec = tv.tv_msec * 1000;
+	ts->tv_nsec = tv.tv_usec * 1000;
 	return (0);
 }
