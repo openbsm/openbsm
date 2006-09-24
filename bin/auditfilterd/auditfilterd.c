@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#9 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#10 $
  */
 
 /*
@@ -46,6 +46,10 @@
 #include <sys/queue.h>
 #else
 #include <compat/queue.h>
+#endif
+
+#ifndef HAVE_CLOCK_GETTIME
+#include <compat/clock_gettime.h>
 #endif
 
 #include <bsm/libbsm.h>
