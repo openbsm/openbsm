@@ -11,6 +11,10 @@ OpenBSM 1.0 alpha 12
   line; this was the documented behavior previously, but it was not
   implemented.  Be more specific in auditreduce(1)'s examples section about
   what might be done with the output of auditreduce.
+- auditreduce(1) now uses regular expressions for pathname matching. Users can
+  now supply one or more (comma delimited) regular expressions for searching
+  the pathnames. If one of the regular expressions is prefixed with a tilde
+  (~), and a path matches, it will be excluded from the search results.
 
 OpenBSM 1.0 alpha 11
 
@@ -257,4 +261,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#37 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#38 $
