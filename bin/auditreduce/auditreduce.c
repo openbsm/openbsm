@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#16 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#17 $
  */
 
 /* 
@@ -40,6 +40,7 @@
  * XXX the records present within the file and between the files themselves
  */ 
 
+#include <sys/queue.h>
 #include <bsm/libbsm.h>
 
 #include <err.h>
@@ -51,8 +52,13 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <regex.h>
+#include <errno.h>
 
 #include "auditreduce.h"
+
+static TAILQ_HEAD(tailhead, re_entry) re_head =
+    TAILQ_HEAD_INITIALIZER(re_head);
 
 extern char		*optarg;
 extern int		 optind, optopt, opterr,optreset;
@@ -79,6 +85,53 @@ static char	*p_shmobj = NULL;
 static char	*p_sockobj = NULL; 
 
 static uint32_t opttochk = 0;
+
+static void
+parse_regexp(char *re_string)
+{
+	char *orig, *copy, re_error[64];
+	struct re_entry *rep;
+	int error, nstrs, i, len;
+
+	copy = strdup(re_string);
+	orig = copy;
+	len = strlen(copy);
+	for (nstrs = 0, i = 0; i < len; i++) {
+		if (copy[i] == ',' && i > 0) {
+			if (copy[i - 1] == '\\')
+				strcpy(&copy[i - 1], &copy[i]);
+			else {
+				nstrs++;
+				copy[i] = '\0';
+			}
+		}
+	}
+	TAILQ_INIT(&re_head);
+	for (i = 0; i < nstrs + 1; i++) {
+		rep = calloc(1, sizeof(*rep));
+		if (rep == NULL) {
+			(void) fprintf(stderr, "calloc: %s\n",
+			    strerror(errno));
+			exit(1);
+		}
+		if (*copy == '~') {
+			copy++;
+			rep->re_negate = 1;
+		}
+		rep->re_pattern = strdup(copy);
+		error = regcomp(&rep->re_regexp, rep->re_pattern,
+		    REG_EXTENDED | REG_NOSUB);
+		if (error != 0) {
+			regerror(error, &rep->re_regexp, re_error, 64);
+			(void) fprintf(stderr, "regcomp: %s\n", re_error);
+			exit(1);
+		}
+		TAILQ_INSERT_TAIL(&re_head, rep, re_glue);
+		len = strlen(copy);
+		copy += len + 1;
+	}
+	free(orig);
+}
 
 static void
 usage(const char *msg)
@@ -258,23 +311,20 @@ select_ipcobj(u_char type, uint32_t id, uint32_t *optchkd)
 static int
 select_filepath(char *path, uint32_t *optchkd)
 {
-	char *loc;
+	struct re_entry *rep;
+	int match;
 
 	SETOPT((*optchkd), OPT_of);
+	match = 1;
 	if (ISOPTSET(opttochk, OPT_of)) {
-		if (p_fileobj[0] == '~') {
-			/* Object should not be in path. */
-			loc = strstr(path, p_fileobj + 1);
-			if ((loc != NULL) && (loc == path))
-				return (0);
-		} else {
-			/* Object should be in path. */
-			loc = strstr(path, p_fileobj);
-			if ((loc == NULL) || (loc != path))
-				return (0);
+		match = 0;
+		TAILQ_FOREACH(rep, &re_head, re_glue) {
+			if (regexec(&rep->re_regexp, path, 0, NULL,
+			    0) != REG_NOMATCH)
+				return (!rep->re_negate);
 		}
 	}
-	return (1);
+	return (match);
 }
 
 /*
@@ -525,6 +575,7 @@ parse_object_type(char *name, char *val)
 
 	if (!strcmp(name, FILEOBJ)) {
 		p_fileobj = val;
+		parse_regexp(val);
 		SETOPT(opttochk, OPT_of);
 	} else if (!strcmp(name, MSGQIDOBJ)) {
 		p_msgqobj = val;
