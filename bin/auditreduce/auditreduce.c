@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#17 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#18 $
  */
 
 /* 
@@ -40,7 +40,13 @@
  * XXX the records present within the file and between the files themselves
  */ 
 
+#include <config/config.h>
+#ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
+#else
+#include <compat/queue.h>
+#endif
+
 #include <bsm/libbsm.h>
 
 #include <err.h>
