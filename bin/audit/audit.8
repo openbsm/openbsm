@@ -29,29 +29,24 @@
 .\"
 .\" @APPLE_BSD_LICENSE_HEADER_END@
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/bin/audit/audit.8#7 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/bin/audit/audit.8#8 $
 .\"
-.Dd January 24, 2004
+.Dd October 2, 2006
 .Dt AUDIT 8
 .Os
 .Sh NAME
 .Nm audit
 .Nd audit management utility
 .Sh SYNOPSIS
-.Nm audit
-.Op Fl nst
-.Op Ar file
+.Nm
+.Fl n | s | t
 .Sh DESCRIPTION
 The
 .Nm
 utility controls the state of the audit system.
-The optional
-.Ar file
-operand specifies the location of the audit control input file (default
-.Pa /etc/security/audit_control ) .
-.Pp
-The options are as follows:
-.Bl -tag -width Ds
+One of the following flags is required as an argument to
+.Nm :
+.Bl -tag -width indent
 .It Fl n
 Forces the audit system to close the existing audit log file and rotate to
 a new log file in a location specified in the audit control file.
@@ -69,9 +64,9 @@ The
 .Xr auditd 8
 daemon must already be running.
 .Sh FILES
-.Bl -tag -width "/etc/security/audit_control" -compact
+.Bl -tag -width ".Pa /etc/security/audit_control" -compact
 .It Pa /etc/security/audit_control
-Default audit policy file used to configure the auditing system.
+Audit policy file used to configure the auditing system.
 .El
 .Sh SEE ALSO
 .Xr audit_control 5 ,
@@ -82,9 +77,13 @@ division of McAfee Inc., under contract to Apple Computer Inc.\& in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Sh AUTHORS
+.An -nosplit
 This software was created by McAfee Research, the security research division
 of McAfee, Inc., under contract to Apple Computer Inc.
-Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
+Additional authors include
+.An Wayne Salamon ,
+.An Robert Watson ,
+and SPARTA Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
