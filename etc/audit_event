@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#17 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#18 $
 #
 0:AUE_NULL:indir system call:no
 1:AUE_EXIT:exit(2):pc
@@ -433,6 +433,14 @@
 43129:AUE_MAC_GET_LINK:mac_get_link(2):fa
 43130:AUE_MAC_SET_LINK:mac_set_link(2):fm
 43131:AUE_MAC_EXECVE:mac_exeve(2):ex,pc
+43132:AUE_GETPATH_FROMFD:getpath_fromfd(2):fa
+43133:AUE_GETPATH_FROMADDR:getpath_fromaddr(2):fa
+43134:AUE_KMQ_OPEN:mq_open(2):ip
+43135:AUE_KMQ_SETATTR:mq_setattr(2):ip
+43136:AUE_KMQ_TIMEDRECEIVE:mq_timedreceive(2):ip
+43137:AUE_KMQ_TIMEDSEND:mq_timedsend(2):ip
+43138:AUE_KMQ_NOTIFY:mq_notify(2):ip
+43139:AUE_KMQ_UNLINK:mq_unlink(2):ip
 #
 # User space system events.
 #
