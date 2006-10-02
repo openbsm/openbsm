@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#23 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#24 $
  */
 
 #include <sys/types.h>
@@ -896,7 +896,7 @@ main(int argc, char **argv)
 	int debug = 0;
 	int rc;
 
-	while ((ch = getopt(argc, argv, "dhs")) != -1) {
+	while ((ch = getopt(argc, argv, "d")) != -1) {
 		switch(ch) {
 		case 'd':
 			/* Debug option. */
