@@ -25,7 +25,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditon.2#9 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditon.2#10 $
 .\"
 .Dd April 19, 2005
 .Dt AUDITON 2
@@ -44,8 +44,8 @@ system call is used to manipulate various audit control operations.
 .Ft *data
 should point to a structure whose type depends on the command.
 .Ft length
-specifies the size of the 
-.Em data 
+specifies the size of the
+.Em data
 in bytes.
 .Ft cmd
 may be any of the following:
@@ -53,7 +53,7 @@ may be any of the following:
 .It Dv A_SETPOLICY
 Set audit policy flags.
 .Ft *data
-must point to a long value set to one of the audit 
+must point to a long value set to one of the audit
 policy control values defined in
 .Pa audit.h .
 Currently, only
@@ -124,7 +124,7 @@ Set the preselection masks for a process.
 .Ft *data
 must point to a
 .Ft auditpinfo_t
-structure that contains the given process's audit 
+structure that contains the given process's audit
 preselection masks for both success and failure.
 .It Dv A_SETFSIZE
 Set the maximum size of the audit log file.
@@ -133,7 +133,8 @@ must point to a
 .Ft au_fstat_t
 structure with the
 .Ft af_filesz
-field set to the maximum audit log file size. A value of 0
+field set to the maximum audit log file size.
+A value of 0
 indicates no limit to the size.
 .It Dv A_SETKAUDIT
 Return
@@ -141,7 +142,7 @@ Return
 .It Dv A_GETCLASS
 Return the event to class mapping for the designated audit event.
 .Ft *data
-must point to a 
+must point to a
 .Ft au_evclass_map_t
 structure.
 .It Dv A_GETKAUDIT
@@ -163,7 +164,7 @@ Return the current kernel preselection masks.
 .Ft *data
 must point to a
 .Ft au_mask_t
-structure which will be set to 
+structure which will be set to
 the current kernel preselection masks for non-attributable events.
 .It Dv A_GETPOLICY
 Return the current audit policy setting.
@@ -178,7 +179,7 @@ are implemented.
 .It Dv A_GETQCTRL
 Return the current kernel audit queue control parameters.
 .Ft *data
-must point to a 
+must point to a
 .Ft au_qctrl_t
 structure which will be set to the current
 kernel audit queue control parameters.
@@ -187,7 +188,8 @@ Returns the maximum size of the audit log file.
 .Ft *data
 must point to a
 .Ft au_fstat_t
-structure. The
+structure.
+The
 .Ft af_filesz
 field will be set to the maximum audit log file size.
 A value of 0 indicates no limit to the size.
@@ -264,13 +266,18 @@ and Mac OS X implementations, and is not present in Solaris.
 .Sh SEE ALSO
 .Xr audit 2 ,
 .Xr auditctl 2 ,
-.Xr getauid 2 ,
-.Xr setauid 2 ,
 .Xr getaudit 2 ,
-.Xr setaudit 2 ,
 .Xr getaudit_addr 2 ,
+.Xr getauid 2 ,
+.Xr setaudit 2 ,
 .Xr setaudit_addr 2 ,
+.Xr setauid 2 ,
 .Xr libbsm 3
+.Sh HISTORY
+The OpenBSM implementation was created by McAfee Research, the security
+division of McAfee Inc., under contract to Apple Computer Inc.\& in 2004.
+It was subsequently adopted by the TrustedBSD Project as the foundation for
+the OpenBSM distribution.
 .Sh AUTHORS
 This software was created by McAfee Research, the security research division
 of McAfee, Inc., under contract to Apple Computer Inc.
@@ -284,8 +291,3 @@ This manual page was written by
 .An Robert Watson Aq rwatson@FreeBSD.org ,
 and
 .An Wayne Salamon Aq wsalamon@FreeBSD.org .
-.Sh HISTORY
-The OpenBSM implementation was created by McAfee Research, the security
-division of McAfee Inc., under contract to Apple Computer Inc. in 2004.
-It was subsequently adopted by the TrustedBSD Project as the foundation for
-the OpenBSM distribution.

@@ -10,7 +10,7 @@
 .\" 2. Redistributions in binary form must reproduce the above copyright
 .\"    notice, this list of conditions and the following disclaimer in the
 .\"    documentation and/or other materials provided with the distribution.
-.\" 
+.\"
 .\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
 .\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 .\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/getauid.2#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/getauid.2#6 $
 .\"
 .Dd April 19, 2005
 .Dt GETAUID 2
@@ -51,12 +51,17 @@ information via
 .Sh SEE ALSO
 .Xr audit 2 ,
 .Xr auditon 2 ,
-.Xr setauid 2 ,
 .Xr getaudit 2 ,
-.Xr setaudit 2 ,
 .Xr getaudit_addr 2 ,
+.Xr setaudit 2 ,
 .Xr setaudit_addr 2 ,
+.Xr setauid 2 ,
 .Xr libbsm 3
+.Sh HISTORY
+The OpenBSM implementation was created by McAfee Research, the security
+division of McAfee Inc., under contract to Apple Computer Inc.\& in 2004.
+It was subsequently adopted by the TrustedBSD Project as the foundation for
+the OpenBSM distribution.
 .Sh AUTHORS
 This software was created by McAfee Research, the security research division
 of McAfee, Inc., under contract to Apple Computer Inc.
@@ -67,8 +72,3 @@ stream format were defined by Sun Microsystems.
 .Pp
 This manual page was written by
 .An Robert Watson Aq rwatson@FreeBSD.org .
-.Sh HISTORY
-The OpenBSM implementation was created by McAfee Research, the security
-division of McAfee Inc., under contract to Apple Computer Inc. in 2004.
-It was subsequently adopted by the TrustedBSD Project as the foundation for
-the OpenBSM distribution.

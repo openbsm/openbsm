@@ -1,19 +1,19 @@
 .\" Copyright (c) 2004 Apple Computer, Inc.
 .\" Copyright (c) 2006 Robert N. M. Watson
 .\" All rights reserved.
-.\" 
+.\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
 .\" are met:
 .\" 1.  Redistributions of source code must retain the above copyright
-.\"     notice, this list of conditions and the following disclaimer. 
+.\"     notice, this list of conditions and the following disclaimer.
 .\" 2.  Redistributions in binary form must reproduce the above copyright
 .\"     notice, this list of conditions and the following disclaimer in the
-.\"     documentation and/or other materials provided with the distribution. 
+.\"     documentation and/or other materials provided with the distribution.
 .\" 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
 .\"     its contributors may be used to endorse or promote products derived
-.\"     from this software without specific prior written permission. 
-.\" 
+.\"     from this software without specific prior written permission.
+.\"
 .\" THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND
 .\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 .\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,7 +26,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#13 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#14 $
 .\"
 .Dd January 4, 2006
 .Dt AUDIT_CONTROL 5
@@ -53,7 +53,7 @@ See
 .Xr audit 1
 for a description of how to restart the audit system.
 .It Va flags
-Specifies which audit event classes are audited for all users.  
+Specifies which audit event classes are audited for all users.
 .Xr audit_user 5
 describes how to audit events for individual users.
 See the information below for the format of the audit flags.
@@ -177,6 +177,11 @@ file size.
 .Xr audit_user 5 ,
 .Xr audit 8 ,
 .Xr auditd 8
+.Sh HISTORY
+The OpenBSM implementation was created by McAfee Research, the security
+division of McAfee Inc., under contract to Apple Computer Inc.\& in 2004.
+It was subsequently adopted by the TrustedBSD Project as the foundation for
+the OpenBSM distribution.
 .Sh AUTHORS
 This software was created by McAfee Research, the security research division
 of McAfee, Inc., under contract to Apple Computer Inc.
@@ -184,8 +189,3 @@ Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
-.Sh HISTORY
-The OpenBSM implementation was created by McAfee Research, the security
-division of McAfee Inc., under contract to Apple Computer Inc. in 2004.
-It was subsequently adopted by the TrustedBSD Project as the foundation for
-the OpenBSM distribution.
