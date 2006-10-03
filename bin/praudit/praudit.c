@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/praudit.c#9 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/praudit.c#10 $
  */
 
 /*
@@ -34,7 +34,7 @@
  */
 
 /*
- * praudit [-lrs] [-ddel] [filenames]
+ * praudit [-lp] [-r | -s] [-d del] [file ...]
  */
 
 #include <bsm/libbsm.h>
@@ -53,10 +53,10 @@ static int	 shortfrm = 0;
 static int	 partial = 0;
 
 static void
-usage()
+usage(void)
 {
 
-	fprintf(stderr, "Usage: praudit [-lrs] [-ddel] [filenames]\n");
+	fprintf(stderr, "usage: praudit [-lp] [-r | -s] [-d del] [file ...]\n");
 	exit(1);
 }
 
@@ -109,10 +109,18 @@ main(int argc, char **argv)
 	int i;
 	FILE *fp;
 
-	while ((ch = getopt(argc, argv, "lprsd:")) != -1) {
+	while ((ch = getopt(argc, argv, "d:lprs")) != -1) {
 		switch(ch) {
+		case 'd':
+			del = optarg;
+			break;
+
 		case 'l':
 			oneline = 1;
+			break;
+
+		case 'p':
+			partial = 1;
 			break;
 
 		case 'r':
@@ -125,14 +133,6 @@ main(int argc, char **argv)
 			if (raw)
 				usage();	/* Exclusive from raw. */
 			shortfrm = 1;
-			break;
-
-		case 'd':
-			del = optarg;
-			break;
-
-		case 'p':
-			partial = 1;
 			break;
 
 		case '?':
