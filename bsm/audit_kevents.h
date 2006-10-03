@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#45 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#46 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -493,6 +493,9 @@
 #define	AUE_KMQ_TIMEDSEND	43137	/* FreeBSD. */
 #define	AUE_KMQ_NOTIFY		43138	/* FreeBSD. */
 #define	AUE_KMQ_UNLINK		43139	/* FreeBSD. */
+#define	AUE_LISTEN		43140	/* FreeBSD/Darwin/Linux. */
+#define	AUE_MLOCKALL		43141	/* FreeBSD. */
+#define	AUE_MUNLOCKALL		43142	/* FreeBSD. */
 
 /*
  * Darwin BSM uses a number of AUE_O_* definitions, which are aliased to the
@@ -590,16 +593,13 @@
 #define	AUE_GETSOCKOPT		AUE_NULL
 #define	AUE_GTSOCKOPT		AUE_GETSOCKOPT	/* XXX: Typo in Darwin. */
 #define	AUE_ISSETUGID		AUE_NULL
-#define	AUE_LISTEN		AUE_NULL
 #define	AUE_LSTATV		AUE_NULL
 #define	AUE_MADVISE		AUE_NULL
 #define	AUE_MINCORE		AUE_NULL
 #define	AUE_MKCOMPLEX		AUE_NULL
-#define	AUE_MLOCKALL		AUE_NULL
 #define	AUE_MODWATCH		AUE_NULL
 #define	AUE_MSGCL		AUE_NULL
 #define	AUE_MSYNC		AUE_NULL
-#define	AUE_MUNLOCKALL		AUE_NULL
 #define	AUE_PREAD		AUE_NULL
 #define	AUE_PWRITE		AUE_NULL
 #define	AUE_PREADV		AUE_NULL
