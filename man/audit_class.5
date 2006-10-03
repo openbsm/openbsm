@@ -25,14 +25,14 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_class.5#8 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_class.5#9 $
 .\"
 .Dd January 24, 2004
 .Dt AUDIT_CLASS 5
 .Os
 .Sh NAME
 .Nm audit_class
-.Nd "contains audit event class descriptions"
+.Nd "audit event class descriptions"
 .Sh DESCRIPTION
 The
 .Nm
@@ -42,7 +42,7 @@ Each line maps an audit event
 mask (bitmap) to a class and a description.
 Entries are of the form:
 .Pp
-.Dl classmask:eventclass:description
+.D1 Ar classmask Ns : Ns Ar eventclass Ns : Ns Ar description
 .Pp
 Example entries in this file are:
 .Bd -literal -offset indent
@@ -54,7 +54,7 @@ Example entries in this file are:
 0xffffffff:all:all flags set
 .Ed
 .Sh FILES
-.Bl -tag -width "/etc/security/audit_class" -compact
+.Bl -tag -width ".Pa /etc/security/audit_class" -compact
 .It Pa /etc/security/audit_class
 .El
 .Sh HISTORY
@@ -63,9 +63,13 @@ division of McAfee Inc., under contract to Apple Computer Inc.\& in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Sh AUTHORS
+.An -nosplit
 This software was created by McAfee Research, the security research division
 of McAfee, Inc., under contract to Apple Computer Inc.
-Additional authors include Wayne Salamon, Robert Watson, and SPARTA Inc.
+Additional authors include
+.An Wayne Salamon ,
+.An Robert Watson ,
+and SPARTA Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
