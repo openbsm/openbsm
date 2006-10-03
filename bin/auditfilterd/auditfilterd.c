@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#10 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#11 $
  */
 
 /*
@@ -80,7 +80,7 @@ static void
 usage(void)
 {
 
-	fprintf(stderr, "auditfilterd [-c conffile] [-d] [-p pipefile]"
+	fprintf(stderr, "auditfilterd [-d] [-c conffile] [-p pipefile]"
 	    " [-t trailfile]\n");
 	fprintf(stderr, "  -c    Specify configuration file (default: %s)\n",
 	    AUDITFILTERD_CONFFILE);
