@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/libbsm.3#9 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/libbsm.3#10 $
 .\"
 .Dd April 19, 2005
 .Dt LIBBSM 3
@@ -42,7 +42,9 @@ library routines provide an interface to BSM audit record streams, allowing
 both the parsing of existing audit streams, as well as the creation of new
 audit records and streams.
 .Sh INTERFACES
+The
 .Nm
+library
 provides a large number of Audit programming interfaces in several classes:
 event stream interfaces, class interfaces, control interfaces, event
 interfaces, I/O interfaces, mask interfaces, notification interfaces, token
@@ -132,7 +134,7 @@ Audit token interfaces permit the creation of tokens for use in creating
 audit records for submission to event streams.
 Each interface converts a C type to its
 .Vt token_t
-representation.
+representation:
 .Xr au_to_arg 3 ,
 .Xr au_to_arg32 3 ,
 .Xr au_to_arg64 3 ,
@@ -204,8 +206,13 @@ division of McAfee Inc., under contract to Apple Computer, Inc., in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Sh AUTHORS
-This software was created by Robert Watson, Wayne Salamon, and Suresh
-Krishnaswamy for McAfee Research, the security research division of McAfee,
+.An -nosplit
+This software was created by
+.An Robert Watson ,
+.An Wayne Salamon ,
+and
+.An Suresh Krishnaswamy
+for McAfee Research, the security research division of McAfee,
 Inc., under contract to Apple Computer, Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event

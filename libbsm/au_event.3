@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_event.3#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_event.3#6 $
 .\"
 .Dd April 19, 2005
 .Dt AU_EVENT 3
@@ -40,17 +40,17 @@
 .Nm getauevnum_r ,
 .Nm getauevnonam ,
 .Nm getauevnonam_r
-.Nd "Look up information from the audit_event database"
+.Nd "look up information from the audit_event database"
 .Sh LIBRARY
 .Lb libbsm
 .Sh SYNOPSIS
 .In libbsm.h
 .Ft void
-.Fn setauevent "void"
+.Fn setauevent void
 .Ft void
-.Fn endauevent "void"
+.Fn endauevent void
 .Ft "struct au_event_ent *"
-.Fn getauevent "void"
+.Fn getauevent void
 .Ft "struct au_event_ent *"
 .Fn getauevent_r "struct au_event_ent *e"
 .Ft "struct au_event_ent *"
@@ -70,45 +70,55 @@ These interfaces may be used to look up information from the
 .Xr audit_event 5
 database, which describes audit events.
 Entries in the database are described by
-.Vt struct au_event_ent
+.Vt "struct au_event_ent"
 entries, which are returned by calls to
 .Fn getauevent ,
 .Fn getauevnam ,
 or
 .Fn getauevnum .
-It is also possible look up an event number via a call to
-.Nm getauevnonam .
+It is also possible to look up an event number via a call to
+.Fn getauevnonam .
 .Pp
+The
 .Fn setauevent
+function
 resets the database access session for
 .Xr audit_event 5 ,
 so that the next call to
 .Fn getauevent
 will start with the first entry in the database.
 .Pp
+The
 .Fn endauevent
+function
 closes the
 .Xr audit_event 5
 database session.
 .Pp
+The
 .Fn getauevent
+function
 returns a reference to the next entry in the
 .Xr audit_event 5
 database.
 .Pp
+The
 .Fn getauevnam
+function
 returns a reference to the entry in the
 .Xr audit_event 5
 database with a name of
-.Va name .
+.Fa name .
 .Pp
 .Fn getauevnum
 returns a reference to the entry in the
 .Xr audit_event 5
 database with an event number of
-.Va event_number .
+.Fa event_number .
 .Pp
+The
 .Fn getauevnonam
+function
 returns a reference to an audit event number using the
 .Xr audit_event 5
 database.
@@ -123,11 +133,12 @@ Functions
 and
 .Fn getauevnuam
 will return a reference to a
-.Ft struct au_event_ent
+.Vt "struct au_event_ent"
 or
-.Ft au_event_t
+.Vt au_event_t
 on success, or
-.Dv NULL on failure, with
+.Dv NULL
+on failure, with
 .Va errno
 set to provide further error information.
 .Sh SEE ALSO
@@ -139,14 +150,21 @@ division of McAfee Inc., under contract to Apple Computer, Inc., in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Sh AUTHORS
-This software was created by Robert Watson, Wayne Salamon, and Suresh
-Krishnaswamy for McAfee Research, the security research division of McAfee,
+.An -nosplit
+This software was created by
+.An Robert Watson ,
+.An Wayne Salamon ,
+and
+.An Suresh Krishnaswamy
+for McAfee Research, the security research division of McAfee,
 Inc., under contract to Apple Computer, Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
 .Sh BUGS
+The
 .Va errno
+variable
 is not always properly set following a failure.
 .Pp
 These routines are thread-safe, but not re-entrant, so simultaneous or

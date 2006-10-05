@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_token.3#9 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_token.3#10 $
 .\"
 .Dd April 19, 2005
 .Dt AU_TOKEN 3
@@ -72,103 +72,103 @@
 .Nm au_to_header ,
 .Nm au_to_header32 ,
 .Nm au_to_header64 ,
-.Nm au_to_trailer .
-.Nd "Routines for generating BSM audit tokens"
+.Nm au_to_trailer
+.Nd "routines for generating BSM audit tokens"
 .Sh LIBRARY
 .Lb libbsm
 .Sh SYNOPSIS
 .In libbsm.h
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_arg32 "char n" "char *text" "u_int32_t v"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_arg64 "char n" "char *text" "u_int64_t v"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_arg "char n" "char *text" "u_int32_t v"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_attr32 "struct vattr *attr"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_attr64 "struct vattr *attr"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_attr "struct vattr *attr"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_data "char unit_print" "char unit_type" "char unit_count" "char *p"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_exit "int retval" "int err"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_groups "int *groups"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_newgroups "u_int16_t n" "gid_t *groups"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_in_addr "struct in_addr *internet_addr"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_in_addr_ex "struct in6_addr *internet_addr"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_ip "struct ip *ip"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_ipc "char type" "int id"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_ipc_perm "struct ipc_perm *perm"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_iport "u_int16_t iport"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_opaque "char *data" "u_int64_t bytes"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_file "char *file" "struct timeval tm"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_text "char *text"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_path "char *text"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_process32 "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_process64 "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_process32_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_process64_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_return32 "char status" "u_int32_t ret"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_return64 "char status" "u_int64_t ret"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_return "char status" "u_int32_t ret"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_seq "long audit_count"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_sock_inet32 "struct sockaddr_in *so"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_sock_inet128 "struct sockaddr_in6 *so"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_sock_int "struct sockaddr_in *so"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_subject32 "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_subject64 "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_subject "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_subject32_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_subject64_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_subject_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
-.Ft token_t *
-.Fn au_to_me "void"
-.Ft token_t *
+.Ft "token_t *"
+.Fn au_to_me void
+.Ft "token_t *"
 .Fn au_to_exec_args "char **argv"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_exec_env "char **envp"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_header "int rec_size" "au_event_t e_type" "au_emod_t emod"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_header32 "int rec_size" "au_event_t e_type" "au_emod_t emod"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_header64 "int rec_size" "au_event_t e_type" "au_emod_t e_mod"
-.Ft token_t *
+.Ft "token_t *"
 .Fn au_to_trailer "int rec_size"
 .Sh DESCRIPTION
 These interfaces support the allocation of BSM audit tokens, represented by
-.Ft token_t ,
+.Vt token_t ,
 for various data types.
 .Sh RETURN VALUES
 On success, a pointer to a
@@ -189,10 +189,14 @@ division of McAfee Inc., under contract to Apple Computer, Inc., in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Sh AUTHORS
-This software was created by Robert Watson, Wayne Salamon, and Suresh
-Krishnaswamy for McAfee Research, the security research division of McAfee,
+.An -nosplit
+This software was created by
+.An Robert Watson ,
+.An Wayne Salamon ,
+and
+.An Suresh Krishnaswamy
+for McAfee Research, the security research division of McAfee,
 Inc., under contract to Apple Computer, Inc.
 .Pp
 The Basic Security Module (BSM) interface to audit records and audit event
 stream format were defined by Sun Microsystems.
-.Sh BUGS
