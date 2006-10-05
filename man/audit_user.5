@@ -25,7 +25,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_user.5#9 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_user.5#10 $
 .\"
 .Dd February 5, 2006
 .Dt AUDIT_USER 5
@@ -75,6 +75,22 @@ For the user
 .Dq Li jdoe ,
 failed file creation events are audited, administrative events are
 audited, and successful file write events are never audited.
+.Sh IMPLEMENTATION NOTES
+Per-user and global audit preselection configuration are evaluated at time of
+login, so users must log out and back in again for audit changes relating to
+preselection to take effect.
+.Pp
+Audit record preselection occurs with respect to the audit identifier
+associated with a process, rather than with respect to the UNIX user or group
+ID.
+The audit identifier is set as part of the user credential context as part of
+login, and typically does not change as a result of running setuid or setgid
+applications, such as
+.Xr su 8 .
+This has the advantage that events that occur after running
+.Xr su 8
+can be audited to the original authenticated user, as required by CAPP, but
+may be surprising if not expected.
 .Sh FILES
 .Bl -tag -width ".Pa /etc/security/audit_user" -compact
 .It Pa /etc/security/audit_user
