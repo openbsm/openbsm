@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_user.3#6 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_user.3#7 $
 .\"
 .Dd April 19, 2005
 .Dt AU_USER 3
@@ -41,7 +41,7 @@
 .Sh LIBRARY
 .Lb libbsm
 .Sh SYNOPSIS
-.In libbsm.h
+.In bsm/libbsm.h
 .Ft void
 .Fn setauuser void
 .Ft void
@@ -57,7 +57,9 @@
 .Ft int
 .Fn au_user_mask "char *username" "au_mask_t *mask_p"
 .Ft int
-.Fn getfauditflags "au_mask_t *usremask" "au_mask_t *usrdmask" "au_mask_t *lastmask"
+.Fo getfauditflags
+.Fa "au_mask_t *usremask" "au_mask_t *usrdmask" "au_mask_t *lastmask"
+.Fc
 .Sh DESCRIPTION
 These interfaces may be used to look up information from the
 .Xr audit_user 5

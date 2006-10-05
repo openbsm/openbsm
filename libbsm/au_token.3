@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_token.3#10 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_token.3#11 $
 .\"
 .Dd April 19, 2005
 .Dt AU_TOKEN 3
@@ -77,7 +77,7 @@
 .Sh LIBRARY
 .Lb libbsm
 .Sh SYNOPSIS
-.In libbsm.h
+.In bsm/libbsm.h
 .Ft "token_t *"
 .Fn au_to_arg32 "char n" "char *text" "u_int32_t v"
 .Ft "token_t *"
@@ -111,7 +111,7 @@
 .Ft "token_t *"
 .Fn au_to_iport "u_int16_t iport"
 .Ft "token_t *"
-.Fn au_to_opaque "char *data" "u_int64_t bytes"
+.Fn au_to_opaque "char *data" "u_int16_t bytes"
 .Ft "token_t *"
 .Fn au_to_file "char *file" "struct timeval tm"
 .Ft "token_t *"
@@ -119,13 +119,25 @@
 .Ft "token_t *"
 .Fn au_to_path "char *text"
 .Ft "token_t *"
-.Fn au_to_process32 "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fo au_to_process32
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fc
 .Ft "token_t *"
-.Fn au_to_process64 "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fo au_to_process64
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fc
 .Ft "token_t *"
-.Fn au_to_process32_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fo au_to_process32_ex
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fc
 .Ft "token_t *"
-.Fn au_to_process64_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fo au_to_process64_ex
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fc
 .Ft "token_t *"
 .Fn au_to_return32 "char status" "u_int32_t ret"
 .Ft "token_t *"
@@ -141,17 +153,35 @@
 .Ft "token_t *"
 .Fn au_to_sock_int "struct sockaddr_in *so"
 .Ft "token_t *"
-.Fn au_to_subject32 "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fo au_to_subject32
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fc
 .Ft "token_t *"
-.Fn au_to_subject64 "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fo au_to_subject64
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fc
 .Ft "token_t *"
-.Fn au_to_subject "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fo au_to_subject
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fc
 .Ft "token_t *"
-.Fn au_to_subject32_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_t *tid"
+.Fo au_to_subject32_ex
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fc
 .Ft "token_t *"
-.Fn au_to_subject64_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fo au_to_subject64_ex
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fc
 .Ft "token_t *"
-.Fn au_to_subject_ex "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid" "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fo au_to_subject_ex
+.Fa "au_id_t auid" "uid_t euid" "gid_t egid" "uid_t ruid"
+.Fa "gid_t rgid" "pid_t pid" "au_asid_t sid" "au_tid_addr_t *tid"
+.Fc
 .Ft "token_t *"
 .Fn au_to_me void
 .Ft "token_t *"

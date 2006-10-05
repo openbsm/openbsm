@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_event.3#6 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_event.3#7 $
 .\"
 .Dd April 19, 2005
 .Dt AU_EVENT 3
@@ -44,7 +44,7 @@
 .Sh LIBRARY
 .Lb libbsm
 .Sh SYNOPSIS
-.In libbsm.h
+.In bsm/libbsm.h
 .Ft void
 .Fn setauevent void
 .Ft void
@@ -54,17 +54,17 @@
 .Ft "struct au_event_ent *"
 .Fn getauevent_r "struct au_event_ent *e"
 .Ft "struct au_event_ent *"
-.Fn getauevnam "char *name"
+.Fn getauevnam "const char *name"
 .Ft "struct au_event_ent *"
-.Fn getauevnam_r "struct au_event_ent *e" "char *name"
+.Fn getauevnam_r "struct au_event_ent *e" "const char *name"
 .Ft "struct au_event_ent *"
 .Fn getauevnum "au_event_t event_number"
 .Ft "struct au_event_ent *"
 .Fn getauevnum_r "struct au_event_ent *e" "au_event_t event_number"
 .Ft "au_event_t *"
-.Fn getauevnonam "char *event_name"
+.Fn getauevnonam "const char *event_name"
 .Ft "au_event_t *"
-.Fn getauevnonam_r "au_event_t *ev" "char *event_name"
+.Fn getauevnonam_r "au_event_t *ev" "const char *event_name"
 .Sh DESCRIPTION
 These interfaces may be used to look up information from the
 .Xr audit_event 5
