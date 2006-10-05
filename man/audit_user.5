@@ -25,7 +25,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_user.5#10 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_user.5#11 $
 .\"
 .Dd February 5, 2006
 .Dt AUDIT_USER 5
@@ -96,7 +96,12 @@ may be surprising if not expected.
 .It Pa /etc/security/audit_user
 .El
 .Sh SEE ALSO
-.Xr audit_control 5
+.Xr login 1 ,
+.Xr audit 4 ,
+.Xr audit_class 5 ,
+.Xr audit_control 5 ,
+.Xr audit_event 5 ,
+.Xr su 8
 .Sh HISTORY
 The OpenBSM implementation was created by McAfee Research, the security
 division of McAfee Inc., under contract to Apple Computer Inc.\& in 2004.
