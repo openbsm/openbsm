@@ -25,9 +25,9 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/praudit.1#11 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/praudit.1#12 $
 .\"
-.Dd October 3, 2006
+.Dd November 5, 2006
 .Dt PRAUDIT 1
 .Os
 .Sh NAME
@@ -35,7 +35,7 @@
 .Nd "print the contents of audit trail files"
 .Sh SYNOPSIS
 .Nm
-.Op Fl lp
+.Op Fl lpx
 .Op Fl r | s
 .Op Fl d Ar del
 .Op Ar
@@ -77,6 +77,8 @@ Short text representations for
 record and event type are displayed.
 This option is exclusive from
 .Fl r .
+.It Fl x
+Print audit records in the XML output format.
 .El
 .Pp
 If the raw or short forms are not specified, the default is to print the tokens
