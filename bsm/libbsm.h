@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#31 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#32 $
  */
 
 #ifndef _LIBBSM_H_
@@ -163,6 +163,12 @@ typedef struct au_tidaddr32 {
 	u_int32_t	type;
 	u_int32_t	addr[4];
 } au_tidaddr32_t;
+
+typedef struct au_tidaddr64 {
+	u_int64_t	port;
+	u_int32_t	type;
+	u_int32_t	addr[4];
+} au_tidaddr64_t;
 
 /*
  * argument #              1 byte
@@ -483,6 +489,17 @@ typedef struct {
 	au_tidaddr32_t	tid;
 } au_proc32ex_t;
 
+typedef struct {
+	u_int32_t	auid;
+	u_int32_t	euid;
+	u_int32_t	egid;
+	u_int32_t	ruid;
+	u_int32_t	rgid;
+	u_int32_t	pid;
+	u_int32_t	sid;
+	au_tidaddr64_t	tid;
+} au_proc64ex_t;
+
 /*
  * error status            1 byte
  * return value            4 bytes/8 bytes (32-bit/64-bit value)
@@ -616,6 +633,17 @@ typedef struct {
 	au_tidaddr32_t	tid;
 } au_subject32ex_t;
 
+typedef struct {
+	u_int32_t	auid;
+	u_int32_t	euid;
+	u_int32_t	egid;
+	u_int32_t	ruid;
+	u_int32_t	rgid;
+	u_int32_t	pid;
+	u_int32_t	sid;
+	au_tidaddr64_t	tid;
+} au_subject64ex_t;
+
 /*
  * text length             2 bytes
  * text                    N bytes + 1 terminating NULL byte
@@ -675,8 +703,9 @@ struct tokenstr {
 		au_opaque_t		opaque;
 		au_path_t		path;
 		au_proc32_t		proc32;
-		au_proc64_t		proc64;
 		au_proc32ex_t		proc32_ex;
+		au_proc64_t		proc64;
+		au_proc64ex_t		proc64_ex;
 		au_ret32_t		ret32;
 		au_ret64_t		ret64;
 		au_seq_t		seq;
@@ -685,8 +714,9 @@ struct tokenstr {
 		au_socketinet32_t	sockinet32;
 		au_socketunix_t		sockunix;
 		au_subject32_t		subj32;
-		au_subject64_t		subj64;
 		au_subject32ex_t	subj32_ex;
+		au_subject64_t		subj64;
+		au_subject64ex_t	subj64_ex;
 		au_text_t		text;
 		au_kevent_t		kevent;
 		au_invalid_t		invalid;

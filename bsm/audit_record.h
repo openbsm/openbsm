@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#23 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#24 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -245,6 +245,8 @@ int	 au_close_token(token_t *tok, u_char *buffer, size_t *buflen);
 token_t	*au_to_file(char *file, struct timeval tm);
 
 token_t	*au_to_header32_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
+	    struct timeval tm);
+token_t	*au_to_header64_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 	    struct timeval tm);
 #if !defined(KERNEL) && !defined(_KERNEL)
 token_t	*au_to_header(int rec_size, au_event_t e_type, au_emod_t e_mod);

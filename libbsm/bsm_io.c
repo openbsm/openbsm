@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#42 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#43 $
  */
 
 #include <sys/types.h>
@@ -333,6 +333,14 @@ close_tag(FILE *fp, u_char type)
 		fprintf(fp, "/>");
 		break;
 
+	case AUT_PROCESS64:
+		fprintf(fp, "/>");
+		break;
+
+	case AUT_PROCESS64_EX:
+		fprintf(fp, "/>");
+		break;
+
 	case AUT_RETURN32:
 		fprintf(fp, "/>");
 		break;
@@ -366,6 +374,10 @@ close_tag(FILE *fp, u_char type)
 		break;
 
 	case AUT_SUBJECT32_EX:
+		fprintf(fp, "/>");
+		break;
+
+	case AUT_SUBJECT64_EX:
 		fprintf(fp, "/>");
 		break;
 
@@ -488,6 +500,14 @@ print_tok_type(FILE *fp, u_char type, const char *tokname, char raw, int xml)
 			fprintf(fp, "<process ");
 			break;
 
+		case AUT_PROCESS64:
+			fprintf(fp, "<process ");
+			break;
+
+		case AUT_PROCESS64_EX:
+			fprintf(fp, "<process ");
+			break;
+
 		case AUT_RETURN32:
 			fprintf(fp, "<return ");
 			break;
@@ -521,6 +541,10 @@ print_tok_type(FILE *fp, u_char type, const char *tokname, char raw, int xml)
 			break;
 
 		case AUT_SUBJECT32_EX:
+			fprintf(fp, "<subject ");
+			break;
+
+		case AUT_SUBJECT64_EX:
 			fprintf(fp, "<subject ");
 			break;
 
@@ -2530,6 +2554,132 @@ print_process32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	}
 }
 
+/*
+ * token ID                     1 byte
+ * audit ID                     4 bytes
+ * euid                         4 bytes
+ * egid                         4 bytes
+ * ruid                         4 bytes
+ * rgid                         4 bytes
+ * pid                          4 bytes
+ * sessid                       4 bytes
+ * terminal ID
+ *   portid             8 bytes
+ *   machine id         4 bytes
+ */
+static int
+fetch_process64_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64.auid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64.euid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64.egid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64.ruid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64.rgid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64.pid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64.sid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.proc64.tid.port, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_BYTES(buf, len, &tok->tt.proc64.tid.addr,
+	    sizeof(tok->tt.proc64.tid.addr), tok->len, err);
+	if (err)
+		return (-1);
+
+	return (0);
+}
+
+static void
+print_process64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
+    __unused char sfrm, int xml)
+{
+	print_tok_type(fp, tok->id, "process", raw, xml);
+	if (xml) {
+		open_attr(fp, "audit-uid");
+		print_user(fp, tok->tt.proc64.auid, raw);
+		close_attr(fp);
+		open_attr(fp, "uid");
+		print_user(fp, tok->tt.proc64.euid, raw);
+		close_attr(fp);
+		open_attr(fp, "gid");
+		print_group(fp, tok->tt.proc64.egid, raw);
+		close_attr(fp);
+		open_attr(fp, "ruid");
+		print_user(fp, tok->tt.proc64.ruid, raw);
+		close_attr(fp);
+		open_attr(fp, "rgid");
+		print_group(fp, tok->tt.proc64.rgid, raw);
+		close_attr(fp);
+		open_attr(fp, "pid");
+		print_4_bytes(fp, tok->tt.proc64.pid, "%u");
+		close_attr(fp);
+		open_attr(fp, "sid");
+		print_4_bytes(fp, tok->tt.proc64.sid, "%u");
+		close_attr(fp);
+		open_attr(fp, "tid");
+		print_8_bytes(fp, tok->tt.proc64.tid.port, "%llu");
+		print_ip_address(fp, tok->tt.proc64.tid.addr);
+		close_attr(fp);
+		close_tag(fp, tok->id);
+	} else {
+		print_delim(fp, del);
+		print_user(fp, tok->tt.proc64.auid, raw);
+		print_delim(fp, del);
+		print_user(fp, tok->tt.proc64.euid, raw);
+		print_delim(fp, del);
+		print_group(fp, tok->tt.proc64.egid, raw);
+		print_delim(fp, del);
+		print_user(fp, tok->tt.proc64.ruid, raw);
+		print_delim(fp, del);
+		print_group(fp, tok->tt.proc64.rgid, raw);
+		print_delim(fp, del);
+		print_4_bytes(fp, tok->tt.proc64.pid, "%u");
+		print_delim(fp, del);
+		print_4_bytes(fp, tok->tt.proc64.sid, "%u");
+		print_delim(fp, del);
+		print_8_bytes(fp, tok->tt.proc64.tid.port, "%llu");
+		print_delim(fp, del);
+		print_ip_address(fp, tok->tt.proc64.tid.addr);
+	}
+}
+
+/*                                                     
+ * token ID                1 byte                      
+ * audit ID                4 bytes                     
+ * effective user ID       4 bytes                     
+ * effective group ID      4 bytes                     
+ * real user ID            4 bytes                     
+ * real group ID           4 bytes                     
+ * process ID              4 bytes                     
+ * session ID              4 bytes                     
+ * terminal ID                                         
+ *   port ID               4 bytes
+ *   address type-len      4 bytes                     
+ *   machine address      16 bytes                     
+ */
 static int
 fetch_process32ex_tok(tokenstr_t *tok, char *buf, int len)
 {
@@ -2643,6 +2793,135 @@ print_process32ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		print_delim(fp, del);
 		print_ip_ex_address(fp, tok->tt.proc32_ex.tid.type,
 		    tok->tt.proc32_ex.tid.addr);
+	}
+}
+
+/*                                                     
+ * token ID                1 byte                      
+ * audit ID                4 bytes                     
+ * effective user ID       4 bytes                     
+ * effective group ID      4 bytes                     
+ * real user ID            4 bytes                     
+ * real group ID           4 bytes                     
+ * process ID              4 bytes                     
+ * session ID              4 bytes                     
+ * terminal ID                                         
+ *   port ID               8 bytes
+ *   address type-len      4 bytes                     
+ *   machine address      16 bytes                     
+ */
+static int
+fetch_process64ex_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64_ex.auid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64_ex.euid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64_ex.egid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64_ex.ruid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64_ex.rgid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64_ex.pid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64_ex.sid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.proc64_ex.tid.port, tok->len,
+	    err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.proc64_ex.tid.type, tok->len,
+	    err);
+	if (err)
+		return (-1);
+
+	if (tok->tt.proc64_ex.tid.type == AU_IPv4) {
+		READ_TOKEN_BYTES(buf, len, &tok->tt.proc64_ex.tid.addr[0],
+		    sizeof(tok->tt.proc64_ex.tid.addr[0]), tok->len, err);
+		if (err)
+			return (-1);
+	} else if (tok->tt.proc64_ex.tid.type == AU_IPv6) {
+		READ_TOKEN_BYTES(buf, len, tok->tt.proc64_ex.tid.addr,
+		    sizeof(tok->tt.proc64_ex.tid.addr), tok->len, err);
+		if (err)
+			return (-1);
+	} else
+		return (-1);
+
+	return (0);
+}
+
+static void
+print_process64ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
+    __unused char sfrm, int xml)
+{
+	print_tok_type(fp, tok->id, "process_ex", raw, xml);
+	if (xml) {
+		open_attr(fp, "audit-uid");
+		print_user(fp, tok->tt.proc64_ex.auid, raw);
+		close_attr(fp);
+		open_attr(fp, "uid");
+		print_user(fp, tok->tt.proc64_ex.euid, raw);
+		close_attr(fp);
+		open_attr(fp, "gid");
+		print_group(fp, tok->tt.proc64_ex.egid, raw);
+		close_attr(fp);
+		open_attr(fp, "ruid");
+		print_user(fp, tok->tt.proc64_ex.ruid, raw);
+		close_attr(fp);
+		open_attr(fp, "rgid");
+		print_group(fp, tok->tt.proc64_ex.rgid, raw);
+		close_attr(fp);
+		open_attr(fp, "pid");
+		print_4_bytes(fp, tok->tt.proc64_ex.pid, "%u");
+		close_attr(fp);
+		open_attr(fp, "sid");
+		print_4_bytes(fp, tok->tt.proc64_ex.sid, "%u");
+		close_attr(fp);
+		open_attr(fp, "tid");
+		print_8_bytes(fp, tok->tt.proc64_ex.tid.port, "%llu");
+		print_ip_ex_address(fp, tok->tt.proc64_ex.tid.type,
+		    tok->tt.proc64_ex.tid.addr);
+		close_attr(fp);
+		close_tag(fp, tok->id);
+	} else {
+		print_delim(fp, del);
+		print_user(fp, tok->tt.proc64_ex.auid, raw);
+		print_delim(fp, del);
+		print_user(fp, tok->tt.proc64_ex.euid, raw);
+		print_delim(fp, del);
+		print_group(fp, tok->tt.proc64_ex.egid, raw);
+		print_delim(fp, del);
+		print_user(fp, tok->tt.proc64_ex.ruid, raw);
+		print_delim(fp, del);
+		print_group(fp, tok->tt.proc64_ex.rgid, raw);
+		print_delim(fp, del);
+		print_4_bytes(fp, tok->tt.proc64_ex.pid, "%u");
+		print_delim(fp, del);
+		print_4_bytes(fp, tok->tt.proc64_ex.sid, "%u");
+		print_delim(fp, del);
+		print_8_bytes(fp, tok->tt.proc64_ex.tid.port, "%llu");
+		print_delim(fp, del);
+		print_ip_ex_address(fp, tok->tt.proc64_ex.tid.type,
+		    tok->tt.proc64_ex.tid.addr);
 	}
 }
 
@@ -3290,6 +3569,134 @@ print_subject32ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 }
 
 /*
+ * audit ID                     4 bytes
+ * euid                         4 bytes
+ * egid                         4 bytes
+ * ruid                         4 bytes
+ * rgid                         4 bytes
+ * pid                          4 bytes
+ * sessid                       4 bytes
+ * terminal ID
+ *   portid             8 bytes
+ *   type               4 bytes
+ *   machine id         16 bytes
+ */
+static int
+fetch_subject64ex_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64_ex.auid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64_ex.euid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64_ex.egid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64_ex.ruid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64_ex.rgid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64_ex.pid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64_ex.sid, tok->len, err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT64(buf, len, tok->tt.subj64_ex.tid.port, tok->len,
+	    err);
+	if (err)
+		return (-1);
+
+	READ_TOKEN_U_INT32(buf, len, tok->tt.subj64_ex.tid.type, tok->len,
+	    err);
+	if (err)
+		return (-1);
+
+	if (tok->tt.subj64_ex.tid.type == AU_IPv4) {
+		READ_TOKEN_BYTES(buf, len, &tok->tt.subj64_ex.tid.addr[0],
+		    sizeof(tok->tt.subj64_ex.tid.addr[0]), tok->len, err);
+		if (err)
+			return (-1);
+	} else if (tok->tt.subj64_ex.tid.type == AU_IPv6) {
+		READ_TOKEN_BYTES(buf, len, tok->tt.subj64_ex.tid.addr,
+		    sizeof(tok->tt.subj64_ex.tid.addr), tok->len, err);
+		if (err)
+			return (-1);
+	} else
+		return (-1);
+
+	return (0);
+}
+
+static void
+print_subject64ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
+    __unused char sfrm, int xml)
+{
+	print_tok_type(fp, tok->id, "subject_ex", raw, xml);
+	if (xml) {
+		open_attr(fp, "audit-uid");
+		print_user(fp, tok->tt.subj64_ex.auid, raw);
+		close_attr(fp);
+		open_attr(fp, "uid");
+		print_user(fp, tok->tt.subj64_ex.euid, raw);
+		close_attr(fp);
+		open_attr(fp, "gid");
+		print_group(fp, tok->tt.subj64_ex.egid, raw);
+		close_attr(fp);
+		open_attr(fp, "ruid");
+		print_user(fp, tok->tt.subj64_ex.ruid, raw);
+		close_attr(fp);
+		open_attr(fp, "rgid");
+		print_group(fp, tok->tt.subj64_ex.rgid, raw);
+		close_attr(fp);
+		open_attr(fp, "pid");
+		print_4_bytes(fp, tok->tt.subj64_ex.pid, "%u");
+		close_attr(fp);
+		open_attr(fp, "sid");
+		print_4_bytes(fp, tok->tt.subj64_ex.sid, "%u");
+		close_attr(fp);
+		open_attr(fp, "tid");
+		print_8_bytes(fp, tok->tt.subj64_ex.tid.port, "%llu");
+		print_ip_ex_address(fp, tok->tt.subj64_ex.tid.type,
+		    tok->tt.subj64_ex.tid.addr);
+		close_attr(fp);
+		close_tag(fp, tok->id);
+	} else {
+		print_delim(fp, del);
+		print_user(fp, tok->tt.subj64_ex.auid, raw);
+		print_delim(fp, del);
+		print_user(fp, tok->tt.subj64_ex.euid, raw);
+		print_delim(fp, del);
+		print_group(fp, tok->tt.subj64_ex.egid, raw);
+		print_delim(fp, del);
+		print_user(fp, tok->tt.subj64_ex.ruid, raw);
+		print_delim(fp, del);
+		print_group(fp, tok->tt.subj64_ex.rgid, raw);
+		print_delim(fp, del);
+		print_4_bytes(fp, tok->tt.subj64_ex.pid, "%u");
+		print_delim(fp, del);
+		print_4_bytes(fp, tok->tt.subj64_ex.sid, "%u");
+		print_delim(fp, del);
+		print_8_bytes(fp, tok->tt.subj64_ex.tid.port, "%llu");
+		print_delim(fp, del);
+		print_ip_ex_address(fp, tok->tt.subj64_ex.tid.type,
+		    tok->tt.subj64_ex.tid.addr);
+	}
+}
+
+/*
  * size                         2 bytes
  * data                         size bytes
  */
@@ -3533,6 +3940,12 @@ au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 	case AUT_PROCESS32_EX:
 		return (fetch_process32ex_tok(tok, buf, len));
 
+	case AUT_PROCESS64:
+		return (fetch_process64_tok(tok, buf, len));
+
+	case AUT_PROCESS64_EX:
+		return (fetch_process64ex_tok(tok, buf, len));
+
 	case AUT_RETURN32:
 		return (fetch_return32_tok(tok, buf, len));
 
@@ -3554,11 +3967,14 @@ au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 	case AUT_SUBJECT32:
 		return (fetch_subject32_tok(tok, buf, len));
 
+	case AUT_SUBJECT32_EX:
+		return (fetch_subject32ex_tok(tok, buf, len));
+
 	case AUT_SUBJECT64:
 		return (fetch_subject64_tok(tok, buf, len));
 
-	case AUT_SUBJECT32_EX:
-		return (fetch_subject32ex_tok(tok, buf, len));
+	case AUT_SUBJECT64_EX:
+		return (fetch_subject64ex_tok(tok, buf, len));
 
 	case AUT_TEXT:
 		return (fetch_text_tok(tok, buf, len));
@@ -3682,6 +4098,14 @@ au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 		print_process32ex_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
 		return;
 
+	case AUT_PROCESS64:
+		print_process64_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
+		return;
+
+	case AUT_PROCESS64_EX:
+		print_process64ex_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
+		return;
+
 	case AUT_RETURN32:
 		print_return32_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
 		return;
@@ -3716,6 +4140,10 @@ au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 
 	case AUT_SUBJECT32_EX:
 		print_subject32ex_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
+		return;
+
+	case AUT_SUBJECT64_EX:
+		print_subject64ex_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
 		return;
 
 	case AUT_TEXT:
@@ -3840,6 +4268,14 @@ au_print_tok_xml(FILE *outfp, tokenstr_t *tok, char *del, char raw,
 		print_process32ex_tok(outfp, tok, del, raw, sfrm, AU_XML);
 		return;
 
+	case AUT_PROCESS64:
+		print_process64_tok(outfp, tok, del, raw, sfrm, AU_XML);
+		return;
+
+	case AUT_PROCESS64_EX:
+		print_process64ex_tok(outfp, tok, del, raw, sfrm, AU_XML);
+		return;
+
 	case AUT_RETURN32:
 		print_return32_tok(outfp, tok, del, raw, sfrm, AU_XML);
 		return;
@@ -3874,6 +4310,10 @@ au_print_tok_xml(FILE *outfp, tokenstr_t *tok, char *del, char raw,
 
 	case AUT_SUBJECT32_EX:
 		print_subject32ex_tok(outfp, tok, del, raw, sfrm, AU_XML);
+		return;
+
+	case AUT_SUBJECT64_EX:
+		print_subject64ex_tok(outfp, tok, del, raw, sfrm, AU_XML);
 		return;
 
 	case AUT_TEXT:
