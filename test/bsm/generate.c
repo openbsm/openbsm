@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#7 $
+ * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#8 $
  */
 
 /*
@@ -455,7 +455,7 @@ generate_process32ex_record(const char *directory, const char *record_filename,
 	    process32_sid, &process32_tid_addr);
 	if (process32ex_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_process32_ex");
-	write_record(directory, record_filename, process32ex_token, AUE_NULL);
+	write_record(directory, buf, process32ex_token, AUE_NULL);
 	free(buf);
 }
 
@@ -522,7 +522,7 @@ generate_process64ex_token(const char *directory, const char *token_filename,
 	    process64_sid, &process64_tid_addr);
 	if (process64ex_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_process64_ex");
-	write_token(directory, token_filename, process64ex_token);
+	write_token(directory, buf, process64ex_token);
 	free(buf);
 }
 
@@ -549,7 +549,7 @@ generate_process64ex_record(const char *directory, const char *record_filename,
 	    process64_sid, &process64_tid_addr);
 	if (process64ex_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_process64_ex");
-	write_record(directory, record_filename, process64ex_token, AUE_NULL);
+	write_record(directory, buf, process64ex_token, AUE_NULL);
 	free(buf);
 }
 
