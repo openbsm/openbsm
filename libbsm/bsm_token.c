@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#53 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#54 $
  */
 
 #include <sys/types.h>
@@ -687,9 +687,8 @@ au_to_process32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 }
 
 token_t *
-au_to_process64(__unused au_id_t auid, __unused uid_t euid,
-    __unused gid_t egid, __unused uid_t ruid, __unused gid_t rgid,
-    __unused pid_t pid, __unused au_asid_t sid, __unused au_tid_t *tid)
+au_to_process64(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
+    pid_t pid, au_asid_t sid, au_tid_t *tid)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -714,9 +713,8 @@ au_to_process64(__unused au_id_t auid, __unused uid_t euid,
 }
 
 token_t *
-au_to_process(__unused au_id_t auid, __unused uid_t euid,
-    __unused gid_t egid, __unused uid_t ruid, __unused gid_t rgid,
-    __unused pid_t pid, __unused au_asid_t sid, __unused au_tid_t *tid)
+au_to_process(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
+    pid_t pid, au_asid_t sid, au_tid_t *tid)
 {
 
 	return (au_to_process32(auid, euid, egid, ruid, rgid, pid, sid,
