@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#5 $
+ * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#6 $
  */
 
 /*
@@ -435,6 +435,78 @@ generate_process32ex_record(const char *directory, const char *record_filename)
 	write_record(directory, record_filename, process32ex_token, AUE_NULL);
 }
 
+static au_id_t		 process64_auid = 0x12345678;
+static uid_t		 process64_euid = 0x01234567;
+static gid_t		 process64_egid = 0x23456789;
+static uid_t		 process64_ruid = 0x98765432;
+static gid_t		 process64_rgid = 0x09876543;
+static pid_t		 process64_pid = 0x13243546;
+static au_asid_t	 process64_sid = 0x97867564;
+static au_tid_t		 process64_tid = { 0x16593746 };
+static au_tid_addr_t	 process64_tid_addr = { 0x16593746 };
+
+static void
+generate_process64_token(const char *directory, const char *token_filename)
+{
+	token_t *process64_token;
+
+	process64_tid.machine = inet_addr("127.0.0.1");
+
+	process64_token = au_to_process64(process64_auid, process64_euid,
+	    process64_egid, process64_ruid, process64_rgid, process64_pid,
+	    process64_sid, &process64_tid);
+	if (process64_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_process64");
+	write_token(directory, token_filename, process64_token);
+}
+
+static void
+generate_process64_record(const char *directory, const char *record_filename)
+{
+	token_t *process64_token;
+
+	process64_tid.machine = inet_addr("127.0.0.1");
+
+	process64_token = au_to_process64(process64_auid, process64_euid,
+	    process64_egid, process64_ruid, process64_rgid, process64_pid,
+	    process64_sid, &process64_tid);
+	if (process64_token == NULL)
+		err(EX_UNAVAILABLE, "au_ti_process64");
+	write_record(directory, record_filename, process64_token, AUE_NULL);
+}
+
+static void
+generate_process64ex_token(const char *directory, const char *token_filename)
+{
+	token_t *process64ex_token;
+
+	process64_tid_addr.at_addr[0] = inet_addr("127.0.0.1");
+	process64_tid_addr.at_type = AU_IPv4;
+
+	process64ex_token = au_to_process64_ex(process64_auid, process64_euid,
+	    process64_egid, process64_ruid, process64_rgid, process64_pid,
+	    process64_sid, &process64_tid_addr);
+	if (process64ex_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_process64_ex");
+	write_token(directory, token_filename, process64ex_token);
+}
+
+static void
+generate_process64ex_record(const char *directory, const char *record_filename)
+{
+	token_t *process64ex_token;
+
+	process64_tid_addr.at_addr[0] = inet_addr("127.0.0.1");
+	process64_tid_addr.at_type = AU_IPv4;
+
+	process64ex_token = au_to_process64_ex(process64_auid, process64_euid,
+	    process64_egid, process64_ruid, process64_rgid, process64_pid,
+	    process64_sid, &process64_tid_addr);
+	if (process64ex_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_process64_ex");
+	write_record(directory, record_filename, process64ex_token, AUE_NULL);
+}
+
 static char		 return32_status = 0xd7;
 static uint32_t		 return32_ret = 0x12345678;
 
@@ -815,6 +887,8 @@ main(int argc, char *argv[])
 		generate_subject32ex_token(directory, "subject32ex_token", AU_IPv6);
 		generate_process32_token(directory, "process32_token");
 		generate_process32ex_token(directory, "process32ex_token");
+		generate_process64_token(directory, "process64_token");
+		generate_process64ex_token(directory, "process64ex_token");
 		generate_return32_token(directory, "return32_token");
 		generate_text_token(directory, "text_token");
 		generate_opaque_token(directory, "opaque_token");
@@ -841,6 +915,8 @@ main(int argc, char *argv[])
 		    AU_IPv6);
 		generate_process32_record(directory, "process32_record");
 		generate_process32ex_record(directory, "process32ex_record");
+		generate_process64_record(directory, "process64_record");
+		generate_process64ex_record(directory, "process64ex_record");
 		generate_return32_record(directory, "return32_record");
 		generate_text_record(directory, "text_record");
 		generate_opaque_record(directory, "opaque_record");
