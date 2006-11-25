@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#19 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#20 $
 #
 0:AUE_NULL:indir system call:no
 1:AUE_EXIT:exit(2):pc
@@ -435,12 +435,12 @@
 43131:AUE_MAC_EXECVE:mac_exeve(2):ex,pc
 43132:AUE_GETPATH_FROMFD:getpath_fromfd(2):fa
 43133:AUE_GETPATH_FROMADDR:getpath_fromaddr(2):fa
-43134:AUE_KMQ_OPEN:mq_open(2):ip
-43135:AUE_KMQ_SETATTR:mq_setattr(2):ip
-43136:AUE_KMQ_TIMEDRECEIVE:mq_timedreceive(2):ip
-43137:AUE_KMQ_TIMEDSEND:mq_timedsend(2):ip
-43138:AUE_KMQ_NOTIFY:mq_notify(2):ip
-43139:AUE_KMQ_UNLINK:mq_unlink(2):ip
+43134:AUE_MQ_OPEN:mq_open(2):ip
+43135:AUE_MQ_SETATTR:mq_setattr(2):ip
+43136:AUE_MQ_TIMEDRECEIVE:mq_timedreceive(2):ip
+43137:AUE_MQ_TIMEDSEND:mq_timedsend(2):ip
+43138:AUE_MQ_NOTIFY:mq_notify(2):ip
+43139:AUE_MQ_UNLINK:mq_unlink(2):ip
 43140:AUE_LISTEN:listen(2):nt
 43141:AUE_MLOCKALL:mlockall(2):pc
 43142:AUE_MUNLOCKALL:munlockall(2):pc

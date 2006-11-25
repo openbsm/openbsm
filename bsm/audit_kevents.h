@@ -30,7 +30,7 @@
  *
  * @APPLE_BSD_LICENSE_HEADER_END@
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#46 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#47 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -487,12 +487,12 @@
 #define	AUE_MAC_EXECVE		43131	/* FreeBSD. */
 #define	AUE_GETPATH_FROMFD	43132	/* FreeBSD. */
 #define	AUE_GETPATH_FROMADDR	43133	/* FreeBSD. */
-#define	AUE_KMQ_OPEN		43134	/* FreeBSD. */
-#define	AUE_KMQ_SETATTR		43135	/* FreeBSD. */
-#define	AUE_KMQ_TIMEDRECEIVE	43136	/* FreeBSD. */
-#define	AUE_KMQ_TIMEDSEND	43137	/* FreeBSD. */
-#define	AUE_KMQ_NOTIFY		43138	/* FreeBSD. */
-#define	AUE_KMQ_UNLINK		43139	/* FreeBSD. */
+#define	AUE_MQ_OPEN		43134	/* FreeBSD. */
+#define	AUE_MQ_SETATTR		43135	/* FreeBSD. */
+#define	AUE_MQ_TIMEDRECEIVE	43136	/* FreeBSD. */
+#define	AUE_MQ_TIMEDSEND	43137	/* FreeBSD. */
+#define	AUE_MQ_NOTIFY		43138	/* FreeBSD. */
+#define	AUE_MQ_UNLINK		43139	/* FreeBSD. */
 #define	AUE_LISTEN		43140	/* FreeBSD/Darwin/Linux. */
 #define	AUE_MLOCKALL		43141	/* FreeBSD. */
 #define	AUE_MUNLOCKALL		43142	/* FreeBSD. */
