@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#43 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#44 $
  */
 
 #include <sys/types.h>
@@ -201,7 +201,7 @@ print_mem(FILE *fp, u_char *data, size_t len)
  * Prints the given data bytes as a string.
  */
 static void
-print_string(FILE *fp, u_char *str, size_t len)
+print_string(FILE *fp, const char *str, size_t len)
 {
 	int i;
 
@@ -217,7 +217,7 @@ print_string(FILE *fp, u_char *str, size_t len)
  * Prints the beggining of attribute.
  */
 static void
-open_attr(FILE *fp, u_char *str)
+open_attr(FILE *fp, const char *str)
 {
 
 	fprintf(fp,"%s=\"", str);
@@ -833,7 +833,7 @@ au_print_xml_footer(FILE *outfp)
  * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
  */
 static int
-fetch_header32_tok(tokenstr_t *tok, char *buf, int len)
+fetch_header32_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -922,7 +922,7 @@ print_header32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw, char sfrm,
  * nanoseconds of time     4 bytes/8 bytes  (32/64-bits)
  */
 static int
-fetch_header32_ex_tok(tokenstr_t *tok, char *buf, int len)
+fetch_header32_ex_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1029,7 +1029,7 @@ print_header32_ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * version #              
  */
 static int
-fetch_header64_tok(tokenstr_t *tok, char *buf, int len)
+fetch_header64_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1114,7 +1114,7 @@ print_header64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw, char sfrm,
  * accuracy of the BSM spec.
  */
 static int
-fetch_header64_ex_tok(tokenstr_t *tok, char *buf, int len)
+fetch_header64_ex_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1217,7 +1217,7 @@ print_header64_ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * record size                          4 bytes
  */
 static int
-fetch_trailer_tok(tokenstr_t *tok, char *buf, int len)
+fetch_trailer_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1251,7 +1251,7 @@ print_trailer_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * text                    N bytes + 1 terminating NULL byte
  */
 static int
-fetch_arg32_tok(tokenstr_t *tok, char *buf, int len)
+fetch_arg32_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1267,8 +1267,8 @@ fetch_arg32_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	SET_PTR(buf, len, tok->tt.arg32.text, tok->tt.arg32.len, tok->len,
-	    err);
+	SET_PTR((char*)buf, len, tok->tt.arg32.text, tok->tt.arg32.len,
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -1302,7 +1302,7 @@ print_arg32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 }
 
 static int
-fetch_arg64_tok(tokenstr_t *tok, char *buf, int len)
+fetch_arg64_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1318,8 +1318,8 @@ fetch_arg64_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	SET_PTR(buf, len, tok->tt.arg64.text, tok->tt.arg64.len, tok->len,
-	    err);
+	SET_PTR((char*)buf, len, tok->tt.arg64.text, tok->tt.arg64.len,
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -1360,7 +1360,7 @@ print_arg64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * data items              (depends on basic unit)
  */
 static int
-fetch_arb_tok(tokenstr_t *tok, char *buf, int len)
+fetch_arb_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 	int datasize;
@@ -1589,7 +1589,7 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * device                  4 bytes/8 bytes (32-bit/64-bit)
  */
 static int
-fetch_attr32_tok(tokenstr_t *tok, char *buf, int len)
+fetch_attr32_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1671,7 +1671,7 @@ print_attr32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * device                  4 bytes/8 bytes (32-bit/64-bit)
  */
 static int
-fetch_attr64_tok(tokenstr_t *tok, char *buf, int len)
+fetch_attr64_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1749,7 +1749,7 @@ print_attr64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * return value            4 bytes
  */
 static int
-fetch_exit_tok(tokenstr_t *tok, char *buf, int len)
+fetch_exit_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1791,11 +1791,11 @@ print_exit_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * text                    count null-terminated string(s)
  */
 static int
-fetch_execarg_tok(tokenstr_t *tok, char *buf, int len)
+fetch_execarg_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 	int i;
-	char *bptr;
+	u_char *bptr;
 
 	READ_TOKEN_U_INT32(buf, len, tok->tt.execarg.count, tok->len, err);
 	if (err)
@@ -1804,7 +1804,7 @@ fetch_execarg_tok(tokenstr_t *tok, char *buf, int len)
 	for (i = 0; i < tok->tt.execarg.count; i++) {
 		bptr = buf + tok->len;
 		if (i < AUDIT_MAX_ARGS)
-			tok->tt.execarg.text[i] = bptr;
+			tok->tt.execarg.text[i] = (char*)bptr;
 
 		/* Look for a null terminated string. */
 		while (bptr && (*bptr != '\0')) {
@@ -1850,11 +1850,11 @@ print_execarg_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * text                    count null-terminated string(s)
  */
 static int
-fetch_execenv_tok(tokenstr_t *tok, char *buf, int len)
+fetch_execenv_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 	int i;
-	char *bptr;
+	u_char *bptr;
 
 	READ_TOKEN_U_INT32(buf, len, tok->tt.execenv.count, tok->len, err);
 	if (err)
@@ -1863,7 +1863,7 @@ fetch_execenv_tok(tokenstr_t *tok, char *buf, int len)
 	for (i = 0; i < tok->tt.execenv.count; i++) {
 		bptr = buf + tok->len;
 		if (i < AUDIT_MAX_ENV)
-			tok->tt.execenv.text[i] = bptr;
+			tok->tt.execenv.text[i] = (char*)bptr;
 
 		/* Look for a null terminated string. */
 		while (bptr && (*bptr != '\0')) {
@@ -1911,7 +1911,7 @@ print_execenv_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * file pathname            N bytes + 1 terminating NULL byte
  */
 static int
-fetch_file_tok(tokenstr_t *tok, char *buf, int len)
+fetch_file_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -1927,7 +1927,8 @@ fetch_file_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	SET_PTR(buf, len, tok->tt.file.name, tok->tt.file.len, tok->len, err);
+	SET_PTR((char*)buf, len, tok->tt.file.name, tok->tt.file.len, tok->len,
+	    err);
 	if (err)
 		return (-1);
 
@@ -1965,7 +1966,7 @@ print_file_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * group list              count * 4 bytes
  */
 static int
-fetch_newgroups_tok(tokenstr_t *tok, char *buf, int len)
+fetch_newgroups_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int i;
 	int err = 0;
@@ -2008,7 +2009,7 @@ print_newgroups_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * Internet addr 4 bytes
  */
 static int
-fetch_inaddr_tok(tokenstr_t *tok, char *buf, int len)
+fetch_inaddr_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2041,7 +2042,7 @@ print_inaddr_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * address 16 bytes
  */
 static int
-fetch_inaddr_ex_tok(tokenstr_t *tok, char *buf, int len)
+fetch_inaddr_ex_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2086,7 +2087,7 @@ print_inaddr_ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * ip header     20 bytes
  */
 static int
-fetch_ip_tok(tokenstr_t *tok, char *buf, int len)
+fetch_ip_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2208,7 +2209,7 @@ print_ip_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * Object ID            4 bytes
  */
 static int
-fetch_ipc_tok(tokenstr_t *tok, char *buf, int len)
+fetch_ipc_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2255,7 +2256,7 @@ print_ipc_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * key                          4 bytes
  */
 static int
-fetch_ipcperm_tok(tokenstr_t *tok, char *buf, int len)
+fetch_ipcperm_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2341,7 +2342,7 @@ print_ipcperm_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * port Ip address  2 bytes
  */
 static int
-fetch_iport_tok(tokenstr_t *tok, char *buf, int len)
+fetch_iport_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2373,7 +2374,7 @@ print_iport_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * data                         size bytes
  */
 static int
-fetch_opaque_tok(tokenstr_t *tok, char *buf, int len)
+fetch_opaque_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2381,8 +2382,8 @@ fetch_opaque_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	SET_PTR(buf, len, tok->tt.opaque.data, tok->tt.opaque.size, tok->len,
-	    err);
+	SET_PTR((char*)buf, len, tok->tt.opaque.data, tok->tt.opaque.size,
+	    tok->len, err);
 	if (err)
 		return (-1);
 
@@ -2396,13 +2397,15 @@ print_opaque_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 
 	print_tok_type(fp, tok->id, "opaque", raw, xml);
 	if (xml) {
-		print_mem(fp, tok->tt.opaque.data, tok->tt.opaque.size);
+		print_mem(fp, (u_char*)tok->tt.opaque.data,
+		    tok->tt.opaque.size);
 		close_tag(fp, tok->id);
 	} else {
 		print_delim(fp, del);
 		print_2_bytes(fp, tok->tt.opaque.size, "%u");
 		print_delim(fp, del);
-		print_mem(fp, tok->tt.opaque.data, tok->tt.opaque.size);
+		print_mem(fp, (u_char*)tok->tt.opaque.data,
+		    tok->tt.opaque.size);
 	}
 }
 
@@ -2411,7 +2414,7 @@ print_opaque_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * data                         size bytes
  */
 static int
-fetch_path_tok(tokenstr_t *tok, char *buf, int len)
+fetch_path_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2419,7 +2422,8 @@ fetch_path_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	SET_PTR(buf, len, tok->tt.path.path, tok->tt.path.len, tok->len, err);
+	SET_PTR((char*)buf, len, tok->tt.path.path, tok->tt.path.len, tok->len,
+	    err);
 	if (err)
 		return (-1);
 
@@ -2455,7 +2459,7 @@ print_path_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  *   machine id         4 bytes
  */
 static int
-fetch_process32_tok(tokenstr_t *tok, char *buf, int len)
+fetch_process32_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2568,7 +2572,7 @@ print_process32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  *   machine id         4 bytes
  */
 static int
-fetch_process64_tok(tokenstr_t *tok, char *buf, int len)
+fetch_process64_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2681,7 +2685,7 @@ print_process64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  *   machine address      16 bytes                     
  */
 static int
-fetch_process32ex_tok(tokenstr_t *tok, char *buf, int len)
+fetch_process32ex_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2811,7 +2815,7 @@ print_process32ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  *   machine address      16 bytes                     
  */
 static int
-fetch_process64ex_tok(tokenstr_t *tok, char *buf, int len)
+fetch_process64ex_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2930,7 +2934,7 @@ print_process64ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * return value         4 bytes
  */
 static int
-fetch_return32_tok(tokenstr_t *tok, char *buf, int len)
+fetch_return32_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -2968,7 +2972,7 @@ print_return32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 }
 
 static int
-fetch_return64_tok(tokenstr_t *tok, char *buf, int len)
+fetch_return64_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3009,7 +3013,7 @@ print_return64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * seq                          4 bytes
  */
 static int
-fetch_seq_tok(tokenstr_t *tok, char *buf, int len)
+fetch_seq_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3043,7 +3047,7 @@ print_seq_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * socket address          4 bytes
  */
 static int
-fetch_sock_inet32_tok(tokenstr_t *tok, char *buf, int len)
+fetch_sock_inet32_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3097,7 +3101,7 @@ print_sock_inet32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * path                    104 bytes
  */
 static int
-fetch_sock_unix_tok(tokenstr_t *tok, char *buf, int len)
+fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3147,7 +3151,7 @@ print_sock_unix_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * remote address          4 bytes
  */
 static int
-fetch_socket_tok(tokenstr_t *tok, char *buf, int len)
+fetch_socket_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3228,7 +3232,7 @@ print_socket_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  *   machine id         4 bytes
  */
 static int
-fetch_subject32_tok(tokenstr_t *tok, char *buf, int len)
+fetch_subject32_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3340,7 +3344,7 @@ print_subject32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  *   machine id         4 bytes
  */
 static int
-fetch_subject64_tok(tokenstr_t *tok, char *buf, int len)
+fetch_subject64_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3453,7 +3457,7 @@ print_subject64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  *   machine id         16 bytes
  */
 static int
-fetch_subject32ex_tok(tokenstr_t *tok, char *buf, int len)
+fetch_subject32ex_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3582,7 +3586,7 @@ print_subject32ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  *   machine id         16 bytes
  */
 static int
-fetch_subject64ex_tok(tokenstr_t *tok, char *buf, int len)
+fetch_subject64ex_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3701,7 +3705,7 @@ print_subject64ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * data                         size bytes
  */
 static int
-fetch_text_tok(tokenstr_t *tok, char *buf, int len)
+fetch_text_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3709,7 +3713,7 @@ fetch_text_tok(tokenstr_t *tok, char *buf, int len)
 	if (err)
 		return (-1);
 
-	SET_PTR(buf, len, tok->tt.text.text, tok->tt.text.len, tok->len,
+	SET_PTR((char*)buf, len, tok->tt.text.text, tok->tt.text.len, tok->len,
 	    err);
 	if (err)
 		return (-1);
@@ -3742,7 +3746,7 @@ print_text_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * remote Internet address 4 bytes
  */
 static int
-fetch_socketex32_tok(tokenstr_t *tok, char *buf, int len)
+fetch_socketex32_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 
@@ -3822,7 +3826,7 @@ print_socketex32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 }
 
 static int
-fetch_invalid_tok(tokenstr_t *tok, char *buf, int len)
+fetch_invalid_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int err = 0;
 	int recoversize;
@@ -3833,7 +3837,8 @@ fetch_invalid_tok(tokenstr_t *tok, char *buf, int len)
 
 	tok->tt.invalid.length = recoversize;
 
-	SET_PTR(buf, len, tok->tt.invalid.data, recoversize, tok->len, err);
+	SET_PTR((char*)buf, len, tok->tt.invalid.data, recoversize, tok->len,
+	    err);
 	if (err)
 		return (-1);
 
@@ -3848,7 +3853,8 @@ print_invalid_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	if (!xml) {
 		print_tok_type(fp, tok->id, "unknown", raw, 0);
 		print_delim(fp, del);
-		print_mem(fp, tok->tt.invalid.data, tok->tt.invalid.length);
+		print_mem(fp, (u_char*)tok->tt.invalid.data,
+		    tok->tt.invalid.length);
 	}
 }
 

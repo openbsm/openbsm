@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#56 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#57 $
  */
 
 #include <sys/types.h>
@@ -345,7 +345,7 @@ token_t *
 au_to_groups(int *groups)
 {
 
-	return (au_to_newgroups(AUDIT_MAX_GROUPS, groups));
+	return (au_to_newgroups(AUDIT_MAX_GROUPS, (gid_t*)groups));
 }
 
 /*
