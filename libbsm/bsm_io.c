@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#44 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#45 $
  */
 
 #include <sys/types.h>
@@ -729,7 +729,7 @@ print_ip_address(FILE *fp, u_int32_t ip)
 	fprintf(fp, "%s", inet_ntoa(ipaddr));
 }
 
-/* 
+/*
  * Prints a string value for the given ip address.
  */
 static void
@@ -1026,7 +1026,7 @@ print_header32_ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * event modifier          2 bytes
  * seconds of time         4 bytes/8 bytes (32-bit/64-bit value)
  * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
- * version #              
+ * version #
  */
 static int
 fetch_header64_tok(tokenstr_t *tok, u_char *buf, int len)
@@ -2670,19 +2670,19 @@ print_process64_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	}
 }
 
-/*                                                     
- * token ID                1 byte                      
- * audit ID                4 bytes                     
- * effective user ID       4 bytes                     
- * effective group ID      4 bytes                     
- * real user ID            4 bytes                     
- * real group ID           4 bytes                     
- * process ID              4 bytes                     
- * session ID              4 bytes                     
- * terminal ID                                         
+/*
+ * token ID                1 byte
+ * audit ID                4 bytes
+ * effective user ID       4 bytes
+ * effective group ID      4 bytes
+ * real user ID            4 bytes
+ * real group ID           4 bytes
+ * process ID              4 bytes
+ * session ID              4 bytes
+ * terminal ID
  *   port ID               4 bytes
- *   address type-len      4 bytes                     
- *   machine address      16 bytes                     
+ *   address type-len      4 bytes
+ *   machine address      16 bytes
  */
 static int
 fetch_process32ex_tok(tokenstr_t *tok, u_char *buf, int len)
@@ -2800,19 +2800,19 @@ print_process32ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 	}
 }
 
-/*                                                     
- * token ID                1 byte                      
- * audit ID                4 bytes                     
- * effective user ID       4 bytes                     
- * effective group ID      4 bytes                     
- * real user ID            4 bytes                     
- * real group ID           4 bytes                     
- * process ID              4 bytes                     
- * session ID              4 bytes                     
- * terminal ID                                         
+/*
+ * token ID                1 byte
+ * audit ID                4 bytes
+ * effective user ID       4 bytes
+ * effective group ID      4 bytes
+ * real user ID            4 bytes
+ * real group ID           4 bytes
+ * process ID              4 bytes
+ * session ID              4 bytes
+ * terminal ID
  *   port ID               8 bytes
- *   address type-len      4 bytes                     
- *   machine address      16 bytes                     
+ *   address type-len      4 bytes
+ *   machine address      16 bytes
  */
 static int
 fetch_process64ex_tok(tokenstr_t *tok, u_char *buf, int len)

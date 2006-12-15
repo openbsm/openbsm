@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#57 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#58 $
  */
 
 #include <sys/types.h>
@@ -783,7 +783,7 @@ au_to_process64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	u_char *dptr = NULL;
 
 	if (tid->at_type == AU_IPv4)
-		GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 
+		GET_TOKEN_AREA(t, dptr, sizeof(u_char) +
 		    7 * sizeof(u_int32_t) + sizeof(u_int64_t) +
 		    2 * sizeof(u_int32_t));
 	else if (tid->at_type == AU_IPv6)
