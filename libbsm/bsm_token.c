@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#58 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#59 $
  */
 
 #include <sys/types.h>
@@ -419,6 +419,8 @@ au_to_in_addr_ex(struct in6_addr *internet_addr)
 /*
  * token ID                1 byte
  * ip header		   20 bytes
+ *
+ * The IP header should be submitted in network byte order.
  */
 token_t *
 au_to_ip(struct ip *ip)
@@ -431,9 +433,6 @@ au_to_ip(struct ip *ip)
 		return (NULL);
 
 	ADD_U_CHAR(dptr, AUT_IP);
-	/*
-	 * XXXRW: Any byte order work needed on the IP header before writing?
-	 */
 	ADD_MEM(dptr, ip, sizeof(struct ip));
 
 	return (t);
