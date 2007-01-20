@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#59 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#60 $
  */
 
 #include <sys/types.h>
@@ -1143,12 +1143,10 @@ au_to_subject64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	ADD_U_INT32(dptr, sid);
 	ADD_U_INT64(dptr, tid->at_port);
 	ADD_U_INT32(dptr, tid->at_type);
-	ADD_U_INT32(dptr, tid->at_addr[0]);
-	if (tid->at_type == AU_IPv6) {
-		ADD_U_INT32(dptr, tid->at_addr[1]);
-		ADD_U_INT32(dptr, tid->at_addr[2]);
-		ADD_U_INT32(dptr, tid->at_addr[3]);
-	}
+	if (tid->at_type == AU_IPv6)
+		ADD_MEM(dptr, &tid->at_addr[0], 4 * sizeof(u_int32_t));
+	else
+		ADD_MEM(dptr, &tid->at_addr[0], sizeof(u_int32_t));
 
 	return (t);
 }
