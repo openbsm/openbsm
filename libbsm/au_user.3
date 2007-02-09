@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_user.3#7 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_user.3#8 $
 .\"
 .Dd April 19, 2005
 .Dt AU_USER 3
@@ -116,7 +116,7 @@ If the user audit configuration is not found, the default system audit
 properties returned by
 .Xr getacflg 3 .
 The resulting mask may be set via a call to
-.Xr setaudit 3
+.Xr setaudit 2
 or related variants.
 .Pp
 The
@@ -126,7 +126,7 @@ XXXXXXXXXXXXXXXXX
 .Sh SEE ALSO
 .Xr getacflg 3 ,
 .Xr libbsm 3 ,
-.Xr setaudit 3 ,
+.Xr setaudit 2 ,
 .Xr audit_user 5
 .Sh HISTORY
 The OpenBSM implementation was created by McAfee Research, the security
