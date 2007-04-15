@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#45 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#46 $
  */
 
 #include <sys/types.h>
@@ -3860,6 +3860,36 @@ print_invalid_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 
 
 /*
+ * size                         2 bytes;
+ * zonename                     size bytes;
+ */
+
+static int
+fetch_zonename_tok(tokenstr_t *tok, char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_INT16(buf, len, tok->tt.zonename.len, tok->len, err);
+	if (err)
+		return (-1);
+	SET_PTR(buf, len, tok->tt.zonename.zonename, tok->tt.zonename.len,
+	    tok->len, err);
+	if (err)
+		return (-1);
+	return (0);
+}
+
+static void
+print_zonename_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
+    __unused char sfrm, int xml)
+{
+
+	print_tok_type(fp, tok->id, "zone", raw, xml);
+	print_delim(fp, del);
+	print_string(fp, tok->tt.zonename.zonename, tok->tt.zonename.len);
+}
+
+/*
  * Reads the token beginning at buf into tok.
  */
 int
@@ -3990,6 +4020,9 @@ au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 
 	case AUT_DATA:
 		return (fetch_arb_tok(tok, buf, len));
+
+	case AUT_ZONENAME:
+		return (fetch_zonename_tok(tok, buf, len));
 
 	default:
 		return (fetch_invalid_tok(tok, buf, len));
@@ -4158,6 +4191,10 @@ au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 
 	case AUT_SOCKET_EX:
 		print_socketex32_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
+		return;
+
+	case AUT_ZONENAME:
+		print_zonename_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
 		return;
 
 	default:
