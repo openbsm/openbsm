@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#61 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#62 $
  */
 
 #include <sys/types.h>
@@ -1239,7 +1239,6 @@ au_to_zonename(char *zonename)
 	ADD_STRING(dptr, zonename, textlen);
 	return (t);
 }
-
 
 /*
  * token ID				1 byte
