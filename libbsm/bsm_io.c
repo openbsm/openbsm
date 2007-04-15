@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#46 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#47 $
  */
 
 #include <sys/types.h>
@@ -392,6 +392,10 @@ close_tag(FILE *fp, u_char type)
 	case AUT_DATA:
 		fprintf(fp, "</arbitrary>");
 		break;
+
+	case AUT_ZONENAME:
+		fprintf(fp, "/>");
+		break;
 	}
 }
 
@@ -558,6 +562,10 @@ print_tok_type(FILE *fp, u_char type, const char *tokname, char raw, int xml)
 
 		case AUT_DATA:
 			fprintf(fp, "<arbitrary ");
+			break;
+
+		case AUT_ZONENAME:
+			fprintf(fp, "<zone ");
 			break;
 		}
 	} else {
@@ -3885,8 +3893,17 @@ print_zonename_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 {
 
 	print_tok_type(fp, tok->id, "zone", raw, xml);
-	print_delim(fp, del);
-	print_string(fp, tok->tt.zonename.zonename, tok->tt.zonename.len);
+	if (xml) {
+		open_attr(fp, "name");
+		print_string(fp, tok->tt.zonename.zonename,
+		    tok->tt.zonename.len);
+		close_attr(fp);
+		close_tag(fp, tok->id);
+	} else {
+		print_delim(fp, del);
+		print_string(fp, tok->tt.zonename.zonename,
+		    tok->tt.zonename.len);
+	}
 }
 
 /*
@@ -4365,6 +4382,10 @@ au_print_tok_xml(FILE *outfp, tokenstr_t *tok, char *del, char raw,
 
 	case AUT_SOCKET_EX:
 		print_socketex32_tok(outfp, tok, del, raw, sfrm, AU_XML);
+		return;
+
+	case AUT_ZONENAME:
+		print_zonename_tok(outfp, tok, del, raw, sfrm, AU_XML);
 		return;
 
 	default:
