@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#47 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#48 $
  */
 
 #include <sys/types.h>
@@ -3871,7 +3871,6 @@ print_invalid_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
  * size                         2 bytes;
  * zonename                     size bytes;
  */
-
 static int
 fetch_zonename_tok(tokenstr_t *tok, char *buf, int len)
 {
