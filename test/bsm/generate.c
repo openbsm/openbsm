@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2006 Robert N. M. Watson
+ * Copyright (c) 2006-2007 Robert N. M. Watson
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#8 $
+ * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#9 $
  */
 
 /*
@@ -889,6 +889,30 @@ generate_attr32_record(const char *directory, const char *record_filename)
 
 }
 
+static char	*zonename_sample = "testzone";
+
+static void
+generate_zonename_token(const char *directory, const char *token_filename)
+{
+	token_t *zonename_token;
+
+	zonename_token = au_to_zonename(zonename_sample);
+	if (zonename_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_zonename");
+	write_token(directory, token_filename, zonename_token);
+}
+
+static void
+generate_zonename_record(const char *directory, const char *record_filename)
+{
+	token_t *zonename_token;
+
+	zonename_token = au_to_zonename(zonename_sample);
+	if (zonename_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_zonename");
+	write_record(directory, record_filename, zonename_token, AUE_NULL);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -955,6 +979,7 @@ main(int argc, char *argv[])
 		generate_ipc_perm_token(directory, "ipc_perm_token");
 		generate_groups_token(directory, "groups_token");
 		generate_attr32_token(directory, "attr32_token");
+		generate_zonename_token(directory, "zonename_token");
 	}
 
 	if (do_records) {
@@ -989,6 +1014,7 @@ main(int argc, char *argv[])
 		generate_ipc_perm_record(directory, "ipc_perm_record");
 		generate_groups_record(directory, "groups_record");
 		generate_attr32_record(directory, "attr32_record");
+		generate_zonename_record(directory, "zonename_record");
 	}
 
 	return (0);
