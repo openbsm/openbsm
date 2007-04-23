@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#20 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#21 $
 #
 0:AUE_NULL:indir system call:no
 1:AUE_EXIT:exit(2):pc
@@ -292,7 +292,7 @@
 352:AUE_DARWIN_AUDITCTL:auditctl(2):ad
 353:AUE_DARWIN_RFORK:rfork(2):pc
 354:AUE_DARWIN_LCHMOD:lchmod(2):fm
-355:AUE_DARWIN_SWAPOFF:swapoff():ad
+355:AUE_DARWIN_SWAPOFF:swapoff(2):ad
 356:AUE_DARWIN_INITPROCESS:init_process():pc
 357:AUE_DARWIN_MAPFD:map_fd():fa
 358:AUE_DARWIN_TASKFORPID:task_for_pid():pc
@@ -346,13 +346,13 @@
 43042:AUE_AUDITCTL:auditctl(2):ad
 43043:AUE_RFORK:rfork(2):pc
 43044:AUE_LCHMOD:lchmod(2):fm
-43045:AUE_SWAPOFF:swapoff():ad
+43045:AUE_SWAPOFF:swapoff(2):ad
 43046:AUE_INITPROCESS:init_process():pc
 43047:AUE_MAPFD:map_fd():fa
 43048:AUE_TASKFORPID:task_for_pid():pc
 43049:AUE_PIDFORTASK:pid_for_task():pc
 43050:AUE_SYSCTL_NONADMIN:sysctl() - non-admin:ot
-43051:AUE_COPYFILE:copyfile():fr,fw
+43051:AUE_COPYFILE:copyfile(2):fr,fw
 43052:AUE_LUTIMES:lutimes(2):fm
 43053:AUE_LCHFLAGS:lchflags(2):fm
 43054:AUE_SENDFILE:sendfile(2):nt
