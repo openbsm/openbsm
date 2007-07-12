@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#51 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_kevents.h#52 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -539,6 +539,14 @@
 #define	AUE_MUNLOCKALL		43142	/* FreeBSD. */
 #define	AUE_CLOSEFROM		43143	/* FreeBSD. */
 #define	AUE_FEXECVE		43144	/* FreeBSD. */
+#define	AUE_FACCESSAT		43145	/* FreeBSD. */
+#define	AUE_FCHMODAT		43146	/* FreeBSD. */
+#define	AUE_LINKAT		43147	/* FreeBSD. */
+#define	AUE_MKDIRAT		43148	/* FreeBSD. */
+#define	AUE_MKFIFOAT		43149	/* FreeBSD. */
+#define	AUE_MKNODAT		43150	/* FreeBSD. */
+#define	AUE_READLINKAT		43151	/* FreeBSD. */
+#define	AUE_SYMLINKAT		43152	/* FreeBSD. */
 
 /*
  * Darwin BSM uses a number of AUE_O_* definitions, which are aliased to the

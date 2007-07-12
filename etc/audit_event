@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#24 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#25 $
 #
 0:AUE_NULL:indir system call:no
 1:AUE_EXIT:exit(2):pc
@@ -482,6 +482,14 @@
 43142:AUE_MUNLOCKALL:munlockall(2):pc
 43143:AUE_CLOSEFROM:closefrom(2):cl
 43144:AUE_FEXECVE:fexecve(2):pc,ex
+43145:AUE_FACCESSAT:faccessat(2):fa
+43146:AUE_FCHMODAT:fchmodat(2):fm
+43147:AUE_LINKAT:linkat(2):fc
+43148:AUE_MKDIRAT:mkdirat(2):fc
+43149:AUE_MKFIFOAT:mkfifoat(2):fc
+43150:AUE_MKNODAT:mknodat(2):fc
+43151:AUE_READLINKAT:readlinkat(2):fr
+43152:AUE_SYMLINKAT:symlinkat(2):fc
 #
 # User space system events.
 #
