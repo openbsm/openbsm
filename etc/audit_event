@@ -1,7 +1,7 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#26 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#27 $
 #
-# The mapping between event identifiers and values is also hard-codedd in
+# The mapping between event identifiers and values is also hard-coded in
 # audit_kevents.h and audit_uevents.h, so changes must occur in both places,
 # and programs, such as the kernel, may need to be recompiled to recognize
 # those changes.  It is advisable not to change the numbering or naming of
