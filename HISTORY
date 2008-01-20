@@ -2,6 +2,9 @@ OpenBSM 1.1 alpha 1
 
 - Add option to auditreduce(1) which allows users to invert sense of
   matching, such that BSM records that do not match, are selected.
+- Fix bug in audit_write() where we commit an incomplete record in the
+  event there is an error writing the subject token.  This was submitted
+  by Diego Giagio.
 
 OpenBSM 1.0
 
@@ -307,4 +310,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#60 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#61 $
