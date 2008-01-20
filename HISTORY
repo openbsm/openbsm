@@ -102,7 +102,7 @@ OpenBSM 1.0 alpha 11
 OpenBSM 1.0 alpha 10
 
 - auditd now generates complete audit records for its events, as required for
-  application-submitted audit records in the the FreeBSD kernel audit
+  application-submitted audit records in the FreeBSD kernel audit
   implementation.
 
 OpenBSM 1.0 alpha 9
@@ -140,7 +140,7 @@ OpenBSM 1.0 alpha 7
   address storage.
 - Prefer inttypes.h to stdint.h; enhance queue.h detection to test for
   TAILQ_FOREACH_SAFE(), which is present in recent BSD queue.h's, but not
-  older ones.  OpenBSM now builds on some FreeBSD 4.x version.
+  older ones.  OpenBSM now builds on some FreeBSD 4.x versions.
 - New event types for extended attributes, ACLs, and scheduling.
 
 OpenBSM 1.0 alpha 6
@@ -253,7 +253,7 @@ OpenBSM 1.0 alpha 1
   compile in code relying on kernel-only types such as 'struct socket'.
 - Add README, including basic build documentation.
 - Compilation of Apple-specific notify and Machroutines now #ifdef __APPLE__.
-- Staticize libbsm global variables to avoid leakage into application.
+- Staticize libbsm global variables to avoid leakage into applications.
 - Add free_au_user_ent() so that au_user_ent's don't have to be leaked.
 - Clean up bogus nul-termination checks in libbsm.
 - Add libbsm API man pages: au_class.3 au_control.3 au_event.3
@@ -310,4 +310,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#61 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#62 $
