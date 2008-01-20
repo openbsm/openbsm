@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#21 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#22 $
  */
 
 /* 
@@ -163,6 +163,7 @@ usage(const char *msg)
 	fprintf(stderr, "\t\t shmid=<ID>\n");
 	fprintf(stderr, "\t-r <uid|name> : real user\n");
 	fprintf(stderr, "\t-u <uid|name> : audit user\n");
+	fprintf(stderr, "\t-v : select non-matching records\n");
 	exit(EX_USAGE);
 }
 
