@@ -25,7 +25,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.1#14 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.1#15 $
 .\"
 .Dd January 24, 2004
 .Dt AUDITREDUCE 1
@@ -48,6 +48,7 @@
 .Op Fl o Ar object Ns = Ns Ar value
 .Op Fl r Ar ruid
 .Op Fl u Ar auid
+.Op Fl v
 .Op Ar
 .Sh DESCRIPTION
 The
@@ -127,6 +128,8 @@ Select records containing the given shared memory ID.
 Select records with the given real user ID or name.
 .It Fl u Ar auid
 Select records with the given audit ID.
+.It Fl v
+Invert sense of matching, to select records that do not match.
 .El
 .Sh EXAMPLES
 To select all records associated with effective user ID root from the audit

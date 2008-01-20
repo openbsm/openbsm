@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.h#5 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.h#6 $
  */
 
 #ifndef _AUDITREDUCE_H_
@@ -58,6 +58,7 @@ struct re_entry {
 #define OPT_r	0x00008000
 #define OPT_u	0x00010000
 #define OPT_A	0x00020000
+#define OPT_v	0x00040000
 
 #define FILEOBJ "file"
 #define MSGQIDOBJ "msgqid"

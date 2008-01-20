@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#20 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#21 $
  */
 
 /* 
@@ -346,7 +346,7 @@ static int
 select_hdr32(tokenstr_t tok, uint32_t *optchkd)
 {
 
-	SETOPT((*optchkd), (OPT_A | OPT_a | OPT_b | OPT_c | OPT_m));
+	SETOPT((*optchkd), (OPT_A | OPT_a | OPT_b | OPT_c | OPT_m | OPT_v));
 
 	/* The A option overrides a, b and d. */
 	if (!ISOPTSET(opttochk, OPT_A)) {
@@ -476,6 +476,7 @@ select_records(FILE *fp)
 	int bytesread;
 	int selected;
 	uint32_t optchkd;
+	int print;
 
 	int err = 0;
 	while ((reclen = au_read_rec(fp, &buf)) != -1) {
@@ -556,14 +557,12 @@ select_records(FILE *fp)
 			}
 			bytesread += tok.len;
 		}
-		if ((selected == 1) && (!err)) {
-			/* Check if all the options were matched. */
-			if (!(opttochk & ~optchkd)) {
-				/* XXX Write this record to the output file. */
-				/* default to stdout */
-				fwrite(buf, 1, reclen, stdout);
-			}
-		}
+		/* Check if all the options were matched. */
+		print = ((selected == 1) && (!err) && (!(opttochk & ~optchkd)));
+		if (ISOPTSET(opttochk, OPT_v))
+			print = !print;
+		if (print)
+			(void) fwrite(buf, 1, reclen, stdout);
 		free(buf);
 	}
 	return (0);
@@ -618,7 +617,7 @@ main(int argc, char **argv)
 
 	converr = NULL;
 
-	while ((ch = getopt(argc, argv, "Aa:b:c:d:e:f:g:j:m:o:r:u:")) != -1) {
+	while ((ch = getopt(argc, argv, "Aa:b:c:d:e:f:g:j:m:o:r:u:v")) != -1) {
 		switch(ch) {
 		case 'A':
 			SETOPT(opttochk, OPT_A);
@@ -753,6 +752,10 @@ main(int argc, char **argv)
 				p_auid = pw->pw_uid;
 			}
 			SETOPT(opttochk, OPT_u);
+			break;
+
+		case 'v':
+			SETOPT(opttochk, OPT_v);
 			break;
 
 		case '?':
