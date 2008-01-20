@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#24 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#25 $
  */
 
 #ifdef __APPLE__
@@ -285,7 +285,7 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
 	if (subject && au_write(aufd, subject) == -1) {
 		au_free_token(subject);
 		au_free_token(misctok);
-		(void)au_close(aufd, AU_TO_WRITE, event_code);
+		(void)au_close(aufd, AU_TO_NO_WRITE, event_code);
 		syslog(LOG_ERR, "%s: write of subject failed", func);
 		return (kAUWriteSubjectTokErr);
 	}
