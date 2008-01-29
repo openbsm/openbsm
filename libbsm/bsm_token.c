@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#63 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#64 $
  */
 
 #include <sys/types.h>
@@ -506,15 +506,23 @@ au_to_ipc_perm(struct ipc_perm *perm)
 
 #ifdef HAVE_IPC_PERM___SEQ
 	ADD_U_INT16(dptr, perm->__seq);
-#else
+#else	/* HAVE_IPC_PERM___SEQ */
+#ifdef  HAVE_IPC_PERM__SEQ
+	ADD_U_INT16(dptr, perm->_seq);
+#else	/* HAVE_IPC_PERM__SEQ */
 	ADD_U_INT16(dptr, perm->seq);
-#endif
+#endif	/* HAVE_IPC_PERM__SEQ */
+#endif	/* HAVE_IPC_PERM___SEQ */
 
 #ifdef HAVE_IPC_PERM___KEY
 	ADD_U_INT32(dptr, perm->__key);
-#else
+#else	/* HAVE_IPC_PERM___KEY */
+#ifdef  HAVE_IPC_PERM__KEY
+	ADD_U_INT32(dptr, perm->_key);
+#else	/* HAVE_IPC_PERM__KEY */
 	ADD_U_INT32(dptr, perm->key);
-#endif
+#endif	/* HAVE_IPC_PERM__KEY */
+#endif	/* HAVE_IPC_PERM___KEY */
 
 	return (t);
 }
