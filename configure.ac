@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.1alpha1], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#37 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#38 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -38,8 +38,22 @@ AC_CHECK_MEMBER([struct ipc_perm.__key],
 #include <sys/ipc.h>
 ])
 
+AC_CHECK_MEMBER([struct ipc_perm._key],
+[AC_DEFINE(HAVE_IPC_PERM__KEY,, Define if ipc_perm._key instead of key)],
+[],[
+#include <sys/types.h>
+#include <sys/ipc.h>
+])
+
 AC_CHECK_MEMBER([struct ipc_perm.__seq],
 [AC_DEFINE(HAVE_IPC_PERM___SEQ,, Define if ipc_perm.__seq instead of seq)],
+[],[
+#include <sys/types.h>
+#include <sys/ipc.h>
+])
+
+AC_CHECK_MEMBER([struct ipc_perm._seq],
+[AC_DEFINE(HAVE_IPC_PERM__SEQ,, Define if ipc_perm._seq instead of seq)],
 [],[
 #include <sys/types.h>
 #include <sys/ipc.h>

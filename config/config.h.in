@@ -39,6 +39,12 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define if ipc_perm._key instead of key */
+#undef HAVE_IPC_PERM__KEY
+
+/* Define if ipc_perm._seq instead of seq */
+#undef HAVE_IPC_PERM__SEQ
+
 /* Define if ipc_perm.__key instead of key */
 #undef HAVE_IPC_PERM___KEY
 
