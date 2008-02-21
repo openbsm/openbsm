@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#50 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#51 $
  */
 
 #include <sys/types.h>
@@ -996,12 +996,10 @@ print_header32_ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		open_attr(fp, "modifier");
 		print_evmod(fp, tok->tt.hdr32_ex.e_mod, raw);
 		close_attr(fp);
-		/*
-		 * No attribute for additional types.
-		 *
+		open_attr(fp, "host");
 		print_ip_ex_address(fp, tok->tt.hdr32_ex.ad_type,
 		    tok->tt.hdr32_ex.addr);
-		 */
+		close_attr(fp);
 		open_attr(fp, "time");
 		print_sec32(fp, tok->tt.hdr32_ex.s, raw);
 		close_attr(fp);
@@ -1188,12 +1186,10 @@ print_header64_ex_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		open_attr(fp, "modifier");
 		print_evmod(fp, tok->tt.hdr64_ex.e_mod, raw);
 		close_attr(fp);
-		/*
-		 * No attribute for additional types.
-		 *
+		open_attr(fp, "host");
 		print_ip_ex_address(fp, tok->tt.hdr64_ex.ad_type,
 		    tok->tt.hdr64_ex.addr);
-		 */
+		close_attr(fp);
 		open_attr(fp, "time");
 		print_sec64(fp, tok->tt.hdr64_ex.s, raw);
 		close_attr(fp);
