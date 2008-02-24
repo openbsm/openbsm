@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit.log.5#16 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit.log.5#17 $
 .\"
 .Dd November 5, 2006
 .Dt AUDIT.LOG 5
@@ -556,13 +556,14 @@ token can be created using
 .Ss Socket Token
 The
 .Dq socket
-token contains informations about UNIX domain and Internet sockets.
+token contains information about UNIX domain and Internet sockets.
 Each token has four or eight fields.
-Depend on type of socket a socket token may be created using
+Depending on the type of socket, a socket token may be created using
 .Xr au_to_sock_unix 3 ,
-.Xr au_to_sock_inet32 3 or
+.Xr au_to_sock_inet32 3 
+or
 .Xr au_to_sock_inet128 3 .
-.Bl -column -offset ind ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
+.Bl -column -offset 3n ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "Socket family" Ta "2 bytes" Ta "Socket family"
@@ -572,13 +573,13 @@ Depend on type of socket a socket token may be created using
 .Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
 .It Sy "Field	Bytes	Description"
 .It "Token ID	1 byte	Token ID"
-+.It Li "Socket domain" Ta "4 bytes" Ta "Socket domain"
-+.It Li "Socket family" Ta "2 bytes" Ta "Socket family"
-+.It Li "Address type" Ta "1 byte" Ta "Address type (IPv4/IPv6)"
-+.It Li "Local port" Ta "2 bytes" Ta "Local port"
-+.It Li "Local IP address" Ta "4/16 bytes" Ta "Local IP address"
-+.It Li "Remote port" Ta "2 bytes" Ta "Remote port"
-+.It Li "Remote IP address" Ta "4/16 bytes" Ta "Remote IP address"
+.It Li "Socket domain" Ta "4 bytes" Ta "Socket domain"
+.It Li "Socket family" Ta "2 bytes" Ta "Socket family"
+.It Li "Address type" Ta "1 byte" Ta "Address type (IPv4/IPv6)"
+.It Li "Local port" Ta "2 bytes" Ta "Local port"
+.It Li "Local IP address" Ta "4/16 bytes" Ta "Local IP address"
+.It Li "Remote port" Ta "2 bytes" Ta "Remote port"
+.It Li "Remote IP address" Ta "4/16 bytes" Ta "Remote IP address"
 .El
 .Ss Expanded Socket Token
 The
