@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#64 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#65 $
  */
 
 #include <sys/types.h>
@@ -98,7 +98,7 @@
  * text                    N bytes + 1 terminating NULL byte
  */
 token_t *
-au_to_arg32(char n, char *text, u_int32_t v)
+au_to_arg32(char n, const char *text, u_int32_t v)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -123,7 +123,7 @@ au_to_arg32(char n, char *text, u_int32_t v)
 }
 
 token_t *
-au_to_arg64(char n, char *text, u_int64_t v)
+au_to_arg64(char n, const char *text, u_int64_t v)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -148,7 +148,7 @@ au_to_arg64(char n, char *text, u_int64_t v)
 }
 
 token_t *
-au_to_arg(char n, char *text, u_int32_t v)
+au_to_arg(char n, const char *text, u_int32_t v)
 {
 
 	return (au_to_arg32(n, text, v));
@@ -270,7 +270,7 @@ au_to_attr(struct vnode_au_info *vni)
  * data items              (depends on basic unit)
  */
 token_t *
-au_to_data(char unit_print, char unit_type, char unit_count, char *p)
+au_to_data(char unit_print, char unit_type, char unit_count, const char *p)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -553,7 +553,7 @@ au_to_iport(u_int16_t iport)
  * data                    size bytes
  */
 token_t *
-au_to_opaque(char *data, u_int16_t bytes)
+au_to_opaque(const char *data, u_int16_t bytes)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -577,7 +577,7 @@ au_to_opaque(char *data, u_int16_t bytes)
  * file pathname           N bytes + 1 terminating NULL byte
  */
 token_t *
-au_to_file(char *file, struct timeval tm)
+au_to_file(const char *file, struct timeval tm)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -609,7 +609,7 @@ au_to_file(char *file, struct timeval tm)
  * text                    N bytes + 1 terminating NULL byte
  */
 token_t *
-au_to_text(char *text)
+au_to_text(const char *text)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -635,7 +635,7 @@ au_to_text(char *text)
  * path                    N bytes + 1 terminating NULL byte
  */
 token_t *
-au_to_path(char *text)
+au_to_path(const char *text)
 {
 	token_t *t;
 	u_char *dptr = NULL;
@@ -1233,7 +1233,7 @@ au_to_exec_args(char **argv)
  * zonename                N bytes + 1 terminating NULL byte
  */
 token_t *
-au_to_zonename(char *zonename)
+au_to_zonename(const char *zonename)
 {
 	u_char *dptr = NULL;
 	u_int16_t textlen;

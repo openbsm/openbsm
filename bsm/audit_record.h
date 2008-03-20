@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#26 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/audit_record.h#27 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -239,7 +239,7 @@ int	 au_close(int d, int keep, short event);
 int	 au_close_buffer(int d, short event, u_char *buffer, size_t *buflen);
 int	 au_close_token(token_t *tok, u_char *buffer, size_t *buflen);
 
-token_t	*au_to_file(char *file, struct timeval tm);
+token_t	*au_to_file(const char *file, struct timeval tm);
 
 token_t	*au_to_header32_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 	    struct timeval tm);
@@ -252,9 +252,9 @@ token_t	*au_to_header64(int rec_size, au_event_t e_type, au_emod_t e_mod);
 #endif
 
 token_t	*au_to_me(void);
-token_t	*au_to_arg(char n, char *text, uint32_t v);
-token_t	*au_to_arg32(char n, char *text, uint32_t v);
-token_t	*au_to_arg64(char n, char *text, uint64_t v);
+token_t	*au_to_arg(char n, const char *text, uint32_t v);
+token_t	*au_to_arg32(char n, const char *text, uint32_t v);
+token_t	*au_to_arg64(char n, const char *text, uint64_t v);
 
 #if defined(_KERNEL) || defined(KERNEL)
 token_t	*au_to_attr(struct vnode_au_info *vni);
@@ -263,7 +263,7 @@ token_t	*au_to_attr64(struct vnode_au_info *vni);
 #endif
 
 token_t	*au_to_data(char unit_print, char unit_type, char unit_count,
-	    char *p);
+	    const char *p);
 token_t	*au_to_exit(int retval, int err);
 token_t	*au_to_groups(int *groups);
 token_t	*au_to_newgroups(uint16_t n, gid_t *groups);
@@ -273,8 +273,8 @@ token_t	*au_to_ip(struct ip *ip);
 token_t	*au_to_ipc(char type, int id);
 token_t	*au_to_ipc_perm(struct ipc_perm *perm);
 token_t	*au_to_iport(uint16_t iport);
-token_t	*au_to_opaque(char *data, uint16_t bytes);
-token_t	*au_to_path(char *path);
+token_t	*au_to_opaque(const char *data, uint16_t bytes);
+token_t	*au_to_path(const char *path);
 token_t	*au_to_process(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_t *tid);
 token_t	*au_to_process32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
@@ -318,16 +318,16 @@ token_t	*au_to_subject32_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 token_t	*au_to_subject64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_addr_t *tid);
 #if defined(_KERNEL) || defined(KERNEL)
-token_t	*au_to_exec_args(char *args, int argc);
-token_t	*au_to_exec_env(char *envs, int envc);
+token_t	*au_to_exec_args(const char *args, int argc);
+token_t	*au_to_exec_env(const char *envs, int envc);
 #else
 token_t	*au_to_exec_args(char **argv);
 token_t	*au_to_exec_env(char **envp);
 #endif
-token_t	*au_to_text(char *text);
+token_t	*au_to_text(const char *text);
 token_t	*au_to_kevent(struct kevent *kev);
 token_t	*au_to_trailer(int rec_size);
-token_t	*au_to_zonename(char *zonename);
+token_t	*au_to_zonename(const char *zonename);
 
 __END_DECLS
 
