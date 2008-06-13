@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#22 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#23 $
  */
 
 /* 
@@ -72,13 +72,19 @@ extern int		 optind, optopt, opterr,optreset;
 static au_mask_t	 maskp;		/* Class. */
 static time_t		 p_atime;	/* Created after this time. */
 static time_t		 p_btime;	/* Created before this time. */
-static uint16_t		 p_evtype;	/* Event that we are searching for. */
 static int		 p_auid;	/* Audit id. */ 
 static int		 p_euid;	/* Effective user id. */
 static int		 p_egid;	/* Effective group id. */ 
 static int		 p_rgid;	/* Real group id. */ 
 static int		 p_ruid;	/* Real user id. */ 
 static int		 p_subid;	/* Subject id. */
+
+/*
+ * Maintain a dynamically sized array of events for -m
+ */
+static uint16_t		*p_evec;	/* Event type list */
+static int		 p_evec_used;	/* Number of events used */
+static int		 p_evec_alloc;	/* Number of events allocated */
 
 /*
  * Following are the objects (-o option) that we can select upon.
@@ -346,6 +352,8 @@ select_filepath(char *path, uint32_t *optchkd)
 static int
 select_hdr32(tokenstr_t tok, uint32_t *optchkd)
 {
+	uint16_t *ev;
+	int match;
 
 	SETOPT((*optchkd), (OPT_A | OPT_a | OPT_b | OPT_c | OPT_m | OPT_v));
 
@@ -378,7 +386,11 @@ select_hdr32(tokenstr_t tok, uint32_t *optchkd)
 
 	/* Check if event matches. */
 	if (ISOPTSET(opttochk, OPT_m)) {
-		if (tok.tt.hdr32.e_type != p_evtype)
+		match = 0;
+		for (ev = p_evec; ev < &p_evec[p_evec_used]; ev++)
+			if (tok.tt.hdr32.e_type == *ev)
+				match = 1;
+		if (match == 0)
 			return (0);
 	}
 		
@@ -615,6 +627,7 @@ main(int argc, char **argv)
 	int ch;
 	char timestr[128];
 	char *fname;
+	uint16_t *etp;
 
 	converr = NULL;
 
@@ -715,13 +728,26 @@ main(int argc, char **argv)
 			break;
 
 		case 'm':
-			p_evtype = strtol(optarg, (char **)NULL, 10);
-			if (p_evtype == 0) {
+			if (p_evec == NULL) {
+				p_evec_alloc = 32;
+				p_evec = malloc(sizeof(*etp) * p_evec_alloc);
+				if (p_evec == NULL)
+					err(1, "malloc");
+			} else if (p_evec_alloc == p_evec_used) {
+				p_evec_alloc <<= 1;
+				p_evec = realloc(p_evec,
+				    sizeof(*p_evec) * p_evec_alloc);
+				if (p_evec == NULL)
+					err(1, "realloc");
+			}
+			etp = &p_evec[p_evec_used++];
+			*etp = strtol(optarg, (char **)NULL, 10);
+			if (*etp == 0) {
 				/* Could be the string representation. */
 				n = getauevnonam(optarg);
 				if (n == NULL)
 					usage("Incorrect event name");
-				p_evtype = *n;
+				*etp = *n;
 			}
 			SETOPT(opttochk, OPT_m);
 			break;
