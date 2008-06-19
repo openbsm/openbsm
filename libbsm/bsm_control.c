@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#16 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#17 $
  */
 
 #include <bsm/libbsm.h>
@@ -485,6 +485,7 @@ getacna(char *auditstr, int len)
 		return (-3);
 	}
 	strcpy(auditstr, str);
+	pthread_mutex_unlock(&mutex);
 	return (0);
 }
 
