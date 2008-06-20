@@ -26,13 +26,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#26 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#27 $
  */
 
 #include <sys/types.h>
+
+#include <config/config.h>
+
 #include <sys/dirent.h>
 #include <sys/mman.h>
+#ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
+#else /* !HAVE_FULL_QUEUE_H */
+#include <compat/queue.h>
+#endif /* !HAVE_FULL_QUEUE_H */
 #include <sys/stat.h>
 #include <sys/wait.h>
 
@@ -53,17 +60,39 @@
 #include <syslog.h>
 
 #include "auditd.h"
+#ifdef USE_MACH_IPC
+#include <notify.h>
+#include <mach/port.h>
+#include <mach/mach_error.h>
+#include <mach/mach_traps.h>
+#include <mach/mach.h>
+#include <mach/host_special_ports.h>
+
+#include "auditd_control_server.h"
+#include "audit_triggers_server.h"
+#endif /* USE_MACH_IPC */
 
 #define	NA_EVENT_STR_SIZE	25
 #define	POL_STR_SIZE		128
-
 static int	 ret, minval;
 static char	*lastfile = NULL;
 static int	 allhardcount = 0;
 static int	 triggerfd = 0;
 static int	 sigchlds, sigchlds_handled;
 static int	 sighups, sighups_handled;
+#ifndef USE_MACH_IPC
 static int	 sigterms, sigterms_handled;
+
+#else /* USE_MACH_IPC */
+
+static mach_port_t      control_port = MACH_PORT_NULL;
+static mach_port_t      signal_port = MACH_PORT_NULL;
+static mach_port_t      port_set = MACH_PORT_NULL;
+
+#ifndef __BSM_INTERNAL_NOTIFY_KEY
+#define __BSM_INTERNAL_NOTIFY_KEY "com.apple.audit.change"
+#endif  /* __BSM_INTERNAL_NOTIFY_KEY */
+#endif /* USE_MACH_IPC */
 
 static TAILQ_HEAD(, dir_ent)	dir_q;
 
@@ -305,6 +334,11 @@ read_control_file(void)
 	free_dir_q();
 	endac();
 
+#ifdef USE_MACH_IPC
+	/* Post that the audit config changed. */
+	notify_post(__BSM_INTERNAL_NOTIFY_KEY);
+#endif
+
 	/*
 	 * Read the list of directories into a local linked list.
 	 *
@@ -415,8 +449,10 @@ close_all(void)
 	}
 	endac();
 
+#ifdef USE_MACH_IPC
 	if (close(triggerfd) != 0)
 		syslog(LOG_ERR, "Error closing control file");
+#endif
 	syslog(LOG_INFO, "Finished");
 	return (0);
 }
@@ -427,6 +463,22 @@ close_all(void)
  * main servicing loop to do proper handling from a non-signal-handler
  * context.
  */
+#ifdef USE_MACH_IPC
+static void
+relay_signal(int signal)
+{
+	mach_msg_empty_send_t msg;
+
+	msg.header.msgh_id = signal;
+	msg.header.msgh_remote_port = signal_port;
+	msg.header.msgh_local_port = MACH_PORT_NULL;
+	msg.header.msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_MAKE_SEND, 0);
+	mach_msg(&(msg.header), MACH_SEND_MSG|MACH_SEND_TIMEOUT, sizeof(msg),
+	    0, MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+}
+
+#else /* ! USE_MACH_IPC */
+
 static void
 relay_signal(int signal)
 {
@@ -438,6 +490,7 @@ relay_signal(int signal)
 	if (signal == SIGCHLD)
 		sigchlds++;
 }
+#endif /* ! USE_MACH_IPC */
 
 /*
  * Registering the daemon.
@@ -492,6 +545,48 @@ register_daemon(void)
 	return (0);
 }
 
+#ifdef USE_MACH_IPC
+/*
+ * Implementation of the auditd_control() MIG simpleroutine.
+ *
+ * React to input from the audit(1) tool.
+ */
+
+/* ARGSUSED */
+kern_return_t
+auditd_control(mach_port_t __unused auditd_port, int trigger)
+{
+	int err_ret = 0;
+
+	switch (trigger) {
+
+	case AUDIT_TRIGGER_ROTATE_USER:
+		/*
+		 * Create a new file and swap with the one
+		 * being used in kernel.
+		 */
+		if (swap_audit_file() == -1)
+			syslog(LOG_ERR, "Error swapping audit file");
+		break;
+
+	case AUDIT_TRIGGER_READ_FILE:
+		if (read_control_file() == -1)
+			syslog(LOG_ERR, "Error in audit control file");
+		 break;
+
+	case AUDIT_TRIGGER_CLOSE_AND_DIE:
+		err_ret = close_all();
+		exit (err_ret);
+		break;
+
+	default:
+		break;
+	}
+
+	return (KERN_SUCCESS);
+}
+#endif /* USE_MACH_IPC */
+
 /*
  * Handle the audit trigger event.
  *
@@ -503,8 +598,18 @@ register_daemon(void)
  * not be retransmitted, and the log file will grow in an unbounded fashion.
  */
 #define	DUPLICATE_INTERVAL	30
-static void
+#ifdef USE_MACH_IPC
+#define AT_SUCCESS	KERN_SUCCESS
+
+/* ARGSUSED */
+kern_return_t
+audit_triggers(mach_port_t __unused audit_port, int trigger)
+#else
+#define AT_SUCCESS	0
+
+static int
 handle_audit_trigger(int trigger)
+#endif
 {
 	static int last_trigger, last_warning;
 	static time_t last_time;
@@ -533,7 +638,7 @@ handle_audit_trigger(int trigger)
 					syslog(LOG_INFO,
 					    "Suppressing duplicate trigger %d",
 					    trigger);
-				return;
+				return (AT_SUCCESS);
 			}
 			last_warning = tt;
 			break;
@@ -634,7 +739,11 @@ handle_audit_trigger(int trigger)
 		syslog(LOG_ERR, "Got unknown trigger %d", trigger);
 		break;
 	}
+
+	return (AT_SUCCESS);
 }
+
+#undef	AT_SUCCESS
 
 static void
 handle_sighup(void)
@@ -675,6 +784,60 @@ handle_sigchld(void)
 /*
  * Read the control file for triggers/signals and handle appropriately.
  */
+#ifdef USE_MACH_IPC
+#define	MAX_MSG_SIZE	4096
+
+static boolean_t
+auditd_combined_server(mach_msg_header_t *InHeadP, mach_msg_header_t *OutHeadP)
+{
+        mach_port_t local_port = InHeadP->msgh_local_port;
+
+        if (local_port == signal_port) {
+                int signo = InHeadP->msgh_id;
+                int ret;
+
+                switch(signo) {
+                case SIGTERM:
+                        ret = close_all();
+                        exit(ret);
+
+                case SIGCHLD:
+                        handle_sigchld();
+                        return (TRUE);
+
+                case SIGHUP:
+                        handle_sighup();
+                        return (TRUE);
+
+                default:
+                        syslog(LOG_INFO, "Received signal %d", signo);
+                        return (TRUE);
+                }
+        } else if (local_port == control_port) {
+                boolean_t result;
+
+                result = audit_triggers_server(InHeadP, OutHeadP);
+                if (!result)
+                        result = auditd_control_server(InHeadP, OutHeadP);
+                return (result);
+        }
+        syslog(LOG_INFO, "Recevied msg on bad port 0x%x.", local_port);
+        return (FALSE);
+}
+
+static int
+wait_for_events(void)
+{
+	kern_return_t   result;
+
+	result = mach_msg_server(auditd_combined_server, MAX_MSG_SIZE,
+	    port_set, MACH_MSG_OPTION_NONE);
+        syslog(LOG_ERR, "abnormal exit\n");
+        return (close_all());
+}
+
+#else /* ! USE_MACH_IPC */
+
 static int
 wait_for_events(void)
 {
@@ -706,10 +869,11 @@ wait_for_events(void)
 		if (trigger == AUDIT_TRIGGER_CLOSE_AND_DIE)
 			break;
 		else
-			handle_audit_trigger(trigger);
+			(void)handle_audit_trigger(trigger);
 	}
 	return (close_all());
 }
+#endif /* ! USE_MACH_IPC */
 
 /*
  * Configure the audit controls in the kernel: the event to class mapping,
@@ -820,6 +984,62 @@ config_audit_controls(void)
 	return (0);
 }
 
+#ifdef USE_MACH_IPC
+static void
+mach_setup(void)
+{
+	mach_msg_type_name_t poly;
+
+	/*
+	 * Allocate a port set
+         */
+        if (mach_port_allocate(mach_task_self(),
+                                MACH_PORT_RIGHT_PORT_SET,
+                                &port_set) != KERN_SUCCESS)  {
+                syslog(LOG_ERR, "Allocation of port set failed");
+                fail_exit();
+        }
+
+        /*
+         * Allocate a signal reflection port
+         */
+        if (mach_port_allocate(mach_task_self(),
+                                MACH_PORT_RIGHT_RECEIVE,
+                                &signal_port) != KERN_SUCCESS ||
+                mach_port_move_member(mach_task_self(),
+                                signal_port,
+                                 port_set) != KERN_SUCCESS)  {
+                syslog(LOG_ERR, "Allocation of signal port failed");
+                fail_exit();
+        }
+
+        /*
+         *Allocate a trigger port
+         */
+        if (mach_port_allocate(mach_task_self(),
+                                MACH_PORT_RIGHT_RECEIVE,
+                                &control_port) != KERN_SUCCESS ||
+                mach_port_move_member(mach_task_self(),
+                                control_port,
+                                port_set) != KERN_SUCCESS)  {
+                syslog(LOG_ERR, "Allocation of trigger port failed");
+                fail_exit();
+        }
+        /* create a send right on our trigger port */
+        mach_port_extract_right(mach_task_self(), control_port,
+                MACH_MSG_TYPE_MAKE_SEND, &control_port, &poly);
+
+        /* register the trigger port with the kernel */
+        if (host_set_audit_control_port(mach_host_self(), control_port) != 
+	    KERN_SUCCESS) {
+                syslog(LOG_ERR, "Cannot set Mach control port");
+                fail_exit();
+        }
+        else
+                syslog(LOG_DEBUG, "Mach control port registered");
+}
+#endif /* USE_MACH_IPC */
+
 static void
 setup(void)
 {
@@ -827,6 +1047,10 @@ setup(void)
 	auditinfo_t auinfo;
 	int aufd;
 	token_t *tok;
+
+#ifdef USE_MACH_IPC
+	mach_setup();
+#endif
 
 	if ((triggerfd = open(AUDIT_TRIGGER_FILE, O_RDONLY, 0)) < 0) {
 		syslog(LOG_ERR, "Error opening trigger file");
@@ -890,7 +1114,7 @@ main(int argc, char **argv)
 {
 	int ch;
 	int debug = 0;
-	int rc;
+	int rc, logopts;
 
 	while ((ch = getopt(argc, argv, "d")) != -1) {
 		switch(ch) {
@@ -907,10 +1131,14 @@ main(int argc, char **argv)
 		}
 	}
 
+	logopts = LOG_CONS | LOG_PID;
+	if (debug != 0)
+		logopts |= LOG_PERROR;
+
 #ifdef LOG_SECURITY
-	openlog("auditd", LOG_CONS | LOG_PID, LOG_SECURITY);
+	openlog("auditd", logopts, LOG_SECURITY);
 #else
-	openlog("auditd", LOG_CONS | LOG_PID, LOG_AUTH);
+	openlog("auditd", logopts, LOG_AUTH);
 #endif
 	syslog(LOG_INFO, "starting...");
 

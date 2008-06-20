@@ -1,4 +1,7 @@
 - Modify the -m option so users can select more then one audit event.
+- For darwin, added Mach IPC support for audit trigger messages.
+- Fixed a bug in getacna() which resulted in a locking problem on darwin. 
+- Added LOG_PERROR flag to openlog when -d option is used with auditd.
 
 OpenBSM 1.1 alpha 1
 
@@ -318,4 +321,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#66 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#67 $

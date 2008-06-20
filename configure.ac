@@ -3,11 +3,13 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.1alpha1], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#38 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#39 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
 AM_MAINTAINER_MODE
+
+AC_PATH_PROGS(MIG, mig)
 
 # Checks for programs.
 AC_PROG_CC
@@ -107,6 +109,16 @@ have_audit_syscalls=true
 have_audit_syscalls=false
 ])
 AM_CONDITIONAL(HAVE_AUDIT_SYSCALLS, $have_audit_syscalls)
+
+# Check to see if Mach IPC is used for trigger messages.  If so, use Mach IPC
+# instead of the default for sending trigger messages to the audit components.
+AC_CHECK_FILE([/usr/include/mach/audit_triggers.defs], [
+AC_DEFINE(USE_MACH_IPC,, Define if uses Mach IPC for Triggers messages)
+use_mach_ipc=true
+], [
+use_mach_ipc=false
+])
+AM_CONDITIONAL(USE_MACH_IPC, $use_mach_ipc)
 
 AC_CONFIG_FILES([Makefile
                  bin/Makefile
