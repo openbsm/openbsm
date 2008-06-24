@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#27 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#28 $
  */
 
 #include <sys/types.h>
@@ -77,11 +77,11 @@
 static int	 ret, minval;
 static char	*lastfile = NULL;
 static int	 allhardcount = 0;
-static int	 triggerfd = 0;
 static int	 sigchlds, sigchlds_handled;
 static int	 sighups, sighups_handled;
 #ifndef USE_MACH_IPC
 static int	 sigterms, sigterms_handled;
+static int	 triggerfd = 0;
 
 #else /* USE_MACH_IPC */
 
@@ -449,7 +449,7 @@ close_all(void)
 	}
 	endac();
 
-#ifdef USE_MACH_IPC
+#ifndef USE_MACH_IPC
 	if (close(triggerfd) != 0)
 		syslog(LOG_ERR, "Error closing control file");
 #endif
@@ -1050,12 +1050,12 @@ setup(void)
 
 #ifdef USE_MACH_IPC
 	mach_setup();
-#endif
-
+#else
 	if ((triggerfd = open(AUDIT_TRIGGER_FILE, O_RDONLY, 0)) < 0) {
 		syslog(LOG_ERR, "Error opening trigger file");
 		fail_exit();
 	}
+#endif
 
 	/*
 	 * To provide event feedback cycles and avoid auditd becoming
