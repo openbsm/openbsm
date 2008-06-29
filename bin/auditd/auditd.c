@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#28 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#29 $
  */
 
 #include <sys/types.h>
@@ -788,41 +788,42 @@ handle_sigchld(void)
 #define	MAX_MSG_SIZE	4096
 
 static boolean_t
-auditd_combined_server(mach_msg_header_t *InHeadP, mach_msg_header_t *OutHeadP)
+auditd_combined_server(mach_msg_header_t *InHeadP,
+    mach_msg_header_t *OutHeadP)
 {
-        mach_port_t local_port = InHeadP->msgh_local_port;
+	mach_port_t local_port = InHeadP->msgh_local_port;
 
-        if (local_port == signal_port) {
-                int signo = InHeadP->msgh_id;
-                int ret;
+	if (local_port == signal_port) {
+		int signo = InHeadP->msgh_id;
+		int ret;
 
-                switch(signo) {
-                case SIGTERM:
-                        ret = close_all();
-                        exit(ret);
+		switch(signo) {
+		case SIGTERM:
+			ret = close_all();
+			exit(ret);
 
-                case SIGCHLD:
-                        handle_sigchld();
-                        return (TRUE);
+		case SIGCHLD:
+			handle_sigchld();
+			return (TRUE);
 
-                case SIGHUP:
-                        handle_sighup();
-                        return (TRUE);
+		case SIGHUP:
+			handle_sighup();
+			return (TRUE);
 
-                default:
-                        syslog(LOG_INFO, "Received signal %d", signo);
-                        return (TRUE);
-                }
-        } else if (local_port == control_port) {
-                boolean_t result;
+		default:
+			syslog(LOG_INFO, "Received signal %d", signo);
+			return (TRUE);
+		}
+	} else if (local_port == control_port) {
+		boolean_t result;
 
-                result = audit_triggers_server(InHeadP, OutHeadP);
-                if (!result)
-                        result = auditd_control_server(InHeadP, OutHeadP);
-                return (result);
-        }
-        syslog(LOG_INFO, "Recevied msg on bad port 0x%x.", local_port);
-        return (FALSE);
+		result = audit_triggers_server(InHeadP, OutHeadP);
+		if (!result)
+			result = auditd_control_server(InHeadP, OutHeadP);
+			return (result);
+	}
+	syslog(LOG_INFO, "Recevied msg on bad port 0x%x.", local_port);
+	return (FALSE);
 }
 
 static int
@@ -832,8 +833,8 @@ wait_for_events(void)
 
 	result = mach_msg_server(auditd_combined_server, MAX_MSG_SIZE,
 	    port_set, MACH_MSG_OPTION_NONE);
-        syslog(LOG_ERR, "abnormal exit\n");
-        return (close_all());
+	syslog(LOG_ERR, "abnormal exit\n");
+	return (close_all());
 }
 
 #else /* ! USE_MACH_IPC */
@@ -992,51 +993,48 @@ mach_setup(void)
 
 	/*
 	 * Allocate a port set
-         */
-        if (mach_port_allocate(mach_task_self(),
-                                MACH_PORT_RIGHT_PORT_SET,
-                                &port_set) != KERN_SUCCESS)  {
-                syslog(LOG_ERR, "Allocation of port set failed");
-                fail_exit();
-        }
+	 */
+	if (mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_PORT_SET,
+	    &port_set) != KERN_SUCCESS)  {
+		syslog(LOG_ERR, "Allocation of port set failed");
+		fail_exit();
+	}
+
+	/*
+	 * Allocate a signal reflection port
+	 */
+	if (mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE,
+	    &signal_port) != KERN_SUCCESS ||
+	    mach_port_move_member(mach_task_self(), signal_port, port_set) !=
+	    KERN_SUCCESS)  {
+		syslog(LOG_ERR, "Allocation of signal port failed");
+		fail_exit();
+	}
+
+	/*
+	 * Allocate a trigger port
+	 */
+	if (mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE,
+	    &control_port) != KERN_SUCCESS ||
+	    mach_port_move_member(mach_task_self(), control_port, port_set)
+	    != KERN_SUCCESS)
+		syslog(LOG_ERR, "Allocation of trigger port failed");
 
         /*
-         * Allocate a signal reflection port
-         */
-        if (mach_port_allocate(mach_task_self(),
-                                MACH_PORT_RIGHT_RECEIVE,
-                                &signal_port) != KERN_SUCCESS ||
-                mach_port_move_member(mach_task_self(),
-                                signal_port,
-                                 port_set) != KERN_SUCCESS)  {
-                syslog(LOG_ERR, "Allocation of signal port failed");
-                fail_exit();
-        }
+	 * Create a send right on our trigger port.
+	 */
+	mach_port_extract_right(mach_task_self(), control_port,
+	    MACH_MSG_TYPE_MAKE_SEND, &control_port, &poly);
 
         /*
-         *Allocate a trigger port
-         */
-        if (mach_port_allocate(mach_task_self(),
-                                MACH_PORT_RIGHT_RECEIVE,
-                                &control_port) != KERN_SUCCESS ||
-                mach_port_move_member(mach_task_self(),
-                                control_port,
-                                port_set) != KERN_SUCCESS)  {
-                syslog(LOG_ERR, "Allocation of trigger port failed");
-                fail_exit();
-        }
-        /* create a send right on our trigger port */
-        mach_port_extract_right(mach_task_self(), control_port,
-                MACH_MSG_TYPE_MAKE_SEND, &control_port, &poly);
-
-        /* register the trigger port with the kernel */
-        if (host_set_audit_control_port(mach_host_self(), control_port) != 
+	 * Register the trigger port with the kernel.
+	 */
+	if (host_set_audit_control_port(mach_host_self(), control_port) != 
 	    KERN_SUCCESS) {
-                syslog(LOG_ERR, "Cannot set Mach control port");
-                fail_exit();
-        }
-        else
-                syslog(LOG_DEBUG, "Mach control port registered");
+		syslog(LOG_ERR, "Cannot set Mach control port");
+		fail_exit();
+	} else
+		syslog(LOG_DEBUG, "Mach control port registered");
 }
 #endif /* USE_MACH_IPC */
 
