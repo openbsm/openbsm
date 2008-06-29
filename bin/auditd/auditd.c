@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#29 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#30 $
  */
 
 #include <sys/types.h>
@@ -90,8 +90,8 @@ static mach_port_t      signal_port = MACH_PORT_NULL;
 static mach_port_t      port_set = MACH_PORT_NULL;
 
 #ifndef __BSM_INTERNAL_NOTIFY_KEY
-#define __BSM_INTERNAL_NOTIFY_KEY "com.apple.audit.change"
-#endif  /* __BSM_INTERNAL_NOTIFY_KEY */
+#define	__BSM_INTERNAL_NOTIFY_KEY "com.apple.audit.change"
+#endif /* __BSM_INTERNAL_NOTIFY_KEY */
 #endif /* USE_MACH_IPC */
 
 static TAILQ_HEAD(, dir_ent)	dir_q;
@@ -599,13 +599,13 @@ auditd_control(mach_port_t __unused auditd_port, int trigger)
  */
 #define	DUPLICATE_INTERVAL	30
 #ifdef USE_MACH_IPC
-#define AT_SUCCESS	KERN_SUCCESS
+#define	AT_SUCCESS	KERN_SUCCESS
 
 /* ARGSUSED */
 kern_return_t
 audit_triggers(mach_port_t __unused audit_port, int trigger)
 #else
-#define AT_SUCCESS	0
+#define	AT_SUCCESS	0
 
 static int
 handle_audit_trigger(int trigger)
