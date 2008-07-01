@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/Makefile.in#4 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/Makefile.in#5 $
 #
 
 VPATH = @srcdir@
@@ -113,6 +113,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MIG = @MIG@
 MKDIR_P = @MKDIR_P@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -123,7 +124,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -179,7 +179,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 praudit_SOURCES = praudit.c
 praudit_LDADD = $(top_builddir)/libbsm/libbsm.la
 man1_MANS = praudit.1
@@ -196,9 +196,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  bin/praudit/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  bin/praudit/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  bin/praudit/Makefile
+	  $(AUTOMAKE) --gnu  bin/praudit/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/Makefile.in#5 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/Makefile.in#6 $
 #
 
 VPATH = @srcdir@
@@ -186,7 +186,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 auditd_LDADD = $(top_builddir)/libbsm/libbsm.la
 man8_MANS = auditd.8
 @USE_MACH_IPC_FALSE@auditd_SOURCES = audit_warn.c auditd.c
@@ -526,10 +526,10 @@ uninstall-man: uninstall-man8
 
 
 @USE_MACH_IPC_TRUE@auditd_control_server.c: auditd_control.defs
-@USE_MACH_IPC_TRUE@	$(MIG) -user /dev/null -header /dev/null -server auditd_control_server.c -sheader auditd_control_server.h auditd_control.defs
+@USE_MACH_IPC_TRUE@	$(MIG) -user /dev/null -header /dev/null -server auditd_control_server.c -sheader auditd_control_server.h $(top_srcdir)/bin/auditd/auditd_control.defs
 
 @USE_MACH_IPC_TRUE@audit_triggers_server.c: audit_triggers.defs
-@USE_MACH_IPC_TRUE@	$(MIG) -user /dev/null -header /dev/null -server audit_triggers_server.c -sheader audit_triggers_server.h audit_triggers.defs
+@USE_MACH_IPC_TRUE@	$(MIG) -user /dev/null -header /dev/null -server audit_triggers_server.c -sheader audit_triggers_server.h $(top_srcdir)/bin/auditd/audit_triggers.defs
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

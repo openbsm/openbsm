@@ -1,8 +1,8 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/tools/Makefile.am#2 $
+# $P4: //depot/projects/trustedbsd/openbsm/tools/Makefile.am#3 $
 #
 
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 
 bin_PROGRAMS = audump
 audump_SOURCES = audump.c

@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/modules/auditfilter_noop/Makefile.in#2 $
+# $P4: //depot/projects/trustedbsd/openbsm/modules/auditfilter_noop/Makefile.in#3 $
 #
 
 VPATH = @srcdir@
@@ -118,6 +118,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MIG = @MIG@
 MKDIR_P = @MKDIR_P@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -128,7 +129,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -184,7 +184,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 lib_LTLIBRARIES = auditfilter_noop.la
 auditfilter_noop_la_SOURCE = auditfilter_noop.c
 auditfilter_noop_la_LDFLAGS = -module
@@ -201,9 +201,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  modules/auditfilter_noop/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  modules/auditfilter_noop/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  modules/auditfilter_noop/Makefile
+	  $(AUTOMAKE) --gnu  modules/auditfilter_noop/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

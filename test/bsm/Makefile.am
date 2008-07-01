@@ -1,8 +1,8 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/test/bsm/Makefile.am#1 $
+# $P4: //depot/projects/trustedbsd/openbsm/test/bsm/Makefile.am#2 $
 #
 
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 
 bin_PROGRAMS = generate
 generate_SOURCES = generate.c

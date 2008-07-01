@@ -1,8 +1,8 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/modules/auditfilter_noop/Makefile.am#1 $
+# $P4: //depot/projects/trustedbsd/openbsm/modules/auditfilter_noop/Makefile.am#2 $
 #
 
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 
 lib_LTLIBRARIES = auditfilter_noop.la
 

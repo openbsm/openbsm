@@ -1,8 +1,8 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.am#3 $
+# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.am#4 $
 #
 
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 
 lib_LTLIBRARIES = libbsm.la
 
