@@ -25,9 +25,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditon.2#13 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditon.2#14 $
 .\"
-.Dd April 19, 2005
+.Dd July 10, 2008
 .Dt AUDITON 2
 .Os
 .Sh NAME
@@ -71,10 +71,12 @@ policy control values bitwise OR'ed together:
 and
 .Dv AUDIT_ARGE .
 If
-.Dv AUDIT_CNT is set, the system will continue even if the system becomes low
+.Dv AUDIT_CNT is set, the system will continue even if it becomes low
 on space and discontinue logging events until the low space condition is 
-remedied.  If it is not set, audited events will block until the low space 
-condition is remedied.  Unaudited events, however, are unaffected.
+remedied.
+If it is not set, audited events will block until the low space 
+condition is remedied.
+Unaudited events, however, are unaffected.
 If 
 .Dv AUDIT_AHLT is set, a 
 .Xr panic 9
@@ -132,9 +134,10 @@ and
 The field
 .Fa aq_hiwater
 defines the maximum number of audit record entries in the queue used to store
-the audit records ready for delivery to disk. New records are inserted at the
-tail of the queue and removed from the head. New records which would exceed the
-high water mark, the calling thread is inserted into the a wait queue, waiting
+the audit records ready for delivery to disk.
+New records are inserted at the tail of the queue and removed from the head.
+For new records which would exceed the
+high water mark, the calling thread is inserted into the wait queue, waiting
 for the audit queue to have enough space available as defined with the field
 .Fa aq_lowater .
 The field
@@ -147,10 +150,11 @@ is unused.
 The field
 .Fa aq_minfree
 specifies the minimum amount of free blocks on the disk device used to store
-audit records. If the value of free blocks falls below the configured
-minimum amount, the kernel informs the audit daemon about low disk space. The
-value is to be specified in percent of free filesystem blocks. A value of 0
-results in a disabling of the check.
+audit records.
+If the value of free blocks falls below the configured
+minimum amount, the kernel informs the audit daemon about low disk space.
+The value is to be specified in percent of free file system blocks.
+A value of 0 results in a disabling of the check.
 .It Dv A_SETSTAT
 Return
 .Er ENOSYS .
@@ -207,9 +211,11 @@ argument
 must point to a
 .Vt auditpinfo_t
 structure that contains the given process's audit
-preselection masks for both success and failure. The field
+preselection masks for both success and failure.
+The field
 .Fa ap_pid
-is the process id of the target process.  The field
+is the process id of the target process.
+The field
 .Fa ap_mask
 must point to a
 .Fa au_mask_t
@@ -262,10 +268,12 @@ structure which will be set to contain
 (the terminal ID), and
 .Fa ap_asid 
 (the audit session ID)
-of the given target process.  The process ID of the target process is passed 
+of the given target process.
+The process ID of the target process is passed 
 into the kernel using the
 .Fa ap_pid
-field. See the section
+field.
+See the section
 .Dv A_SETPMASK
 above and 
 .Xr getaudit 2 
@@ -287,7 +295,8 @@ The exception is the
 structure can hold much a larger terminal address and an address type. 
 The process ID of the target process is passed into the kernel using the
 .Fa ap_pid
-field.  See the section 
+field.
+See the section 
 .Dv A_SETPMASK
 above and 
 .Xr getaudit 2
@@ -309,7 +318,8 @@ argument
 must point to a
 .Vt long
 value which will be set to
-one of the current audit policy flags.  The audit policy flags are
+one of the current audit policy flags.
+The audit policy flags are
 described in the 
 .Dv A_SETPOLICY 
 section above.
@@ -321,7 +331,8 @@ argument
 must point to a
 .Vt au_qctrl_t
 structure which will be set to the current
-kernel audit queue control parameters.  See the
+kernel audit queue control parameters.
+See the
 .Dv A_SETQCTL
 section above for more information.
 .It Dv A_GETFSIZE
