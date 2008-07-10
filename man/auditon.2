@@ -25,7 +25,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditon.2#12 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/auditon.2#13 $
 .\"
 .Dd April 19, 2005
 .Dt AUDITON 2
@@ -63,32 +63,32 @@ The
 argument
 must point to a
 .Vt long
-value set to one of the following audit
-policy control values:
-either
-.Dv AUDIT_CNT
-or
-.Dv AUDIT_AHLT .
-In the
-.Dv AUDIT_CNT
-case, the action will continue regardless if
-an event will not be audited.
-In the
-.Dv AUDIT_AHLT
-case, a
+value set to one or more the following audit
+policy control values bitwise OR'ed together:
+.Dv AUDIT_CNT ,
+.Dv AUDIT_AHLT ,
+.Dv AUDIT_ARGV ,
+and
+.Dv AUDIT_ARGE .
+If
+.Dv AUDIT_CNT is set, the system will continue even if the system becomes low
+on space and discontinue logging events until the low space condition is 
+remedied.  If it is not set, audited events will block until the low space 
+condition is remedied.  Unaudited events, however, are unaffected.
+If 
+.Dv AUDIT_AHLT is set, a 
 .Xr panic 9
-will result if an event will not be written to the
-audit log file.  In addition to one of the audit policy control values
-defined above, the argument may also include 
+if it cannot write an event to the global audit log file.
+If 
 .Dv AUDIT_ARGV
-or
-.Dv AUDIT_ARGE 
-or both.
-These flags will audit the argument list and environment variables
-passed to the
-.Xr execve
-system call and are added by bitwise OR'ing to the audit control policy 
-argument.
+is set, then the argument list passed to the 
+.Xr execve 2 
+system call will be audited.  If
+.Dv AUDIT_ARGE
+is set, then the environment variables passed to the
+.Xr execve 2
+system call will be audited.  The default policy is none of the audit policy
+control flags set. 
 .It Dv A_SETKAUDIT
 Return
 .Er ENOSYS .
