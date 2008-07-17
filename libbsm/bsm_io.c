@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#51 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#52 $
  */
 
 #include <sys/types.h>
@@ -3813,7 +3813,7 @@ print_socketex32_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		print_ip_address(fp, tok->tt.socket_ex32.r_addr);
 		close_attr(fp);
 		open_attr(fp, "fport");
-		print_2_bytes(fp, tok->tt.socket_ex32.type, "%#x");
+		print_2_bytes(fp, ntohs(tok->tt.socket_ex32.r_port), "%#x");
 		close_attr(fp);
 		close_tag(fp, tok->id);
 	} else {
