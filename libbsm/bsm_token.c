@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 Apple Computer, Inc.
+ * Copyright (c) 2004-2008 Apple Computer, Inc.
  * Copyright (c) 2005 SPARTA, Inc.
  * All rights reserved.
  *
@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#65 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#66 $
  */
 
 #include <sys/types.h>
@@ -119,7 +119,6 @@ au_to_arg32(char n, const char *text, u_int32_t v)
 	ADD_STRING(dptr, text, textlen);
 
 	return (t);
-
 }
 
 token_t *
@@ -144,7 +143,6 @@ au_to_arg64(char n, const char *text, u_int64_t v)
 	ADD_STRING(dptr, text, textlen);
 
 	return (t);
-
 }
 
 token_t *
@@ -180,8 +178,8 @@ au_to_attr32(struct vnode_au_info *vni)
 	ADD_U_CHAR(dptr, AUT_ATTR32);
 
 	/*
-	 * Darwin defines the size for the file mode
-	 * as 2 bytes; BSM defines 4 so pad with 0
+	 * Darwin defines the size for the file mode as 2 bytes; BSM defines
+	 '8 4 so pad with 0.
 	 */
 	ADD_U_INT16(dptr, pad0_16);
 	ADD_U_INT16(dptr, vni->vn_mode);
@@ -191,7 +189,7 @@ au_to_attr32(struct vnode_au_info *vni)
 	ADD_U_INT32(dptr, vni->vn_fsid);
 
 	/*
-	 * Some systems use 32-bit file ID's, other's use 64-bit file IDs.
+	 * Some systems use 32-bit file ID's, others use 64-bit file IDs.
 	 * Attempt to handle both, and let the compiler sort it out.  If we
 	 * could pick this out at compile-time, it would be better, so as to
 	 * avoid the else case below.
@@ -225,8 +223,8 @@ au_to_attr64(struct vnode_au_info *vni)
 	ADD_U_CHAR(dptr, AUT_ATTR64);
 
 	/*
-	 * Darwin defines the size for the file mode
-	 * as 2 bytes; BSM defines 4 so pad with 0
+	 * Darwin defines the size for the file mode as 2 bytes; BSM defines
+	 * 4 so pad with 0.
 	 */
 	ADD_U_INT16(dptr, pad0_16);
 	ADD_U_INT16(dptr, vni->vn_mode);
@@ -484,8 +482,8 @@ au_to_ipc_perm(struct ipc_perm *perm)
 	ADD_U_CHAR(dptr, AUT_IPC_PERM);
 
 	/*
-	 * Darwin defines the sizes for ipc_perm members
-	 * as 2 bytes; BSM defines 4 so pad with 0
+	 * Darwin defines the sizes for ipc_perm members as 2 bytes; BSM
+	 * defines 4 so pad with 0.
 	 */
 	ADD_U_INT16(dptr, pad0);
 	ADD_U_INT16(dptr, perm->uid);
@@ -1170,8 +1168,8 @@ au_to_subject_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 
 #if !defined(_KERNEL) && !defined(KERNEL) && defined(HAVE_AUDIT_SYSCALLS)
 /*
- * Collects audit information for the current process
- * and creates a subject token from it
+ * Collects audit information for the current process and creates a subject
+ * token from it.
  */
 token_t *
 au_to_me(void)
