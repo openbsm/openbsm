@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#66 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#67 $
  */
 
 #include <sys/types.h>
@@ -179,7 +179,7 @@ au_to_attr32(struct vnode_au_info *vni)
 
 	/*
 	 * Darwin defines the size for the file mode as 2 bytes; BSM defines
-	 '8 4 so pad with 0.
+	 * 4 so pad with 0.
 	 */
 	ADD_U_INT16(dptr, pad0_16);
 	ADD_U_INT16(dptr, vni->vn_mode);
@@ -296,7 +296,7 @@ au_to_data(char unit_print, char unit_type, char unit_count, const char *p)
 
 	default:
 		errno = EINVAL;
- 		return (NULL);
+		return (NULL);
 	}
 
 	totdata = datasize * unit_count;
@@ -343,7 +343,7 @@ token_t *
 au_to_groups(int *groups)
 {
 
-	return (au_to_newgroups(AUDIT_MAX_GROUPS, (gid_t*)groups));
+	return (au_to_newgroups(AUDIT_MAX_GROUPS, (gid_t *)groups));
 }
 
 /*
@@ -394,7 +394,7 @@ au_to_in_addr(struct in_addr *internet_addr)
 /*
  * token ID                1 byte
  * address type/length     4 bytes
- * Address                16 bytes
+ * address                16 bytes
  */
 token_t *
 au_to_in_addr_ex(struct in6_addr *internet_addr)
@@ -949,14 +949,13 @@ au_to_sock_inet32(struct sockaddr_in *so)
 	 *
 	 * XXXRW: Should a name space conversion be taking place on the value
 	 * of sin_family?
- 	 */
+	 */
 	family = so->sin_family;
 	ADD_U_INT16(dptr, family);
 	ADD_MEM(dptr, &so->sin_port, sizeof(uint16_t));
 	ADD_MEM(dptr, &so->sin_addr.s_addr, sizeof(uint32_t));
 
 	return (t);
-
 }
 
 token_t *
@@ -973,8 +972,8 @@ au_to_sock_inet128(struct sockaddr_in6 *so)
 	ADD_U_CHAR(dptr, AUT_SOCKINET128);
 	/*
 	 * In Darwin, sin6_family is one octet, but BSM defines the token
- 	 * to store two. So we copy in a 0 first.
- 	 */
+	 * to store two. So we copy in a 0 first.
+	 */
 	ADD_U_CHAR(dptr, 0);
 	ADD_U_CHAR(dptr, so->sin6_family);
 
@@ -982,7 +981,6 @@ au_to_sock_inet128(struct sockaddr_in6 *so)
 	ADD_MEM(dptr, &so->sin6_addr, 4 * sizeof(uint32_t));
 
 	return (t);
-
 }
 
 token_t *
