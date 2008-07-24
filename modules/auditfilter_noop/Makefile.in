@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/modules/auditfilter_noop/Makefile.in#3 $
+# $P4: //depot/projects/trustedbsd/openbsm/modules/auditfilter_noop/Makefile.in#4 $
 #
 
 VPATH = @srcdir@
@@ -129,6 +129,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -201,9 +202,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  modules/auditfilter_noop/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  modules/auditfilter_noop/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  modules/auditfilter_noop/Makefile
+	  $(AUTOMAKE) --foreign  modules/auditfilter_noop/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

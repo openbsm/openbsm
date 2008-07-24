@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/audit/Makefile.in#6 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/audit/Makefile.in#7 $
 #
 
 VPATH = @srcdir@
@@ -202,9 +202,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  bin/audit/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  bin/audit/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  bin/audit/Makefile
+	  $(AUTOMAKE) --foreign  bin/audit/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
