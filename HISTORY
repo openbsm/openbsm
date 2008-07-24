@@ -1,8 +1,3 @@
-- Modify the -m option so users can select more then one audit event.
-- For darwin, added Mach IPC support for audit trigger messages.
-- Fixed a bug in getacna() which resulted in a locking problem on darwin. 
-- Added LOG_PERROR flag to openlog when -d option is used with auditd.
-
 OpenBSM 1.1 alpha 1
 
 - Add option to auditreduce(1) which allows users to invert sense of
@@ -16,6 +11,10 @@ OpenBSM 1.1 alpha 1
   Martin Voros.
 - Constification of function arguments so that const strings can be passed
   as arguments to tokens.  This patch was submitted by Xin LI.
+- Modify the -m option so users can select more then one audit event.
+- For Mac OS X, added Mach IPC support for audit trigger messages.
+- Fixed a bug in getacna() which resulted in a locking problem on Mac OS X.
+- Added LOG_PERROR flag to openlog when -d option is used with auditd.
 
 OpenBSM 1.0
 
@@ -321,4 +320,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/HISTORY#67 $
+$P4: //depot/projects/trustedbsd/openbsm/HISTORY#68 $
