@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2004 Apple Computer, Inc.
+/*-
+ * Copyright (c) 2004 Apple Inc.
  * Copyright (c) 2005 SPARTA, Inc.
  * Copyright (c) 2006 Robert N. M. Watson
  * Copyright (c) 2006 Martin Voros
@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#52 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#53 $
  */
 
 #include <sys/types.h>

@@ -1,4 +1,4 @@
-/*
+/*-
  * Copyright (c) 2004-2008 Apple Inc.
  * All rights reserved.
  *
@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#31 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#32 $
  */
 
 #include <sys/types.h>
