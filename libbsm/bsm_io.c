@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#53 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#54 $
  */
 
 #include <sys/types.h>
@@ -1474,7 +1474,7 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		size = AUR_BYTE_SIZE;
 		if (xml) {
 			open_attr(fp, "type");
-			fprintf(fp, "%u", size);
+			fprintf(fp, "%zu", size);
 			close_attr(fp);
 			open_attr(fp, "count");
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
@@ -1500,7 +1500,7 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		size = AUR_SHORT_SIZE;
 		if (xml) {
 			open_attr(fp, "type");
-			fprintf(fp, "%u", size);
+			fprintf(fp, "%zu", size);
 			close_attr(fp);
 			open_attr(fp, "count");
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
@@ -1529,7 +1529,7 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		size = AUR_INT32_SIZE;
 		if (xml) {
 			open_attr(fp, "type");
-			fprintf(fp, "%u", size);
+			fprintf(fp, "%zu", size);
 			close_attr(fp);
 			open_attr(fp, "count");
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
@@ -1557,7 +1557,7 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		size = AUR_INT64_SIZE;
 		if (xml) {
 			open_attr(fp, "type");
-			fprintf(fp, "%u", size);
+			fprintf(fp, "%zu", size);
 			close_attr(fp);
 			open_attr(fp, "count");
 			print_1_byte(fp, tok->tt.arb.uc, "%u");

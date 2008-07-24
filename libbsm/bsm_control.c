@@ -27,8 +27,10 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#18 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#19 $
  */
+
+#include <config/config.h>
 
 #include <bsm/libbsm.h>
 
@@ -38,7 +40,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <config/config.h>
 #ifndef HAVE_STRLCAT
 #include <compat/strlcat.h>
 #endif
