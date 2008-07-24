@@ -1,7 +1,5 @@
 OpenBSM Build and Installation Instructions
 
-  Building
-
 OpenBSM is currently built using autoconf and automake, which should allow
 for building on a range of operating systems, including FreeBSD, Mac OS X,
 and Linux.  Depending on the availability of audit facilities in the
