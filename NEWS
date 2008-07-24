@@ -17,6 +17,7 @@ OpenBSM 1.1 alpha 1
 - For Mac OS X, added Mach IPC support for audit trigger messages.
 - Fixed a bug in getacna() which resulted in a locking problem on Mac OS X.
 - Added LOG_PERROR flag to openlog when -d option is used with auditd.
+- AUE events added for Mac OS X Leopard system calls.
 
 OpenBSM 1.0
 
@@ -322,4 +323,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#1 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#2 $
