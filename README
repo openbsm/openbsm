@@ -34,35 +34,9 @@ The following programs are included with OpenBSM:
     audump         Debugging tool to parse and print audit databases
     praudit        Tool to print audit trails
 
-  Building
+  Build and Installation
 
-OpenBSM is currently built using autoconf and automake, which should allow
-for building on a range of operating systems, including FreeBSD, Mac OS X,
-and Linux.  Depending on the availability of audit facilities in the
-underlying operating system, some components that depend on kernel audit
-support are built conditionally.  Typically, build will be performed using:
-
-    ./configure
-    make
-
-To install, use:
-
-    make install
-
-You may wish to specify that the OpenBSM components not be installed in the
-base system, rather in a specific directory.  This may be done using the
---prefix argument to configure.  If installing to a specific directory,
-remember to update your library path so that running tools from that
-directory the correct libbsm is used:
-
-    ./configure --prefix=/home/rwatson/openbsm
-    make
-    make install
-    LD_LIBRARY_PATH=/home/rwatson/openbsm/libbsm ; export LD_LIBRARY_PATH
-
-You will need to manually propagate openbsm/etc/* into /etc on your system;
-this is not done automatically so as to avoid disrupting the current
-configuration.  Currently, the locations of these files is not configurable.
+Please see the file INSTALL for build and installation instructions.
 
   Credits
 
@@ -114,4 +88,4 @@ Information on TrustedBSD may be found on the TrustedBSD home page:
 
     http://www.TrustedBSD.org/
 
-$P4: //depot/projects/trustedbsd/openbsm/README#28 $
+$P4: //depot/projects/trustedbsd/openbsm/README#29 $
