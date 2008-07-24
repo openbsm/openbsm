@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#68 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#69 $
  */
 
 #include <sys/types.h>
@@ -87,7 +87,7 @@
 			memset((dptr), 0, (length));			\
 	} else								\
 		(dptr) = NULL;						\
-	assert(t == NULL || dptr != NULL);				\
+	assert((t) == NULL || (dptr) != NULL);				\
 } while (0)
 
 /*
