@@ -812,6 +812,8 @@ target_alias
 MAINTAINER_MODE_TRUE
 MAINTAINER_MODE_FALSE
 MAINT
+USE_NATIVE_INCLUDES_TRUE
+USE_NATIVE_INCLUDES_FALSE
 MIG
 CC
 CFLAGS
@@ -1492,6 +1494,8 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-native-includes  Use the system native include files instead of those
+                          included with openbsm.
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
@@ -2002,6 +2006,31 @@ fi
 
   MAINT=$MAINTAINER_MODE_TRUE
 
+
+
+# --with-native-includes forces the use of the system bsm headers.
+
+# Check whether --with-native-includes was given.
+if test "${with_native_includes+set}" = set; then
+  withval=$with_native_includes;
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_NATIVE_INCLUDES
+_ACEOF
+
+use_native_includes=true
+
+else
+  use_native_includes=false
+fi
+
+ if $use_native_includes; then
+  USE_NATIVE_INCLUDES_TRUE=
+  USE_NATIVE_INCLUDES_FALSE='#'
+else
+  USE_NATIVE_INCLUDES_TRUE='#'
+  USE_NATIVE_INCLUDES_FALSE=
+fi
 
 
 for ac_prog in mig
@@ -3858,7 +3887,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3861 "configure"' > conftest.$ac_ext
+  echo '#line 3890 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -6492,11 +6521,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6495: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6524: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6499: \$? = $ac_status" >&5
+   echo "$as_me:6528: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -6782,11 +6811,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6785: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6814: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6789: \$? = $ac_status" >&5
+   echo "$as_me:6818: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -6886,11 +6915,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6889: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6918: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:6893: \$? = $ac_status" >&5
+   echo "$as_me:6922: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9235,7 +9264,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9238 "configure"
+#line 9267 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9335,7 +9364,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9338 "configure"
+#line 9367 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11755,11 +11784,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11758: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11787: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11762: \$? = $ac_status" >&5
+   echo "$as_me:11791: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11859,11 +11888,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11862: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11891: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11866: \$? = $ac_status" >&5
+   echo "$as_me:11895: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13421,11 +13450,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13424: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13453: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13428: \$? = $ac_status" >&5
+   echo "$as_me:13457: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13525,11 +13554,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13528: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13557: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13532: \$? = $ac_status" >&5
+   echo "$as_me:13561: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15712,11 +15741,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15715: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15744: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15719: \$? = $ac_status" >&5
+   echo "$as_me:15748: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16002,11 +16031,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16005: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16034: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16009: \$? = $ac_status" >&5
+   echo "$as_me:16038: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16106,11 +16135,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16109: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16138: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16113: \$? = $ac_status" >&5
+   echo "$as_me:16142: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -23044,7 +23073,7 @@ else
 fi
 
 
-ac_config_files="$ac_config_files Makefile bin/Makefile bin/audit/Makefile bin/auditd/Makefile bin/auditfilterd/Makefile bin/auditreduce/Makefile bin/praudit/Makefile bsm/Makefile libbsm/Makefile modules/Makefile modules/auditfilter_noop/Makefile man/Makefile test/Makefile test/bsm/Makefile tools/Makefile"
+ac_config_files="$ac_config_files Makefile bin/Makefile bin/audit/Makefile bin/auditd/Makefile bin/auditfilterd/Makefile bin/auditreduce/Makefile bin/praudit/Makefile bsm/Makefile libbsm/Makefile modules/Makefile modules/auditfilter_noop/Makefile man/Makefile sys/Makefile sys/bsm/Makefile test/Makefile test/bsm/Makefile tools/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -23147,6 +23176,13 @@ if test -z "${MAINTAINER_MODE_TRUE}" && test -z "${MAINTAINER_MODE_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"MAINTAINER_MODE\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"MAINTAINER_MODE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${USE_NATIVE_INCLUDES_TRUE}" && test -z "${USE_NATIVE_INCLUDES_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"USE_NATIVE_INCLUDES\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"USE_NATIVE_INCLUDES\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -23666,6 +23702,8 @@ do
     "modules/Makefile") CONFIG_FILES="$CONFIG_FILES modules/Makefile" ;;
     "modules/auditfilter_noop/Makefile") CONFIG_FILES="$CONFIG_FILES modules/auditfilter_noop/Makefile" ;;
     "man/Makefile") CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
+    "sys/Makefile") CONFIG_FILES="$CONFIG_FILES sys/Makefile" ;;
+    "sys/bsm/Makefile") CONFIG_FILES="$CONFIG_FILES sys/bsm/Makefile" ;;
     "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
     "test/bsm/Makefile") CONFIG_FILES="$CONFIG_FILES test/bsm/Makefile" ;;
     "tools/Makefile") CONFIG_FILES="$CONFIG_FILES tools/Makefile" ;;
@@ -23771,6 +23809,8 @@ target_alias!$target_alias$ac_delim
 MAINTAINER_MODE_TRUE!$MAINTAINER_MODE_TRUE$ac_delim
 MAINTAINER_MODE_FALSE!$MAINTAINER_MODE_FALSE$ac_delim
 MAINT!$MAINT$ac_delim
+USE_NATIVE_INCLUDES_TRUE!$USE_NATIVE_INCLUDES_TRUE$ac_delim
+USE_NATIVE_INCLUDES_FALSE!$USE_NATIVE_INCLUDES_FALSE$ac_delim
 MIG!$MIG$ac_delim
 CC!$CC$ac_delim
 CFLAGS!$CFLAGS$ac_delim
@@ -23826,8 +23866,6 @@ AMTAR!$AMTAR$ac_delim
 am__tar!$am__tar$ac_delim
 am__untar!$am__untar$ac_delim
 DEPDIR!$DEPDIR$ac_delim
-am__include!$am__include$ac_delim
-am__quote!$am__quote$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -23869,6 +23907,8 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+am__include!$am__include$ac_delim
+am__quote!$am__quote$ac_delim
 AMDEP_TRUE!$AMDEP_TRUE$ac_delim
 AMDEP_FALSE!$AMDEP_FALSE$ac_delim
 AMDEPBACKSLASH!$AMDEPBACKSLASH$ac_delim
@@ -23886,7 +23926,7 @@ USE_MACH_IPC_FALSE!$USE_MACH_IPC_FALSE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 15; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 17; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

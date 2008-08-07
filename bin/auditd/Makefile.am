@@ -1,8 +1,12 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/Makefile.am#3 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/Makefile.am#4 $
 #
 
+if USE_NATIVE_INCLUDES
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)
+else
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/sys
+endif
 
 sbin_PROGRAMS = auditd
 auditd_LDADD = $(top_builddir)/libbsm/libbsm.la

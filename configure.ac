@@ -3,11 +3,22 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.1alpha1], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#39 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#40 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
 AM_MAINTAINER_MODE
+
+# --with-native-includes forces the use of the system bsm headers.
+AC_ARG_WITH([native-includes],
+[AS_HELP_STRING([--with-native-includes],
+[Use the system native include files instead of those included with openbsm.])],
+[
+AC_DEFINE(USE_NATIVE_INCLUDES,, Define to use native include files)
+use_native_includes=true
+],
+[use_native_includes=false])
+AM_CONDITIONAL(USE_NATIVE_INCLUDES, $use_native_includes)
 
 AC_PATH_PROGS(MIG, mig)
 
@@ -132,6 +143,8 @@ AC_CONFIG_FILES([Makefile
                  modules/Makefile
                  modules/auditfilter_noop/Makefile
                  man/Makefile
+                 sys/Makefile
+                 sys/bsm/Makefile
                  test/Makefile
                  test/bsm/Makefile
                  tools/Makefile])

@@ -177,6 +177,9 @@
 /* Define if uses Mach IPC for Triggers messages */
 #undef USE_MACH_IPC
 
+/* Define to use native include files */
+#undef USE_NATIVE_INCLUDES
+
 /* Version number of package */
 #undef VERSION
 
