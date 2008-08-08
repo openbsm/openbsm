@@ -1,5 +1,19 @@
 OpenBSM Version History
 
+OpenBSM 1.1 alpha 2
+
+- Include files in OpenBSM are now broken out into two parts: library builds
+  required solely for user space, and system includes, which may also be
+  required for use in the kernels of systems integrating OpenBSM.  Submitted
+  by Stacey Son.
+- Configure option --with-native-includes allows forcing the use of native
+  include for system includes, rather than the versions bundled with OpenBSM.
+  This is intended specifically for platforms that ship OpenBSM, have adapted
+  versions of the system includes in a kernel source tree, and will use the
+  OpenBSM build infrastructure with an unmodified OpenBSM distribution,
+  allowing the customized system includes to be used with the OpenBSM build.
+  Submitted by stacey Son.
+
 OpenBSM 1.1 alpha 1
 
 - Add option to auditreduce(1) which allows users to invert sense of
@@ -323,4 +337,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#3 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#4 $
