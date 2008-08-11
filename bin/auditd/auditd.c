@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#32 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#33 $
  */
 
 #include <sys/types.h>
@@ -152,16 +152,20 @@ affixdir(char *name, struct dir_ent *dirent)
 	char *fn;
 	char *curdir;
 	const char *sep = "/";
+	size_t len;
 
 	curdir = dirent->dirname;
 	syslog(LOG_DEBUG, "dir = %s", dirent->dirname);
 
-	fn = malloc(strlen(curdir) + strlen(sep) + (2 * POSTFIX_LEN) + 1);
+	len = strlen(curdir) + strlen(sep) + (2 * POSTFIX_LEN) + 1;
+	fn = malloc(len);
 	if (fn == NULL)
 		return (NULL);
-	strcpy(fn, curdir);
-	strcat(fn, sep);
-	strcat(fn, name);
+	strncpy(fn, curdir, len);
+	len -= strlen(curdir);
+	strncat(fn, sep, len);
+	len -= strlen(sep);
+	strncat(fn, name, len);
 	return (fn);
 }
 
@@ -173,17 +177,19 @@ close_lastfile(char *TS)
 {
 	char *ptr;
 	char *oldname;
+	size_t len;
 
 	if (lastfile != NULL) {
-		oldname = (char *)malloc(strlen(lastfile) + 1);
+		len = strlen(lastfile) + 1;
+		oldname = (char *)malloc(len);
 		if (oldname == NULL)
 			return (-1);
-		strcpy(oldname, lastfile);
+		strncpy(oldname, lastfile, len);
 
 		/* Rename the last file -- append timestamp. */
 		if ((ptr = strstr(lastfile, NOT_TERMINATED)) != NULL) {
 			*ptr = '.';
-			strcpy(ptr+1, TS);
+			strncpy(ptr+1, TS, POSTFIX_LEN);
 			if (rename(oldname, lastfile) != 0)
 				syslog(LOG_ERR,
 				    "Could not rename %s to %s: %m", oldname,
@@ -249,8 +255,8 @@ swap_audit_file(void)
 	if (getTSstr(TS, POSTFIX_LEN) != 0)
 		return (-1);
 
-	strcpy(timestr, TS);
-	strcat(timestr, NOT_TERMINATED);
+	strncpy(timestr, TS, POSTFIX_LEN);
+	strncat(timestr, NOT_TERMINATED, POSTFIX_LEN);
 
 #ifdef AUDIT_REVIEW_GROUP
 	/*
@@ -355,7 +361,7 @@ read_control_file(void)
 			free(dirent);
 			return (-1);
 		}
-		strcpy(dirent->dirname, cur_dir);
+		strncpy(dirent->dirname, cur_dir, MAXNAMLEN);
 		TAILQ_INSERT_TAIL(&dir_q, dirent, dirs);
 	}
 

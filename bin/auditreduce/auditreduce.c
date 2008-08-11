@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#24 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#25 $
  */
 
 /* 
@@ -111,7 +111,7 @@ parse_regexp(char *re_string)
 	for (nstrs = 0, i = 0; i < len; i++) {
 		if (copy[i] == ',' && i > 0) {
 			if (copy[i - 1] == '\\')
-				strcpy(&copy[i - 1], &copy[i]);
+				strncpy(&copy[i - 1], &copy[i], len);
 			else {
 				nstrs++;
 				copy[i] = '\0';
