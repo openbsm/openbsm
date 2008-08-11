@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_user.c#16 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_user.c#17 $
  */
 
 #include <bsm/libbsm.h>
@@ -66,7 +66,7 @@ userfromstr(char *str, struct au_user_ent *u)
 	if (strlen(username) >= AU_USER_NAME_MAX)
 		return (NULL);
 
-	strcpy(u->au_name, username);
+	strncpy(u->au_name, username, AU_USER_NAME_MAX);
 	if (getauditflagsbin(always, &(u->au_always)) == -1)
 		return (NULL);
 

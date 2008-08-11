@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_event.c#14 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_event.c#15 $
  */
 
 #include <bsm/libbsm.h>
@@ -68,13 +68,13 @@ eventfromstr(char *str, struct au_event_ent *e)
 	if (strlen(evname) >= AU_EVENT_NAME_MAX)
 		return (NULL);
 
-	strcpy(e->ae_name, evname);
+	strncpy(e->ae_name, evname, AU_EVENT_NAME_MAX);
 	if (evdesc != NULL) {
 		if (strlen(evdesc) >= AU_EVENT_DESC_MAX)
 			return (NULL);
-		strcpy(e->ae_desc, evdesc);
+		strncpy(e->ae_desc, evdesc, AU_EVENT_DESC_MAX);
 	} else
-		strcpy(e->ae_desc, "");
+		strncpy(e->ae_desc, "", AU_EVENT_DESC_MAX);
 
 	e->ae_number = atoi(evno);
 
