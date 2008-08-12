@@ -27,8 +27,10 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_user.c#17 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_user.c#18 $
  */
+
+#include <config/config.h>
 
 #include <bsm/libbsm.h>
 
@@ -36,6 +38,10 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef HAVE_STRLCPY
+#include <compat/strlcpy.h>
+#endif
 
 /*
  * Parse the contents of the audit_user file into au_user_ent structures.
@@ -66,7 +72,7 @@ userfromstr(char *str, struct au_user_ent *u)
 	if (strlen(username) >= AU_USER_NAME_MAX)
 		return (NULL);
 
-	strncpy(u->au_name, username, AU_USER_NAME_MAX);
+	strlcpy(u->au_name, username, AU_USER_NAME_MAX);
 	if (getauditflagsbin(always, &(u->au_always)) == -1)
 		return (NULL);
 

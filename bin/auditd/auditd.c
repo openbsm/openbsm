@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#33 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#34 $
  */
 
 #include <sys/types.h>
@@ -71,6 +71,13 @@
 #include "auditd_control_server.h"
 #include "audit_triggers_server.h"
 #endif /* USE_MACH_IPC */
+
+#ifndef HAVE_STRLCAT
+#include <compat/strlcat.h>
+#endif
+#ifndef HAVE_STRLCPY
+#include <compat/strlcpy.h>
+#endif
 
 #define	NA_EVENT_STR_SIZE	25
 #define	POL_STR_SIZE		128
@@ -149,23 +156,14 @@ getTSstr(char *buf, int len)
 static char *
 affixdir(char *name, struct dir_ent *dirent)
 {
-	char *fn;
-	char *curdir;
-	const char *sep = "/";
-	size_t len;
+	char *fn = NULL;
 
-	curdir = dirent->dirname;
 	syslog(LOG_DEBUG, "dir = %s", dirent->dirname);
-
-	len = strlen(curdir) + strlen(sep) + (2 * POSTFIX_LEN) + 1;
-	fn = malloc(len);
-	if (fn == NULL)
-		return (NULL);
-	strncpy(fn, curdir, len);
-	len -= strlen(curdir);
-	strncat(fn, sep, len);
-	len -= strlen(sep);
-	strncat(fn, name, len);
+	/* 
+	 * XXX may want to  assert(asprintf(...) <=
+	 *     (strlen(dirent->dirname) + 1 + (2 * POSTFIX_LEN) + 1))
+	 */
+	asprintf(&fn, "%s/%s", dirent->dirname, name);
 	return (fn);
 }
 
@@ -184,12 +182,12 @@ close_lastfile(char *TS)
 		oldname = (char *)malloc(len);
 		if (oldname == NULL)
 			return (-1);
-		strncpy(oldname, lastfile, len);
+		strlcpy(oldname, lastfile, len);
 
 		/* Rename the last file -- append timestamp. */
 		if ((ptr = strstr(lastfile, NOT_TERMINATED)) != NULL) {
 			*ptr = '.';
-			strncpy(ptr+1, TS, POSTFIX_LEN);
+			strlcpy(ptr+1, TS, POSTFIX_LEN);
 			if (rename(oldname, lastfile) != 0)
 				syslog(LOG_ERR,
 				    "Could not rename %s to %s: %m", oldname,
@@ -255,8 +253,8 @@ swap_audit_file(void)
 	if (getTSstr(TS, POSTFIX_LEN) != 0)
 		return (-1);
 
-	strncpy(timestr, TS, POSTFIX_LEN);
-	strncat(timestr, NOT_TERMINATED, POSTFIX_LEN);
+	strlcpy(timestr, TS, POSTFIX_LEN);
+	strlcat(timestr, NOT_TERMINATED, POSTFIX_LEN);
 
 #ifdef AUDIT_REVIEW_GROUP
 	/*
@@ -361,7 +359,7 @@ read_control_file(void)
 			free(dirent);
 			return (-1);
 		}
-		strncpy(dirent->dirname, cur_dir, MAXNAMLEN);
+		strlcpy(dirent->dirname, cur_dir, MAXNAMLEN);
 		TAILQ_INSERT_TAIL(&dir_q, dirent, dirs);
 	}
 

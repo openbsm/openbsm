@@ -27,14 +27,20 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_flags.c#15 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_flags.c#16 $
  */
+
+#include <config/config.h>
 
 #include <bsm/libbsm.h>
 
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifndef HAVE_STRLCPY
+#include <compat/strlcpy.h>
+#endif
 
 static const char	*flagdelim = ",";
 
@@ -157,10 +163,10 @@ getauditflagschar(char *auditstr, au_mask_t *masks, int verbose)
 
 		if (sel != 0) {
 			if (verbose) {
-				strncpy(strptr, c.ac_desc, AU_CLASS_DESC_MAX);
+				strlcpy(strptr, c.ac_desc, AU_CLASS_DESC_MAX);
 				strptr += strlen(c.ac_desc);
 			} else {
-				strncpy(strptr, c.ac_name, AU_CLASS_NAME_MAX);
+				strlcpy(strptr, c.ac_name, AU_CLASS_NAME_MAX);
 				strptr += strlen(c.ac_name);
 			}
 			*strptr = ','; /* delimiter */

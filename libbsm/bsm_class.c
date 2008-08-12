@@ -27,8 +27,10 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_class.c#13 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_class.c#14 $
  */
+
+#include <config/config.h>
 
 #include <bsm/libbsm.h>
 
@@ -36,6 +38,10 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef HAVE_STRLCPY
+#include <compat/strlcpy.h>
+#endif
 
 /*
  * Parse the contents of the audit_class file to return struct au_class_ent
@@ -70,15 +76,14 @@ classfromstr(char *str, struct au_class_ent *c)
 	 */
 	if (strlen(classname) >= AU_CLASS_NAME_MAX)
 		return (NULL);
-
-	strncpy(c->ac_name, classname, AU_CLASS_NAME_MAX);
+	strlcpy(c->ac_name, classname, AU_CLASS_NAME_MAX);
 
 	/*
 	 * Check for very large class description.
 	 */
 	if (strlen(classdesc) >= AU_CLASS_DESC_MAX)
 		return (NULL);
-	strncpy(c->ac_desc, classdesc, AU_CLASS_DESC_MAX);
+	strlcpy(c->ac_desc, classdesc, AU_CLASS_DESC_MAX);
 	c->ac_class = strtoul(classflag, (char **) NULL, 0);
 
 	return (c);

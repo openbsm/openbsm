@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#20 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#21 $
  */
 
 #include <config/config.h>
@@ -42,6 +42,9 @@
 
 #ifndef HAVE_STRLCAT
 #include <compat/strlcat.h>
+#endif
+#ifndef HAVE_STRLCPY
+#include <compat/strlcpy.h>
 #endif
 
 /*
@@ -368,7 +371,7 @@ getacdir(char *name, int len)
 		pthread_mutex_unlock(&mutex);
 		return (-3);
 	}
-	strncpy(name, dir, len);
+	strlcpy(name, dir, len);
 	pthread_mutex_unlock(&mutex);
 	return (ret);
 }
@@ -458,7 +461,7 @@ getacflg(char *auditstr, int len)
 		pthread_mutex_unlock(&mutex);
 		return (-3);
 	}
-	strncpy(auditstr, str, len);
+	strlcpy(auditstr, str, len);
 	pthread_mutex_unlock(&mutex);
 	return (0);
 }
@@ -485,7 +488,7 @@ getacna(char *auditstr, int len)
 		pthread_mutex_unlock(&mutex);
 		return (-3);
 	}
-	strncpy(auditstr, str, len);
+	strlcpy(auditstr, str, len);
 	pthread_mutex_unlock(&mutex);
 	return (0);
 }
@@ -512,7 +515,7 @@ getacpol(char *auditstr, size_t len)
 		pthread_mutex_unlock(&mutex);
 		return (-3);
 	}
-	strncpy(auditstr, str, len);
+	strlcpy(auditstr, str, len);
 	pthread_mutex_unlock(&mutex);
 	return (0);
 }

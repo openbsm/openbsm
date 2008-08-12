@@ -27,8 +27,10 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_event.c#15 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_event.c#16 $
  */
+
+#include <config/config.h>
 
 #include <bsm/libbsm.h>
 
@@ -36,6 +38,11 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef HAVE_STRLCPY
+#include <compat/strlcpy.h>
+#endif
+
 
 /*
  * Parse the contents of the audit_event file to return
@@ -68,13 +75,13 @@ eventfromstr(char *str, struct au_event_ent *e)
 	if (strlen(evname) >= AU_EVENT_NAME_MAX)
 		return (NULL);
 
-	strncpy(e->ae_name, evname, AU_EVENT_NAME_MAX);
+	strlcpy(e->ae_name, evname, AU_EVENT_NAME_MAX);
 	if (evdesc != NULL) {
 		if (strlen(evdesc) >= AU_EVENT_DESC_MAX)
 			return (NULL);
-		strncpy(e->ae_desc, evdesc, AU_EVENT_DESC_MAX);
+		strlcpy(e->ae_desc, evdesc, AU_EVENT_DESC_MAX);
 	} else
-		strncpy(e->ae_desc, "", AU_EVENT_DESC_MAX);
+		strlcpy(e->ae_desc, "", AU_EVENT_DESC_MAX);
 
 	e->ae_number = atoi(evno);
 
