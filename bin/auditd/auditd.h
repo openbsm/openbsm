@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.h#9 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.h#10 $
  */
 
 #ifndef _AUDITD_H_
@@ -46,8 +46,8 @@
  */
 #define	AUDIT_REVIEW_GROUP	"audit"
 
-#define	POSTFIX_LEN		16
-#define	NOT_TERMINATED	".not_terminated"
+#define	POSTFIX_LEN	(sizeof("YYYYMMDDhhmmss") - 1)	
+#define	NOT_TERMINATED		"not_terminated"
 
 struct dir_ent {
 	char			*dirname;

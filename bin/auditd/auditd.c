@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#34 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#35 $
  */
 
 #include <sys/types.h>
@@ -160,9 +160,13 @@ affixdir(char *name, struct dir_ent *dirent)
 
 	syslog(LOG_DEBUG, "dir = %s", dirent->dirname);
 	/* 
-	 * XXX may want to  assert(asprintf(...) <=
-	 *     (strlen(dirent->dirname) + 1 + (2 * POSTFIX_LEN) + 1))
+	 * Sanity check on file name. It should be exactly the size
+	 * (2 * POSTFIX_LEN) + 1. 
 	 */
+	if (strlen(name) != (2 * POSTFIX_LEN) + 1) {
+		syslog(LOG_ERR, "invalid filename (%s)", name);
+		return (NULL);
+	}
 	asprintf(&fn, "%s/%s", dirent->dirname, name);
 	return (fn);
 }
@@ -186,8 +190,7 @@ close_lastfile(char *TS)
 
 		/* Rename the last file -- append timestamp. */
 		if ((ptr = strstr(lastfile, NOT_TERMINATED)) != NULL) {
-			*ptr = '.';
-			strlcpy(ptr+1, TS, POSTFIX_LEN);
+			strlcpy(ptr, TS, POSTFIX_LEN);
 			if (rename(oldname, lastfile) != 0)
 				syslog(LOG_ERR,
 				    "Could not rename %s to %s: %m", oldname,
@@ -197,7 +200,9 @@ close_lastfile(char *TS)
 				    oldname, lastfile);
 				audit_warn_closefile(lastfile);
 			}
-		}
+		} else 
+			syslog(LOG_ERR, "Could not rename %s to %s", oldname,
+			    lastfile);
 		free(lastfile);
 		free(oldname);
 		lastfile = NULL;
@@ -239,7 +244,7 @@ open_trail(const char *fname)
 static int
 swap_audit_file(void)
 {
-	char timestr[2 * POSTFIX_LEN];
+	char timestr[(2 * POSTFIX_LEN) + 1];
 	char *fn;
 	char TS[POSTFIX_LEN];
 	struct dir_ent *dirent;
@@ -254,6 +259,7 @@ swap_audit_file(void)
 		return (-1);
 
 	strlcpy(timestr, TS, POSTFIX_LEN);
+	strlcat(timestr, ".", 1);
 	strlcat(timestr, NOT_TERMINATED, POSTFIX_LEN);
 
 #ifdef AUDIT_REVIEW_GROUP
