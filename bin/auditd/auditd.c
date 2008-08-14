@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#35 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#36 $
  */
 
 #include <sys/types.h>
@@ -72,9 +72,6 @@
 #include "audit_triggers_server.h"
 #endif /* USE_MACH_IPC */
 
-#ifndef HAVE_STRLCAT
-#include <compat/strlcat.h>
-#endif
 #ifndef HAVE_STRLCPY
 #include <compat/strlcpy.h>
 #endif
@@ -160,11 +157,10 @@ affixdir(char *name, struct dir_ent *dirent)
 
 	syslog(LOG_DEBUG, "dir = %s", dirent->dirname);
 	/* 
-	 * Sanity check on file name. It should be exactly the size
-	 * (2 * POSTFIX_LEN) + 1. 
+	 * Sanity check on file name.
 	 */
-	if (strlen(name) != (2 * POSTFIX_LEN) + 1) {
-		syslog(LOG_ERR, "invalid filename (%s)", name);
+	if (strlen(name) != (FILENAME_LEN - 1)) {
+		syslog(LOG_ERR, "Invalid file name: %s", name);
 		return (NULL);
 	}
 	asprintf(&fn, "%s/%s", dirent->dirname, name);
@@ -190,7 +186,7 @@ close_lastfile(char *TS)
 
 		/* Rename the last file -- append timestamp. */
 		if ((ptr = strstr(lastfile, NOT_TERMINATED)) != NULL) {
-			strlcpy(ptr, TS, POSTFIX_LEN);
+			strlcpy(ptr, TS, TIMESTAMP_LEN);
 			if (rename(oldname, lastfile) != 0)
 				syslog(LOG_ERR,
 				    "Could not rename %s to %s: %m", oldname,
@@ -244,9 +240,9 @@ open_trail(const char *fname)
 static int
 swap_audit_file(void)
 {
-	char timestr[(2 * POSTFIX_LEN) + 1];
+	char timestr[FILENAME_LEN];
 	char *fn;
-	char TS[POSTFIX_LEN];
+	char TS[TIMESTAMP_LEN];
 	struct dir_ent *dirent;
 #ifdef AUDIT_REVIEW_GROUP
 	struct group *grp;
@@ -255,12 +251,10 @@ swap_audit_file(void)
 #endif
 	int error, fd;
 
-	if (getTSstr(TS, POSTFIX_LEN) != 0)
+	if (getTSstr(TS, TIMESTAMP_LEN) != 0)
 		return (-1);
 
-	strlcpy(timestr, TS, POSTFIX_LEN);
-	strlcat(timestr, ".", 1);
-	strlcat(timestr, NOT_TERMINATED, POSTFIX_LEN);
+	snprintf(timestr, FILENAME_LEN, "%s.%s", TS, NOT_TERMINATED);
 
 #ifdef AUDIT_REVIEW_GROUP
 	/*
@@ -411,7 +405,7 @@ close_all(void)
 {
 	struct auditinfo ai;
 	int err_ret = 0;
-	char TS[POSTFIX_LEN];
+	char TS[TIMESTAMP_LEN];
 	int aufd;
 	token_t *tok;
 	long cond;
@@ -446,7 +440,7 @@ close_all(void)
 		    strerror(errno));
 		err_ret = 1;
 	}
-	if (getTSstr(TS, POSTFIX_LEN) == 0)
+	if (getTSstr(TS, TIMESTAMP_LEN) == 0)
 		close_lastfile(TS);
 	if (lastfile != NULL)
 		free(lastfile);
