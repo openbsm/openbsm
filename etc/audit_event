@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#28 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#29 $
 #
 # The mapping between event identifiers and values is also hard-coded in
 # audit_kevents.h and audit_uevents.h, so changes must occur in both places,
@@ -529,6 +529,7 @@
 43182:AUE_STAT_EXTENDED:stat_extended(2):fa
 43183:AUE_UMASK_EXTENDED:umask_extended(2):pc
 43184:AUE_OPENAT:openat(2) - attr only:fa
+43185:AUE_POSIX_OPENPT:posix_openpt(2):ip
 #
 # User space system events.
 #

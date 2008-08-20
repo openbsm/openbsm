@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_kevents.h#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_kevents.h#2 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -580,6 +580,7 @@
 #define	AUE_STAT_EXTENDED	43182	/* Darwin. */
 #define	AUE_UMASK_EXTENDED	43183	/* Darwin. */
 #define	AUE_OPENAT		43184	/* FreeBSD. */
+#define	AUE_POSIX_OPENPT	43185	/* FreeBSD. */
 
 /*
  * Darwin BSM uses a number of AUE_O_* definitions, which are aliased to the
