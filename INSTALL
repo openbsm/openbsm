@@ -24,6 +24,6 @@ directory the correct libbsm is used:
     make install
     LD_LIBRARY_PATH=/home/rwatson/openbsm/libbsm ; export LD_LIBRARY_PATH
 
-You will need to manually propagate openbsm/etc/* into /etc on your system;
-this is not done automatically so as to avoid disrupting the current
+You will need to manually propagate openbsm/etc/* into /etc/security on your
+system; this is not done automatically so as to avoid disrupting the current
 configuration.  Currently, the locations of these files is not configurable.
