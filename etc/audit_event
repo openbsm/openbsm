@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#29 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#30 $
 #
 # The mapping between event identifiers and values is also hard-coded in
 # audit_kevents.h and audit_uevents.h, so changes must occur in both places,
@@ -530,6 +530,10 @@
 43183:AUE_UMASK_EXTENDED:umask_extended(2):pc
 43184:AUE_OPENAT:openat(2) - attr only:fa
 43185:AUE_POSIX_OPENPT:posix_openpt(2):ip
+43186:AUE_CAP_NEW:cap_new(2):fm
+43187:AUE_CAP_GETRIGHTS:cap_getrights(2):fm
+43188:AUE_CAP_ENTER:cap_enter(2):pc
+43189:AUE_CAP_GETMODE:cap_getmode(2):pc
 #
 # User space system events.
 #
