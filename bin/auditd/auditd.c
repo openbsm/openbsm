@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#36 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#37 $
  */
 
 #include <sys/types.h>
@@ -301,6 +301,14 @@ swap_audit_file(void)
 				close(fd);
 			} else {
 				/* Success. */
+#ifdef USE_MACH_IPC
+				/* 
+			 	 * auditctl() potentially changes the audit
+				 * state so post that the audit config (may
+				 * have) changed. 
+			 	 */
+				notify_post(__BSM_INTERNAL_NOTIFY_KEY);
+#endif
 				close_lastfile(TS);
 				lastfile = fn;
 				close(fd);
@@ -337,11 +345,6 @@ read_control_file(void)
 	 */
 	free_dir_q();
 	endac();
-
-#ifdef USE_MACH_IPC
-	/* Post that the audit config changed. */
-	notify_post(__BSM_INTERNAL_NOTIFY_KEY);
-#endif
 
 	/*
 	 * Read the list of directories into a local linked list.
@@ -440,6 +443,12 @@ close_all(void)
 		    strerror(errno));
 		err_ret = 1;
 	}
+#ifdef USE_MACH_IPC
+	/* 
+	 * Post a notification that the audit config changed. 
+	 */
+	notify_post(__BSM_INTERNAL_NOTIFY_KEY);
+#endif
 	if (getTSstr(TS, TIMESTAMP_LEN) == 0)
 		close_lastfile(TS);
 	if (lastfile != NULL)
@@ -1060,7 +1069,7 @@ setup(void)
 #endif
 
 	/*
-	 * To provide event feedback cycles and avoid auditd becoming
+	 * To prevent event feedback cycles and avoid auditd becoming
 	 * stalled if auditing is suspended, auditd and its children run
 	 * without their events being audited.  We allow the uid, tid, and
 	 * mask fields to be implicitly set to zero, but do set the pid.  We
