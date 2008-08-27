@@ -26,7 +26,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#18 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#19 $
 .\"
 .Dd January 4, 2006
 .Dt AUDIT_CONTROL 5
@@ -63,7 +63,8 @@ an action cannot be attributed to a specific user.
 .It Va minfree
 The minimum free space required on the file system audit logs are being written to.
 When the free space falls below this limit a warning will be issued.
-Not currently used as the value of 20 percent is chosen by the kernel.
+If no value for the minimum free space is set, the default of 20 percent is
+applied by the kernel.
 .It Va policy
 A list of global audit policy flags specifying various behaviors, such as
 fail stop, auditing of paths and arguments, etc.
@@ -185,6 +186,7 @@ file size.
 .It Pa /etc/security/audit_control
 .El
 .Sh SEE ALSO
+.Xr auditon 2 ,
 .Xr audit 4 ,
 .Xr audit_class 5 ,
 .Xr audit_event 5 ,
