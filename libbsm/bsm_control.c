@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#21 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#22 $
  */
 
 #include <config/config.h>
@@ -367,7 +367,7 @@ getacdir(char *name, int len)
 		pthread_mutex_unlock(&mutex);
 		return (-1);
 	}
-	if (strlen(dir) >= len) {
+	if (strlen(dir) >= (size_t)len) {
 		pthread_mutex_unlock(&mutex);
 		return (-3);
 	}
@@ -457,7 +457,7 @@ getacflg(char *auditstr, int len)
 		pthread_mutex_unlock(&mutex);
 		return (1);
 	}
-	if (strlen(str) >= len) {
+	if (strlen(str) >= (size_t)len) {
 		pthread_mutex_unlock(&mutex);
 		return (-3);
 	}
@@ -484,7 +484,7 @@ getacna(char *auditstr, int len)
 		pthread_mutex_unlock(&mutex);
 		return (1);
 	}
-	if (strlen(str) >= len) {
+	if (strlen(str) >= (size_t)len) {
 		pthread_mutex_unlock(&mutex);
 		return (-3);
 	}

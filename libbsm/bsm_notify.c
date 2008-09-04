@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_notify.c#14 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_notify.c#15 $
  */
 
 /*
@@ -165,7 +165,7 @@ cannot_audit(int val __unused)
 #ifdef __APPLE__
 	return (!(au_get_state() == AUC_AUDITING));
 #else
-	unsigned long au_cond;
+	long au_cond;
 
 	if (auditon(A_GETCOND, &au_cond, sizeof(long)) < 0) {
 		if (errno != ENOSYS) {
