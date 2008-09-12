@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#26 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#27 $
  */
 
 /* 
@@ -276,7 +276,7 @@ select_pidobj(uint32_t pid)
 {
 
 	if (ISOPTSET(opttochk, OPT_op)) {
-		if (pid != strtol(p_pidobj, (char **)NULL, 10))
+		if (pid != (uint32_t)strtol(p_pidobj, (char **)NULL, 10))
 			return (0);
 	} 
 	return (1);
@@ -293,21 +293,22 @@ select_ipcobj(u_char type, uint32_t id, uint32_t *optchkd)
 	if (type == AT_IPC_MSG) {
 		SETOPT((*optchkd), OPT_om);
 		if (ISOPTSET(opttochk, OPT_om)) {
-			if (id != strtol(p_msgqobj, (char **)NULL, 10))
+			if (id != (uint32_t)strtol(p_msgqobj, (char **)NULL,
+			    10))
 				return (0);
 		}
 		return (1);
 	} else if (type == AT_IPC_SEM) {
 		SETOPT((*optchkd), OPT_ose);
 		if (ISOPTSET(opttochk, OPT_ose)) {
-			if (id != strtol(p_semobj, (char **)NULL, 10))
+			if (id != (uint32_t)strtol(p_semobj, (char **)NULL, 10))
 				return (0);
 		}
 		return (1);
 	} else if (type == AT_IPC_SHM) {
 		SETOPT((*optchkd), OPT_osh);
 		if (ISOPTSET(opttochk, OPT_osh)) {
-			if (id != strtol(p_shmobj, (char **)NULL, 10))
+			if (id != (uint32_t)strtol(p_shmobj, (char **)NULL, 10))
 				return (0);
 		}
 		return (1);
