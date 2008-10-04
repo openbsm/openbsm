@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit.log.5#17 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit.log.5#18 $
 .\"
 .Dd November 5, 2006
 .Dt AUDIT.LOG 5
@@ -176,37 +176,36 @@ token can be created using
 .Ss in_addr Token
 The
 .Dq in_addr
-token holds a network byte order IPv4 or IPv6 address.
+token holds a network byte order IPv4 address.
 An
 .Dq in_addr
 token can be created using
 .Xr au_to_in_addr 3
-for an IPv4 address, or
+for an IPv4 address.
+.Pp
+.Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
+.It Sy "Field	Bytes	Description"
+.It "Token ID	1 byte	Token ID"
+.It "IP Address	4 bytes	IPv4 address"
+.El
+.Ss Expanded in_addr Token
+The
+.Dq in_addr_ex
+token holds a network byte order IPv4 or IPv6 address.
+An
+.Dq in_addr_ex
+token can be created using
 .Xr au_to_in_addr_ex 3
 for an IPv6 address.
 .Pp
 See the
 .Sx BUGS
 section for information on the storage of this token.
-.Pp
 .Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
 .It Sy "Field	Bytes	Description"
 .It "Token ID	1 byte	Token ID"
 .It "IP Address Type	1 byte	Type of address"
 .It "IP Address	4/16 bytes	IPv4 or IPv6 address"
-.El
-.Ss Expanded in_addr Token
-The
-.Dq expanded in_addr
-token ...
-.Pp
-See the
-.Sx BUGS
-section for information on the storage of this token.
-.Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
-.It Sy "Field	Bytes	Description"
-.It "Token ID	1 byte	Token ID"
-.It XXXX
 .El
 .Ss ip Token
 The
@@ -230,15 +229,15 @@ token can be created using
 .It "Source Address	4 bytes	IPv4 source address"
 .It "Destination Address	4 bytes	IPv4 destination address"
 .El
-.Ss Expanded ip Token
-The
-.Dq expanded ip
-token ...
-.Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
-.It Sy "Field	Bytes	Description"
-.It "Token ID	1 byte	Token ID"
-.It XXXX
-.El
+.\" .Ss Expanded ip Token
+.\" The
+.\" .Dq expanded ip
+.\" token ...
+.\" .Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
+.\" .It Sy "Field	Bytes	Description"
+.\" .It "Token ID	1 byte	Token ID"
+.\" .It XXXX
+.\" .El
 .Ss iport Token
 The
 .Dq iport
@@ -677,7 +676,5 @@ and
 .Dq in_addr_ex
 token layout documented here appears to be in conflict with the
 .Xr libbsm 3
-implementations of
-.Xr au_to_in_addr 3
-and
+implementation of
 .Xr au_to_in_addr_ex 3 .
