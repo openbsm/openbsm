@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#12 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditfilterd/auditfilterd.c#13 $
  */
 
 /*
@@ -54,6 +54,7 @@
 
 #include <bsm/libbsm.h>
 #include <bsm/audit_filter.h>
+#include <bsm/audit_internal.h>
 
 #include <err.h>
 #include <fcntl.h>
