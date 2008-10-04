@@ -15,6 +15,8 @@ OpenBSM 1.1 alpha 2
   Submitted by Stacey Son.
 - Various strcpy()'s/strcat()'s have been changed to strlcpy()'s/strlcat()'s
   or asprintf().  Added compat/strlcpy.h for Linux.
+- Remove compatibility defines for old Darwin token constant names; now only
+  BSM token names are provided and used.
 
 OpenBSM 1.1 alpha 1
 
@@ -339,4 +341,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#6 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#7 $

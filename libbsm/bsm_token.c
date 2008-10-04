@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#69 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#70 $
  */
 
 #include <sys/types.h>
@@ -912,7 +912,7 @@ au_to_sock_unix(struct sockaddr_un *so)
 	if (t == NULL)
 		return (NULL);
 
-	ADD_U_CHAR(dptr, AU_SOCK_UNIX_TOKEN);
+	ADD_U_CHAR(dptr, AUT_SOCKUNIX);
 	/* BSM token has two bytes for family */
 	ADD_U_CHAR(dptr, 0);
 	ADD_U_CHAR(dptr, so->sun_family);

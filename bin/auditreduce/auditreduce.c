@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2004 Apple Inc.
+ * Copyright (c) 2004-2008 Apple Inc.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#27 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#28 $
  */
 
 /* 
@@ -514,62 +514,39 @@ select_records(FILE *fp)
 			 * selection criteria.
 			 */
 			switch(tok.id) {
-			case AU_HEADER_32_TOKEN:
+			case AUT_HEADER32:
 					selected = select_hdr32(tok,
 					    &optchkd);
 					bcopy(&tok, &tok_hdr32_copy,
 					    sizeof(tok));
 					break;
 
-			case AU_PROCESS_32_TOKEN:
+			case AUT_PROCESS32:
 					selected = select_proc32(tok,
 					    &optchkd);
 					break;
 
-			case AU_SUBJECT_32_TOKEN:
+			case AUT_SUBJECT32:
 					selected = select_subj32(tok,
 					    &optchkd);
 					break;
 
-			case AU_IPC_TOKEN:
+			case AUT_IPC:
 					selected = select_ipcobj(
 					    tok.tt.ipc.type, tok.tt.ipc.id,
 					    &optchkd); 
 					break;
 
-			case AU_FILE_TOKEN:
-					selected = select_filepath(
-					    tok.tt.file.name, &optchkd);
-					break;
-
-			case AU_PATH_TOKEN:
+			case AUT_PATH:
 					selected = select_filepath(
 					    tok.tt.path.path, &optchkd);
 					break;	
 
-			case AU_RETURN_32_TOKEN:
+			case AUT_RETURN32:
 				selected = select_return32(tok,
 				    tok_hdr32_copy, &optchkd);
 				break;
 
-			/* 
-			 * The following tokens dont have any relevant
-			 * attributes that we can select upon.
-			 */
-			case AU_TRAILER_TOKEN:
-			case AU_ARG32_TOKEN:
-			case AU_ATTR32_TOKEN:
-			case AU_EXIT_TOKEN:
-			case AU_NEWGROUPS_TOKEN:
-			case AU_IN_ADDR_TOKEN:
-			case AU_IP_TOKEN:
-			case AU_IPCPERM_TOKEN:
-			case AU_IPORT_TOKEN:
-			case AU_OPAQUE_TOKEN:
-			case AU_SEQ_TOKEN:
-			case AU_TEXT_TOKEN:
-			case AU_ARB_TOKEN:
-			case AU_SOCK_TOKEN:
 			default:
 				break;
 			}
