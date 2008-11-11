@@ -26,17 +26,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#38 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#39 $
  */
 
-#include <sys/types.h>
+#include <sys/param.h>
 
 #include <config/config.h>
 
 #include <sys/dirent.h>
 #include <sys/mman.h>
 #include <sys/socket.h>
-#include <sys/param.h>
 #ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
 #else /* !HAVE_FULL_QUEUE_H */
