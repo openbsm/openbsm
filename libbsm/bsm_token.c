@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#70 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#71 $
  */
 
 #include <sys/types.h>
@@ -1321,6 +1321,53 @@ au_to_header32_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 	return (t);
 }
 
+/*
+ * token ID                1 byte
+ * record byte count       4 bytes
+ * version #               1 byte    [2]
+ * event type              2 bytes
+ * event modifier          2 bytes
+ * address type/length     4 bytes
+ * machine address         4 bytes/16 bytes (IPv4/IPv6 address)
+ * seconds of time         4 bytes/8 bytes (32-bit/64-bit value)
+ * milliseconds of time    4 bytes/8 bytes (32-bit/64-bit value)
+ */
+token_t *
+au_to_header32_ex_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
+    struct timeval tm, struct auditinfo_addr *aia)
+{
+	token_t *t;
+	u_char *dptr = NULL;
+	u_int32_t timems, hostid;
+	au_tid_addr_t *tid = &aia->ai_termid;
+
+	if (tid->at_type != AU_IPv4 && tid->at_type != AU_IPv6)
+		return (NULL);
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) +
+	    sizeof(u_char) + 2 * sizeof(u_int16_t) + 3 *
+	    sizeof(u_int32_t) + tid->at_type);
+	if (t == NULL) 
+		return (NULL);
+
+	ADD_U_CHAR(dptr, AUT_HEADER32_EX);
+	ADD_U_INT32(dptr, rec_size);
+	ADD_U_CHAR(dptr, AUDIT_HEADER_VERSION_OPENBSM);
+	ADD_U_INT16(dptr, e_type);
+	ADD_U_INT16(dptr, e_mod);
+
+	ADD_U_INT32(dptr, tid->at_type);
+	if (tid->at_type == AU_IPv6)
+		ADD_MEM(dptr, &tid->at_addr[0], 4 * sizeof(u_int32_t));
+	else
+		ADD_MEM(dptr, &tid->at_addr[0], sizeof(u_int32_t));
+	timems = tm.tv_usec/1000;
+	/* Add the timestamp */
+	ADD_U_INT32(dptr, tm.tv_sec);
+	ADD_U_INT32(dptr, timems);      /* We need time in ms. */
+
+	return (t);   
+}
+
 token_t *
 au_to_header64_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
     struct timeval tm)
@@ -1350,6 +1397,22 @@ au_to_header64_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 
 #if !defined(KERNEL) && !defined(_KERNEL)
 token_t *
+au_to_header32_ex(int rec_size, au_event_t e_type, au_emod_t e_mod)
+{
+	struct timeval tm;
+	struct auditinfo_addr aia;
+
+	if (gettimeofday(&tm, NULL) == -1)
+		return (NULL);
+	if (auditon(A_GETKAUDIT, &aia, sizeof(aia)) < 0) {
+		if (errno != ENOSYS)
+			return (NULL);
+		return (au_to_header32_tm(rec_size, e_type, e_mod, tm));
+	}
+	return (au_to_header32_ex_tm(rec_size, e_type, e_mod, tm, &aia));
+}
+
+token_t *
 au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
 {
 	struct timeval tm;
@@ -1375,6 +1438,13 @@ au_to_header(int rec_size, au_event_t e_type, au_emod_t e_mod)
 {
 
 	return (au_to_header32(rec_size, e_type, e_mod));
+}
+
+token_t *
+au_to_header_ex(int rec_size, au_event_t e_type, au_emod_t e_mod)
+{
+
+	return (au_to_header32_ex(rec_size, e_type, e_mod));
 }
 #endif
 

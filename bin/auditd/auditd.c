@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#37 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#38 $
  */
 
 #include <sys/types.h>
@@ -35,6 +35,8 @@
 
 #include <sys/dirent.h>
 #include <sys/mman.h>
+#include <sys/socket.h>
+#include <sys/param.h>
 #ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
 #else /* !HAVE_FULL_QUEUE_H */
@@ -47,6 +49,8 @@
 #include <bsm/audit_uevents.h>
 #include <bsm/libbsm.h>
 
+#include <netinet/in.h>
+
 #include <err.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -58,6 +62,7 @@
 #include <signal.h>
 #include <string.h>
 #include <syslog.h>
+#include <netdb.h>
 
 #include "auditd.h"
 #ifdef USE_MACH_IPC
@@ -766,6 +771,69 @@ handle_sighup(void)
 	config_audit_controls();
 }
 
+static int
+config_audit_host(void)
+{
+	char hoststr[MAXHOSTNAMELEN];
+	struct sockaddr_in6 *sin6;
+	struct sockaddr_in *sin;
+	struct addrinfo *res;
+	struct auditinfo_addr aia;
+	int error;
+
+	if (getachost(hoststr, MAXHOSTNAMELEN) != 0) {
+		syslog(LOG_WARNING,
+		    "warning: failed to read 'host' param in control file");
+		/*
+		 * To maintain reverse compatability with older audit_control
+		 * files, simply drop a warning if the host parameter has not
+		 * been set.  However, we will explicitly disable the
+		 * generation of extended audit header by passing in a zeroed
+		 * termid structure.
+		 */
+		bzero(&aia, sizeof(aia));
+		aia.ai_termid.at_type = AU_IPv4;
+		error = auditon(A_SETKAUDIT, &aia, sizeof(aia));
+		if (error < 0 && errno == ENOSYS)
+			return (0);
+		else if (error < 0) {
+			syslog(LOG_ERR,
+			    "Failed to set audit host info");
+			return (-1);
+		}
+		return (0);
+	}
+	error = getaddrinfo(hoststr, NULL, NULL, &res);
+	if (error) {
+		syslog(LOG_ERR, "Failed to lookup hostname: %s",  hoststr);
+		return (-1);
+	}
+	switch (res->ai_family) {
+	case PF_INET6:
+		sin6 = (struct sockaddr_in6 *) res->ai_addr;
+		bcopy(&sin6->sin6_addr.s6_addr,
+		    &aia.ai_termid.at_addr[0], sizeof(struct in6_addr));
+		aia.ai_termid.at_type = AU_IPv6;
+		break;
+	case PF_INET:
+		sin = (struct sockaddr_in *) res->ai_addr;
+		bcopy(&sin->sin_addr.s_addr,
+		    &aia.ai_termid.at_addr[0], sizeof(struct in_addr));
+		aia.ai_termid.at_type = AU_IPv4;
+		break;
+	default:
+		syslog(LOG_ERR,
+		    "Un-supported address family in host parameter");
+		return (-1);
+	}
+	if (auditon(A_SETKAUDIT, &aia, sizeof(aia)) < 0) {
+		syslog(LOG_ERR,
+		    "auditon: failed to set audit host information");
+		return (-1);
+	}
+	return (0);
+}
+
 /*
  * Reap our children.
  */
@@ -995,7 +1063,7 @@ config_audit_controls(void)
 	} else
 		syslog(LOG_ERR, "Failed to obtain filesz: %m");
 
-	return (0);
+	return (config_audit_host());
 }
 
 #ifdef USE_MACH_IPC

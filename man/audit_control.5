@@ -26,7 +26,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#19 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#20 $
 .\"
 .Dd January 4, 2006
 .Dt AUDIT_CONTROL 5
@@ -57,6 +57,18 @@ Specifies which audit event classes are audited for all users.
 .Xr audit_user 5
 describes how to audit events for individual users.
 See the information below for the format of the audit flags.
+.It Va host
+Specify the hostname or IP address to be used when setting the local
+systems's audit host information.
+This hostname will be converted into an IP or IPv6 address and will
+be included in the header of each audit record.
+Due to the possibility of transient errors coupled with the
+security issues in the DNS protocol itself, the use of DNS
+should be avoided.
+Instead, it is strongly recommended that the hostname be
+specified in the /etc/hosts file.
+For more information see
+.Xr hosts 5 .
 .It Va naflags
 Contains the audit flags that define what classes of events are audited when
 an action cannot be attributed to a specific user.

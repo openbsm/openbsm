@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_token.3#14 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_token.3#15 $
 .\"
 .Dd April 19, 2005
 .Dt AU_TOKEN 3
@@ -72,6 +72,8 @@
 .Nm au_to_header ,
 .Nm au_to_header32 ,
 .Nm au_to_header64 ,
+.Nm au_to_header_ex ,
+.Nm au_to_header32_ex ,
 .Nm au_to_trailer ,
 .Nm au_to_zonename
 .Nd "routines for generating BSM audit tokens"
@@ -195,6 +197,10 @@
 .Fn au_to_header32 "int rec_size" "au_event_t e_type" "au_emod_t emod"
 .Ft "token_t *"
 .Fn au_to_header64 "int rec_size" "au_event_t e_type" "au_emod_t e_mod"
+.Ft "token_t *"
+.Fn au_to_header_ex "int rec_size" "au_event_t e_type" "au_emod_t e_mod"
+.Ft "token_t *"
+.Fn au_to_header32_ex "int rec_size" "au_event_t e_type" "au_emod_t e_mod"
 .Ft "token_t *"
 .Fn au_to_trailer "int rec_size"
 .Ft "token_t *"

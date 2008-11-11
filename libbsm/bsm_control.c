@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#22 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#23 $
  */
 
 #include <config/config.h>
@@ -516,6 +516,30 @@ getacpol(char *auditstr, size_t len)
 		return (-3);
 	}
 	strlcpy(auditstr, str, len);
+	pthread_mutex_unlock(&mutex);
+	return (0);
+}
+
+int
+getachost(char *auditstr, size_t len)
+{
+	char *str;
+
+	pthread_mutex_lock(&mutex);
+	setac_locked();
+	if (getstrfromtype_locked(AUDIT_HOST_CONTROL_ENTRY, &str) < 0) {
+		pthread_mutex_unlock(&mutex);
+		return (-2);
+	}
+	if (str == NULL) {
+		pthread_mutex_unlock(&mutex);
+		return (1);
+	}
+	if (strlen(str) >= len) {
+		pthread_mutex_unlock(&mutex);
+		return (-3);
+	}
+	strcpy(auditstr, str);
 	pthread_mutex_unlock(&mutex);
 	return (0);
 }
