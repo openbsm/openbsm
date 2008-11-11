@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#30 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#31 $
  */
 
 #include <sys/types.h>
@@ -213,6 +213,7 @@ au_assemble(au_record_t *rec, short event)
 	struct auditinfo_addr aia;
 	struct timeval tm;
 
+#ifdef HAVE_AUDIT_SYSCALLS
 	/*
 	 * Grab the size of the address family stored in the kernel's audit
 	 * state.
@@ -222,9 +223,11 @@ au_assemble(au_record_t *rec, short event)
 	if (auditon(A_GETKAUDIT, &aia, sizeof(aia)) < 0) {
 		if (errno != ENOSYS)
 			return (-1);
+#endif /* HAVE_AUDIT_SYSCALLS */
 		tot_rec_size = rec->len + AUDIT_HEADER_SIZE +
 		    AUDIT_TRAILER_SIZE;
 		header = au_to_header(tot_rec_size, event, 0);
+#ifdef HAVE_AUDIT_SYSCALLS
 	} else {
 		if (gettimeofday(&tm, NULL) < 0)
 			return (-1);
@@ -251,6 +254,7 @@ au_assemble(au_record_t *rec, short event)
 		else
 			header = au_to_header(tot_rec_size, event, 0);
 	}
+#endif /* HAVE_AUDIT_SYSCALLS */
 	if (header == NULL)
 		return (-1);
 

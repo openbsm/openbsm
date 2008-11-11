@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#71 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#72 $
  */
 
 #include <sys/types.h>
@@ -1396,6 +1396,7 @@ au_to_header64_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 }
 
 #if !defined(KERNEL) && !defined(_KERNEL)
+#ifdef HAVE_AUDIT_SYSCALLS
 token_t *
 au_to_header32_ex(int rec_size, au_event_t e_type, au_emod_t e_mod)
 {
@@ -1411,6 +1412,7 @@ au_to_header32_ex(int rec_size, au_event_t e_type, au_emod_t e_mod)
 	}
 	return (au_to_header32_ex_tm(rec_size, e_type, e_mod, tm, &aia));
 }
+#endif /* HAVE_AUDIT_SYSCALLS */
 
 token_t *
 au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod)
@@ -1440,13 +1442,15 @@ au_to_header(int rec_size, au_event_t e_type, au_emod_t e_mod)
 	return (au_to_header32(rec_size, e_type, e_mod));
 }
 
+#ifdef HAVE_AUDIT_SYSCALLS
 token_t *
 au_to_header_ex(int rec_size, au_event_t e_type, au_emod_t e_mod)
 {
 
 	return (au_to_header32_ex(rec_size, e_type, e_mod));
 }
-#endif
+#endif /* HAVE_AUDIT_SYSCALLS */
+#endif /* !defined(KERNEL) && !defined(_KERNEL) */
 
 /*
  * token ID                1 byte
