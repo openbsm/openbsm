@@ -1,11 +1,5 @@
 OpenBSM Version History
 
-- Add support for setting the audit kernel information.  This information
-  will be used when setting the host information for extended header tokens.
-  The audit_control file now supports a "host" parameter which can be used
-  by the auditing daemon to set this information.  If this parameter is not
-  used, the OpenBSM will default to the use of regular tokens.
-
 OpenBSM 1.1 alpha 2
 
 - Include files in OpenBSM are now broken out into two parts: library builds
@@ -23,6 +17,13 @@ OpenBSM 1.1 alpha 2
   or asprintf().  Added compat/strlcpy.h for Linux.
 - Remove compatibility defines for old Darwin token constant names; now only
   BSM token names are provided and used.
+- Add support for extended header tokens, which contain space for information
+  on the host generating the record.
+- Add support for setting extended host information in the kernel, which is
+  used for setting host information in extended header tokens.  The
+  audit_control file now supports a "host" parameter which can be used by
+  auditd to set the information; if not present, the kernel parameters won't
+  be set and auditd uses unextended headers for records that it generates.
 
 OpenBSM 1.1 alpha 1
 
@@ -347,4 +348,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#8 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#9 $
