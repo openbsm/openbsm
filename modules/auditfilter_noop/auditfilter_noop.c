@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/modules/auditfilter_noop/auditfilter_noop.c#5 $
+ * $P4: //depot/projects/trustedbsd/openbsm/modules/auditfilter_noop/auditfilter_noop.c#6 $
  */
 
 /*
@@ -37,6 +37,10 @@
 
 #include <bsm/libbsm.h>
 #include <bsm/audit_filter.h>
+
+#ifndef __unused
+#define __unused
+#endif
 
 int
 AUDIT_FILTER_ATTACH(void *instance __unused, int argc __unused, 
