@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#3 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#4 $
  */
 
 #include <sys/types.h>
@@ -134,7 +134,7 @@ static const struct bsm_errors bsm_errors[] = {
 	{ BSM_ENOCSI, ENOCSI },
 #endif
 #ifdef EL2HLT
-	{ BSM_EL2HLT, EL2HLT }.
+	{ BSM_EL2HLT, EL2HLT },
 #endif
 	{ BSM_EDEADLK, EDEADLK },
 	{ BSM_ENOLCK, ENOLCK },
@@ -302,7 +302,7 @@ static const struct bsm_errors bsm_errors[] = {
 	{ BSM_EISNAM, EISNAM },
 #endif
 #ifdef EREMOTEIO
-	{ BSM_ERMOTEIO, ERMOTEIO },
+	{ BSM_EREMOTEIO, EREMOTEIO },
 #endif
 #ifdef ENOMEDIUM
 	{ BSM_ENOMEDIUM, ENOMEDIUM },
