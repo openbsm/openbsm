@@ -2,6 +2,10 @@ OpenBSM Version History
 
 OpenBSM 1.1 alpha 3
 
+- Explicitly map between local and BSM error number spaces for 32-bit and
+  64-bit return tokens, as operating systems don't all agree on the set of,
+  or values for, error numbers.
+
 OpenBSM 1.1 alpha 2
 
 - Include files in OpenBSM are now broken out into two parts: library builds
@@ -350,4 +354,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#10 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#11 $
