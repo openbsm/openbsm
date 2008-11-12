@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#2 $
  */
 
 #include <sys/types.h>
@@ -56,7 +56,7 @@
  * error numbers, and sometimes error numbers don't exist in more than one
  * operating system.  These routines convert between BSM and local error
  * number spaces, subject to the above realities.  BSM error numbers are
- * always stored in network byte order.
+ * stored in a single 8-bit character, so don't have a byte order.
  */
 
 struct bsm_errors {
@@ -269,11 +269,10 @@ static const struct bsm_errors bsm_errors[] = {
 static const int bsm_errors_count = sizeof(bsm_errors) / sizeof(bsm_errors[0]);
 
 int
-au_bsm_to_errno(int bsm_error)
+au_bsm_to_errno(u_char bsm_error)
 {
 	int i;
 
-	bsm_error = be32toh(bsm_error);
 	for (i = 0; i < bsm_errors_count; i++) {
 		if (bsm_errors[i].be_bsm_error == bsm_error)
 			return (bsm_errors[i].be_os_error);
@@ -286,7 +285,7 @@ au_bsm_to_errno(int bsm_error)
 	return (EINVAL);
 }
 
-int
+u_char
 au_errno_to_bsm(int error)
 {
 	int i;
@@ -295,5 +294,5 @@ au_errno_to_bsm(int error)
 		if (bsm_errors[i].be_os_error == error)
 			return (htobe32(bsm_errors[i].be_bsm_error));
 	}
-	return (htobe32(BSM_UNKNOWNERR));
+	return (BSM_UNKNOWNERR);
 }

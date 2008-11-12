@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_errno.h#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_errno.h#2 $
  */
 
 #ifndef _BSM_AUDIT_ERRNO_H_
@@ -168,26 +168,26 @@
  * that these errors are added to Solaris, we will deprecate the OpenBSM
  * numbers in the same way we do for audit event constants.
  */
-#define	BSM_EPROCLIM		5000	/* FreeBSD-specific. */
-#define	BSM_EBADRPC		5001	/* FreeBSD-specific. */
-#define	BSM_ERPCMISMATCH	5002	/* FreeBSD-specific. */
-#define	BSM_EPROGUNAVAIL	5003	/* FreeBSD-specific. */
-#define	BSM_EPROGMISMATCH	5004	/* FreeBSD-specific. */
-#define	BSM_EPROCUNAVAIL	5005	/* FreeBSD-specific. */
-#define	BSM_EFTYPE		5006	/* FreeBSD-specific. */
-#define	BSM_EAUTH		5007	/* FreeBSD-specific. */
-#define	BSM_ENEEDAUTH		5008	/* FreeBSD-specific. */
-#define	BSM_ENOATTR		5009	/* FreeBSD-specific. */
-#define	BSM_EDOOFUS		5010	/* FreeBSD-specific. */
-#define	BSM_ELAST		5011	/* FreeBSD-specific. */
-#define	BSM_EJUSTRETURN		5012	/* FreeBSD-specific. */
-#define	BSM_ENOIOCTL		5013	/* FreeBSD-specific. */
-#define	BSM_EDIRIOCTL		5014	/* FreeBSD-specific. */
+#define	BSM_EPROCLIM		200	/* FreeBSD-specific. */
+#define	BSM_EBADRPC		201	/* FreeBSD-specific. */
+#define	BSM_ERPCMISMATCH	202	/* FreeBSD-specific. */
+#define	BSM_EPROGUNAVAIL	203	/* FreeBSD-specific. */
+#define	BSM_EPROGMISMATCH	204	/* FreeBSD-specific. */
+#define	BSM_EPROCUNAVAIL	205	/* FreeBSD-specific. */
+#define	BSM_EFTYPE		206	/* FreeBSD-specific. */
+#define	BSM_EAUTH		207	/* FreeBSD-specific. */
+#define	BSM_ENEEDAUTH		208	/* FreeBSD-specific. */
+#define	BSM_ENOATTR		209	/* FreeBSD-specific. */
+#define	BSM_EDOOFUS		210	/* FreeBSD-specific. */
+#define	BSM_ELAST		211	/* FreeBSD-specific. */
+#define	BSM_EJUSTRETURN		212	/* FreeBSD-specific. */
+#define	BSM_ENOIOCTL		213	/* FreeBSD-specific. */
+#define	BSM_EDIRIOCTL		214	/* FreeBSD-specific. */
 
 /*
  * In the event that OpenBSM doesn't have a file representation of a local
  * error number, use this.
  */
-#define	BSM_UNKNOWNERR		10000	/* OpenBSM-specific. */
+#define	BSM_UNKNOWNERR		245	/* OpenBSM-specific. */
 
 #endif /* !_BSM_AUDIT_ERRNO_H_ */
