@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2004 Apple Inc.
+ * Copyright (c) 2004-2008 Apple Inc.
  * Copyright (c) 2005 SPARTA, Inc.
  * Copyright (c) 2006 Robert N. M. Watson
  * Copyright (c) 2006 Martin Voros
@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#55 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#56 $
  */
 
 #include <sys/types.h>
@@ -2946,6 +2946,7 @@ fetch_return32_tok(tokenstr_t *tok, u_char *buf, int len)
 	READ_TOKEN_U_CHAR(buf, len, tok->tt.ret32.status, tok->len, err);
 	if (err)
 		return (-1);
+	tok->tt.ret32.status = au_bsm_to_errno(tok->tt.ret32.status);
 
 	READ_TOKEN_U_INT32(buf, len, tok->tt.ret32.ret, tok->len, err);
 	if (err)
@@ -2984,6 +2985,7 @@ fetch_return64_tok(tokenstr_t *tok, u_char *buf, int len)
 	READ_TOKEN_U_CHAR(buf, len, tok->tt.ret64.err, tok->len, err);
 	if (err)
 		return (-1);
+	tok->tt.ret64.err = au_bsm_to_errno(tok->tt.ret64.err);
 
 	READ_TOKEN_U_INT64(buf, len, tok->tt.ret64.val, tok->len, err);
 	if (err)
