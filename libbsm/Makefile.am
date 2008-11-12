@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.am#5 $
+# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.am#6 $
 #
 
 if USE_NATIVE_INCLUDES
@@ -14,6 +14,7 @@ libbsm_la_SOURCES =	\
 	bsm_audit.c	\
 	bsm_class.c	\
 	bsm_control.c	\
+	bsm_errno.c	\
 	bsm_event.c	\
 	bsm_flags.c	\
 	bsm_io.c	\
