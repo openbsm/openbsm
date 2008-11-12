@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#31 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#32 $
  */
 
 #include <sys/types.h>
@@ -221,7 +221,7 @@ au_assemble(au_record_t *rec, short event)
 	aia.ai_termid.at_type = AU_IPv4;
 	aia.ai_termid.at_addr[0] = INADDR_ANY;
 	if (auditon(A_GETKAUDIT, &aia, sizeof(aia)) < 0) {
-		if (errno != ENOSYS)
+		if (errno != ENOSYS && errno != EPERM)
 			return (-1);
 #endif /* HAVE_AUDIT_SYSCALLS */
 		tot_rec_size = rec->len + AUDIT_HEADER_SIZE +
