@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_errno.h#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_errno.h#3 $
  */
 
 #ifndef _BSM_AUDIT_ERRNO_H_
@@ -77,40 +77,40 @@
 #define	BSM_ERANGE		34
 #define	BSM_ENOMSG		35
 #define	BSM_EIDRM		36
-#define	BSM_ECHRNG		37	/* Solaris-specific. */
-#define	BSM_EL2NSYNC		38	/* Solaris-specific. */
-#define	BSM_EL3HLT		39	/* Solaris-specific. */
-#define	BSM_EL3RST		40	/* Solaris-specific. */
-#define	BSM_ELNRNG		41	/* Solaris-specific. */
-#define	BSM_EUNATCH		42	/* Solaris-specific. */
-#define	BSM_ENOCSI		43	/* Solaris-specific. */
-#define	BSM_EL2HLT		44	/* Solaris-specific. */
+#define	BSM_ECHRNG		37	/* Solaris/Linux-specific. */
+#define	BSM_EL2NSYNC		38	/* Solaris/Linux-specific. */
+#define	BSM_EL3HLT		39	/* Solaris/Linux-specific. */
+#define	BSM_EL3RST		40	/* Solaris/Linux-specific. */
+#define	BSM_ELNRNG		41	/* Solaris/Linux-specific. */
+#define	BSM_EUNATCH		42	/* Solaris/Linux-specific. */
+#define	BSM_ENOCSI		43	/* Solaris/Linux-specific. */
+#define	BSM_EL2HLT		44	/* Solaris/Linux-specific. */
 #define	BSM_EDEADLK		45
 #define	BSM_ENOLCK		46
 #define	BSM_ECANCELED		47
 #define	BSM_ENOTSUP		48
 #define	BSM_EDQUOT		49
-#define	BSM_EBADE		50	/* Solaris-specific. */
-#define	BSM_EBADR		51	/* Solaris-specific. */
-#define	BSM_EXFULL		52	/* Solaris-specific. */
-#define	BSM_ENOANO		53	/* Solaris-specific. */
-#define	BSM_EBADRQC		54	/* Solaris-specific. */
-#define	BSM_EBADSLT		55	/* Solaris-specific. */
+#define	BSM_EBADE		50	/* Solaris/Linux-specific. */
+#define	BSM_EBADR		51	/* Solaris/Linux-specific. */
+#define	BSM_EXFULL		52	/* Solaris/Linux-specific. */
+#define	BSM_ENOANO		53	/* Solaris/Linux-specific. */
+#define	BSM_EBADRQC		54	/* Solaris/Linux-specific. */
+#define	BSM_EBADSLT		55	/* Solaris/Linux-specific. */
 #define	BSM_EDEADLOCK		56	/* Solaris-specific. */
-#define	BSM_EBFONT		57	/* Solaris-specific. */
-#define	BSM_EOWNERDEAD		58	/* Solaris-specific. */
-#define	BSM_ENOTRECOVERABLE	59	/* Solaris-specific. */
-#define	BSM_ENOSTR		60	/* Solaris-specific. */
-#define	BSM_ENODATA		61	/* Solaris-specific. */
-#define	BSM_ETIME		62	/* Solaris-specific. */
-#define	BSM_ENOSR		63	/* Solaris-specific. */
-#define	BSM_ENONET		64	/* Solaris-specific. */
-#define	BSM_ENOPKG		65	/* Solaris-specific. */
+#define	BSM_EBFONT		57	/* Solaris/Linux-specific. */
+#define	BSM_EOWNERDEAD		58	/* Solaris/Linux-specific. */
+#define	BSM_ENOTRECOVERABLE	59	/* Solaris/Linux-specific. */
+#define	BSM_ENOSTR		60	/* Solaris/Darwin/Linux-specific. */
+#define	BSM_ENODATA		61	/* Solaris/Darwin/Linux-specific. */
+#define	BSM_ETIME		62	/* Solaris/Darwin/Linux-specific. */
+#define	BSM_ENOSR		63	/* Solaris/Darwin/Linux-specific. */
+#define	BSM_ENONET		64	/* Solaris/Linux-specific. */
+#define	BSM_ENOPKG		65	/* Solaris/Linux-specific. */
 #define	BSM_EREMOTE		66
 #define	BSM_ENOLINK		67
-#define	BSM_EADV		68	/* Solaris-specific. */
-#define	BSM_ESRMNT		69	/* Solaris-specific. */
-#define	BSM_ECOMM		70	/* Solaris-specific. */
+#define	BSM_EADV		68	/* Solaris/Linux-specific. */
+#define	BSM_ESRMNT		69	/* Solaris/Linux-specific. */
+#define	BSM_ECOMM		70	/* Solaris/Linux-specific. */
 #define	BSM_EPROTO		71
 #define	BSM_ELOCKUNMAPPED	72	/* Solaris-specific. */
 #define	BSM_ENOTACTIVE		73	/* Solaris-specific. */
@@ -118,19 +118,19 @@
 #define	BSM_EBADMSG		77
 #define	BSM_ENAMETOOLONG	78
 #define	BSM_EOVERFLOW		79
-#define	BSM_ENOTUNIQ		80	/* Solaris-specific. */
-#define	BSM_EBADFD		81	/* Solaris-specific. */
-#define	BSM_EREMCHG		82	/* Solaris-specific. */
-#define	BSM_ELIBACC		83	/* Solaris-specific. */
-#define	BSM_ELIBBAD		84	/* Solaris-specific. */
-#define	BSM_ELIBSCN		85	/* Solaris-specific. */
-#define	BSM_ELIBMAX		86	/* Solaris-specific. */
-#define	BSM_ELIBEXEC		87	/* Solaris-specific. */
+#define	BSM_ENOTUNIQ		80	/* Solaris/Linux-specific. */
+#define	BSM_EBADFD		81	/* Solaris/Linux-specific. */
+#define	BSM_EREMCHG		82	/* Solaris/Linux-specific. */
+#define	BSM_ELIBACC		83	/* Solaris/Linux-specific. */
+#define	BSM_ELIBBAD		84	/* Solaris/Linux-specific. */
+#define	BSM_ELIBSCN		85	/* Solaris/Linux-specific. */
+#define	BSM_ELIBMAX		86	/* Solaris/Linux-specific. */
+#define	BSM_ELIBEXEC		87	/* Solaris/Linux-specific. */
 #define	BSM_EILSEQ		88
 #define	BSM_ENOSYS		89
 #define	BSM_ELOOP		90
 #define	BSM_ERESTART		91
-#define	BSM_ESTRPIPE		92	/* Solaris-specific. */
+#define	BSM_ESTRPIPE		92	/* Solaris/Linux-specific. */
 #define	BSM_ENOTEMPTY		93
 #define	BSM_EUSERS		94
 #define	BSM_ENOTSOCK		95
@@ -167,27 +167,47 @@
  * OpenBSM constants for error numbers not defined in Solaris.  In the event
  * that these errors are added to Solaris, we will deprecate the OpenBSM
  * numbers in the same way we do for audit event constants.
+ *
+ * ELAST doesn't get a constant in the BSM space.
  */
-#define	BSM_EPROCLIM		200	/* FreeBSD-specific. */
-#define	BSM_EBADRPC		201	/* FreeBSD-specific. */
-#define	BSM_ERPCMISMATCH	202	/* FreeBSD-specific. */
-#define	BSM_EPROGUNAVAIL	203	/* FreeBSD-specific. */
-#define	BSM_EPROGMISMATCH	204	/* FreeBSD-specific. */
-#define	BSM_EPROCUNAVAIL	205	/* FreeBSD-specific. */
-#define	BSM_EFTYPE		206	/* FreeBSD-specific. */
-#define	BSM_EAUTH		207	/* FreeBSD-specific. */
-#define	BSM_ENEEDAUTH		208	/* FreeBSD-specific. */
-#define	BSM_ENOATTR		209	/* FreeBSD-specific. */
-#define	BSM_EDOOFUS		210	/* FreeBSD-specific. */
-#define	BSM_ELAST		211	/* FreeBSD-specific. */
-#define	BSM_EJUSTRETURN		212	/* FreeBSD-specific. */
-#define	BSM_ENOIOCTL		213	/* FreeBSD-specific. */
-#define	BSM_EDIRIOCTL		214	/* FreeBSD-specific. */
+#define	BSM_EPROCLIM		190	/* FreeBSD/Darwin-specific. */
+#define	BSM_EBADRPC		191	/* FreeBSD/Darwin-specific. */
+#define	BSM_ERPCMISMATCH	192	/* FreeBSD/Darwin-specific. */
+#define	BSM_EPROGUNAVAIL	193	/* FreeBSD/Darwin-specific. */
+#define	BSM_EPROGMISMATCH	194	/* FreeBSD/Darwin-specific. */
+#define	BSM_EPROCUNAVAIL	195	/* FreeBSD/Darwin-specific. */
+#define	BSM_EFTYPE		196	/* FreeBSD/Darwin-specific. */
+#define	BSM_EAUTH		197	/* FreeBSD/Darwin-specific. */
+#define	BSM_ENEEDAUTH		198	/* FreeBSD/Darwin-specific. */
+#define	BSM_ENOATTR		199	/* FreeBSD/Darwin-specific. */
+#define	BSM_EDOOFUS		200	/* FreeBSD-specific. */
+#define	BSM_EJUSTRETURN		201	/* FreeBSD-specific. */
+#define	BSM_ENOIOCTL		202	/* FreeBSD-specific. */
+#define	BSM_EDIRIOCTL		203	/* FreeBSD-specific. */
+#define	BSM_EPWROFF		204	/* Darwin-specific. */
+#define	BSM_EDEVERR		205	/* Darwin-specific. */
+#define	BSM_EBADEXEC		206	/* Darwin-specific. */
+#define	BSM_EBADARCH		207	/* Darwin-specific. */
+#define	BSM_ESHLIBVERS		208	/* Darwin-specific. */
+#define	BSM_EBADMACHO		209	/* Darwin-specific. */
+#define	BSM_EPOLICY		210	/* Darwin-specific. */
+#define	BSM_EDOTDOT		211	/* Linux-specific. */
+#define	BSM_EUCLEAN		212	/* Linux-specific. */
+#define	BSM_ENOTNAM		213	/* Linux(Xenix?)-specific. */
+#define	BSM_ENAVAIL		214	/* Linux(Xenix?)-specific. */
+#define	BSM_EISNAM		215	/* Linux(Xenix?)-specific. */
+#define	BSM_EREMOTEIO		216	/* Linux-specific. */
+#define	BSM_ENOMEDIUM		217	/* Linux-specific. */
+#define	BSM_EMEDIUMTYPE		218	/* Linux-specific. */
+#define	BSM_ENOKEY		219	/* Linux-specific. */
+#define	BSM_EKEYEXPIRED		220	/* Linux-specific. */
+#define	BSM_EKEYREVOKED		221	/* Linux-specific. */
+#define	BSM_EKEYREJECTED	222	/* Linux-specific. */
 
 /*
  * In the event that OpenBSM doesn't have a file representation of a local
  * error number, use this.
  */
-#define	BSM_UNKNOWNERR		245	/* OpenBSM-specific. */
+#define	BSM_UNKNOWNERR		250	/* OpenBSM-specific. */
 
 #endif /* !_BSM_AUDIT_ERRNO_H_ */

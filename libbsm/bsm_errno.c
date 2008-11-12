@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#3 $
  */
 
 #include <sys/types.h>
@@ -265,6 +265,63 @@ static const struct bsm_errors bsm_errors[] = {
 	{ BSM_EALREADY, EALREADY },
 	{ BSM_EINPROGRESS, EINPROGRESS },
 	{ BSM_ESTALE, ESTALE },
+#ifdef EPWROFF
+	{ BSM_EPWROFF, EPWROFF },
+#endif
+#ifdef EDEVERR
+	{ BSM_EDEVERR, EDEVERR },
+#endif
+#ifdef EBADEXEC
+	{ BSM_EBADEXEC, EBADEXEC },
+#endif
+#ifdef EBADARCH
+	{ BSM_EBADARCH, EBADARCH },
+#endif
+#ifdef ESHLIBVERS
+	{ BSM_ESHLIBVERS, ESHLIBVERS },
+#endif
+#ifdef EBADMACHO
+	{ BSM_EBADMACHO, EBADMACHO },
+#endif
+#ifdef EPOLICY
+	{ BSM_EPOLICY, EPOLICY },
+#endif
+#ifdef EDOTDOT
+	{ BSM_EDOTDOT, EDOTDOT },
+#endif
+#ifdef EUCLEAN
+	{ BSM_EUCLEAN, EUCLEAN },
+#endif
+#ifdef ENOTNAM
+	{ BSM_ENOTNAM, ENOTNAM },
+#endif
+#ifdef ENAVAIL
+	{ BSM_ENAVAIL, ENAVAIL },
+#endif
+#ifdef EISNAM
+	{ BSM_EISNAM, EISNAM },
+#endif
+#ifdef EREMOTEIO
+	{ BSM_ERMOTEIO, ERMOTEIO },
+#endif
+#ifdef ENOMEDIUM
+	{ BSM_ENOMEDIUM, ENOMEDIUM },
+#endif
+#ifdef EMEDIUMTYPE
+	{ BSM_EMEDIUMTYPE, EMEDIUMTYPE },
+#endif
+#ifdef ENOKEY
+	{ BSM_ENOKEY, ENOKEY },
+#endif
+#ifdef EKEEXPIRED
+	{ BSM_EKEYEXPIRED, EKEYEXPIRED },
+#endif
+#ifdef EKEYREVOKED
+	{ BSM_EKEYREVOKED, EKEYREVOKED },
+#endif
+#ifdef EKEREJECTED
+	{ BSM_EKEYREJECTED, EKEYREJECTED },
+#endif
 };
 static const int bsm_errors_count = sizeof(bsm_errors) / sizeof(bsm_errors[0]);
 
