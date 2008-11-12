@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#9 $
+ * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#10 $
  */
 
 /*
@@ -553,7 +553,7 @@ generate_process64ex_record(const char *directory, const char *record_filename,
 	free(buf);
 }
 
-static char		 return32_status = 0xd7;
+static char		 return32_status = EINVAL;
 static uint32_t		 return32_ret = 0x12345678;
 
 static void
@@ -561,7 +561,8 @@ generate_return32_token(const char *directory, const char *token_filename)
 {
 	token_t *return32_token;
 
-	return32_token = au_to_return32(return32_status, return32_ret);
+	return32_token = au_to_return32(au_errno_to_bsm(return32_status),
+	    return32_ret);
 	if (return32_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_return32");
 	write_token(directory, token_filename, return32_token);
@@ -572,7 +573,8 @@ generate_return32_record(const char *directory, const char *record_filename)
 {
 	token_t *return32_token;
 
-	return32_token = au_to_return32(return32_status, return32_ret);
+	return32_token = au_to_return32(au_errno_to_bsm(return32_status),
+	    return32_ret);
 	if (return32_token == NULL)
 		err(EX_UNAVAILABLE, "au_to_return32");
 	write_record(directory, record_filename, return32_token, AUE_NULL);

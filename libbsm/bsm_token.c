@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#73 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#74 $
  */
 
 #include <sys/types.h>
@@ -846,7 +846,6 @@ au_to_return32(char status, u_int32_t ret)
 	if (t == NULL)
 		return (NULL);
 
-	status = au_errno_to_bsm(status);
 	ADD_U_CHAR(dptr, AUT_RETURN32);
 	ADD_U_CHAR(dptr, status);
 	ADD_U_INT32(dptr, ret);
@@ -864,7 +863,6 @@ au_to_return64(char status, u_int64_t ret)
 	if (t == NULL)
 		return (NULL);
 
-	status = au_errno_to_bsm(status);
 	ADD_U_CHAR(dptr, AUT_RETURN64);
 	ADD_U_CHAR(dptr, status);
 	ADD_U_INT64(dptr, ret);

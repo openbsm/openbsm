@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#5 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#6 $
  */
 
 #include <sys/types.h>
@@ -326,21 +326,24 @@ static const struct bsm_errors bsm_errors[] = {
 };
 static const int bsm_errors_count = sizeof(bsm_errors) / sizeof(bsm_errors[0]);
 
+/*
+ * Converstion from a BSM error to a local error number may fail if either
+ * OpenBSM doesn't recognize the error on the wire, or because there is no
+ * appropriate local mapping.  However, we don't allow conversion to BSM to
+ * fail, we just convert to BSM_UKNOWNERR.
+ */
 int
-au_bsm_to_errno(u_char bsm_error)
+au_bsm_to_errno(u_char bsm_error, int *errorp)
 {
 	int i;
 
 	for (i = 0; i < bsm_errors_count; i++) {
-		if (bsm_errors[i].be_bsm_error == bsm_error)
-			return (bsm_errors[i].be_os_error);
+		if (bsm_errors[i].be_bsm_error == bsm_error) {
+			*errorp = bsm_errors[i].be_os_error;
+			return (0);
+		}
 	}
-
-	/*
-	 * If there is no local match, return EINVAL.  Perhaps there is
-	 * something better we could be doing here?
-	 */
-	return (EINVAL);
+	return (-1);
 }
 
 u_char
@@ -350,7 +353,17 @@ au_errno_to_bsm(int error)
 
 	for (i = 0; i < bsm_errors_count; i++) {
 		if (bsm_errors[i].be_os_error == error)
-			return (htobe32(bsm_errors[i].be_bsm_error));
+			return (bsm_errors[i].be_bsm_error);
 	}
 	return (BSM_UNKNOWNERR);
+}
+
+char *
+au_strerror(u_char bsm_error)
+{
+
+	switch (bsm_error) {
+
+
+	}
 }

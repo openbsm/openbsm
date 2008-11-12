@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#56 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#57 $
  */
 
 #include <sys/types.h>
@@ -771,13 +771,24 @@ print_ip_ex_address(FILE *fp, u_int32_t type, u_int32_t *ipaddr)
 static void
 print_retval(FILE *fp, u_char status, char raw)
 {
+	int error;
+
 	if (raw)
 		fprintf(fp, "%u", status);
 	else {
-		if (status == 0)
-			fprintf(fp, "success");
-		else
-			fprintf(fp, "failure : %s", strerror(status));
+		/*
+		 * Convert to a local error number and print the OS's version
+		 * of the error string if possible.  We may want to provide
+		 * an au_strerror(3) in the future so that we can print
+		 * strings for non-local errors.
+		 */
+		if (au_bsm_to_errno(status, &error) == 0) {
+			if (error == 0)
+				fprintf(fp, "success");
+			else
+				fprintf(fp, "failure : %s", strerror(error));
+		} else
+			fprintf(fp, "failure: Unknown error: %d", status);
 	}
 }
 
@@ -2946,7 +2957,6 @@ fetch_return32_tok(tokenstr_t *tok, u_char *buf, int len)
 	READ_TOKEN_U_CHAR(buf, len, tok->tt.ret32.status, tok->len, err);
 	if (err)
 		return (-1);
-	tok->tt.ret32.status = au_bsm_to_errno(tok->tt.ret32.status);
 
 	READ_TOKEN_U_INT32(buf, len, tok->tt.ret32.ret, tok->len, err);
 	if (err)
@@ -2985,7 +2995,6 @@ fetch_return64_tok(tokenstr_t *tok, u_char *buf, int len)
 	READ_TOKEN_U_CHAR(buf, len, tok->tt.ret64.err, tok->len, err);
 	if (err)
 		return (-1);
-	tok->tt.ret64.err = au_bsm_to_errno(tok->tt.ret64.err);
 
 	READ_TOKEN_U_INT64(buf, len, tok->tt.ret64.val, tok->len, err);
 	if (err)
