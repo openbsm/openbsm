@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.am#6 $
+# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.am#7 $
 #
 
 if USE_NATIVE_INCLUDES
@@ -31,6 +31,7 @@ endif
 man3_MANS =		\
 	au_class.3	\
 	au_control.3	\
+	au_errno.3	\
 	au_event.3	\
 	au_free_token.3	\
 	au_io.3		\

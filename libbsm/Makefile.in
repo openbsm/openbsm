@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.in#10 $
+# $P4: //depot/projects/trustedbsd/openbsm/libbsm/Makefile.in#11 $
 #
 
 VPATH = @srcdir@
@@ -205,6 +205,7 @@ libbsm_la_SOURCES = bsm_audit.c bsm_class.c bsm_control.c bsm_errno.c \
 man3_MANS = \
 	au_class.3	\
 	au_control.3	\
+	au_errno.3	\
 	au_event.3	\
 	au_free_token.3	\
 	au_io.3		\
