@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#4 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#5 $
  */
 
 #include <sys/types.h>
@@ -76,6 +76,7 @@ struct bsm_errors {
  * yet.
  */
 static const struct bsm_errors bsm_errors[] = {
+	{ BSM_ESUCCESS, 0 },
 	{ BSM_EPERM, EPERM },
 	{ BSM_ENOENT, ENOENT },
 	{ BSM_ESRCH, ESRCH },

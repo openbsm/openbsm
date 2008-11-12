@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_errno.h#3 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_errno.h#4 $
  */
 
 #ifndef _BSM_AUDIT_ERRNO_H_
@@ -41,6 +41,7 @@
  *
  * When adding constants here, also add them to bsm_errno.c.
  */
+#define	BSM_ESUCCESS		0
 #define	BSM_EPERM		1
 #define	BSM_ENOENT		2
 #define	BSM_ESRCH		3
