@@ -2,9 +2,11 @@ OpenBSM Version History
 
 OpenBSM 1.1 alpha 3
 
-- Explicitly map between local and BSM error number spaces for 32-bit and
-  64-bit return tokens, as operating systems don't all agree on the set of,
-  or values for, error numbers.
+- Add two new functions, au_bsm_to_errno() and au_errno_to_bsm(), to map
+  between BSM error numbers (largely the Solaris definitions) and local
+  errno(2) values for 32-bit and 64-bit return tokens.  This is required as
+  operating systems don't agree on some of the values of more recent error
+  numbers.
 
 OpenBSM 1.1 alpha 2
 
@@ -354,4 +356,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#11 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#12 $
