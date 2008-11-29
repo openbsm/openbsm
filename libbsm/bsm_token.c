@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#74 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#75 $
  */
 
 #include <sys/types.h>
@@ -1207,7 +1207,6 @@ au_to_exec_args(char **argv)
 		nextarg = *(argv + count);
 	}
 
-	totlen += count * sizeof(char);	/* nul terminations. */
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) + totlen);
 	if (t == NULL)
 		return (NULL);
@@ -1269,7 +1268,6 @@ au_to_exec_env(char **envp)
 		nextenv = *(envp + count);
 	}
 
-	totlen += sizeof(char) * count;
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) + totlen);
 	if (t == NULL)
 		return (NULL);
