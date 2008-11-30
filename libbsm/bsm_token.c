@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#75 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#76 $
  */
 
 #include <sys/types.h>
@@ -401,7 +401,7 @@ au_to_in_addr_ex(struct in6_addr *internet_addr)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	u_int32_t type = AF_INET6;
+	u_int32_t type = AU_IPv6;
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 5 * sizeof(uint32_t));
 	if (t == NULL)
