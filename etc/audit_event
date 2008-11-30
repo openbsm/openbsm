@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#30 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#31 $
 #
 # The mapping between event identifiers and values is also hard-coded in
 # audit_kevents.h and audit_uevents.h, so changes must occur in both places,
@@ -185,6 +185,7 @@
 205:AUE_SETGID:setgid(2):pc
 206:AUE_READL:readl(2):no
 207:AUE_READVL:readvl(2):no
+208:AUE_FSTAT:fstat(2):fa
 209:AUE_DUP2:dup2(2):no
 210:AUE_MMAP:mmap(2):no
 211:AUE_AUDIT:audit(2):ot
