@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#79 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#80 $
  */
 
 #include <sys/types.h>
@@ -1339,8 +1339,9 @@ au_to_header32_ex_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int32_t timems;
-	au_tid_addr_t *tid = &aia->ai_termid;
+	au_tid_addr_t *tid;
 
+	tid = &aia->ai_termid;
 	if (tid->at_type != AU_IPv4 && tid->at_type != AU_IPv6)
 		return (NULL);
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) +
