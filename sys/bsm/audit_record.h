@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_record.h#3 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_record.h#4 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -277,8 +277,8 @@ token_t	*au_to_subject32_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 token_t	*au_to_subject64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_addr_t *tid);
 #if defined(_KERNEL) || defined(KERNEL)
-token_t	*au_to_exec_args(const char *args, int argc);
-token_t	*au_to_exec_env(const char *envs, int envc);
+token_t	*au_to_exec_args(char *args, int argc);
+token_t	*au_to_exec_env(char *envs, int envc);
 #else
 token_t	*au_to_exec_args(char **argv);
 token_t	*au_to_exec_env(char **envp);
