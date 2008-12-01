@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2004 Apple Inc.
+ * Copyright (c) 2004-2008 Apple Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#35 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#36 $
  */
 
 #ifndef _LIBBSM_H_
@@ -547,13 +547,13 @@ typedef struct {
  * remote Internet address 4 bytes/16 bytes (IPv4/IPv6 address)
  */
 typedef struct {
+	u_int16_t	domain;
 	u_int16_t	type;
+	u_int16_t	atype;
 	u_int16_t	l_port;
-	u_int32_t	l_ad_type;
-	u_int32_t	l_addr;
+	u_int32_t	l_addr[4];
 	u_int32_t	r_port;
-	u_int32_t	r_ad_type;
-	u_int32_t	r_addr;
+	u_int32_t	r_addr[4];
 } au_socket_ex32_t;
 
 /*

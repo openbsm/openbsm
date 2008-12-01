@@ -1,5 +1,6 @@
 /*-
  * Copyright (c) 2006-2007 Robert N. M. Watson
+ * Copyright (c) 2008 Apple Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#10 $
+ * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#11 $
  */
 
 /*
@@ -915,6 +916,56 @@ generate_zonename_record(const char *directory, const char *record_filename)
 	write_record(directory, record_filename, zonename_token, AUE_NULL);
 }
 
+static u_short socketex_domain = AF_INET;
+static u_short socketex_type = SOCK_STREAM;
+static struct sockaddr_in socketex_laddr, socketex_raddr;
+
+static void
+generate_socketex_token(const char *directory, const char *token_filename)
+{
+	token_t *socketex_token;
+
+	bzero(&socketex_laddr, sizeof(socketex_laddr));
+	socketex_laddr.sin_family = AF_INET;
+	socketex_laddr.sin_len = sizeof(socketex_laddr);
+	socketex_laddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+	bzero(&socketex_raddr, sizeof(socketex_raddr));
+	socketex_raddr.sin_family = AF_INET;
+	socketex_raddr.sin_len = sizeof(socketex_raddr);
+	socketex_raddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+	socketex_token = au_to_socket_ex(socketex_domain, socketex_type,
+	    (struct sockaddr *)&socketex_laddr,
+	    (struct sockaddr *)&socketex_raddr);
+	if (socketex_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_socket_ex");
+	write_token(directory, token_filename, socketex_token);
+}
+
+static void
+generate_socketex_record(const char *directory, const char *record_filename)
+{
+	token_t *socketex_token;
+
+	bzero(&socketex_laddr, sizeof(socketex_laddr));
+	socketex_laddr.sin_family = AF_INET;
+	socketex_laddr.sin_len = sizeof(socketex_laddr);
+	socketex_laddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+	bzero(&socketex_raddr, sizeof(socketex_raddr));
+	socketex_raddr.sin_family = AF_INET;
+	socketex_raddr.sin_len = sizeof(socketex_raddr);
+	socketex_raddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+	socketex_token = au_to_socket_ex(socketex_domain, socketex_type,
+	    (struct sockaddr *)&socketex_laddr,
+	    (struct sockaddr *)&socketex_raddr);
+	if (socketex_token == NULL)
+		err(EX_UNAVAILABLE, "au_to_socket_ex");
+	write_record(directory, record_filename, socketex_token, AUE_NULL);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -982,6 +1033,7 @@ main(int argc, char *argv[])
 		generate_groups_token(directory, "groups_token");
 		generate_attr32_token(directory, "attr32_token");
 		generate_zonename_token(directory, "zonename_token");
+		generate_socketex_token(directory, "socketex_token");
 	}
 
 	if (do_records) {
@@ -1017,6 +1069,7 @@ main(int argc, char *argv[])
 		generate_groups_record(directory, "groups_record");
 		generate_attr32_record(directory, "attr32_record");
 		generate_zonename_record(directory, "zonename_record");
+		generate_socketex_record(directory, "socketex_record");
 	}
 
 	return (0);

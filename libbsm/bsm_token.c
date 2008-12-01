@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#80 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#81 $
  */
 
 #include <sys/types.h>
@@ -893,6 +893,60 @@ au_to_seq(long audit_count)
 
 	ADD_U_CHAR(dptr, AUT_SEQ);
 	ADD_U_INT32(dptr, audit_count);
+
+	return (t);
+}
+
+/*
+ * token ID                1 byte
+ * socket domain           2 bytes
+ * socket type             2 bytes
+ * address type            2 byte
+ * local port              2 bytes
+ * local address           4 bytes/16 bytes (IPv4/IPv6 address)
+ * remote port             2 bytes
+ * remote address          4 bytes/16 bytes (IPv4/IPv6 address)
+ */
+token_t *
+au_to_socket_ex(u_short so_domain, u_short so_type,
+    struct sockaddr *sa_local, struct sockaddr *sa_remote)
+{
+	token_t *t;
+	u_char *dptr = NULL;
+	struct sockaddr_in *sin;
+	struct sockaddr_in6 *sin6;
+
+	if (so_domain == AF_INET)
+		GET_TOKEN_AREA(t, dptr, sizeof(u_char) +
+		    5 * sizeof(u_int16_t) + 2 * sizeof(u_int32_t));
+	else if (so_domain == AF_INET6)
+		GET_TOKEN_AREA(t, dptr, sizeof(u_char) +
+		    5 * sizeof(u_int16_t) + 16 * sizeof(u_int32_t));
+	else {
+		errno = EINVAL;
+		return (NULL);
+	}
+
+	ADD_U_CHAR(dptr, AUT_SOCKET_EX);
+	ADD_U_INT16(dptr, so_domain);	/* XXXRW: explicitly convert? */
+	ADD_U_INT16(dptr, so_type);	/* XXXRW: explicitly convert? */
+	if (so_domain == AF_INET) {
+		ADD_U_INT16(dptr, AU_IPv4);
+		sin = (struct sockaddr_in *)sa_local;
+		ADD_MEM(dptr, &sin->sin_port, sizeof(uint16_t));
+		ADD_MEM(dptr, &sin->sin_addr.s_addr, sizeof(uint32_t));
+		sin = (struct sockaddr_in *)sa_remote;
+		ADD_MEM(dptr, &sin->sin_port, sizeof(uint16_t));
+		ADD_MEM(dptr, &sin->sin_addr.s_addr, sizeof(uint32_t));
+	} else {
+		ADD_U_INT16(dptr, AU_IPv6);
+		sin6 = (struct sockaddr_in6 *)sa_local;
+		ADD_MEM(dptr, &sin6->sin6_port, sizeof(uint16_t));
+		ADD_MEM(dptr, &sin6->sin6_addr, 4 * sizeof(uint32_t));
+		sin6 = (struct sockaddr_in6 *)sa_remote;
+		ADD_MEM(dptr, &sin6->sin6_port, sizeof(uint16_t));
+		ADD_MEM(dptr, &sin6->sin6_addr, 4 * sizeof(uint32_t));
+	}
 
 	return (t);
 }

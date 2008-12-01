@@ -10,6 +10,8 @@ OpenBSM 1.1 alpha 3
 - Fix a bug how au_to_exec_args(3) and au_to_exec_env(3) calculates the total
   size for the token.  This bug resulted in "unknown" tokens being printed
   after the exec args/env tokens.
+- Support for AUT_SOCKET_EX extended socket tokens, which describe a socket
+  using a pair of IPv4/IPv6 and port tuples.
 
 OpenBSM 1.1 alpha 2
 
@@ -359,4 +361,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#14 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#15 $
