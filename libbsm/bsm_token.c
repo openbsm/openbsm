@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#77 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#78 $
  */
 
 #include <sys/types.h>
@@ -1223,29 +1223,6 @@ au_to_exec_args(char **argv)
 }
 
 /*
- * token ID                1 byte
- * zonename length         2 bytes
- * zonename                N bytes + 1 terminating NULL byte
- */
-token_t *
-au_to_zonename(const char *zonename)
-{
-	u_char *dptr = NULL;
-	u_int16_t textlen;
-	token_t *t;
-
-	textlen = strlen(zonename) + 1;
-	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) + textlen);
-	if (t == NULL)
-		return (NULL);
-
-	ADD_U_CHAR(dptr, AUT_ZONENAME);
-	ADD_U_INT16(dptr, textlen);
-	ADD_STRING(dptr, zonename, textlen);
-	return (t);
-}
-
-/*
  * token ID				1 byte
  * count				4 bytes
  * text					count null-terminated strings
@@ -1282,6 +1259,29 @@ au_to_exec_env(char **envp)
 		ADD_MEM(dptr, nextenv, strlen(nextenv) + 1);
 	}
 
+	return (t);
+}
+
+/*
+ * token ID                1 byte
+ * zonename length         2 bytes
+ * zonename                N bytes + 1 terminating NULL byte
+ */
+token_t *
+au_to_zonename(const char *zonename)
+{
+	u_char *dptr = NULL;
+	u_int16_t textlen;
+	token_t *t;
+
+	textlen = strlen(zonename) + 1;
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) + textlen);
+	if (t == NULL)
+		return (NULL);
+
+	ADD_U_CHAR(dptr, AUT_ZONENAME);
+	ADD_U_INT16(dptr, textlen);
+	ADD_STRING(dptr, zonename, textlen);
 	return (t);
 }
 
