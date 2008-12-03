@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#81 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#82 $
  */
 
 #include <sys/types.h>
@@ -178,8 +178,8 @@ au_to_attr32(struct vnode_au_info *vni)
 	ADD_U_CHAR(dptr, AUT_ATTR32);
 
 	/*
-	 * Darwin defines the size for the file mode as 2 bytes; BSM defines
-	 * 4 so pad with 0.
+	 * BSD defines the size for the file mode as 2 bytes; BSM defines 4
+	 * so pad with 0.  XXXRW: Possibly should be conditionally compiled.
 	 */
 	ADD_U_INT16(dptr, pad0_16);
 	ADD_U_INT16(dptr, vni->vn_mode);
@@ -223,8 +223,8 @@ au_to_attr64(struct vnode_au_info *vni)
 	ADD_U_CHAR(dptr, AUT_ATTR64);
 
 	/*
-	 * Darwin defines the size for the file mode as 2 bytes; BSM defines
-	 * 4 so pad with 0.
+	 * BSD defines the size for the file mode as 2 bytes; BSM defines 4
+	 * so pad with 0.
 	 */
 	ADD_U_INT16(dptr, pad0_16);
 	ADD_U_INT16(dptr, vni->vn_mode);
@@ -482,8 +482,9 @@ au_to_ipc_perm(struct ipc_perm *perm)
 	ADD_U_CHAR(dptr, AUT_IPC_PERM);
 
 	/*
-	 * Darwin defines the sizes for ipc_perm members as 2 bytes; BSM
-	 * defines 4 so pad with 0.
+	 * BSD defines the sizes for ipc_perm members as 2 bytes; BSM defines
+	 * 4 so pad with 0.  XXXRW: Possibly shoulid be conditionally
+	 * compiled.
 	 */
 	ADD_U_INT16(dptr, pad0);
 	ADD_U_INT16(dptr, perm->uid);
@@ -1025,8 +1026,9 @@ au_to_sock_inet128(struct sockaddr_in6 *so)
 
 	ADD_U_CHAR(dptr, AUT_SOCKINET128);
 	/*
-	 * In Darwin, sin6_family is one octet, but BSM defines the token
-	 * to store two. So we copy in a 0 first.
+	 * In BSD, sin6_family is one octet, but BSM defines the token to
+	 * store two. So we copy in a 0 first.  XXXRW: Possibly should be
+	 * conditionally compiled.
 	 */
 	ADD_U_CHAR(dptr, 0);
 	ADD_U_CHAR(dptr, so->sin6_family);
