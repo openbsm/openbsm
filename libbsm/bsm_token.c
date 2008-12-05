@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#82 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#83 $
  */
 
 #include <sys/types.h>
@@ -179,7 +179,11 @@ au_to_attr32(struct vnode_au_info *vni)
 
 	/*
 	 * BSD defines the size for the file mode as 2 bytes; BSM defines 4
-	 * so pad with 0.  XXXRW: Possibly should be conditionally compiled.
+	 * so pad with 0.
+	 *
+	 * XXXRW: Possibly should be conditionally compiled.
+	 *
+	 * XXXRW: Should any conversions take place on the mode?
 	 */
 	ADD_U_INT16(dptr, pad0_16);
 	ADD_U_INT16(dptr, vni->vn_mode);
@@ -225,6 +229,10 @@ au_to_attr64(struct vnode_au_info *vni)
 	/*
 	 * BSD defines the size for the file mode as 2 bytes; BSM defines 4
 	 * so pad with 0.
+	 *
+	 * XXXRW: Possibly should be conditionally compiled.
+	 *
+	 * XXXRW: Should any conversions take place on the mode?
 	 */
 	ADD_U_INT16(dptr, pad0_16);
 	ADD_U_INT16(dptr, vni->vn_mode);
@@ -305,6 +313,10 @@ au_to_data(char unit_print, char unit_type, char unit_count, const char *p)
 	if (t == NULL)
 		return (NULL);
 
+	/*
+	 * XXXRW: We should be byte-swapping each data item for multi-byte
+	 * types.
+	 */
 	ADD_U_CHAR(dptr, AUT_DATA);
 	ADD_U_CHAR(dptr, unit_print);
 	ADD_U_CHAR(dptr, unit_type);
@@ -482,21 +494,30 @@ au_to_ipc_perm(struct ipc_perm *perm)
 	ADD_U_CHAR(dptr, AUT_IPC_PERM);
 
 	/*
-	 * BSD defines the sizes for ipc_perm members as 2 bytes; BSM defines
-	 * 4 so pad with 0.  XXXRW: Possibly shoulid be conditionally
-	 * compiled.
+	 * Systems vary significantly in what types they use in struct
+	 * ipc_perm; at least a few still use 16-bit uid's and gid's, so
+	 * allow for that, as BSM define 32-bit values here.
+	 * Some systems define the sizes for ipc_perm members as 2 bytes;
+	 * BSM defines 4 so pad with 0.
+	 *
+	 * XXXRW: Possibly shoulid be conditionally compiled, and more cases
+	 * need to be handled.
 	 */
-	ADD_U_INT16(dptr, pad0);
-	ADD_U_INT16(dptr, perm->uid);
-
-	ADD_U_INT16(dptr, pad0);
-	ADD_U_INT16(dptr, perm->gid);
-
-	ADD_U_INT16(dptr, pad0);
-	ADD_U_INT16(dptr, perm->cuid);
-
-	ADD_U_INT16(dptr, pad0);
-	ADD_U_INT16(dptr, perm->cgid);
+	if (sizeof(perm->uid) != sizeof(u_int32_t)) {
+		ADD_U_INT16(dptr, pad0);
+		ADD_U_INT16(dptr, perm->uid);
+		ADD_U_INT16(dptr, pad0);
+		ADD_U_INT16(dptr, perm->gid);
+		ADD_U_INT16(dptr, pad0);
+		ADD_U_INT16(dptr, perm->cuid);
+		ADD_U_INT16(dptr, pad0);
+		ADD_U_INT16(dptr, perm->cgid);
+	} else {
+		ADD_U_INT32(dptr, perm->uid);
+		ADD_U_INT32(dptr, perm->gid);
+		ADD_U_INT32(dptr, perm->cuid);
+		ADD_U_INT32(dptr, perm->cgid);
+	}
 
 	ADD_U_INT16(dptr, pad0);
 	ADD_U_INT16(dptr, perm->mode);
@@ -617,6 +638,8 @@ au_to_text(const char *text)
 	textlen = strlen(text);
 	textlen += 1;
 
+	/* XXXRW: Should validate length against token size limit. */
+
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) + textlen);
 	if (t == NULL)
 		return (NULL);
@@ -687,6 +710,13 @@ au_to_process32(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 	ADD_U_INT32(dptr, pid);
 	ADD_U_INT32(dptr, sid);
 	ADD_U_INT32(dptr, tid->port);
+
+	/*
+	 * Note: Solaris will write out IPv6 addresses here as a 32-bit
+	 * address type and 16 bytes of address, but for IPv4 addresses it
+	 * simply writes the 4-byte address directly.  We support only IPv4
+	 * addresses for process32 tokens.
+	 */
 	ADD_MEM(dptr, &tid->machine, sizeof(u_int32_t));
 
 	return (t);
@@ -713,6 +743,13 @@ au_to_process64(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid, gid_t rgid,
 	ADD_U_INT32(dptr, pid);
 	ADD_U_INT32(dptr, sid);
 	ADD_U_INT64(dptr, tid->port);
+
+	/*
+	 * Note: Solaris will write out IPv6 addresses here as a 32-bit
+	 * address type and 16 bytes of address, but for IPv4 addresses it
+	 * simply writes the 4-byte address directly.  We support only IPv4
+	 * addresses for process64 tokens.
+	 */
 	ADD_MEM(dptr, &tid->machine, sizeof(u_int32_t));
 
 	return (t);
