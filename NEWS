@@ -12,6 +12,8 @@ OpenBSM 1.1 alpha 3
   after the exec args/env tokens.
 - Support for AUT_SOCKET_EX extended socket tokens, which describe a socket
   using a pair of IPv4/IPv6 and port tuples.
+- OpenBSM BSM file header version bumped for 1.1 release.
+- Deprecated Darwin constants, such as TRAILER_PAD_MAGIC, removed.
 
 OpenBSM 1.1 alpha 2
 
@@ -361,4 +363,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#15 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#16 $

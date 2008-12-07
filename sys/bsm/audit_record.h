@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_record.h#5 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_record.h#6 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -164,14 +164,11 @@
 #define	AUDIT_HEADER_VERSION_SOLARIS	2
 #define	AUDIT_HEADER_VERSION_TSOL25	3
 #define	AUDIT_HEADER_VERSION_TSOL	4
-#define	AUDIT_HEADER_VERSION_OPENBSM	10
+#define	AUDIT_HEADER_VERSION_OPENBSM10	10
+#define	AUDIT_HEADER_VERSION_OPENBSM11	11
+#define	AUDIT_HEADER_VERSION_OPENBSM	AUDIT_HEADER_VERSION_OPENBSM11
 
-/*
- * BSM define is AUT_TRAILER_MAGIC; Apple BSM define is TRAILER_PAD_MAGIC; we
- * split the difference, will remove the Apple define for the next release.
- */
 #define	AUT_TRAILER_MAGIC	0xb105
-#define	TRAILER_PAD_MAGIC	AUT_TRAILER_MAGIC
 
 /* BSM library calls */
 

@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#83 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#84 $
  */
 
 #include <sys/types.h>
@@ -1556,7 +1556,7 @@ au_to_trailer(int rec_size)
 {
 	token_t *t;
 	u_char *dptr = NULL;
-	u_int16_t magic = TRAILER_PAD_MAGIC;
+	u_int16_t magic = AUT_TRAILER_MAGIC;
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) +
 	    sizeof(u_int32_t));
