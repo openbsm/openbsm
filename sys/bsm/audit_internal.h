@@ -30,7 +30,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_internal.h#4 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_internal.h#5 $
  */
 
 #ifndef _AUDIT_INTERNAL_H
@@ -113,11 +113,5 @@ typedef	struct au_record	au_record_t;
 	} while(0)
 
 #define	ADD_STRING(loc, data, size)	ADD_MEM(loc, data, size)
-
-/*
- * Map between BSM and local constants for error numbers.
- */
-int	au_bsm_to_errno(u_char bsm_error, int *errorp);
-u_char	au_errno_to_bsm(int error);
 
 #endif /* !_AUDIT_INTERNAL_H_ */

@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#6 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#7 $
  */
 
 #include <sys/types.h>
@@ -50,6 +50,7 @@
 #include <bsm/audit_errno.h>
 
 #include <errno.h>
+#include <string.h>
 
 /*
  * Different operating systems use different numeric constants for different
@@ -358,12 +359,20 @@ au_errno_to_bsm(int error)
 	return (BSM_UNKNOWNERR);
 }
 
+#if !defined(KERNEL) && !defined(_KERNEL)
 char *
 au_strerror(u_char bsm_error)
 {
+	int error;
 
-	switch (bsm_error) {
+	if (au_bsm_to_errno(bsm_error, &error) == 0)
+		return (strerror(error));
 
-
-	}
+	/*
+	 * We need a duplicate error->string mapping for all error numbers
+	 * here to handle non-local ones.  For now, simply generate a warning
+	 * indicating it's non-local.
+	 */
+	return ("Foreign BSM error");
 }
+#endif

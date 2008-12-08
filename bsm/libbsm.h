@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#36 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#37 $
  */
 
 #ifndef _LIBBSM_H_
@@ -822,6 +822,11 @@ void			 au_print_tok_xml(FILE *outfp, tokenstr_t *tok,
 void			 au_print_xml_header(FILE *outfp);
 void			 au_print_xml_footer(FILE *outfp);
 __END_DECLS
+
+/*
+ * Functions relating to BSM<->errno conversion.
+ */
+char			*au_strerror(u_char bsm_error);
 
 /*
  * The remaining APIs are associated with Apple's BSM implementation, in

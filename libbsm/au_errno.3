@@ -26,14 +26,15 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE. 
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_errno.3#1 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_errno.3#2 $
 .\"
-.Dd November 12, 2008
+.Dd December 8, 2008
 .Dt AU_BSM_TO_ERRNO 3
 .Os
 .Sh NAME
 .Nm au_bsm_to_errno ,
-.Nm au_errno_to_bsm
+.Nm au_errno_to_bsm ,
+.Nm au_strerror
 .Nd "convert between BSM and local error numbers"
 .Sh LIBRARY
 .Lb libbsm
@@ -43,6 +44,8 @@
 .Fn au_bsm_to_errno "u_char bsm_error" "int *errorp"
 .Ft u_char
 .Fn au_errno_to_bsm "int error"
+.Ft char *
+.Fn au_strerror "int bsm_error"
 .Sh DESCRIPTION
 These interfaces may be used to convert between the local (
 .Xr errno 2 )
@@ -67,12 +70,24 @@ function accepts a local
 value, and returns the BSM error number for it.
 This call cannot fail, and instead returns a BSM error number indicating to
 a later decoder that the error could not be encoded.
+.Pp
+The
+.Fn au_strerror
+converts a BSM error value to a string, generally by converting first to a
+local error number and using the local
+.Xr strerror 3
+function, but will also work for errors that are not locally defined.
 .Sh RETURN VALULES
 On success,
 .Fn au_bsm_to_errno
 returns 0 and a converted error value; on failure, it returns -1 but does not
 set
 .Xr errno 2 .
+.Pp
+On success,
+.Fn au_strerror
+returns a pointer to an error string; on failure it will return
+.Dv NULL .
 .Sh SEE ALSO
 .Xr au_to_return 3 ,
 .Xr au_to_return32 3 ,
