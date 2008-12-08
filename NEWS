@@ -9,6 +9,10 @@ OpenBSM 1.1 alpha 4
   formal allocation scheme, and add some events allocated in Solaris that
   will be of immediate use on other platforms.
 - Add an event for Calife.
+- Add au_strerror(3), which allows generating strings for BSM errors
+  directly, rather than requiring applications to map to the local error
+  space, which might not be able to entirely represent the BSM error number
+  space.
 
 OpenBSM 1.1 alpha 3
 
@@ -373,4 +377,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#19 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#20 $
