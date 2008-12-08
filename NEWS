@@ -5,6 +5,10 @@ OpenBSM 1.1 alpha 4
 - With the addition of BSM error number mapping, we also need to map the
   local error number passed to audit_submit(3) to a BSM error number, rather
   than have the caller perform that conversion.
+- Reallocate user audit events to avoid collisions with Solaris; adopt a more
+  formal allocation scheme, and add some events allocated in Solaris that
+  will be of immediate use on other platforms.
+- Add an event for Calife.
 
 OpenBSM 1.1 alpha 3
 
@@ -369,4 +373,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#18 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#19 $
