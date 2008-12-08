@@ -2,6 +2,10 @@ OpenBSM Version History
 
 OpenBSM 1.1 alpha 4
 
+- With the addition of BSM error number mapping, we also need to map the
+  local error number passed to audit_submit(3) to a BSM error number, rather
+  than have the caller perform that conversion.
+
 OpenBSM 1.1 alpha 3
 
 - Add two new functions, au_bsm_to_errno() and au_errno_to_bsm(), to map
@@ -365,4 +369,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#17 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#18 $
