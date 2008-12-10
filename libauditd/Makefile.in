@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/praudit/Makefile.in#9 $
+# $P4: //depot/projects/trustedbsd/openbsm/libauditd/Makefile.in#1 $
 #
 
 VPATH = @srcdir@
@@ -36,8 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-sbin_PROGRAMS = praudit$(EXEEXT)
-subdir = bin/praudit
+subdir = libauditd
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -46,12 +45,18 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config/config.h
 CONFIG_CLEAN_FILES =
-am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man1dir)"
-sbinPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
-PROGRAMS = $(sbin_PROGRAMS)
-am_praudit_OBJECTS = praudit.$(OBJEXT)
-praudit_OBJECTS = $(am_praudit_OBJECTS)
-praudit_DEPENDENCIES = $(top_builddir)/libbsm/libbsm.la
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+am__installdirs = "$(DESTDIR)$(libdir)"
+libLTLIBRARIES_INSTALL = $(INSTALL)
+LTLIBRARIES = $(lib_LTLIBRARIES)
+libauditd_la_LIBADD =
+am_libauditd_la_OBJECTS = auditd_lib.lo
+libauditd_la_OBJECTS = $(am_libauditd_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/config@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -64,11 +69,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(praudit_SOURCES)
-DIST_SOURCES = $(praudit_SOURCES)
-man1dir = $(mandir)/man1
-NROFF = nroff
-MANS = $(man1_MANS)
+SOURCES = $(libauditd_la_SOURCES)
+DIST_SOURCES = $(libauditd_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -182,9 +184,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @USE_NATIVE_INCLUDES_FALSE@INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/sys
 @USE_NATIVE_INCLUDES_TRUE@INCLUDES = -I$(top_builddir) -I$(top_srcdir)
-praudit_SOURCES = praudit.c
-praudit_LDADD = $(top_builddir)/libbsm/libbsm.la
-man1_MANS = praudit.1
+lib_LTLIBRARIES = libauditd.la
+libauditd_la_SOURCES = \
+	auditd_lib.c
+
 all: all-am
 
 .SUFFIXES:
@@ -198,9 +201,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  bin/praudit/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  libauditd/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  bin/praudit/Makefile
+	  $(AUTOMAKE) --foreign  libauditd/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -218,37 +221,35 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-install-sbinPROGRAMS: $(sbin_PROGRAMS)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	test -z "$(sbindir)" || $(MKDIR_P) "$(DESTDIR)$(sbindir)"
-	@list='$(sbin_PROGRAMS)'; for p in $$list; do \
-	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	  if test -f $$p \
-	     || test -f $$p1 \
-	  ; then \
-	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
-	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(sbinPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(sbindir)/$$f'"; \
-	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(sbinPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(sbindir)/$$f" || exit 1; \
+	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f=$(am__strip_dir) \
+	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(libdir)/$$f'"; \
+	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(libdir)/$$f"; \
 	  else :; fi; \
 	done
 
-uninstall-sbinPROGRAMS:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	@list='$(sbin_PROGRAMS)'; for p in $$list; do \
-	  f=`echo "$$p" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
-	  echo " rm -f '$(DESTDIR)$(sbindir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(sbindir)/$$f"; \
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  p=$(am__strip_dir) \
+	  echo " $(LIBTOOL) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$p'"; \
+	  $(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$p"; \
 	done
 
-clean-sbinPROGRAMS:
-	@list='$(sbin_PROGRAMS)'; for p in $$list; do \
-	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	  echo " rm -f $$p $$f"; \
-	  rm -f $$p $$f ; \
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
 	done
-praudit$(EXEEXT): $(praudit_OBJECTS) $(praudit_DEPENDENCIES) 
-	@rm -f praudit$(EXEEXT)
-	$(LINK) $(praudit_OBJECTS) $(praudit_LDADD) $(LIBS)
+libauditd.la: $(libauditd_la_OBJECTS) $(libauditd_la_DEPENDENCIES) 
+	$(LINK) -rpath $(libdir) $(libauditd_la_OBJECTS) $(libauditd_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -256,7 +257,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/praudit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/auditd_lib.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -284,51 +285,6 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-man1: $(man1_MANS) $(man_MANS)
-	@$(NORMAL_INSTALL)
-	test -z "$(man1dir)" || $(MKDIR_P) "$(DESTDIR)$(man1dir)"
-	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
-	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
-	for i in $$l2; do \
-	  case "$$i" in \
-	    *.1*) list="$$list $$i" ;; \
-	  esac; \
-	done; \
-	for i in $$list; do \
-	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
-	  else file=$$i; fi; \
-	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
-	  case "$$ext" in \
-	    1*) ;; \
-	    *) ext='1' ;; \
-	  esac; \
-	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
-	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man1dir)/$$inst'"; \
-	  $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man1dir)/$$inst"; \
-	done
-uninstall-man1:
-	@$(NORMAL_UNINSTALL)
-	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
-	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
-	for i in $$l2; do \
-	  case "$$i" in \
-	    *.1*) list="$$list $$i" ;; \
-	  esac; \
-	done; \
-	for i in $$list; do \
-	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
-	  case "$$ext" in \
-	    1*) ;; \
-	    *) ext='1' ;; \
-	  esac; \
-	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
-	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " rm -f '$(DESTDIR)$(man1dir)/$$inst'"; \
-	  rm -f "$(DESTDIR)$(man1dir)/$$inst"; \
-	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -406,9 +362,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS) $(MANS)
+all-am: Makefile $(LTLIBRARIES)
 installdirs:
-	for dir in "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man1dir)"; do \
+	for dir in "$(DESTDIR)$(libdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -437,7 +393,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-sbinPROGRAMS \
+clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -456,17 +412,17 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man
+install-data-am:
 
 install-dvi: install-dvi-am
 
-install-exec-am: install-sbinPROGRAMS
+install-exec-am: install-libLTLIBRARIES
 
 install-html: install-html-am
 
 install-info: install-info-am
 
-install-man: install-man1
+install-man:
 
 install-pdf: install-pdf-am
 
@@ -492,27 +448,27 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-man uninstall-sbinPROGRAMS
-
-uninstall-man: uninstall-man1
+uninstall-am: uninstall-libLTLIBRARIES
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-sbinPROGRAMS ctags distclean \
+	clean-libLTLIBRARIES clean-libtool ctags distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-man1 install-pdf install-pdf-am install-ps \
-	install-ps-am install-sbinPROGRAMS install-strip installcheck \
+	install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-man uninstall-man1 \
-	uninstall-sbinPROGRAMS
+	tags uninstall uninstall-am uninstall-libLTLIBRARIES
 
+
+#man3_MANS =		\
+#	libauditd.3
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
