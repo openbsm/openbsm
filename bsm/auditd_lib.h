@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/auditd_lib.h#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/auditd_lib.h#2 $
  */
 
 #ifndef _BSM_AUDITD_LIB_H_
@@ -93,6 +93,7 @@ int auditd_set_evcmap(void);
 int auditd_set_namask(void);
 int auditd_set_policy(void);
 int auditd_set_fsize(void);
+int auditd_set_host(void);
 int auditd_swap_trail(char *TS, char **newfile, gid_t gid,
     int (*warn_getacdir)(char *));
 int auditd_prevent_audit(void);

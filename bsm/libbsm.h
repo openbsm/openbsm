@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#37 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#38 $
  */
 
 #ifndef _LIBBSM_H_
@@ -826,6 +826,8 @@ __END_DECLS
 /*
  * Functions relating to BSM<->errno conversion.
  */
+int			 au_bsm_to_errno(u_char bsm_error, int *errorp);
+u_char			 au_errno_to_bsm(int error);
 char			*au_strerror(u_char bsm_error);
 
 /*

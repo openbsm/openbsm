@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#32 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_audit.c#33 $
  */
 
 #include <sys/types.h>
@@ -242,6 +242,8 @@ au_assemble(au_record_t *rec, short event)
 			    (IN6_IS_ADDR_UNSPECIFIED(aptr)) ?
 			    AUDIT_HEADER_SIZE : AUDIT_HEADER_EX_SIZE(&aia);
 			break;
+		default:
+			return (-1);
 		}
 		tot_rec_size = rec->len + hdrsize + AUDIT_TRAILER_SIZE;
 		/*

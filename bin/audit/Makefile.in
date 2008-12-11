@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/audit/Makefile.in#10 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/audit/Makefile.in#11 $
 #
 
 VPATH = @srcdir@
@@ -189,7 +189,7 @@ audit_LDADD = $(top_builddir)/libbsm/libbsm.la
 man8_MANS = audit.8
 @USE_MACH_IPC_FALSE@audit_SOURCES = audit.c
 @USE_MACH_IPC_TRUE@audit_SOURCES = auditd_controlUser.c audit.c
-@USE_MACH_IPC_TRUE@CLEANFILES = auditd_controlUser.c auditd_controlUser.h
+@USE_MACH_IPC_TRUE@CLEANFILES = auditd_controlUser.c auditd_control.h
 all: all-am
 
 .SUFFIXES:
@@ -521,8 +521,8 @@ uninstall-man: uninstall-man8
 	uninstall-sbinPROGRAMS
 
 
-@USE_MACH_IPC_TRUE@auditd_controlUser.c auditd_controlUser.h: $(top_srcdir)/bin/auditd/auditd_control.defs 
-@USE_MACH_IPC_TRUE@	$(MIG)	-user auditd_controlUser.c -header auditd_controlUser.h -server /dev/null -sheader /dev/null $(top_srcdir)/bin/auditd/auditd_control.defs
+@USE_MACH_IPC_TRUE@auditd_controlUser.c auditd_control.h: $(top_srcdir)/bin/auditd/auditd_control.defs 
+@USE_MACH_IPC_TRUE@	$(MIG)	-user auditd_controlUser.c -header auditd_control.h -server /dev/null -sheader /dev/null $(top_srcdir)/bin/auditd/auditd_control.defs
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

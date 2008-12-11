@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bin/audit/Makefile.am#5 $
+# $P4: //depot/projects/trustedbsd/openbsm/bin/audit/Makefile.am#6 $
 #
 
 if USE_NATIVE_INCLUDES
@@ -14,10 +14,10 @@ man8_MANS = audit.8
 
 if USE_MACH_IPC
 audit_SOURCES = auditd_controlUser.c audit.c
-CLEANFILES = auditd_controlUser.c auditd_controlUser.h
+CLEANFILES = auditd_controlUser.c auditd_control.h
 
-auditd_controlUser.c auditd_controlUser.h: $(top_srcdir)/bin/auditd/auditd_control.defs 
-	$(MIG)	-user auditd_controlUser.c -header auditd_controlUser.h -server /dev/null -sheader /dev/null $(top_srcdir)/bin/auditd/auditd_control.defs
+auditd_controlUser.c auditd_control.h: $(top_srcdir)/bin/auditd/auditd_control.defs 
+	$(MIG)	-user auditd_controlUser.c -header auditd_control.h -server /dev/null -sheader /dev/null $(top_srcdir)/bin/auditd/auditd_control.defs
 else
 audit_SOURCES = audit.c
 endif
