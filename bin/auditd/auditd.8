@@ -25,9 +25,9 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.8#15 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.8#16 $
 .\"
-.Dd October 2, 2006
+.Dd December 11, 2008
 .Dt AUDITD 8
 .Os
 .Sh NAME
@@ -57,7 +57,8 @@ is configured to start on-demand using
 .Xr launchd 8 .
 .El
 .Pp
-Optionally, the audit review group "audit" may be created.  Non-privileged
+Optionally, the audit review group "audit" may be created.
+Non-privileged
 users that are members of this group may read the audit trail log files. 
 .Sh NOTE
 To assure uninterrupted audit support, the
@@ -82,9 +83,10 @@ On Mac OS X,
 .Nm
 uses the 
 .Xr asl 3
-API for writing system log messages.  Therefore, only the audit administrator 
+API for writing system log messages.
+Therefore, only the audit administrator 
 and members of the audit review group will be able to read the
-system log enties. 
+system log entries. 
 .Sh FILES
 .Bl -tag -width ".Pa /etc/security" -compact
 .It Pa /var/audit
