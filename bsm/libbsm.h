@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#38 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#39 $
  */
 
 #ifndef _LIBBSM_H_
@@ -937,6 +937,19 @@ void	au_free_token(token_t *tok);
  * XXXRW: In Apple's bsm-8, these are marked __APPLE_API_PRIVATE.
  */
 int	au_get_state(void);
+
+/*
+ * Initialize the audit notification.  If it has not already been initialized
+ * it will automatically on the first call of au_get_state().
+ */
+uint32_t	au_notify_initialize(void);
+
+/*
+ * Cancel audit notification and free the resources associated with it.
+ * Responsible code that no longer needs to use au_get_state() should call
+ * this.
+ */
+int		au_notify_terminate(void);
 __END_DECLS
 
 /* OpenSSH compatibility */

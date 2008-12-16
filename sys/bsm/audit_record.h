@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_record.h#7 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_record.h#8 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -206,6 +206,7 @@ token_t	*au_to_header(int rec_size, au_event_t e_type, au_emod_t e_mod);
 token_t	*au_to_header_ex(int rec_size, au_event_t e_type, au_emod_t e_mod);
 token_t	*au_to_header32(int rec_size, au_event_t e_type, au_emod_t e_mod);
 token_t	*au_to_header64(int rec_size, au_event_t e_type, au_emod_t e_mod);
+token_t	*au_to_header32_ex(int rec_size, au_event_t e_type, au_emod_t e_mod);
 #endif
 
 token_t	*au_to_me(void);

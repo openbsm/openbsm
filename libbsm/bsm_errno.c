@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#7 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#8 $
  */
 
 #include <sys/types.h>
@@ -48,6 +48,7 @@
 #endif /* !HAVE_SYS_ENDIAN_H */
 
 #include <bsm/audit_errno.h>
+#include <bsm/libbsm.h>
 
 #include <errno.h>
 #include <string.h>
