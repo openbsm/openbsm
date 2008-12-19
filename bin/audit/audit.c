@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/audit/audit.c#12 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/audit/audit.c#13 $
  */
 /*
  * Program to trigger the audit daemon with a message that is either:
@@ -65,7 +65,7 @@ static int send_trigger(unsigned int);
 #include <mach/host_special_ports.h>
 #include <servers/bootstrap.h>
 
-#include "auditd_controlUser.h"
+#include "auditd_control.h"
 
 /* 
  * XXX the following is temporary until this can be added to the kernel
