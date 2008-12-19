@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd_darwin.c#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd_darwin.c#2 $
  */
 
 #include <sys/types.h>
@@ -103,6 +103,7 @@ auditd_openlog(int debug, gid_t gid)
 	au_aslclient = asl_open("auditd", "org.trustedbsd.auditd", opt);
 	au_aslmsg = asl_new(ASL_TYPE_MSG); 
 
+#ifdef ASL_KEY_READ_UID
 	/*
 	 * Make it only so the audit administrator and members of the audit
 	 * review group (if used) have access to the auditd system log messages.
@@ -110,9 +111,12 @@ auditd_openlog(int debug, gid_t gid)
 	asl_set(au_aslmsg, ASL_KEY_READ_UID, "0");
 	asprintf(&cp, "%u", gid);	
 	if (cp != NULL) {
+#ifdef ASL_KEY_READ_GID
 		asl_set(au_aslmsg, ASL_KEY_READ_GID, cp);
+#endif
 		free(cp);
 	}
+#endif
 
 	/*
 	 * Set the client-side system log filtering.
