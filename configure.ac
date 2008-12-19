@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.1alpha4], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#46 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#47 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -120,6 +120,20 @@ have_audit_syscalls=true
 have_audit_syscalls=false
 ])
 AM_CONDITIONAL(HAVE_AUDIT_SYSCALLS, $have_audit_syscalls)
+
+#
+# There are a wide variety of endian macros and functions in the wild; we try
+# to use the native support if it defines be32enc(), but otherwise have to
+# use our own.
+#
+AC_TRY_LINK([
+	#include <sys/endian.h>
+	#include <stdlib.h>
+], [
+	be32enc(NULL, 1);
+], [
+AC_DEFINE(HAVE_BE32ENC,, Define if be32enc is present)
+])
 
 # Check to see if Mach IPC is used for trigger messages.  If so, use Mach IPC
 # instead of the default for sending trigger messages to the audit components.

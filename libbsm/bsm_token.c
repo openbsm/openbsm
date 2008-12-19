@@ -30,15 +30,15 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#84 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#85 $
  */
 
 #include <sys/types.h>
 
 #include <config/config.h>
-#ifdef HAVE_SYS_ENDIAN_H
+#if defined(HAVE_SYS_ENDIAN_H) && defined(HAVE_BE32ENC)
 #include <sys/endian.h>
-#else /* !HAVE_SYS_ENDIAN_H */
+#else /* !HAVE_SYS_ENDIAN_H || !HAVE_BE32ENC */
 #ifdef HAVE_MACHINE_ENDIAN_H
 #include <machine/endian.h>
 #else /* !HAVE_MACHINE_ENDIAN_H */
@@ -49,7 +49,7 @@
 #endif /* !HAVE_ENDIAN_H */
 #endif /* !HAVE_MACHINE_ENDIAN_H */
 #include <compat/endian.h>
-#endif /* !HAVE_SYS_ENDIAN_H */
+#endif /* !HAVE_SYS_ENDIAN_H || !HAVE_BE32ENC */
 #ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
 #else /* !HAVE_FULL_QUEUE_H */

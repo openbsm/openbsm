@@ -6,6 +6,9 @@
 /* Define if audit system calls present */
 #undef HAVE_AUDIT_SYSCALLS
 
+/* Define if be32enc is present */
+#undef HAVE_BE32ENC
+
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
 
