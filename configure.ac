@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.1alpha4], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#47 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#48 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADER([config/config.h])
@@ -35,7 +35,7 @@ AC_SEARCH_LIBS(clock_gettime, rt)
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([endian.h mach/mach.h machine/endian.h sys/endian.h])
+AC_CHECK_HEADERS([endian.h mach/mach.h machine/endian.h sys/endian.h stdint.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -106,7 +106,7 @@ AC_DEFINE(HAVE_FULL_QUEUE_H,, Define if queue.h includes LIST_FIRST)
 # depend on them or it will generate link-time or run-time errors.  Test for
 # just one.
 AC_TRY_LINK([
-	#include <stdlib.h>
+	#include <stddef.h>
 
 	extern int auditon(int, void *, int);
 ], [
