@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#9 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#10 $
  */
 
 #include <sys/types.h>
@@ -285,7 +285,7 @@ static const struct bsm_errors bsm_errors[] = {
 	"Advertise error" },
 	{ BSM_ESRMNT,
 #ifdef ESRMNT
-	ESRMNT
+	ESRMNT,
 #else
 	ERRNO_NO_LOCAL_MAPPING,
 #endif
