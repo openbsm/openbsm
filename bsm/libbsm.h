@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#39 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#40 $
  */
 
 #ifndef _LIBBSM_H_
@@ -828,7 +828,7 @@ __END_DECLS
  */
 int			 au_bsm_to_errno(u_char bsm_error, int *errorp);
 u_char			 au_errno_to_bsm(int error);
-char			*au_strerror(u_char bsm_error);
+const char		*au_strerror(u_char bsm_error);
 
 /*
  * The remaining APIs are associated with Apple's BSM implementation, in
