@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#10 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#11 $
  */
 
 #include <sys/types.h>
@@ -275,7 +275,13 @@ static const struct bsm_errors bsm_errors[] = {
 #endif
 	"Package not installed" },
 	{ BSM_EREMOTE, EREMOTE, "Too many levels of remote in path" },
-	{ BSM_ENOLINK, ENOLINK, "Link has been severed" },
+	{ BSM_ENOLINK,
+#ifdef ENOLINK
+	ENOLINK,
+#else
+	ERRNO_NO_LOCAL_MAPPING,
+#endif
+	"Link has been severed" },
 	{ BSM_EADV,
 #ifdef EADV
 	EADV,
@@ -297,7 +303,13 @@ static const struct bsm_errors bsm_errors[] = {
 	ERRNO_NO_LOCAL_MAPPING,
 #endif
 	"Communication error on send" },
-	{ BSM_EPROTO, EPROTO, "Protocol error" },
+	{ BSM_EPROTO,
+#ifdef EPROTO
+	EPROTO,
+#else
+	ERRNO_NO_LOCAL_MAPPING,
+#endif
+	"Protocol error" },
 	{ BSM_ELOCKUNMAPPED,
 #ifdef ELOCKUNMAPPED
 	ELOCKUNMAPPED,
@@ -312,8 +324,20 @@ static const struct bsm_errors bsm_errors[] = {
 	ERRNO_NO_LOCAL_MAPPING,
 #endif
 	"Facility is not active" },
-	{ BSM_EMULTIHOP, EMULTIHOP, "Multihop attempted" },
-	{ BSM_EBADMSG, EBADMSG, "Bad message" },
+	{ BSM_EMULTIHOP,
+#ifdef EMULTIHOP
+	EMULTIHOP,
+#else
+	ERRNO_NO_LOCAL_MAPPING,
+#endif
+	"Multihop attempted" },
+	{ BSM_EBADMSG,
+#ifdef EBADMSG
+	EBADMSG,
+#else
+	ERRNO_NO_LOCAL_MAPPING,
+#endif
+	"Bad message" },
 	{ BSM_ENAMETOOLONG, ENAMETOOLONG, "File name too long" },
 	{ BSM_EOVERFLOW, EOVERFLOW, "Value too large to be stored in data type" },
 	{ BSM_ENOTUNIQ,
