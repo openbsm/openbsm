@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#29 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditreduce/auditreduce.c#30 $
  */
 
 /* 
@@ -39,6 +39,8 @@
  * XXX We assume that records are sorted chronologically - both wrt to 
  * XXX the records present within the file and between the files themselves
  */ 
+
+#define	_XOPEN_SOURCE		/* glibc 2 */
 
 #include <config/config.h>
 #ifdef HAVE_FULL_QUEUE_H
