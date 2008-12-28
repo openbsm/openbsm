@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#14 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#15 $
  */
 
 #include <sys/types.h>
@@ -47,7 +47,7 @@
  * stored in a single 8-bit character, so don't have a byte order.
  */
 
-struct bsm_errnos {
+struct bsm_errno {
 	int		 be_bsm_errno;
 	int		 be_local_errno;
 	const char	*be_strerror;
@@ -70,7 +70,7 @@ struct bsm_errnos {
  * support catalogues; these are only used if the OS doesn't have an error
  * string using strerror(3).
  */
-static const struct bsm_errnos bsm_errnos[] = {
+static const struct bsm_errno bsm_errnos[] = {
 	{ BSM_ERRNO_ESUCCESS, 0, "Success" },
 	{ BSM_ERRNO_EPERM, EPERM, "Operation not permitted" },
 	{ BSM_ERRNO_ENOENT, ENOENT, "No such file or directory" },
@@ -565,7 +565,7 @@ static const struct bsm_errnos bsm_errnos[] = {
 };
 static const int bsm_errnos_count = sizeof(bsm_errnos) / sizeof(bsm_errnos[0]);
 
-static const struct bsm_errnos *
+static const struct bsm_errno *
 bsm_lookup_errno_local(int local_errno)
 {
 	int i;
@@ -584,7 +584,7 @@ bsm_lookup_errno_local(int local_errno)
 u_char
 au_errno_to_bsm(int local_errno)
 {
-	const struct bsm_errnos *bsme;
+	const struct bsm_errno *bsme;
 
 	bsme = bsm_lookup_errno_local(local_errno);
 	if (bsme == NULL)
@@ -592,7 +592,7 @@ au_errno_to_bsm(int local_errno)
 	return (bsme->be_bsm_errno);
 }
 
-static const struct bsm_errnos *
+static const struct bsm_errno *
 bsm_lookup_errno_bsm(u_char bsm_errno)
 {
 	int i;
@@ -612,7 +612,7 @@ bsm_lookup_errno_bsm(u_char bsm_errno)
 int
 au_bsm_to_errno(u_char bsm_errno, int *errorp)
 {
-	const struct bsm_errnos *bsme;
+	const struct bsm_errno *bsme;
 
 	bsme = bsm_lookup_errno_bsm(bsm_errno);
 	if (bsme == NULL || bsme->be_local_errno == ERRNO_NO_LOCAL_MAPPING)
@@ -625,7 +625,7 @@ au_bsm_to_errno(u_char bsm_errno, int *errorp)
 const char *
 au_strerror(u_char bsm_errno)
 {
-	const struct bsm_errnos *bsme;
+	const struct bsm_errno *bsme;
 
 	bsme = bsm_lookup_errno_bsm(bsm_errno);
 	if (bsme == NULL)
