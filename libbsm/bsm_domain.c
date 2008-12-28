@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_domain.c#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_domain.c#2 $
  */
 
 #include <sys/types.h>
@@ -48,9 +48,27 @@ static const struct bsm_domain bsm_domains[] = {
 	{ BSM_PF_UNSPEC, PF_UNSPEC },
 	{ BSM_PF_LOCAL, PF_LOCAL },
 	{ BSM_PF_INET, PF_INET },
-	{ BSM_PF_IMPLINK, PF_IMPLINK },
-	{ BSM_PF_PUP, PF_PUP },
-	{ BSM_PF_CHAOS, PF_CHAOS },
+	{ BSM_PF_IMPLINK,
+#ifdef PF_IMPLINK
+	PF_IMPLINK
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
+	{ BSM_PF_PUP,
+#ifdef PF_PUP
+	PF_PUP
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
+	{ BSM_PF_CHAOS,
+#ifdef PF_CHAOS
+	PF_CHAOS
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
 	{ BSM_PF_NS,
 #ifdef PF_NS
 	PF_NS
@@ -65,14 +83,50 @@ static const struct bsm_domain bsm_domains[] = {
 	PF_NO_LOCAL_MAPPING
 #endif
 	},
-	{ BSM_PF_ECMA, PF_ECMA },
-	{ BSM_PF_DATAKIT, PF_DATAKIT },
-	{ BSM_PF_CCITT, PF_CCITT },
+	{ BSM_PF_ECMA,
+#ifdef PF_ECMA
+	PF_ECMA
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
+	{ BSM_PF_DATAKIT,
+#ifdef PF_DATAKIT
+	PF_DATAKIT
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
+	{ BSM_PF_CCITT,
+#ifdef PF_CCITT
+	PF_CCITT
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
 	{ BSM_PF_SNA, PF_SNA },
 	{ BSM_PF_DECnet, PF_DECnet },
-	{ BSM_PF_DLI, PF_DLI },
-	{ BSM_PF_LAT, PF_LAT },
-	{ BSM_PF_HYLINK, PF_HYLINK },
+	{ BSM_PF_DLI,
+#ifdef PF_DLI
+	PF_DLI
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
+	{ BSM_PF_LAT,
+#ifdef PF_LAT
+	PF_LAT
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
+	{ BSM_PF_HYLINK,
+#ifdef PF_HYLINK
+	PF_HYLINK
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
 	{ BSM_PF_APPLETALK, PF_APPLETALK },
 	{ BSM_PF_NIT,
 #ifdef PF_NIT
@@ -88,7 +142,13 @@ static const struct bsm_domain bsm_domains[] = {
 	PF_NO_LOCAL_MAPPING
 #endif
 	},
-	{ BSM_PF_OSI, PF_OSI },
+	{ BSM_PF_OSI,
+#ifdef PF_OSI
+	PF_OSI
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
 	{ BSM_PF_X25,
 #ifdef PF_X25
 	PF_X25
@@ -112,7 +172,13 @@ static const struct bsm_domain bsm_domains[] = {
 	},
 	{ BSM_PF_IPX, PF_IPX },
 	{ BSM_PF_ROUTE, PF_ROUTE },
-	{ BSM_PF_LINK, PF_LINK },
+	{ BSM_PF_LINK,
+#ifdef PF_LINK
+	PF_LINK
+#else
+	PF_NO_LOCAL_MAPPING
+#endif
+	},
 	{ BSM_PF_INET6, PF_INET6 },
 	{ BSM_PF_KEY, PF_KEY },
 	{ BSM_PF_NCA,
