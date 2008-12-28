@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#12 $
+ * $P4: //depot/projects/trustedbsd/openbsm/test/bsm/generate.c#13 $
  */
 
 /*
@@ -916,7 +916,7 @@ generate_zonename_record(const char *directory, const char *record_filename)
 	write_record(directory, record_filename, zonename_token, AUE_NULL);
 }
 
-static u_short socketex_domain = AF_INET;
+static u_short socketex_domain = PF_INET;
 static u_short socketex_type = SOCK_STREAM;
 static struct sockaddr_in socketex_laddr, socketex_raddr;
 
@@ -935,7 +935,8 @@ generate_socketex_token(const char *directory, const char *token_filename)
 	socketex_raddr.sin_len = sizeof(socketex_raddr);
 	socketex_raddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
-	socketex_token = au_to_socket_ex(socketex_domain, socketex_type,
+	socketex_token = au_to_socket_ex(au_domain_to_bsm(socketex_domain),
+	    au_socket_type_to_bsm(socketex_type),
 	    (struct sockaddr *)&socketex_laddr,
 	    (struct sockaddr *)&socketex_raddr);
 	if (socketex_token == NULL)
@@ -958,7 +959,8 @@ generate_socketex_record(const char *directory, const char *record_filename)
 	socketex_raddr.sin_len = sizeof(socketex_raddr);
 	socketex_raddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
-	socketex_token = au_to_socket_ex(socketex_domain, socketex_type,
+	socketex_token = au_to_socket_ex(au_domain_to_bsm(socketex_domain),
+	    au_socket_type_to_bsm(socketex_type),
 	    (struct sockaddr *)&socketex_laddr,
 	    (struct sockaddr *)&socketex_raddr);
 	if (socketex_token == NULL)

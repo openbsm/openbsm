@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#13 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#14 $
  */
 
 #include <sys/types.h>
@@ -47,9 +47,9 @@
  * stored in a single 8-bit character, so don't have a byte order.
  */
 
-struct bsm_errors {
-	int		 be_bsm_error;
-	int		 be_os_error;
+struct bsm_errnos {
+	int		 be_bsm_errno;
+	int		 be_local_errno;
 	const char	*be_strerror;
 };
 
@@ -70,7 +70,7 @@ struct bsm_errors {
  * support catalogues; these are only used if the OS doesn't have an error
  * string using strerror(3).
  */
-static const struct bsm_errors bsm_errors[] = {
+static const struct bsm_errnos bsm_errnos[] = {
 	{ BSM_ERRNO_ESUCCESS, 0, "Success" },
 	{ BSM_ERRNO_EPERM, EPERM, "Operation not permitted" },
 	{ BSM_ERRNO_ENOENT, ENOENT, "No such file or directory" },
@@ -563,30 +563,43 @@ static const struct bsm_errors bsm_errors[] = {
 #endif
 	"Key was rejected by service" },
 };
-static const int bsm_errors_count = sizeof(bsm_errors) / sizeof(bsm_errors[0]);
+static const int bsm_errnos_count = sizeof(bsm_errnos) / sizeof(bsm_errnos[0]);
 
-static const struct bsm_errors *
-au_bsm_error_lookup_errno(int error)
+static const struct bsm_errnos *
+bsm_lookup_errno_local(int local_errno)
 {
 	int i;
 
-	if (error == ERRNO_NO_LOCAL_MAPPING)
-		return (NULL);
-	for (i = 0; i < bsm_errors_count; i++) {
-		if (bsm_errors[i].be_os_error == error)
-			return (&bsm_errors[i]);
+	for (i = 0; i < bsm_errnos_count; i++) {
+		if (bsm_errnos[i].be_local_errno == local_errno)
+			return (&bsm_errnos[i]);
 	}
 	return (NULL);
 }
 
-static const struct bsm_errors *
-au_bsm_error_lookup_bsm(u_char bsm_error)
+/*
+ * Conversion to the BSM errno space isn't allowed to fail; we simply map to
+ * BSM_ERRNO_UNKNOWN and let the remote endpoint deal with it.
+ */
+u_char
+au_errno_to_bsm(int local_errno)
+{
+	const struct bsm_errnos *bsme;
+
+	bsme = bsm_lookup_errno_local(local_errno);
+	if (bsme == NULL)
+		return (BSM_ERRNO_UNKNOWN);
+	return (bsme->be_bsm_errno);
+}
+
+static const struct bsm_errnos *
+bsm_lookup_errno_bsm(u_char bsm_errno)
 {
 	int i;
 
-	for (i = 0; i < bsm_errors_count; i++) {
-		if (bsm_errors[i].be_bsm_error == bsm_error)
-			return (&bsm_errors[i]);
+	for (i = 0; i < bsm_errnos_count; i++) {
+		if (bsm_errnos[i].be_bsm_errno == bsm_errno)
+			return (&bsm_errnos[i]);
 	}
 	return (NULL);
 }
@@ -594,49 +607,31 @@ au_bsm_error_lookup_bsm(u_char bsm_error)
 /*
  * Converstion from a BSM error to a local error number may fail if either
  * OpenBSM doesn't recognize the error on the wire, or because there is no
- * appropriate local mapping.  However, we don't allow conversion to BSM to
- * fail, we just convert to BSM_ERRNO_UNKNOWN.
+ * appropriate local mapping.
  */
 int
-au_bsm_to_errno(u_char bsm_error, int *errorp)
+au_bsm_to_errno(u_char bsm_errno, int *errorp)
 {
-	const struct bsm_errors *bsme;
+	const struct bsm_errnos *bsme;
 
-	bsme = au_bsm_error_lookup_bsm(bsm_error);
-	if (bsme == NULL || bsme->be_os_error == ERRNO_NO_LOCAL_MAPPING)
+	bsme = bsm_lookup_errno_bsm(bsm_errno);
+	if (bsme == NULL || bsme->be_local_errno == ERRNO_NO_LOCAL_MAPPING)
 		return (-1);
-	*errorp = bsme->be_os_error;
+	*errorp = bsme->be_local_errno;
 	return (0);
-}
-
-u_char
-au_errno_to_bsm(int error)
-{
-	const struct bsm_errors *bsme;
-
-	/*
-	 * We should never be passed this libbsm-internal constant, and
-	 * because it is ambiguous we just return an error.
-	 */
-	if (error == ERRNO_NO_LOCAL_MAPPING)
-		return (BSM_ERRNO_UNKNOWN);
-	bsme = au_bsm_error_lookup_errno(error);
-	if (bsme == NULL)
-		return (BSM_ERRNO_UNKNOWN);
-	return (bsme->be_bsm_error);
 }
 
 #if !defined(KERNEL) && !defined(_KERNEL)
 const char *
-au_strerror(u_char bsm_error)
+au_strerror(u_char bsm_errno)
 {
-	const struct bsm_errors *bsme;
+	const struct bsm_errnos *bsme;
 
-	bsme = au_bsm_error_lookup_bsm(bsm_error);
+	bsme = bsm_lookup_errno_bsm(bsm_errno);
 	if (bsme == NULL)
 		return ("Unrecognized BSM error");
-	if (bsme->be_os_error != ERRNO_NO_LOCAL_MAPPING)
-		return (strerror(bsme->be_os_error));
+	if (bsme->be_local_errno != ERRNO_NO_LOCAL_MAPPING)
+		return (strerror(bsme->be_local_errno));
 	return (bsme->be_strerror);
 }
 #endif
