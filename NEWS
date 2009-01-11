@@ -2,6 +2,12 @@ OpenBSM Version History
 
 OpenBSM 1.1 beta 1
 
+- Change defaults in audit_control: warn at 5% rather than 20% free for audit
+  partitions, rotate automatically at 2mb, and set the default policy to
+  cnt,argv rather than cnt so that execve(2) arguments are captured if
+  AUE_EXECVE events are audited.  These may provide more usable defaults for
+  many users.
+
 OpenBSM 1.1 alpha 5
 
 - Stub libauditd(3) man page added.
@@ -414,4 +420,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#28 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#29 $

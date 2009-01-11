@@ -26,7 +26,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#20 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#21 $
 .\"
 .Dd January 4, 2006
 .Dt AUDIT_CONTROL 5
@@ -177,10 +177,10 @@ file:
 .Bd -literal -offset indent
 dir:/var/audit
 flags:lo
-minfree:20
+minfree:5
 naflags:lo
-policy:cnt
-filesz:0
+policy:cnt,argv
+filesz:2097152
 .Ed
 .Pp
 The
@@ -190,9 +190,12 @@ events.
 The
 .Va policy
 parameter specifies that the system should neither fail stop nor suspend
-processes when the audit store fills.
-The trail file will not be automatically rotated by the audit daemon based on
-file size.
+processes when the audit store fills and that command line arguments should
+be audited for
+.Dv AUE_EXECVE
+events.
+The trail file will be automatically rotated by the audit daemon when the
+file size reaches approximately 2MB.
 .Sh FILES
 .Bl -tag -width ".Pa /etc/security/audit_control" -compact
 .It Pa /etc/security/audit_control
