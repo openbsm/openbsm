@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#3 $
  */
 
 #include <sys/param.h>
@@ -85,7 +85,10 @@ struct dir_ent {
 };
 
 static TAILQ_HEAD(, dir_ent)	dir_q;
-static int minval = -1;
+static int auditd_minval = -1;
+
+static char auditd_host[MAXHOSTNAMELEN];
+static int auditd_hostlen = -1;
 
 static char *auditd_errmsg[] = {
 	"no error",					/* ADE_NOERR 	( 0) */
@@ -165,7 +168,13 @@ affixdir(char *name, struct dir_ent *dirent)
                 return (NULL);
 	}
 
-	asprintf(&fn, "%s/%s", dirent->dirname, name);
+	/*
+	 * If the host is set then also add the hostname to the filename.
+	 */
+	if (auditd_hostlen != -1)
+		asprintf(&fn, "%s/%s.%s", dirent->dirname, name, auditd_host);
+	else
+		asprintf(&fn, "%s/%s", dirent->dirname, name);
 	return (fn);
 }
 
@@ -204,16 +213,14 @@ insert_orderly(struct dir_ent *denew)
 int
 auditd_set_host(void)
 {
-	char hoststr[MAXHOSTNAMELEN];
 	struct sockaddr_in6 *sin6;
 	struct sockaddr_in *sin;
 	struct addrinfo *res;
 	struct auditinfo_addr aia;
 	int error, ret = ADE_NOERR;
 
-	if (getachost(hoststr, MAXHOSTNAMELEN) != 0) {
-
-		ret = ADE_PARSE;
+	if (getachost(auditd_host, sizeof(auditd_host)) != 0) {
+		ret = ADE_PARSE;	
 	
 		/*
 		 * To maintain reverse compatability with older audit_control
@@ -229,7 +236,8 @@ auditd_set_host(void)
 			ret = ADE_AUDITON;
 		return (ret);
 	}
-	error = getaddrinfo(hoststr, NULL, NULL, &res);
+	auditd_hostlen = strlen(auditd_host);
+	error = getaddrinfo(auditd_host, NULL, NULL, &res);
 	if (error)
 		return (ADE_GETADDR);
 	switch (res->ai_family) {
@@ -271,14 +279,14 @@ auditd_set_minfree(void)
 {
 	au_qctrl_t qctrl;
 
-	if (getacmin(&minval) != 0)
+	if (getacmin(&auditd_minval) != 0)
 		return (ADE_PARSE);
 	
 	if (auditon(A_GETQCTRL, &qctrl, sizeof(qctrl)) != 0)
 		return (ADE_AUDITON);
 
-	if (qctrl.aq_minfree != minval) {
-		qctrl.aq_minfree = minval;
+	if (qctrl.aq_minfree != auditd_minval) {
+		qctrl.aq_minfree = auditd_minval;
 		if (auditon(A_SETQCTRL, &qctrl, sizeof(qctrl)) != 0)
 			return (ADE_AUDITON);
 	}
@@ -288,8 +296,8 @@ auditd_set_minfree(void)
 
 /*
  * Parses the "dir" entry in audit_control(5) into an ordered list.  Also, will
- * set the minfree value if not already set.  Arguments include function
- * pointers to audit_warn functions for soft and hard limits. Returns:
+ * set the minfree and host values if not already set.  Arguments include
+ * function pointers to audit_warn functions for soft and hard limits. Returns:
  *	ADE_NOERR	on success,
  *	ADE_PARSE	error parsing audit_control(5),
  *	ADE_AUDITON	error getting/setting auditon(2) value,
@@ -309,8 +317,11 @@ auditd_read_dirs(int (*warn_soft)(char *), int (*warn_hard)(char *))
 	int scnt = 0;
 	int hcnt = 0;
 
-	if (minval == -1 && (err = auditd_set_minfree()) != 0)
+	if (auditd_minval == -1 && (err = auditd_set_minfree()) != 0)
 		return (err);
+
+	if (auditd_hostlen == -1)
+		auditd_set_host();
 
         /*
          * Init directory q.  Force a re-read of the file the next time.
@@ -329,7 +340,8 @@ auditd_read_dirs(int (*warn_soft)(char *), int (*warn_hard)(char *))
 	while (getacdir(cur_dir, MAXNAMLEN) >= 0) {
 		if (statfs(cur_dir, &sfs) < 0)
 			continue;  /* XXX should warn */
-		soft = (sfs.f_bfree < (sfs.f_blocks / (100 / minval))) ? 1 : 0;
+		soft = (sfs.f_bfree < (sfs.f_blocks / (100 / auditd_minval))) ?
+		    1 : 0;
 		hard = (sfs.f_bfree < AUDIT_HARD_LIMIT_FREE_BLOCKS) ? 1 : 0;
 		if (soft) {
 			if (warn_soft) 
@@ -367,7 +379,8 @@ void
 auditd_close_dirs(void)
 {
 	free_dir_q();
-	minval = -1;
+	auditd_minval = -1;
+	auditd_hostlen = -1;
 }
 
 
@@ -713,7 +726,7 @@ auditd_new_curlink(char *curfile)
 			strlcpy(newname, recoveredname, MAXPATHLEN);
 
 			if ((ptr = strstr(newname, NOT_TERMINATED)) != NULL) {
-				strlcpy(ptr, CRASH_RECOVERY, TIMESTAMP_LEN);
+				memcpy(ptr, CRASH_RECOVERY, POSTFIX_LEN);
 				if (rename(recoveredname, newname) != 0)
 					return (ADE_RENAME);
 			} else
@@ -750,9 +763,10 @@ int
 audit_quick_start(void)
 {
 	int err;
-	char *newfile;
+	char *newfile = NULL;
 	time_t tt;
 	char TS[TIMESTAMP_LEN];
+	int ret = 0;
 
 	/* 
 	 * Mask auditing of this process.
@@ -773,20 +787,26 @@ audit_quick_start(void)
 	if (getTSstr(tt, TS, TIMESTAMP_LEN) != 0)
 		return (-1);
 	err = auditd_swap_trail(TS, &newfile, getgid(), NULL);
-	if (err != ADE_NOERR && err != ADE_ACTL)
-		return (-1);
+	if (err != ADE_NOERR && err != ADE_ACTL) {
+		ret = -1;
+		goto out;
+	}
 
 	/*
 	 * Add the current symlink and recover from crash, if needed. 
 	 */
-	if (auditd_new_curlink(newfile) != 0)
-		return(-1);
+	if (auditd_new_curlink(newfile) != 0) {
+		ret = -1;
+		goto out;
+	}
 
 	/*
 	 * At this point auditing has started so generate audit start-up record.
 	 */
-	if (auditd_gen_record(AUE_audit_startup, NULL) != 0)
-		return (-1);
+	if (auditd_gen_record(AUE_audit_startup, NULL) != 0) {
+		ret = -1;
+		goto out;
+	}
 
 	/*
 	 *  Configure the audit controls.
@@ -798,7 +818,11 @@ audit_quick_start(void)
 	(void) auditd_set_minfree();
 	(void) auditd_set_host();
 
-	return (0);
+out:
+	if (newfile != NULL)
+		free(newfile);
+
+	return (ret);
 }
 
 /*
@@ -855,7 +879,7 @@ audit_quick_stop(void)
 	strlcpy(newname, oldname, len);
 
 	if ((ptr = strstr(newname, NOT_TERMINATED)) != NULL) {
-		strlcpy(ptr, TS, TIMESTAMP_LEN);
+		memcpy(ptr, TS, POSTFIX_LEN);
 		if (rename(oldname, newname) != 0)
 			return (-1);
 	} else

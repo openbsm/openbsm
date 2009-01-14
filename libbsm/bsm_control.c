@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#24 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#25 $
  */
 
 #include <config/config.h>
@@ -619,7 +619,7 @@ getachost(char *auditstr, size_t len)
 #endif
 		return (-3);
 	}
-	strcpy(auditstr, str);
+	strlcpy(auditstr, str, len);
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 	pthread_mutex_unlock(&mutex);
 #endif

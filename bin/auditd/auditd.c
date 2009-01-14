@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#41 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#42 $
  */
 
 #include <sys/types.h>
@@ -166,7 +166,7 @@ close_lastfile(char *TS)
 
 		/* Rename the last file -- append timestamp. */
 		if ((ptr = strstr(lastfile, NOT_TERMINATED)) != NULL) {
-			strlcpy(ptr, TS, TIMESTAMP_LEN);
+			memcpy(ptr, TS, POSTFIX_LEN);
 			if (rename(oldname, lastfile) != 0)
 				auditd_log_err(
 				    "Could not rename %s to %s: %m", oldname,
