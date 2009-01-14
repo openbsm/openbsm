@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#25 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#26 $
  */
 
 #include <config/config.h>
@@ -63,6 +63,32 @@ static char	ptrmoved = 0;
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
+
+/*
+ * Audit policy string token table for au_poltostr() and au_strtopol().
+ */
+struct audit_polstr {
+	long 		 ap_policy;
+	const char 	*ap_str;	
+};
+
+static struct audit_polstr au_polstr[] = {
+	{ AUDIT_CNT,		"cnt"		},
+	{ AUDIT_AHLT,		"ahlt"		},
+	{ AUDIT_ARGV,		"argv"		},
+	{ AUDIT_ARGE,		"arge"		},
+	{ AUDIT_SEQ,		"seq"		},
+	{ AUDIT_WINDATA,	"windata"	},
+	{ AUDIT_USER,		"user"		},
+	{ AUDIT_GROUP,		"group"		},
+	{ AUDIT_TRAIL,		"trail"		},
+	{ AUDIT_PATH,		"path"		},
+	{ AUDIT_SCNT,		"scnt"		},
+	{ AUDIT_PUBLIC,		"public"	},
+	{ AUDIT_ZONENAME,	"zonename"	},
+	{ AUDIT_PERZONE,	"perzone"	},
+	{ -1,			NULL		}
+};
 
 /*
  * Returns the string value corresponding to the given label from the
@@ -119,135 +145,24 @@ getstrfromtype_locked(char *name, char **str)
 ssize_t
 au_poltostr(long policy, size_t maxsize, char *buf)
 {
-	int first;
+	int first = 1;
+	int i = 0;
 
 	if (maxsize < 1)
 		return (-1);
-	first = 1;
 	buf[0] = '\0';
 
-	if (policy & AUDIT_CNT) {
-		if (strlcat(buf, "cnt", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_AHLT) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
+	do {
+		if (policy & au_polstr[i].ap_policy) {
+			if (!first && strlcat(buf, ",", maxsize) >= maxsize)
 				return (-1);
-		}
-		if (strlcat(buf, "ahlt", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_ARGV) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
+			if (strlcat(buf, au_polstr[i].ap_str, maxsize) >=
+			    maxsize)
 				return (-1);
+			first = 0;
 		}
-		if (strlcat(buf, "argv", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_ARGE) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "arge", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_SEQ) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "seq", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_WINDATA) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "windata", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_USER) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "user", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_GROUP) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "group", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_TRAIL) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "trail", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_PATH) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "path", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_SCNT) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "scnt", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_PUBLIC) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "public", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_ZONENAME) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "zonename", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
-	if (policy & AUDIT_PERZONE) {
-		if (!first) {
-			if (strlcat(buf, ",", maxsize) >= maxsize)
-				return (-1);
-		}
-		if (strlcat(buf, "perzone", maxsize) >= maxsize)
-			return (-1);
-		first = 0;
-	}
+	} while (NULL != au_polstr[++i].ap_str);
+
 	return (strlen(buf));
 }
 
@@ -260,6 +175,7 @@ au_strtopol(const char *polstr, long *policy)
 {
 	char *bufp, *string;
 	char *buffer;
+	int i, matched;
 
 	*policy = 0;
 	buffer = strdup(polstr);
@@ -268,35 +184,17 @@ au_strtopol(const char *polstr, long *policy)
 
 	bufp = buffer;
 	while ((string = strsep(&bufp, ",")) != NULL) {
-		if (strcmp(string, "cnt") == 0)
-			*policy |= AUDIT_CNT;
-		else if (strcmp(string, "ahlt") == 0)
-			*policy |= AUDIT_AHLT;
-		else if (strcmp(string, "argv") == 0)
-			*policy |= AUDIT_ARGV;
-		else if (strcmp(string, "arge") == 0)
-			*policy |= AUDIT_ARGE;
-		else if (strcmp(string, "seq") == 0)
-			*policy |= AUDIT_SEQ;
-		else if (strcmp(string, "winau_fstat") == 0)
-			*policy |= AUDIT_WINDATA;
-		else if (strcmp(string, "user") == 0)
-			*policy |= AUDIT_USER;
-		else if (strcmp(string, "group") == 0)
-			*policy |= AUDIT_GROUP;
-		else if (strcmp(string, "trail") == 0)
-			*policy |= AUDIT_TRAIL;
-		else if (strcmp(string, "path") == 0)
-			*policy |= AUDIT_PATH;
-		else if (strcmp(string, "scnt") == 0)
-			*policy |= AUDIT_SCNT;
-		else if (strcmp(string, "public") == 0)
-			*policy |= AUDIT_PUBLIC;
-		else if (strcmp(string, "zonename") == 0)
-			*policy |= AUDIT_ZONENAME;
-		else if (strcmp(string, "perzone") == 0)
-			*policy |= AUDIT_PERZONE;
-		else {
+		matched = i = 0;
+
+		do {
+			if (strcmp(string, au_polstr[i].ap_str) == 0) {
+				*policy |= au_polstr[i].ap_policy;
+				matched = 1;
+				break;
+			}
+		} while (NULL != au_polstr[++i].ap_str);
+
+		if (!matched) {
 			free(buffer);
 			errno = EINVAL;
 			return (-1);
