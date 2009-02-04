@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2004 Apple Inc.
+ * Copyright (c) 2004,2009 Apple Inc.
  * Copyright (c) 2006 Robert N. M. Watson
  * All rights reserved.
  *
@@ -27,13 +27,14 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#26 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#27 $
  */
 
 #include <config/config.h>
 
 #include <bsm/libbsm.h>
 
+#include <ctype.h>
 #include <errno.h>
 #include <string.h>
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
@@ -135,6 +136,82 @@ getstrfromtype_locked(char *name, char **str)
 			}
 		}
 	}
+}
+
+/*
+ * Convert a given time value with a multiplier (seconds, hours, days, years) to
+ * seconds.  Return 0 on success.
+ */
+static int
+au_timetosec(time_t *seconds, u_long value, char mult)
+{
+	if (NULL == seconds)
+		return (-1);
+
+	switch(mult) {
+	case 's':
+		/* seconds */
+		*seconds = (time_t)value;
+		break;
+
+	case 'h':
+		/* hours */
+		*seconds = (time_t)value * 60 * 60;
+		break;
+
+	case 'd':
+		/* days */
+		*seconds = (time_t)value * 60 * 60 * 24;
+		break;
+
+	case 'y':
+		/* years.  Add a day for each 4th (leap) year. */
+		*seconds = (time_t)value * 60 * 60 * 24 * 364 +
+		    ((time_t)value / 4) * 60 * 60 * 24;
+		break;
+
+	default:
+		return (-1);
+	}
+	return (0);
+}
+
+/*
+ * Convert a given disk space value with a multiplier (bytes, kilobytes, 
+ * megabytes, gigabytes) to bytes.  Return 0 on success.
+ */
+static int
+au_spacetobytes(size_t *bytes, u_long value, char mult)
+{
+	if (NULL == bytes)
+		return (-1);
+
+	switch(mult) {
+	case 'B':
+	case ' ':
+		/* Bytes */
+		*bytes = (size_t)value;
+		break;
+
+	case 'K':
+		/* Kilobytes */
+		*bytes = (size_t)value * 1024;
+		break;
+
+	case 'M':
+		/* Megabytes */
+		*bytes = (size_t)value * 1024 * 1024;
+		break;
+
+	case 'G':
+		/* Gigabytes */
+		*bytes = (size_t)value * 1024 * 1024 * 1024;
+		break;
+
+	default:
+		return (-1);
+	}
+	return (0);
 }
 
 /*
@@ -333,46 +410,65 @@ getacmin(int *min_val)
 int
 getacfilesz(size_t *filesz_val)
 {
-	char *filesz, *dummy;
-	long long ll;
+	char *str;
+	size_t val;
+	char mult;
+	int nparsed;
 
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 	pthread_mutex_lock(&mutex);
 #endif
 	setac_locked();
-	if (getstrfromtype_locked(FILESZ_CONTROL_ENTRY, &filesz) < 0) {
+	if (getstrfromtype_locked(FILESZ_CONTROL_ENTRY, &str) < 0) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
 		return (-2);
 	}
-	if (filesz == NULL) {
+	if (str == NULL) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
 		errno = EINVAL;
 		return (1);
 	}
-	ll = strtoll(filesz, &dummy, 10);
-	if (*dummy != '\0') {
+
+	/* Trim off any leading white space. */
+	while (*str == ' ' || *str == '\t')
+		str++;
+
+	nparsed = sscanf(str, "%lu%c", &val, &mult);
+
+	switch (nparsed) {
+	case 1:
+		/* If no multiplier then assume 'B' (bytes). */
+		mult = 'B';
+		/* fall through */
+	case 2:
+		if (au_spacetobytes(filesz_val, val, mult) == 0)
+			break;
+		/* fall through */
+	default:
+		errno = EINVAL;
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
-		errno = EINVAL;
 		return (-1);
 	}
+
 	/*
 	 * The file size must either be 0 or >= MIN_AUDIT_FILE_SIZE.  0
 	 * indicates no rotation size.
 	 */
-	if (ll < 0 || (ll > 0 && ll < MIN_AUDIT_FILE_SIZE)) {
+	if (*filesz_val < 0 || (*filesz_val > 0 &&
+		*filesz_val < MIN_AUDIT_FILE_SIZE)) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
+		filesz_val = 0L;
 		errno = EINVAL;
 		return (-1);
 	}
-	*filesz_val = ll;
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 	pthread_mutex_unlock(&mutex);
 #endif
@@ -518,6 +614,108 @@ getachost(char *auditstr, size_t len)
 		return (-3);
 	}
 	strlcpy(auditstr, str, len);
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_unlock(&mutex);
+#endif
+	return (0);
+}
+
+/*
+ * Set expiration conditions.
+ */
+static int
+setexpirecond(time_t *age, size_t *size, u_long value, char mult)
+{
+
+	if (isupper(mult) || ' ' == mult)
+		return (au_spacetobytes(size, value, mult));
+	else
+		return (au_timetosec(age, value, mult));
+}
+
+/*
+ * Return the expire-after field from the audit control file.
+ */
+int
+getacexpire(int *andflg, time_t *age, size_t *size)
+{
+	char *str;
+	int nparsed;
+	u_long val1, val2;
+	char mult1, mult2;
+	char andor[AU_LINE_MAX];
+
+	*age = 0L;
+	*size = 0LL;
+	*andflg = 0;
+
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_lock(&mutex);
+#endif
+	setac_locked();
+	if (getstrfromtype_locked(EXPIRE_AFTER_CONTROL_ENTRY, &str) < 0) {
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+		pthread_mutex_unlock(&mutex);
+#endif
+		return (-2);
+	}
+	if (str == NULL) {
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+		pthread_mutex_unlock(&mutex);
+#endif
+		return (1);
+	}
+
+	/* First, trim off any leading white space. */
+	while (*str == ' ' || *str == '\t')
+		str++;				 
+
+	nparsed = sscanf(str, "%lu%c%[ \tadnorADNOR]%lu%c", &val1, &mult1,
+	    andor, &val2, &mult2);
+
+	switch (nparsed) {
+	case 1:
+		/* If no multiplier then assume 'B' (Bytes). */
+		mult1 = 'B';
+		/* fall through */
+	case 2:
+		/* One expiration condition. */
+		if (setexpirecond(age, size, val1, mult1) != 0) {
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+			pthread_mutex_unlock(&mutex);
+#endif
+			return (-1);
+		}
+		break;
+
+	case 5:
+		/* Two expiration conditions. */
+		if (setexpirecond(age, size, val1, mult1) != 0 || 
+		    setexpirecond(age, size, val2, mult2) != 0) {
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+			pthread_mutex_unlock(&mutex);
+#endif
+			return (-1);
+		}
+		if (strcasestr(andor, "and") != NULL)
+			*andflg = 1;
+		else if (strcasestr(andor, "or") != NULL)
+			*andflg = 0;
+		else {
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+			pthread_mutex_unlock(&mutex);
+#endif
+			return (-1);
+		}
+		break;
+
+	default:
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+		pthread_mutex_unlock(&mutex);
+#endif
+		return (-1);
+	}
+
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 	pthread_mutex_unlock(&mutex);
 #endif

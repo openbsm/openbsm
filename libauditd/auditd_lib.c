@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2008 Apple Inc.
+ * Copyright (c) 2008-2009 Apple Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#3 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#4 $
  */
 
 #include <sys/param.h>
@@ -52,6 +52,7 @@
 #include <bsm/auditd_lib.h>
 #include <bsm/libbsm.h>
 
+#include <dirent.h>
 #include <err.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -77,6 +78,11 @@
 #define	AUDIT_HARD_LIMIT_FREE_BLOCKS	4
 #endif
 
+/*
+ * Number of seconds to January 1, 2000
+ */
+#define	JAN_01_2000	946598400
+
 struct dir_ent {
 	char			*dirname;
 	uint8_t			 softlim;
@@ -85,6 +91,13 @@ struct dir_ent {
 };
 
 static TAILQ_HEAD(, dir_ent)	dir_q;
+
+struct audit_trail {
+	time_t			 at_mtime;
+	char			*at_path;
+	off_t			 at_size;
+};
+
 static int auditd_minval = -1;
 
 static char auditd_host[MAXHOSTNAMELEN];
@@ -110,6 +123,7 @@ static char *auditd_errmsg[] = {
 	"invalid argument",				/* ADE_INVAL	(16) */
 	"could not resolve hostname to address",	/* ADE_GETADDR	(17) */
 	"address family not supported",			/* ADE_ADDRFAM	(18) */
+	"error expiring audit trail files",		/* ADE_EXPIRE	(19) */
 };
 
 #define MAXERRCODE (sizeof(auditd_errmsg) / sizeof(auditd_errmsg[0]))
@@ -292,6 +306,187 @@ auditd_set_minfree(void)
 	}
 
 	return (0);
+}
+
+/*
+ * Comparison function for audit trail sorting.  Compare modification times
+ * of trail files.
+ */
+static int
+trails_cmp(const void *t1, const void *t2)
+{
+	struct audit_trail *a = (struct audit_trail *)t1;
+	struct audit_trail *b = (struct audit_trail *)t2;
+
+	if (a->at_mtime < b->at_mtime)
+		return (-1);
+	if (a->at_mtime > b->at_mtime)
+		return (1);
+	return (0);
+}
+
+/*
+ * Remove audit trails files according to the expiration conditions.  Returns:
+ * 	ADE_NOERR	on success or there is nothing to do.
+ * 	ADE_PARSE	if error parsing audit_control(5).
+ * 	ADE_NOMEM	if could not allocate memory.
+ * 	ADE_EXPIRE	if there was an unespected error.
+ */
+int
+auditd_expire_trails(int (*warn_expired)(char *))
+{
+	int andflg, i, n = 0, num_trails = 0, ret = ADE_NOERR;
+	size_t expire_size, total_size = 0L;
+	time_t expire_age, oldest_time, current_time = time(NULL);
+	struct dir_ent *traildir;
+	struct audit_trail *trail;
+	char *afnp, *pn;
+	struct stat stbuf;
+	char activefn[MAXPATHLEN];
+
+	/*
+	 * Read the expiration conditions.  If no conditions then return no
+	 * error.
+	 */
+	if (getacexpire(&andflg, &expire_age, &expire_size) < 0)
+		return (ADE_PARSE);
+	if (!expire_age && !expire_size)
+		return (ADE_NOERR);
+
+	/*
+	 * Read the 'current' trail file name.  Trim off directory path.
+	 */
+	activefn[0] = '\0';
+	readlink(AUDIT_CURRENT_LINK, activefn, MAXPATHLEN - 1);
+	if ((afnp = strrchr(activefn, '/')) != NULL) 
+		afnp++;
+
+	/*
+	 * Count up the number of audit trail files we have in all the audit
+	 * trail directories.
+	 */
+	num_trails = 0;
+	TAILQ_FOREACH(traildir, &dir_q, dirs) {
+		if (stat(traildir->dirname, &stbuf) == 0)
+			num_trails += (stbuf.st_nlink - 2);
+	}
+
+	trail = (struct audit_trail *)malloc(sizeof(struct audit_trail) *
+	    num_trails);
+	if (NULL == trail)
+		return (ADE_NOMEM);
+
+	/*
+	 * Build an array of the trail files.
+	 */
+	TAILQ_FOREACH(traildir, &dir_q, dirs) {
+		DIR *dirp;
+		struct dirent *dp;
+
+		dirp = opendir(traildir->dirname);
+		while ((dp = readdir(dirp)) != NULL) {
+
+			/*
+			 * Filter non-trail files.
+			 */
+			if (dp->d_type != DT_REG || 
+			    dp->d_namlen != (FILENAME_LEN - 1) ||
+			    dp->d_name[POSTFIX_LEN] != '.')
+				continue;
+
+
+			if (n > num_trails) {
+				/*
+				 * This shouldn't happen but, if it does, we 
+				 * break out of the loop and expire what trail
+				 * files we have.  Also, return there was an
+				 * error.
+				 */
+				ret = ADE_EXPIRE;
+				break;
+			}
+
+			if (asprintf(&pn, "%s/%s", traildir->dirname,
+				dp->d_name) < 0) {
+				ret = ADE_NOMEM;
+				break;
+			}
+
+			if (stat(pn, &stbuf) < 0) {
+				free(pn);
+				continue;
+			}
+
+			/*
+			 * If the mtime is older than Jan 1, 2000 then update
+			 * the mtime of the trail file to the current time.
+			 * This is so we don't prematurely remove a trail file
+			 * that was created while the system clock reset to the
+			 * "beginning of time" but later the system clock is set
+			 * to the correct current time.
+			 */
+			if (current_time >= JAN_01_2000 &&
+			    stbuf.st_mtime < JAN_01_2000) {
+				struct timeval tv[2];
+
+				stbuf.st_mtime = current_time;
+				TIMESPEC_TO_TIMEVAL(&tv[0], 
+				    &stbuf.st_atimespec);
+				TIMESPEC_TO_TIMEVAL(&tv[1], 
+				    &stbuf.st_mtimespec);
+				utimes(pn, tv);
+			}
+
+			total_size += stbuf.st_size;
+			if (NULL != afnp &&
+			    strncmp(dp->d_name, afnp, FILENAME_LEN) == 0) {
+				free(pn);
+				continue;
+			}
+
+			trail[n].at_mtime = stbuf.st_mtime;
+			trail[n].at_size = stbuf.st_size;
+			trail[n].at_path = pn;
+			n++;
+		}
+	}
+
+	/*
+	 * Sort the array of trail files by the modification date.
+	 */
+	qsort(trail, n, sizeof(struct audit_trail), trails_cmp);
+
+	oldest_time = current_time - expire_age;
+
+	/* 
+	 * Expire trail files, oldest (mtime) first, if the given
+	 * conditions are met.
+	 */
+	for (i = 0; i < n; i++) {
+		if (andflg) {
+			if ((expire_size && total_size > expire_size) &&
+			    (expire_age && trail[i].at_mtime < oldest_time)) {
+				if (warn_expired)
+				    (*warn_expired)(trail[i].at_path);
+				if (unlink(trail[i].at_path) < 0)
+					ret = ADE_EXPIRE;
+				total_size -= trail[i].at_size;
+			}
+		} else {
+			if ((expire_size && total_size > expire_size) ||
+			    (expire_age && trail[i].at_mtime < oldest_time)) {
+				if (warn_expired)
+				    (*warn_expired)(trail[i].at_path);
+				if (unlink(trail[i].at_path) < 0)
+					ret = ADE_EXPIRE;
+				total_size -= trail[i].at_size;
+			}
+		}
+		free(trail[i].at_path);
+	}
+	free(trail);
+
+	return (ret);
 }
 
 /*
@@ -562,7 +757,7 @@ auditd_swap_trail(char *TS, char **newfile, gid_t gid,
 	}
                 
 	/* Try until we succeed. */
-	while ((dirent = TAILQ_FIRST(&dir_q))) {
+	TAILQ_FOREACH(dirent, &dir_q, dirs) {
 		if (dirent->hardlim) 
 			continue;
 		if ((fn = affixdir(timestr, dirent)) == NULL)
