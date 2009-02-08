@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2004-2008 Apple Inc.
+ * Copyright (c) 2004-2009 Apple Inc.
  * Copyright (c) 2005 SPARTA, Inc.
  * All rights reserved.
  *
@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#86 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#87 $
  */
 
 #include <sys/types.h>
@@ -168,7 +168,7 @@ au_to_attr32(struct vnode_au_info *vni)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t pad0_16 = 0;
-	u_int16_t pad0_32 = 0;
+	u_int32_t pad0_32 = 0;
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2 * sizeof(u_int16_t) +
 	    3 * sizeof(u_int32_t) + sizeof(u_int64_t) + sizeof(u_int32_t));
@@ -217,7 +217,7 @@ au_to_attr64(struct vnode_au_info *vni)
 	token_t *t;
 	u_char *dptr = NULL;
 	u_int16_t pad0_16 = 0;
-	u_int16_t pad0_32 = 0;
+	u_int32_t pad0_32 = 0;
 
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 2 * sizeof(u_int16_t) +
 	    3 * sizeof(u_int32_t) + sizeof(u_int64_t) * 2);
