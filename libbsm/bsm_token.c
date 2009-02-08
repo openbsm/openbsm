@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#87 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#88 $
  */
 
 #include <sys/types.h>
@@ -962,7 +962,7 @@ au_to_socket_ex(u_short so_domain, u_short so_type,
 		    5 * sizeof(u_int16_t) + 2 * sizeof(u_int32_t));
 	else if (so_domain == AF_INET6)
 		GET_TOKEN_AREA(t, dptr, sizeof(u_char) +
-		    5 * sizeof(u_int16_t) + 16 * sizeof(u_int32_t));
+		    5 * sizeof(u_int16_t) + 8 * sizeof(u_int32_t));
 	else {
 		errno = EINVAL;
 		return (NULL);
