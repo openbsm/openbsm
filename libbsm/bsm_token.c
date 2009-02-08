@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#88 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#89 $
  */
 
 #include <sys/types.h>
@@ -969,8 +969,8 @@ au_to_socket_ex(u_short so_domain, u_short so_type,
 	}
 
 	ADD_U_CHAR(dptr, AUT_SOCKET_EX);
-	ADD_U_INT16(dptr, so_domain);	/* XXXRW: explicitly convert? */
-	ADD_U_INT16(dptr, so_type);	/* XXXRW: explicitly convert? */
+	ADD_U_INT16(dptr, au_domain_to_bsm(so_domain));
+	ADD_U_INT16(dptr, au_socket_type_to_bsm(so_type));
 	if (so_domain == AF_INET) {
 		ADD_U_INT16(dptr, AU_IPv4);
 		sin = (struct sockaddr_in *)sa_local;
