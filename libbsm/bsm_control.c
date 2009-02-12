@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#27 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#28 $
  */
 
 #include <config/config.h>
@@ -437,7 +437,7 @@ getacfilesz(size_t *filesz_val)
 	while (*str == ' ' || *str == '\t')
 		str++;
 
-	nparsed = sscanf(str, "%lu%c", &val, &mult);
+	nparsed = sscanf(str, "%ju%c", (uintmax_t *)&val, &mult);
 
 	switch (nparsed) {
 	case 1:
