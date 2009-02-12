@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#4 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#5 $
  */
 
 #include <sys/param.h>
@@ -814,6 +814,28 @@ auditd_swap_trail(char *TS, char **newfile, gid_t gid,
  *	ADE_NOERR	on success,
  *	ADE_SETAUDIT	if setaudit(2) fails.
  */
+#ifdef __APPLE__
+int
+auditd_prevent_audit(void)
+{
+	auditinfo_addr_t aia;
+
+	/* 
+	 * To prevent event feedback cycles and avoid audit becoming stalled if
+	 * auditing is suspended we mask this processes events from being
+	 * audited.  We allow the uid, tid, and mask fields to be implicitly
+	 * set to zero, but do set the audit session ID to the PID. 
+	 *
+	 * XXXRW: Is there more to it than this?
+	 */
+	bzero(&aia, sizeof(aia));
+	aia.ai_asid = AU_ASSIGN_ASID;
+	aia.ai_termid.at_type = AU_IPv4;
+	if (setaudit_addr(&aia, sizeof(aia)) != 0)
+		return (ADE_SETAUDIT); 
+	return (ADE_NOERR);
+}
+#else
 int
 auditd_prevent_audit(void)
 {
@@ -833,6 +855,7 @@ auditd_prevent_audit(void)
 		return (ADE_SETAUDIT); 
 	return (ADE_NOERR);
 }
+#endif /* __APPLE__ */
 
 /*
  * Generate and submit audit record for audit startup or shutdown.  The event
