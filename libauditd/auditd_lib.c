@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#5 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#6 $
  */
 
 #include <sys/param.h>
@@ -93,9 +93,11 @@ struct dir_ent {
 static TAILQ_HEAD(, dir_ent)	dir_q;
 
 struct audit_trail {
-	time_t			 at_mtime;
+	time_t			 at_time;
 	char			*at_path;
 	off_t			 at_size;
+
+	TAILQ_ENTRY(audit_trail) at_trls;
 };
 
 static int auditd_minval = -1;
@@ -309,19 +311,73 @@ auditd_set_minfree(void)
 }
 
 /*
- * Comparison function for audit trail sorting.  Compare modification times
- * of trail files.
+ * Convert a trailname into a timestamp (seconds).  Return 0 if the conversion
+ * was successful.
  */
 static int
-trails_cmp(const void *t1, const void *t2)
+trailname_to_tstamp(char *fn, time_t *tstamp)
 {
-	struct audit_trail *a = (struct audit_trail *)t1;
-	struct audit_trail *b = (struct audit_trail *)t2;
+	struct tm tm;
+	char ts[TIMESTAMP_LEN];
+	char *p;
 
-	if (a->at_mtime < b->at_mtime)
-		return (-1);
-	if (a->at_mtime > b->at_mtime)
+	*tstamp = 0;
+
+	/*
+	 * Get the ending time stamp.
+	 */
+	if ((p = strchr(fn, '.')) == NULL)
 		return (1);
+	strlcpy(ts, ++p, TIMESTAMP_LEN);
+	if (strlen(ts) != POSTFIX_LEN)
+		return (1);
+
+	bzero(&tm, sizeof(tm));
+
+	/* seconds (0-60) */
+	p = ts + POSTFIX_LEN - 2;
+	printf("sec = [%s]\n", p);
+	tm.tm_sec = atol(p);
+	if (tm.tm_sec < 0 || tm.tm_sec > 60)
+		return (1);
+
+	/* minutes (0-59) */ 
+	*p = '\0'; p -= 2;
+	printf("min = [%s]\n", p);
+	tm.tm_min = atol(p);
+	if (tm.tm_min < 0 || tm.tm_min > 59)
+		return (1);
+
+	/* hours (0 - 23) */
+	*p = '\0'; p -= 2;
+	printf("hr = [%s]\n", p);
+	tm.tm_hour = atol(p);
+	if (tm.tm_hour < 0 || tm.tm_hour > 23)
+		return (1);
+
+	/* day of month (1-31) */
+	*p = '\0'; p -= 2;
+	printf("dom = [%s]\n", p);
+	tm.tm_mday = atol(p);
+	if (tm.tm_mday < 1 || tm.tm_mday > 31)
+		return (1);
+
+	/* month (0 - 11) */
+	*p = '\0'; p -= 2;
+	printf("mon = [%s]\n", p);
+	tm.tm_mon = atol(p) - 1;
+	if (tm.tm_mon < 0 || tm.tm_mon > 11)
+		return (1);
+
+	/* year (year - 1900) */
+	*p = '\0'; p -= 4;
+	printf("yr = [%s]\n", p);
+	tm.tm_year = atol(p) - 1900;
+	if (tm.tm_year < 0)
+		return (1);
+
+	*tstamp = timegm(&tm);
+
 	return (0);
 }
 
@@ -335,12 +391,14 @@ trails_cmp(const void *t1, const void *t2)
 int
 auditd_expire_trails(int (*warn_expired)(char *))
 {
-	int andflg, i, n = 0, num_trails = 0, ret = ADE_NOERR;
+	int andflg, ret = ADE_NOERR;
 	size_t expire_size, total_size = 0L;
 	time_t expire_age, oldest_time, current_time = time(NULL);
 	struct dir_ent *traildir;
-	struct audit_trail *trail;
+	struct audit_trail *at;
 	char *afnp, *pn;
+	TAILQ_HEAD(au_trls_head, audit_trail) head =
+	    TAILQ_HEAD_INITIALIZER(head);
 	struct stat stbuf;
 	char activefn[MAXPATHLEN];
 
@@ -361,23 +419,9 @@ auditd_expire_trails(int (*warn_expired)(char *))
 	if ((afnp = strrchr(activefn, '/')) != NULL) 
 		afnp++;
 
-	/*
-	 * Count up the number of audit trail files we have in all the audit
-	 * trail directories.
-	 */
-	num_trails = 0;
-	TAILQ_FOREACH(traildir, &dir_q, dirs) {
-		if (stat(traildir->dirname, &stbuf) == 0)
-			num_trails += (stbuf.st_nlink - 2);
-	}
-
-	trail = (struct audit_trail *)malloc(sizeof(struct audit_trail) *
-	    num_trails);
-	if (NULL == trail)
-		return (ADE_NOMEM);
 
 	/*
-	 * Build an array of the trail files.
+	 * Build tail queue of the trail files.
 	 */
 	TAILQ_FOREACH(traildir, &dir_q, dirs) {
 		DIR *dirp;
@@ -385,26 +429,18 @@ auditd_expire_trails(int (*warn_expired)(char *))
 
 		dirp = opendir(traildir->dirname);
 		while ((dp = readdir(dirp)) != NULL) {
+			time_t tstamp = 0;
+			struct audit_trail *new;
 
 			/*
-			 * Filter non-trail files.
+			 * Quickly filter non-trail files.
 			 */
-			if (dp->d_type != DT_REG || 
-			    dp->d_namlen != (FILENAME_LEN - 1) ||
+			if (dp->d_namlen != (FILENAME_LEN - 1) ||
+#ifdef DT_REG
+			    dp->d_type != DT_REG || 
+#endif
 			    dp->d_name[POSTFIX_LEN] != '.')
 				continue;
-
-
-			if (n > num_trails) {
-				/*
-				 * This shouldn't happen but, if it does, we 
-				 * break out of the loop and expire what trail
-				 * files we have.  Also, return there was an
-				 * error.
-				 */
-				ret = ADE_EXPIRE;
-				break;
-			}
 
 			if (asprintf(&pn, "%s/%s", traildir->dirname,
 				dp->d_name) < 0) {
@@ -412,24 +448,45 @@ auditd_expire_trails(int (*warn_expired)(char *))
 				break;
 			}
 
-			if (stat(pn, &stbuf) < 0) {
+			if (stat(pn, &stbuf) < 0 || !S_ISREG(stbuf.st_mode)) {
+				free(pn);
+				continue;
+			}
+
+			total_size += stbuf.st_size;
+
+			/*
+			 * If this is the 'current' audit trail then
+			 * don't add it to the tail queue.
+			 */
+			if (NULL != afnp &&
+			    strncmp(dp->d_name, afnp, FILENAME_LEN) == 0) {
 				free(pn);
 				continue;
 			}
 
 			/*
-			 * If the mtime is older than Jan 1, 2000 then update
-			 * the mtime of the trail file to the current time.
-			 * This is so we don't prematurely remove a trail file
-			 * that was created while the system clock reset to the
-			 * "beginning of time" but later the system clock is set
-			 * to the correct current time.
+			 * Get the ending time stamp encoded in the trail
+			 * name.  If we can't read it or if it is older
+			 * than Jan 1, 2000 then use the mtime.
+			 */
+			if (trailname_to_tstamp(dp->d_name, &tstamp) != 0 ||
+			    tstamp < JAN_01_2000)
+				tstamp = stbuf.st_mtime;
+
+			/*
+			 * If the time stamp is older than Jan 1, 2000 then
+			 * update the mtime of the trail file to the current
+			 * time. This is so we don't prematurely remove a trail
+			 * file that was created while the system clock reset
+			 * to the * "beginning of time" but later the system
+			 * clock is set to the correct current time.
 			 */
 			if (current_time >= JAN_01_2000 &&
-			    stbuf.st_mtime < JAN_01_2000) {
+			    tstamp < JAN_01_2000) {
 				struct timeval tv[2];
 
-				stbuf.st_mtime = current_time;
+				tstamp = stbuf.st_mtime = current_time;
 				TIMESPEC_TO_TIMEVAL(&tv[0], 
 				    &stbuf.st_atimespec);
 				TIMESPEC_TO_TIMEVAL(&tv[1], 
@@ -437,24 +494,39 @@ auditd_expire_trails(int (*warn_expired)(char *))
 				utimes(pn, tv);
 			}
 
-			total_size += stbuf.st_size;
-			if (NULL != afnp &&
-			    strncmp(dp->d_name, afnp, FILENAME_LEN) == 0) {
+			/*
+			 * Allocate and populate the new entry.
+			 */
+			new = malloc(sizeof(*new));
+			if (NULL == new) {
 				free(pn);
+				ret = ADE_NOMEM;
+				break;
+			}
+			new->at_time = tstamp;
+			new->at_size = stbuf.st_size;
+			new->at_path = pn;
+
+			/*
+			 * Check to see if we have a new head.  Otherwise,
+			 * walk the tailq from the tail first and do a simple
+			 * insertion sort.
+			 */
+			if (TAILQ_EMPTY(&head) ||
+			    (new->at_time <= TAILQ_FIRST(&head)->at_time)) {
+				TAILQ_INSERT_HEAD(&head, new, at_trls);
 				continue;
 			}
 
-			trail[n].at_mtime = stbuf.st_mtime;
-			trail[n].at_size = stbuf.st_size;
-			trail[n].at_path = pn;
-			n++;
+			TAILQ_FOREACH_REVERSE(at, &head, au_trls_head, at_trls)
+				if (new->at_time >= at->at_time) {
+					TAILQ_INSERT_AFTER(&head, at, new,
+					    at_trls);
+					break;
+				}
+
 		}
 	}
-
-	/*
-	 * Sort the array of trail files by the modification date.
-	 */
-	qsort(trail, n, sizeof(struct audit_trail), trails_cmp);
 
 	oldest_time = current_time - expire_age;
 
@@ -462,29 +534,34 @@ auditd_expire_trails(int (*warn_expired)(char *))
 	 * Expire trail files, oldest (mtime) first, if the given
 	 * conditions are met.
 	 */
-	for (i = 0; i < n; i++) {
+	at = TAILQ_FIRST(&head);
+	while (NULL != at) {
+		struct audit_trail *at_next = TAILQ_NEXT(at, at_trls);
+
 		if (andflg) {
 			if ((expire_size && total_size > expire_size) &&
-			    (expire_age && trail[i].at_mtime < oldest_time)) {
+			    (expire_age && at->at_time < oldest_time)) {
 				if (warn_expired)
-				    (*warn_expired)(trail[i].at_path);
-				if (unlink(trail[i].at_path) < 0)
+				    (*warn_expired)(at->at_path);
+				if (unlink(at->at_path) < 0)
 					ret = ADE_EXPIRE;
-				total_size -= trail[i].at_size;
+				total_size -= at->at_size;
 			}
 		} else {
 			if ((expire_size && total_size > expire_size) ||
-			    (expire_age && trail[i].at_mtime < oldest_time)) {
+			    (expire_age && at->at_time < oldest_time)) {
 				if (warn_expired)
-				    (*warn_expired)(trail[i].at_path);
-				if (unlink(trail[i].at_path) < 0)
+				    (*warn_expired)(at->at_path);
+				if (unlink(at->at_path) < 0)
 					ret = ADE_EXPIRE;
-				total_size -= trail[i].at_size;
+				total_size -= at->at_size;
 			}
 		}
-		free(trail[i].at_path);
+
+		free(at->at_path);
+		free(at);
+		at = at_next;
 	}
-	free(trail);
 
 	return (ret);
 }
