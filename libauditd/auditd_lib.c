@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#6 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#7 $
  */
 
 #include <sys/param.h>
@@ -336,42 +336,36 @@ trailname_to_tstamp(char *fn, time_t *tstamp)
 
 	/* seconds (0-60) */
 	p = ts + POSTFIX_LEN - 2;
-	printf("sec = [%s]\n", p);
 	tm.tm_sec = atol(p);
 	if (tm.tm_sec < 0 || tm.tm_sec > 60)
 		return (1);
 
 	/* minutes (0-59) */ 
 	*p = '\0'; p -= 2;
-	printf("min = [%s]\n", p);
 	tm.tm_min = atol(p);
 	if (tm.tm_min < 0 || tm.tm_min > 59)
 		return (1);
 
 	/* hours (0 - 23) */
 	*p = '\0'; p -= 2;
-	printf("hr = [%s]\n", p);
 	tm.tm_hour = atol(p);
 	if (tm.tm_hour < 0 || tm.tm_hour > 23)
 		return (1);
 
 	/* day of month (1-31) */
 	*p = '\0'; p -= 2;
-	printf("dom = [%s]\n", p);
 	tm.tm_mday = atol(p);
 	if (tm.tm_mday < 1 || tm.tm_mday > 31)
 		return (1);
 
 	/* month (0 - 11) */
 	*p = '\0'; p -= 2;
-	printf("mon = [%s]\n", p);
 	tm.tm_mon = atol(p) - 1;
 	if (tm.tm_mon < 0 || tm.tm_mon > 11)
 		return (1);
 
 	/* year (year - 1900) */
 	*p = '\0'; p -= 4;
-	printf("yr = [%s]\n", p);
 	tm.tm_year = atol(p) - 1900;
 	if (tm.tm_year < 0)
 		return (1);
