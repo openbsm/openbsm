@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#89 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#90 $
  */
 
 #include <sys/types.h>
@@ -487,7 +487,8 @@ au_to_ipc_perm(struct ipc_perm *perm)
 	u_char *dptr = NULL;
 	u_int16_t pad0 = 0;
 
-	GET_TOKEN_AREA(t, dptr, 12 * sizeof(u_int16_t) + sizeof(u_int32_t));
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + 12 * sizeof(u_int16_t) +
+	    sizeof(u_int32_t));
 	if (t == NULL)
 		return (NULL);
 
