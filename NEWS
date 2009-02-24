@@ -17,6 +17,7 @@ OpenBSM 1.1 beta 1
   many users.
 - Use au_domain_to_bsm(3) and au_socket_type_to_bsm(3) to convert
   au_to_socket_ex(3) arguments to BSM format.
+- Fix error encoding AUT_IPC_PERM tokens.
 
 OpenBSM 1.1 alpha 5
 
@@ -430,4 +431,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#31 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#32 $
