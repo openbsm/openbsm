@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#7 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#8 $
  */
 
 #include <sys/param.h>
@@ -687,8 +687,7 @@ auditd_set_evcmap(void)
 	while ((evp = getauevent_r(evp)) != NULL) {
 		evc_map.ec_number = evp->ae_number;
 		evc_map.ec_class = evp->ae_class;
-		if (auditon(A_SETCLASS, &evc_map, sizeof(au_evclass_map_t))
-		    == 0)
+		if (auditon(A_SETCLASS, &evc_map, sizeof(evc_map)) == 0)
 			ctr++;
 	}
 	endauevent();
@@ -714,7 +713,7 @@ auditd_set_namask(void)
 	    (getauditflagsbin(naeventstr, &aumask) != 0)) 
 		return (ADE_PARSE);
 
-	if (auditon(A_SETKMASK, &aumask, sizeof(au_mask_t)))
+	if (auditon(A_SETKMASK, &aumask, sizeof(aumask)))
 		return (ADE_AUDITON);
 
 	return (ADE_NOERR);
@@ -732,7 +731,7 @@ auditd_set_namask(void)
 int
 auditd_set_policy(void)
 {
-	long policy;
+	int policy;
 	char polstr[POL_STR_SIZE];
 
 	if ((getacpol(polstr, POL_STR_SIZE) != 0) || 
@@ -1124,7 +1123,7 @@ int
 audit_quick_stop(void)
 {
 	int len;
-	long cond;
+	int cond;
 	char *ptr;
 	time_t tt;
 	char oldname[MAXPATHLEN];

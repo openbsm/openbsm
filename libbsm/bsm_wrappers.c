@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2004 Apple Inc.
+ * Copyright (c) 2004-2009 Apple Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#28 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#29 $
  */
 
 #ifdef __APPLE__
@@ -63,7 +63,7 @@ audit_submit(short au_event, au_id_t auid, char status,
 {
 	char text[MAX_AUDITSTRING_LEN];
 	token_t *token;
-	long acond;
+	int acond;
 	va_list ap;
 	pid_t pid;
 	int error, afd, subj_ex;
