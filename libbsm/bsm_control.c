@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2004,2009 Apple Inc.
+ * Copyright (c) 2004, 2009 Apple Inc.
  * Copyright (c) 2006 Robert N. M. Watson
  * All rights reserved.
  *
@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#28 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#29 $
  */
 
 #include <config/config.h>
