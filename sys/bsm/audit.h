@@ -26,11 +26,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit.h#6 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit.h#7 $
  */
 
 #ifndef	_BSM_AUDIT_H
 #define	_BSM_AUDIT_H
+
+#include <sys/param.h>
+#include <sys/types.h>
 
 #define	AUDIT_RECORD_MAGIC	0x828a0f1b
 #define	MAX_AUDIT_RECORDS	20
@@ -212,7 +215,6 @@ struct auditpinfo {
 	au_mask_t	ap_mask;	/* Audit masks. */
 	au_tid_t	ap_termid;	/* Terminal ID. */
 	au_asid_t	ap_asid;	/* Audit session ID. */
-	u_int64_t	ap_flags;	/* Audit session flags. */
 };
 typedef	struct auditpinfo	auditpinfo_t;
 
@@ -222,6 +224,7 @@ struct auditpinfo_addr {
 	au_mask_t	ap_mask;	/* Audit masks. */
 	au_tid_addr_t	ap_termid;	/* Terminal ID. */
 	au_asid_t	ap_asid;	/* Audit session ID. */
+	u_int64_t	ap_flags;	/* Audit session flags. */
 };
 typedef	struct auditpinfo_addr	auditpinfo_addr_t;
 
@@ -230,6 +233,7 @@ struct au_session {
 #define	as_asid			as_aia_p->ai_asid
 #define	as_auid			as_aia_p->ai_auid
 #define	as_termid		as_aia_p->ai_termid
+#define	as_flags		as_aia_p->ai_flags
 
 	au_mask_t		 as_mask;	/* Process Audit Masks. */
 };
@@ -313,6 +317,13 @@ int	getaudit(struct auditinfo *);
 int	setaudit(const struct auditinfo *);
 int	getaudit_addr(struct auditinfo_addr *, int);
 int	setaudit_addr(const struct auditinfo_addr *, int);
+
+#ifdef	__APPLE_API_PRIVATE
+#include <mach/port.h>
+mach_port_name_t	audit_session_self(void);
+au_asid_t		audit_sesison_join(mach_port_name_t port);
+#endif /* __APPLE_API_PRIVATE */
+
 #endif /* defined(_KERNEL) || defined(KERNEL) */
 
 __END_DECLS

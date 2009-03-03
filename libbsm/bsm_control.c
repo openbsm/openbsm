@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2004, 2009 Apple Inc.
+ * Copyright (c) 2004,2009 Apple Inc.
  * Copyright (c) 2006 Robert N. M. Watson
  * All rights reserved.
  *
@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#29 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#30 $
  */
 
 #include <config/config.h>
@@ -220,7 +220,7 @@ au_spacetobytes(size_t *bytes, u_long value, char mult)
  * nul).
  */
 ssize_t
-au_poltostr(long policy, size_t maxsize, char *buf)
+au_poltostr(int policy, size_t maxsize, char *buf)
 {
 	int first = 1;
 	int i = 0;
@@ -248,7 +248,7 @@ au_poltostr(long policy, size_t maxsize, char *buf)
  * ENOMEM) or 0 on success.
  */
 int
-au_strtopol(const char *polstr, long *policy)
+au_strtopol(const char *polstr, int *policy)
 {
 	char *bufp, *string;
 	char *buffer;

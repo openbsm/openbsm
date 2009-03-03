@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#42 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#43 $
  */
 
 #ifndef _LIBBSM_H_
@@ -773,8 +773,8 @@ int			 getauditflagschar(char *auditstr, au_mask_t *masks,
 			    int verbose);
 int			 au_preselect(au_event_t event, au_mask_t *mask_p,
 			    int sorf, int flag);
-ssize_t			 au_poltostr(long policy, size_t maxsize, char *buf);
-int			 au_strtopol(const char *polstr, long *policy);
+ssize_t			 au_poltostr(int policy, size_t maxsize, char *buf);
+int			 au_strtopol(const char *polstr, int *policy);
 
 /*
  * Functions relating to querying audit event information.
@@ -1261,6 +1261,33 @@ void audit_token_to_au32(
 	au_asid_t	*asidp,
 	au_tid_t	*tidp);
 #endif /* !__APPLE__ */
+
+/*
+ * Wrapper functions to auditon(2).
+ */
+int audit_get_car(char *path, size_t sz);
+int audit_get_class(au_evclass_map_t *evc_map, size_t sz);
+int audit_set_class(au_evclass_map_t *evc_map, size_t sz);
+int audit_get_cond(int *cond);
+int audit_set_cond(int *cond);
+int audit_get_cwd(char *path, size_t sz);
+int audit_get_fsize(au_fstat_t *fstat, size_t sz);
+int audit_set_fsize(au_fstat_t *fstat, size_t sz);
+int audit_get_kmask(au_mask_t *kmask, size_t sz);
+int audit_set_kmask(au_mask_t *kmask, size_t sz);
+int audit_get_kaudit(auditinfo_addr_t *aia, size_t sz);
+int audit_set_kaudit(auditinfo_addr_t *aia, size_t sz);
+int audit_set_pmask(auditpinfo_t *api, size_t sz);
+int audit_get_pinfo(auditpinfo_t *api, size_t sz);
+int audit_get_pinfo_addr(auditpinfo_addr_t *apia, size_t sz);
+int audit_get_policy(int *policy);
+int audit_set_policy(int *policy);
+int audit_get_qctrl(au_qctrl_t *qctrl, size_t sz);
+int audit_set_qctrl(au_qctrl_t *qctrl, size_t sz);
+int audit_get_sinfo_addr(auditinfo_addr_t *aia, size_t sz);
+int audit_get_stat(au_stat_t *stats, size_t sz);
+int audit_set_stat(au_stat_t *stats, size_t sz);
+int audit_send_trigger(int *trigger);
 
 __END_DECLS
 

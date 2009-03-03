@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_notify.c#16 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_notify.c#17 $
  */
 
 /*
@@ -77,7 +77,7 @@ au_notify_initialize(void)
 		return (status);
 #endif
 
-	if (auditon(A_GETCOND, &au_cond, sizeof(au_cond)) < 0) {
+	if (audit_get_cond(&au_cond) != 0) {
 		syslog(LOG_ERR, "Initial audit status check failed (%s)",
 		    strerror(errno));
 		if (errno == ENOSYS)	/* auditon() unimplemented. */
@@ -137,7 +137,7 @@ au_get_state(void)
 		return (au_cond);
 #endif
 
-	if (auditon(A_GETCOND, &au_cond, sizeof(au_cond)) < 0) {
+	if (audit_get_cond(&au_cond) != 0) {
 		/* XXX Reset au_cond to AUC_UNSET? */
 		syslog(LOG_ERR, "Audit status check failed (%s)",
 		    strerror(errno));
@@ -167,7 +167,7 @@ cannot_audit(int val __unused)
 #else
 	int cond;
 
-	if (auditon(A_GETCOND, &cond, sizeof(cond)) < 0) {
+	if (audit_get_cond(&cond) != 0) {
 		if (errno != ENOSYS) {
 			syslog(LOG_ERR, "Audit status check failed (%s)",
 			    strerror(errno));

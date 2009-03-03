@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#44 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#45 $
  */
 
 #include <sys/types.h>
@@ -357,7 +357,7 @@ close_all(void)
 
 	/* Flush contents. */
 	cond = AUC_DISABLED;
-	err_ret = auditon(A_SETCOND, &cond, sizeof(cond));
+	err_ret = audit_set_cond(&cond);
 	if (err_ret != 0) {
 		auditd_log_err("Disabling audit failed! : %s", strerror(errno));
 		err_ret = 1;

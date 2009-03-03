@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd_fbsd.c#3 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd_fbsd.c#4 $
  */
 
 #include <sys/types.h>
@@ -135,7 +135,7 @@ init_audit_state(void)
 {
 	int au_cond;
 
-	if (auditon(A_GETCOND, &au_cond, sizeof(au_cond)) < 0) {
+	if (audit_get_cond(&au_cond) < 0) {
 		if (errno != ENOSYS) {
 			auditd_log_err("Audit status check failed (%s)",
 			    strerror(errno));
