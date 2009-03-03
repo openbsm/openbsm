@@ -4,6 +4,10 @@ OpenBSM 1.1 beta 2
 
 - Change auditon(2) parameters and data structures to be 32/64-bit architecture
   independent.  Add more information to man page about auditon(2) parameters. 
+- Add wrapper functions for auditon(2) to use legecy commands when the new
+  commands are not supported.
+- Add default for 'expire-after' in audit_control to expire trails files when
+  the audit directory is more than 10 megabytes ('10M').
 
 OpenBSM 1.1 beta 1
 
@@ -436,4 +440,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#33 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#34 $
