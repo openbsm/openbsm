@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/Makefile.in#5 $
+# $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/Makefile.in#6 $
 #
 
 VPATH = @srcdir@
@@ -49,7 +49,7 @@ CONFIG_CLEAN_FILES =
 SOURCES =
 DIST_SOURCES =
 am__openbsm_HEADERS_DIST = audit.h audit_domain.h audit_errno.h \
-	audit_internal.h audit_kevents.h audit_record.h \
+	audit_fcntl.h audit_internal.h audit_kevents.h audit_record.h \
 	audit_socket_type.h
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \

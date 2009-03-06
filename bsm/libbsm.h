@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#43 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#44 $
  */
 
 #ifndef _LIBBSM_H_
@@ -831,10 +831,12 @@ void			 au_print_xml_footer(FILE *outfp);
  */
 int	 au_bsm_to_domain(u_short bsm_domain, int *local_domainp);
 int	 au_bsm_to_errno(u_char bsm_error, int *errorp);
+int	 au_bsm_to_fcntl_cmd(u_short bsm_fcntl_cmd, int *local_fcntl_cmdp);
 int	 au_bsm_to_socket_type(u_short bsm_socket_type,
 	    int *local_socket_typep);
 u_short	 au_domain_to_bsm(int local_domain);
 u_char	 au_errno_to_bsm(int local_errno);
+u_short	 au_fcntl_cmd_to_bsm(int local_fcntl_command); 
 u_short	 au_socket_type_to_bsm(int local_socket_type);
 
 const char	 *au_strerror(u_char bsm_error);
