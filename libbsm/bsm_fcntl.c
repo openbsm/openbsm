@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_fcntl.c#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_fcntl.c#2 $
  */
 
 #include <sys/param.h>
@@ -121,14 +121,17 @@ static const bsm_fcntl_cmd_t bsm_fcntl_cmdtab[] = {
 #ifdef	F_UNSHARE
 	{ BSM_F_UNSHARE,	F_UNSHARE },
 #endif
-#ifdef	F_SETLK64_NBMAND
-	{ BSM_F_SETLK64_NBMAND,	F_SETLK64_NBMAND },
+#ifdef	F_SETLK_NBMAND
+	{ BSM_F_SETLK_NBMAND,	F_SETLK_NBMAND },
 #endif
 #ifdef	F_SHARE_NBMAND
 	{ BSM_F_SHARE_NBMAND,	F_SHARE_NBMAND },
 #endif
-#ifdef	F_SETLK_NBMAND
-	{ BSM_F_SETLK_NBMAND,	F_SETLK_NBMAND },
+#ifdef	F_SETLK64_NBMAND
+	{ BSM_F_SETLK64_NBMAND,	F_SETLK64_NBMAND },
+#endif
+#ifdef	F_GETXFL
+	{ BSM_F_GETXFL,		F_GETXFL },
 #endif
 #ifdef	F_BADFD
 	{ BSM_F_BADFD,		F_BADFD },
@@ -144,6 +147,13 @@ static const bsm_fcntl_cmd_t bsm_fcntl_cmdtab[] = {
 #endif
 #ifdef	F_SETLK_REMOTE
 	{ BSM_F_SETLK_REMOTE,	F_SETLK_REMOTE },
+#endif
+
+#ifdef	F_SETSIG
+	{ BSM_F_SETSIG,		F_SETSIG },
+#endif
+#ifdef	F_GETSIG
+	{ BSM_F_GETSIG,		F_GETSIG },
 #endif
 
 #ifdef	F_CHKCLEAN
@@ -207,12 +217,24 @@ static const bsm_fcntl_cmd_t bsm_fcntl_cmdtab[] = {
 	{ BSM_F_MARKDEPENDENCY,	F_MARKDEPENDENCY },
 #endif
 
-#ifdef	F_SETSIG
-	{ BSM_F_SETSIG,		F_SETSIG },
-#endif
-#ifdef	F_GETSIG
-	{ BSM_F_GETSIG,		F_GETSIG },
-#endif
+#ifdef	FCNTL_FS_SPECIFIC_BASE
+	{ BSM_F_FS_SPECIFIC_0,	FCNTL_FS_SPECIFIC_BASE},
+	{ BSM_F_FS_SPECIFIC_1,	FCNTL_FS_SPECIFIC_BASE + 1},
+	{ BSM_F_FS_SPECIFIC_2,	FCNTL_FS_SPECIFIC_BASE + 2},
+	{ BSM_F_FS_SPECIFIC_3,	FCNTL_FS_SPECIFIC_BASE + 3},
+	{ BSM_F_FS_SPECIFIC_4,	FCNTL_FS_SPECIFIC_BASE + 4},
+	{ BSM_F_FS_SPECIFIC_5,	FCNTL_FS_SPECIFIC_BASE + 5},
+	{ BSM_F_FS_SPECIFIC_6,	FCNTL_FS_SPECIFIC_BASE + 6},
+	{ BSM_F_FS_SPECIFIC_7,	FCNTL_FS_SPECIFIC_BASE + 7},
+	{ BSM_F_FS_SPECIFIC_8,	FCNTL_FS_SPECIFIC_BASE + 8},
+	{ BSM_F_FS_SPECIFIC_9,	FCNTL_FS_SPECIFIC_BASE + 9},
+	{ BSM_F_FS_SPECIFIC_10,	FCNTL_FS_SPECIFIC_BASE + 10},
+	{ BSM_F_FS_SPECIFIC_11,	FCNTL_FS_SPECIFIC_BASE + 11},
+	{ BSM_F_FS_SPECIFIC_12,	FCNTL_FS_SPECIFIC_BASE + 12},
+	{ BSM_F_FS_SPECIFIC_13,	FCNTL_FS_SPECIFIC_BASE + 13},
+	{ BSM_F_FS_SPECIFIC_14,	FCNTL_FS_SPECIFIC_BASE + 14},
+	{ BSM_F_FS_SPECIFIC_15,	FCNTL_FS_SPECIFIC_BASE + 15},
+#endif	/* FCNTL_FS_SPECIFIC_BASE */
 };
 static const int bsm_fcntl_cmd_count = sizeof(bsm_fcntl_cmdtab) /
 	    sizeof(bsm_fcntl_cmdtab[0]);
