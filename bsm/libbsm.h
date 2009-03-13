@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#44 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#45 $
  */
 
 #ifndef _LIBBSM_H_
@@ -565,6 +565,12 @@ typedef struct {
 typedef struct {
 	u_int16_t	family;
 	u_int16_t	port;
+	u_int32_t	addr[4];
+} au_socketinet_ex32_t;
+
+typedef struct {
+	u_int16_t	family;
+	u_int16_t	port;
 	u_int32_t	addr;
 } au_socketinet32_t;
 
@@ -722,7 +728,7 @@ struct tokenstr {
 		au_seq_t		seq;
 		au_socket_t		socket;
 		au_socket_ex32_t	socket_ex32;
-		au_socketinet32_t	sockinet32;
+		au_socketinet_ex32_t	sockinet_ex32;
 		au_socketunix_t		sockunix;
 		au_subject32_t		subj32;
 		au_subject32ex_t	subj32_ex;
