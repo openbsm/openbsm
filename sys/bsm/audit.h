@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit.h#7 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit.h#8 $
  */
 
 #ifndef	_BSM_AUDIT_H
@@ -230,11 +230,6 @@ typedef	struct auditpinfo_addr	auditpinfo_addr_t;
 
 struct au_session {
 	auditinfo_addr_t	*as_aia_p;	/* Ptr to full audit info. */
-#define	as_asid			as_aia_p->ai_asid
-#define	as_auid			as_aia_p->ai_auid
-#define	as_termid		as_aia_p->ai_termid
-#define	as_flags		as_aia_p->ai_flags
-
 	au_mask_t		 as_mask;	/* Process Audit Masks. */
 };
 typedef struct au_session       au_session_t;
