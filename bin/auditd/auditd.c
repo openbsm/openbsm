@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#45 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#46 $
  */
 
 #include <sys/types.h>
@@ -537,9 +537,12 @@ auditd_handle_trigger(int trigger)
 
 	case AUDIT_TRIGGER_READ_FILE:
 		auditd_log_info("Got read file trigger");
-		if (au_state == AUD_STATE_ENABLED && 
-		    auditd_config_controls() == -1)
-			auditd_log_err("Error setting audit controls");
+		if (au_state == AUD_STATE_ENABLED) {
+			if (auditd_config_controls() == -1)
+				auditd_log_err("Error setting audit controls");
+			else if (do_trail_file() == -1)
+				auditd_log_err("Error swapping audit file");
+		}
 		break;
 
 	case AUDIT_TRIGGER_CLOSE_AND_DIE:

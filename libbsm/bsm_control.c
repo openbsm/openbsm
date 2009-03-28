@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#31 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#32 $
  */
 
 #include <config/config.h>
@@ -49,6 +49,8 @@
 #ifndef HAVE_STRLCPY
 #include <compat/strlcpy.h>
 #endif
+
+#include <sys/stat.h>
 
 /*
  * Parse the contents of the audit_control file to return the audit control
@@ -287,10 +289,27 @@ au_strtopol(const char *polstr, int *policy)
 static void
 setac_locked(void)
 {
+	static time_t lastctime = 0;
+	struct stat sbuf;
 
 	ptrmoved = 1;
-	if (fp != NULL)
+	if (fp != NULL) {
+		/*
+		 * Check to see if the file on disk has changed.  If so,
+		 * force a re-read of the file by closing it.
+		 */
+		if (fstat(fileno(fp), &sbuf) < 0)
+			goto closefp;
+		if (lastctime != sbuf.st_ctimespec.tv_sec) {
+			lastctime = sbuf.st_ctimespec.tv_sec;
+closefp:
+			fclose(fp);
+			fp = NULL;
+			return;
+		}
+
 		fseek(fp, 0, SEEK_SET);
+	}
 }
 
 void
