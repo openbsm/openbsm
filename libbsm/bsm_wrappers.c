@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#30 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_wrappers.c#31 $
  */
 
 #ifdef __APPLE__
@@ -178,7 +178,7 @@ audit_submit(short au_event, au_id_t auid, char status,
 			return (-1);
 		}
 	}
-	token = au_to_return32(status, au_errno_to_bsm(reterr));
+	token = au_to_return32(au_errno_to_bsm(status), reterr);
 	if (token == NULL) {
 		syslog(LOG_AUTH | LOG_ERR,
 		    "audit: enable to build return token");
