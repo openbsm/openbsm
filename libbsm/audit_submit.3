@@ -27,7 +27,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/audit_submit.3#15 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/audit_submit.3#16 $
 .\"
 .Dd January 18, 2008
 .Dt audit_submit 3
@@ -101,9 +101,12 @@ or
 int
 audit_bad_su(char *from_login, char *to_login)
 {
+	struct auditinfo_addr aia;
 	int error;
 
-	error = audit_submit(AUE_su, getuid(), 1, EPERM,
+	if (getaudit_addr(&aia, sizeof(aia) < 0)
+		err(1, "getaudit_addr");
+	error = audit_submit(AUE_su, aia.ai_auid, EPERM, 1,
 	    "bad su from %s to %s", from_login, to_login);
 	return (error);
 }
