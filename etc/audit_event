@@ -1,5 +1,5 @@
 #
-# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#38 $
+# $P4: //depot/projects/trustedbsd/openbsm/etc/audit_event#39 $
 #
 # The mapping between event identifiers and values is also hard-coded in
 # audit_kevents.h and audit_uevents.h, so changes must occur in both places,
@@ -628,10 +628,10 @@
 6521:AUE_DARWIN_revoke_obj:revoke object priv:fm
 6600:AUE_DARWIN_lw_login:loginwindow login:lo
 6601:AUE_DARWIN_lw_logout:loginwindow logout:lo
-7000:AUE_DARWIN_auth_user:user authentication:ad
-7001:AUE_DARWIN_ssconn:SecSrvr connection setup:ad
-7002:AUE_DARWIN_ssauthorize:SecSrvr AuthEngine:ad
-7003:AUE_DARWIN_ssauthint:SecSrvr authinternal mech:ad
+7000:AUE_DARWIN_auth_user:user authentication:aa
+7001:AUE_DARWIN_ssconn:SecSrvr connection setup:aa
+7002:AUE_DARWIN_ssauthorize:SecSrvr AuthEngine:aa
+7003:AUE_DARWIN_ssauthint:SecSrvr authinternal mech:aa
 #
 # Historic/third-party application allocations of event identifiers.
 #
@@ -650,10 +650,11 @@
 45020:AUE_revoke_obj:revoke object priv:fm
 45021:AUE_lw_login:loginwindow login:lo
 45022:AUE_lw_logout:loginwindow logout:lo
-45023:AUE_auth_user:user authentication:ad
-45024:AUE_ssconn:SecSrvr connection setup:ad
-45025:AUE_ssauthorize:SecSrvr AuthEngine:ad
-45026:AUE_ssauthint:SecSrvr authinternal mech:ad
+45023:AUE_auth_user:user authentication:aa
+45024:AUE_ssconn:SecSrvr connection setup:aa
+45025:AUE_ssauthorize:SecSrvr AuthEngine:aa
+45026:AUE_ssauthint:SecSrvr authinternal mech:aa
 45027:AUE_calife:Calife:ad
-45028:AUE_sudo:sudo(1):ad
+45028:AUE_sudo:sudo(1):aa
 45029:AUE_audit_recovery:audit crash recovery:ad
+45030:AUE_ssauthmech:SecSrvr AuthMechanism:aa

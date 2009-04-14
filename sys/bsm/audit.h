@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit.h#8 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit.h#9 $
  */
 
 #ifndef	_BSM_AUDIT_H
@@ -313,10 +313,10 @@ int	setaudit(const struct auditinfo *);
 int	getaudit_addr(struct auditinfo_addr *, int);
 int	setaudit_addr(const struct auditinfo_addr *, int);
 
-#ifdef	__APPLE_API_PRIVATE
+#ifdef __APPLE_API_PRIVATE
 #include <mach/port.h>
-mach_port_name_t	audit_session_self(void);
-au_asid_t		audit_sesison_join(mach_port_name_t port);
+mach_port_name_t audit_session_self(void);
+au_asid_t	 audit_session_join(mach_port_name_t port);
 #endif /* __APPLE_API_PRIVATE */
 
 #endif /* defined(_KERNEL) || defined(KERNEL) */
