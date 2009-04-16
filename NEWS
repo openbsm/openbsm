@@ -1,6 +1,6 @@
 OpenBSM Version History
 
-OpenBSM 1.1 beta 2
+OpenBSM 1.1
 
 - Change auditon(2) parameters and data structures to be 32/64-bit architecture
   independent.  Add more information to man page about auditon(2) parameters. 
@@ -447,4 +447,4 @@ OpenBSM 1.0 alpha 1
   to support reloading of kernel event table.
 - Allow comments in /etc/security configuration files.
 
-$P4: //depot/projects/trustedbsd/openbsm/NEWS#38 $
+$P4: //depot/projects/trustedbsd/openbsm/NEWS#39 $
