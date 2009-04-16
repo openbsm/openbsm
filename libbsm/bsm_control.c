@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#32 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#33 $
  */
 
 #include <config/config.h>
@@ -300,8 +300,8 @@ setac_locked(void)
 		 */
 		if (fstat(fileno(fp), &sbuf) < 0)
 			goto closefp;
-		if (lastctime != sbuf.st_ctimespec.tv_sec) {
-			lastctime = sbuf.st_ctimespec.tv_sec;
+		if (lastctime != sbuf.st_ctime) {
+			lastctime = sbuf.st_ctime;
 closefp:
 			fclose(fp);
 			fp = NULL;
