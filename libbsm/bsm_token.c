@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#92 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#93 $
  */
 
 #include <sys/types.h>
@@ -996,7 +996,7 @@ au_to_socket_ex(u_short so_domain, u_short so_type,
 /*
  * token ID                1 byte
  * socket family           2 bytes
- * path                    104 bytes
+ * path                    (up to) 104 bytes + NULL  (NULL terminated string)
  */
 token_t *
 au_to_sock_unix(struct sockaddr_un *so)
