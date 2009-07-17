@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE. 
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#18 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_errno.c#19 $
  */
 
 #include <sys/types.h>
@@ -492,7 +492,7 @@ static const struct bsm_errno bsm_errnos[] = {
 #ifdef EPROCUNAVAIL
 	EPROCUNAVAIL,
 #else
-	ERRNO_NO_LOCAL_MAPPING
+	ERRNO_NO_LOCAL_MAPPING,
 #endif
 	ES("Bad procedure for program") },
 	{ BSM_ERRNO_EFTYPE,
