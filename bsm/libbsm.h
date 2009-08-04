@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#45 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#46 $
  */
 
 #ifndef _LIBBSM_H_
@@ -99,6 +99,14 @@
  */
 #define	AU_TO_NO_WRITE		0	/* Abandon audit record. */
 #define	AU_TO_WRITE		1	/* Commit audit record. */
+
+/*
+ * Output format flags to au_write_tok().
+ */
+#define	AU_OFLAG_NONE		0x0000	/* Default form. */
+#define	AU_OFLAG_RAW		0x0001	/* Raw, numeric form. */
+#define	AU_OFLAG_SHORT		0x0002	/* Short form. */
+#define	AU_OFLAG_XML		0x0004	/* XML form. */
 
 __BEGIN_DECLS
 struct au_event_ent {
@@ -823,6 +831,8 @@ void			 au_print_tok(FILE *outfp, tokenstr_t *tok,
 			    char *del, char raw, char sfrm);
 void			 au_print_tok_xml(FILE *outfp, tokenstr_t *tok,
 			    char *del, char raw, char sfrm);
+void			 au_write_tok(FILE *outfp, tokenstr_t *tok,
+			    char *del, int oflags);
 
 /* 
  * Functions relating to XML output.

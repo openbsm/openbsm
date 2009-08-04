@@ -23,9 +23,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_io.3#5 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_io.3#6 $
 .\"
-.Dd April 19, 2005
+.Dd August 4, 2009
 .Dt AU_IO 3
 .Os
 .Sh NAME
@@ -45,6 +45,10 @@
 .Fc
 .Ft int
 .Fn au_read_rec "FILE *fp" "u_char **buf"
+.Ft void
+.Fo au_write_tok
+.Fa "FILE *outfp" "tokenstr_t *tok" "char *del" "int oflags"
+.Fc
 .Sh DESCRIPTION
 These interfaces support input and output (I/O) involving audit records,
 internalizing an audit record from a byte stream, converting a token to
@@ -73,6 +77,28 @@ is set non-zero.
 The delimiter
 .Fa del
 is used when printing.
+The
+.Fn au_write_tok
+function is a replacement for
+.Fn au_print_tok .
+The 
+.Fa oflags
+controls how the output should be formatted and is specified by
+or'ing the following flags:
+.Pp
+.Bl -tag -width AU_OFLAG_SHORT -compact -offset indent
+.It Li AU_OFLAG_NONE
+Use the default form.
+.It Li AU_OFLAG_RAW
+Use the raw, numeric form.
+.It Li AU_OFLAG_SHORT
+Use the short form.
+.It Li AU_OFLAG_XML
+Use the XML form.
+.El
+.Pp
+The flags options AU_OFLAG_SHORT and AU_OFLAG_RAW are exclusive and
+should not be used together.
 .Pp
 The
 .Fn au_read_rec
@@ -92,7 +118,7 @@ Each record would be broken down into components tokens through sequential
 calls to
 .Fn au_fetch_tok
 on the buffer, and then invoking
-.Fn au_print_tok
+.Fn au_write_tok
 to print each token to an output stream such as
 .Dv stdout .
 On completion of the processing of each record, a call to
