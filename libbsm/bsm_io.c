@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#64 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#65 $
  */
 
 #include <sys/types.h>
@@ -4116,7 +4116,7 @@ au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 void
-au_write_tok(FILE *outfp, tokenstr_t *tok, char *del, int oflags)
+au_print_flags_tok(FILE *outfp, tokenstr_t *tok, char *del, int oflags)
 {
 
 	switch(tok->id) {
@@ -4302,7 +4302,7 @@ au_print_tok(FILE *outfp, tokenstr_t *tok, char *del, char raw, char sfrm)
 	if (sfrm)
 		oflags |= AU_OFLAG_SHORT;
 
-	au_write_tok(outfp, tok, del, oflags);
+	au_print_flags_tok(outfp, tok, del, oflags);
 }
 
 /*
@@ -4319,7 +4319,7 @@ au_print_tok_xml(FILE *outfp, tokenstr_t *tok, char *del, char raw,
 	if (sfrm)
 		oflags |= AU_OFLAG_SHORT;
 
-	au_write_tok(outfp, tok, del, oflags);
+	au_print_flags_tok(outfp, tok, del, oflags);
 }
 
 /*

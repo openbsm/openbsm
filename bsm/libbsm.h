@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#46 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#47 $
  */
 
 #ifndef _LIBBSM_H_
@@ -101,7 +101,7 @@
 #define	AU_TO_WRITE		1	/* Commit audit record. */
 
 /*
- * Output format flags to au_write_tok().
+ * Output format flags for au_print_flags_tok().
  */
 #define	AU_OFLAG_NONE		0x0000	/* Default form. */
 #define	AU_OFLAG_RAW		0x0001	/* Raw, numeric form. */
@@ -829,10 +829,10 @@ int			 au_fetch_tok(tokenstr_t *tok, u_char *buf, int len);
 //XXX The following interface has different prototype from BSM
 void			 au_print_tok(FILE *outfp, tokenstr_t *tok,
 			    char *del, char raw, char sfrm);
+void			 au_print_flags_tok(FILE *outfp, tokenstr_t *tok,
+			    char *del, int oflags);
 void			 au_print_tok_xml(FILE *outfp, tokenstr_t *tok,
 			    char *del, char raw, char sfrm);
-void			 au_write_tok(FILE *outfp, tokenstr_t *tok,
-			    char *del, int oflags);
 
 /* 
  * Functions relating to XML output.
