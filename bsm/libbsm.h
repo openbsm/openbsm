@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#47 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#48 $
  */
 
 #ifndef _LIBBSM_H_
@@ -107,6 +107,7 @@
 #define	AU_OFLAG_RAW		0x0001	/* Raw, numeric form. */
 #define	AU_OFLAG_SHORT		0x0002	/* Short form. */
 #define	AU_OFLAG_XML		0x0004	/* XML form. */
+#define	AU_OFLAG_NORESOLVE	0x0008	/* No user/group name resolution. */
 
 __BEGIN_DECLS
 struct au_event_ent {
