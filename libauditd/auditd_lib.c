@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#11 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#12 $
  */
 
 #include <sys/param.h>
@@ -606,7 +606,7 @@ auditd_read_dirs(int (*warn_soft)(char *), int (*warn_hard)(char *))
 	while (getacdir(cur_dir, MAXNAMLEN) >= 0) {
 		if (statfs(cur_dir, &sfs) < 0)
 			continue;  /* XXX should warn */
-		soft = (sfs.f_bfree < (sfs.f_blocks / (100 / auditd_minval))) ?
+		soft = (sfs.f_bfree < (sfs.f_blocks * auditd_minval / 100 )) ?
 		    1 : 0;
 		hard = (sfs.f_bfree < AUDIT_HARD_LIMIT_FREE_BLOCKS) ? 1 : 0;
 		if (soft) {
