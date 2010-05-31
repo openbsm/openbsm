@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#93 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#94 $
  */
 
 #include <sys/types.h>
@@ -968,6 +968,8 @@ au_to_socket_ex(u_short so_domain, u_short so_type,
 		errno = EINVAL;
 		return (NULL);
 	}
+	if (t == NULL)
+		return (NULL);
 
 	ADD_U_CHAR(dptr, AUT_SOCKET_EX);
 	ADD_U_INT16(dptr, au_domain_to_bsm(so_domain));
