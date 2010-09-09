@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#12 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#13 $
  */
 
 #include <sys/param.h>
@@ -429,7 +429,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			/*
 			 * Quickly filter non-trail files.
 			 */
-			if (dp->d_namlen != (FILENAME_LEN - 1) ||
+			if (dp->d_namlen < (FILENAME_LEN - 1) ||
 #ifdef DT_REG
 			    dp->d_type != DT_REG || 
 #endif
