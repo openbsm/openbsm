@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit.log.5#23 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit.log.5#24 $
 .\"
 .Dd November 5, 2006
 .Dt AUDIT.LOG 5
@@ -83,7 +83,7 @@ token can be created using
 .It "Token ID	1 byte	Token ID"
 .It "Seconds	4 bytes	File time stamp"
 .It "Microseconds	4 bytes	File time stamp"
-.It "File name lengh	2 bytes	File name of audit trail"
+.It "File name length	2 bytes	File name of audit trail"
 .It "File pathname	N bytes + 1 NUL	File name of audit trail"
 .El
 .Ss Header Token
@@ -157,7 +157,7 @@ The
 .Dq arbitrary data
 token contains a byte stream of opaque (untyped) data.
 The size of the data is calculated as the size of each unit of data
-multipled by the number of units of data.
+multiplied by the number of units of data.
 A
 .Dq How to print
 field is present to specify how to print the data, but interpretation of
@@ -486,13 +486,13 @@ A System V IPC permission token may be created using
 .It Li "Creator user ID" Ta "4 bytes" Ta "User ID of IPC creator"
 .It Li "Creator group ID" Ta "4 bytes" Ta "Group ID of IPC creator"
 .It Li "Access mode" Ta "4 bytes" Ta "Access mode"
-.It Li "Sequnce number" Ta "4 bytes" Ta "Sequnce number"
+.It Li "Sequence number" Ta "4 bytes" Ta "Sequence number"
 .It Li "Key" Ta "4 bytes" Ta "IPC key"
 .El
 .Ss Arg Token
 The
 .Dq arg
-token contains informations about arguments of the system call.
+token contains information about arguments of the system call.
 Depending on the size of the desired argument value, an Arg token may be
 created using
 .Xr au_to_arg32 3
@@ -509,7 +509,7 @@ or
 .Ss exec_args Token
 The
 .Dq exec_args
-token contains informations about arguements of the exec() system call.
+token contains information about arguments of the exec() system call.
 An exec_args token may be created using
 .Xr au_to_exec_args 3 .
 .Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
@@ -521,7 +521,7 @@ An exec_args token may be created using
 .Ss exec_env Token
 The
 .Dq exec_env
-token contains current eviroment variables to an exec() system call.
+token contains current environment variables to an exec() system call.
 An exec_args token may be created using
 .Xr au_to_exec_env 3 .
 .Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
