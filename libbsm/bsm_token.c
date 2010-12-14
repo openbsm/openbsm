@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#94 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#95 $
  */
 
 #include <sys/types.h>
@@ -89,6 +89,59 @@
 		(dptr) = NULL;						\
 	assert((t) == NULL || (dptr) != NULL);				\
 } while (0)
+
+/*
+ * token ID                1 byte
+ * success/failure         1 byte
+ * privstrlen              2 bytes
+ * privstr                 N bytes + 1 (\0 byte)
+ */
+token_t *
+au_to_upriv(char sorf, char *priv)
+{
+	u_int16_t textlen;
+	u_char *dptr;
+	token_t *t;
+
+	textlen = strlen(priv) + 1;
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_char) +
+	    sizeof(u_int16_t) + textlen);
+	if (t == NULL)
+		return (NULL);
+	ADD_U_CHAR(dptr, AUT_UPRIV);
+	ADD_U_CHAR(dptr, sorf);
+	ADD_U_INT16(dptr, textlen);
+	ADD_STRING(dptr, priv, textlen);
+	return (t);
+}
+
+/*
+ * token ID		1 byte
+ * privtstrlen		2 bytes
+ * privtstr		N bytes + 1
+ * privstrlen	 	2 bytes
+ * privstr		N bytes + 1
+ */
+token_t *
+au_to_privset(char *privtypestr, char *privstr)
+{
+	u_int16_t	 type_len, priv_len;
+	u_char		*dptr;
+	token_t		*t;
+
+	type_len = strlen(privtypestr) + 1;
+	priv_len = strlen(privstr) + 1;
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int16_t) +
+	    sizeof(u_int16_t) + type_len + priv_len);
+	if (t == NULL)
+		return (NULL);
+	ADD_U_CHAR(dptr, AUT_PRIV);
+	ADD_U_INT16(dptr, type_len);
+	ADD_STRING(dptr, privtypestr, type_len);
+	ADD_U_INT16(dptr, priv_len);
+	ADD_STRING(dptr, privstr, priv_len);
+	return (t);
+}
 
 /*
  * token ID                1 byte

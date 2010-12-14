@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#65 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#66 $
  */
 
 #include <sys/types.h>
@@ -3380,6 +3380,113 @@ print_subject32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 	}
 }
 
+static void
+print_upriv_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
+    __unused char sfrm, int xml)
+{
+
+	print_tok_type(fp, tok->id, "use of privilege", raw, xml);
+	if (xml) {
+		open_attr(fp, "status");
+		if (tok->tt.priv.sorf)  
+			(void) fprintf(fp, "successful use of priv");
+		else
+			(void) fprintf(fp, "failed use of priv");
+		close_attr(fp);
+		open_attr(fp, "name");
+		print_string(fp, tok->tt.priv.priv,
+		    tok->tt.priv.privstrlen);
+		close_attr(fp);
+		close_tag(fp, tok->id);
+	} else {
+		print_delim(fp, del);
+		if (tok->tt.priv.sorf)
+			(void) fprintf(fp, "successful use of priv");
+		else
+			(void) fprintf(fp, "failed use of priv");
+		print_delim(fp, del);
+		print_string(fp, tok->tt.priv.priv,
+		    tok->tt.priv.privstrlen);
+	}
+}
+
+/*
+ * status                       1 byte
+ * privstrlen                   2 bytes
+ * priv                         N bytes + 1 (\0 byte)
+ */
+static int
+fetch_priv_tok(tokenstr_t *tok, u_char *buf, int len)
+{
+	int err = 0;
+
+	READ_TOKEN_U_CHAR(buf, len, tok->tt.priv.sorf, tok->len, err);
+	if (err)
+		return (-1);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.priv.privstrlen, tok->len, err);
+	if (err)
+		return (-1);
+	SET_PTR((char *)buf, len, tok->tt.priv.priv, tok->tt.priv.privstrlen,
+	    tok->len, err);
+	if (err)
+		return (-1);
+	return (0);
+}
+
+/*
+ * privtstrlen		1 byte
+ * privtstr		N bytes + 1
+ * privstrlen		1 byte
+ * privstr		N bytes + 1
+ */
+static int
+fetch_privset_tok(tokenstr_t *tok, u_char *buf, int len)
+{
+	int	err = 0;
+	
+	READ_TOKEN_U_INT16(buf, len, tok->tt.privset.privtstrlen,
+	    tok->len, err);
+	if (err)
+		return (-1);
+	SET_PTR((char *)buf, len, tok->tt.privset.privtstr,
+	    tok->tt.privset.privtstrlen, tok->len, err);
+	if (err)
+		return (-1);
+	READ_TOKEN_U_INT16(buf, len, tok->tt.privset.privstrlen,
+	    tok->len, err);
+	if (err)
+		return (-1);
+	SET_PTR((char *)buf, len, tok->tt.privset.privstr,
+	    tok->tt.privset.privstrlen, tok->len, err);
+	if (err)
+		return (-1);
+	return (0);
+}
+
+static void
+print_privset_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
+    __unused char sfrm, int xml)
+{
+	print_tok_type(fp, tok->id, "privilege", raw, xml);
+	if (xml) {
+		open_attr(fp, "type");
+		print_string(fp, tok->tt.privset.privtstr,
+	     	    tok->tt.privset.privtstrlen);
+		close_attr(fp);
+		open_attr(fp, "priv");
+		print_string(fp, tok->tt.privset.privstr,
+		    tok->tt.privset.privstrlen);
+		close_attr(fp);
+	} else {
+		print_delim(fp, del);
+		print_string(fp, tok->tt.privset.privtstr,
+		    tok->tt.privset.privtstrlen);
+		print_delim(fp, del);
+		print_string(fp, tok->tt.privset.privstr,
+			tok->tt.privset.privstrlen);	
+	}
+}
+
 /*
  * audit ID                     4 bytes
  * euid                         4 bytes
@@ -4110,6 +4217,12 @@ au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 	case AUT_ZONENAME:
 		return (fetch_zonename_tok(tok, buf, len));
 
+	case AUT_UPRIV:
+		return (fetch_priv_tok(tok, buf, len));
+
+	case AUT_PRIV:
+		return (fetch_privset_tok(tok, buf, len));
+
 	default:
 		return (fetch_invalid_tok(tok, buf, len));
 	}
@@ -4284,6 +4397,14 @@ au_print_flags_tok(FILE *outfp, tokenstr_t *tok, char *del, int oflags)
 		print_zonename_tok(outfp, tok, del, oflags);
 		return;
 
+	case AUT_UPRIV:
+		print_upriv_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
+		return;
+
+	case  AUT_PRIV:
+		print_privset_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
+		return;
+
 	default:
 		print_invalid_tok(outfp, tok, del, oflags);
 	}
@@ -4432,6 +4553,14 @@ au_read_rec(FILE *fp, u_char **buf)
 			return (-1);
 		}
 		break;
+
+	case AUT_UPRIV:
+		print_upriv_tok(outfp, tok, del, raw, sfrm, AU_XML);
+		return;
+
+	case  AUT_PRIV:
+		print_privset_tok(outfp, tok, del, raw, sfrm, AU_XML);
+		return;
 
 	default:
 		errno = EINVAL;

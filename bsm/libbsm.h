@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#48 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#49 $
  */
 
 #ifndef _LIBBSM_H_
@@ -671,6 +671,31 @@ typedef struct {
 } au_text_t;
 
 /*
+ * upriv status         1 byte
+ * privstr len          2 bytes
+ * privstr              N bytes + 1 (\0 byte)
+ */
+typedef struct {
+	u_int8_t	 sorf;
+	u_int16_t	 privstrlen;
+	char		*priv;
+} au_priv_t;
+
+/*
+* privset
+* privtstrlen		2 bytes
+* privtstr		N Bytes + 1
+* privstrlen		2 bytes
+* privstr		N Bytes + 1
+*/
+typedef struct {
+	u_int16_t	 privtstrlen;
+	char		*privtstr;
+	u_int16_t	 privstrlen;
+	char		*privstr;
+} au_privset_t;
+
+/*
  * zonename length	2 bytes
  * zonename text	N bytes + 1 NULL terminator
  */
@@ -748,6 +773,8 @@ struct tokenstr {
 		au_invalid_t		invalid;
 		au_trailer_t		trail;
 		au_zonename_t		zonename;
+		au_priv_t		priv;
+		au_privset_t		privset;
 	} tt; /* The token is one of the above types */
 };
 
