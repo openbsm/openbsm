@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#66 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#67 $
  */
 
 #include <sys/types.h>
@@ -3381,12 +3381,11 @@ print_subject32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 }
 
 static void
-print_upriv_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
-    __unused char sfrm, int xml)
+print_upriv_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 
-	print_tok_type(fp, tok->id, "use of privilege", raw, xml);
-	if (xml) {
+	print_tok_type(fp, tok->id, "use of privilege", oflags);
+	if (oflags & AU_OFLAG_XML) {
 		open_attr(fp, "status");
 		if (tok->tt.priv.sorf)  
 			(void) fprintf(fp, "successful use of priv");
@@ -3394,8 +3393,7 @@ print_upriv_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 			(void) fprintf(fp, "failed use of priv");
 		close_attr(fp);
 		open_attr(fp, "name");
-		print_string(fp, tok->tt.priv.priv,
-		    tok->tt.priv.privstrlen);
+		print_string(fp, tok->tt.priv.priv, tok->tt.priv.privstrlen);
 		close_attr(fp);
 		close_tag(fp, tok->id);
 	} else {
@@ -3405,8 +3403,7 @@ print_upriv_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
 		else
 			(void) fprintf(fp, "failed use of priv");
 		print_delim(fp, del);
-		print_string(fp, tok->tt.priv.priv,
-		    tok->tt.priv.privstrlen);
+		print_string(fp, tok->tt.priv.priv, tok->tt.priv.privstrlen);
 	}
 }
 
@@ -3464,11 +3461,11 @@ fetch_privset_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_privset_tok(FILE *fp, tokenstr_t *tok, char *del, char raw,
-    __unused char sfrm, int xml)
+print_privset_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
-	print_tok_type(fp, tok->id, "privilege", raw, xml);
-	if (xml) {
+
+	print_tok_type(fp, tok->id, "privilege", oflags);
+	if (oflags & AU_OFLAG_XML) {
 		open_attr(fp, "type");
 		print_string(fp, tok->tt.privset.privtstr,
 	     	    tok->tt.privset.privtstrlen);
@@ -4398,11 +4395,11 @@ au_print_flags_tok(FILE *outfp, tokenstr_t *tok, char *del, int oflags)
 		return;
 
 	case AUT_UPRIV:
-		print_upriv_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
+		print_upriv_tok(outfp, tok, del, oflags);
 		return;
 
 	case  AUT_PRIV:
-		print_privset_tok(outfp, tok, del, raw, sfrm, AU_PLAIN);
+		print_privset_tok(outfp, tok, del, oflags);
 		return;
 
 	default:
@@ -4553,14 +4550,6 @@ au_read_rec(FILE *fp, u_char **buf)
 			return (-1);
 		}
 		break;
-
-	case AUT_UPRIV:
-		print_upriv_tok(outfp, tok, del, raw, sfrm, AU_XML);
-		return;
-
-	case  AUT_PRIV:
-		print_privset_tok(outfp, tok, del, raw, sfrm, AU_XML);
-		return;
 
 	default:
 		errno = EINVAL;
