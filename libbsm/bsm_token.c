@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#95 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#96 $
  */
 
 #include <sys/types.h>
@@ -119,7 +119,7 @@ au_to_upriv(char sorf, char *priv)
  * token ID		1 byte
  * privtstrlen		2 bytes
  * privtstr		N bytes + 1
- * privstrlen	 	2 bytes
+ * privstrlen		2 bytes
  * privstr		N bytes + 1
  */
 token_t *
@@ -1340,9 +1340,9 @@ au_to_me(void)
 				auinfo.ai_asid, &auinfo.ai_termid));
 		} else {
 			/* getaudit_addr(2) failed for some other reason. */
-			return (NULL); 
+			return (NULL);
 		}
-	} 
+	}
 
 	return (au_to_subject32_ex(aia.ai_auid, geteuid(), getegid(), getuid(),
 		getgid(), getpid(), aia.ai_asid, &aia.ai_termid));
@@ -1514,7 +1514,7 @@ au_to_header32_ex_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(u_int32_t) +
 	    sizeof(u_char) + 2 * sizeof(u_int16_t) + 3 *
 	    sizeof(u_int32_t) + tid->at_type);
-	if (t == NULL) 
+	if (t == NULL)
 		return (NULL);
 
 	ADD_U_CHAR(dptr, AUT_HEADER32_EX);
@@ -1533,7 +1533,7 @@ au_to_header32_ex_tm(int rec_size, au_event_t e_type, au_emod_t e_mod,
 	ADD_U_INT32(dptr, tm.tv_sec);
 	ADD_U_INT32(dptr, timems);      /* We need time in ms. */
 
-	return (t);   
+	return (t);
 }
 
 token_t *
