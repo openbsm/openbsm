@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#68 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#69 $
  */
 
 #include <sys/types.h>
@@ -4485,11 +4485,10 @@ au_read_rec(FILE *fp, u_char **buf)
 			return (-1);
 		}
 
-		*buf = malloc(recsize * sizeof(u_char));
+		*buf = calloc(recsize, sizeof(u_char));
 		if (*buf == NULL)
 			return (-1);
 		bptr = *buf;
-		memset(bptr, 0, recsize);
 
 		/* store the token contents already read, back to the buffer*/
 		*bptr = type;
