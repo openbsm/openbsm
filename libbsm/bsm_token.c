@@ -30,7 +30,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#96 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#97 $
  */
 
 #include <sys/types.h>
@@ -79,12 +79,11 @@
 	(t) = malloc(sizeof(token_t));					\
 	if ((t) != NULL) {						\
 		(t)->len = (length);					\
-		(dptr) = (t->t_data) = malloc((length) * sizeof(u_char)); \
+		(dptr) = (t->t_data) = calloc((length), sizeof(u_char)); \
 		if ((dptr) == NULL) {					\
 			free(t);					\
 			(t) = NULL;					\
-		} else							\
-			memset((dptr), 0, (length));			\
+		}							\
 	} else								\
 		(dptr) = NULL;						\
 	assert((t) == NULL || (dptr) != NULL);				\
