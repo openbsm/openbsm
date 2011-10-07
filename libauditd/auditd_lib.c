@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#13 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#14 $
  */
 
 #include <sys/param.h>
@@ -106,22 +106,22 @@ static char auditd_host[MAXHOSTNAMELEN];
 static int auditd_hostlen = -1;
 
 static char *auditd_errmsg[] = {
-	"no error",					/* ADE_NOERR 	( 0) */
-	"could not parse audit_control(5) file",	/* ADE_PARSE 	( 1) */
-	"auditon(2) failed",				/* ADE_AUDITON 	( 2) */
-	"malloc(3) failed",				/* ADE_NOMEM 	( 3) */
-	"all audit log directories over soft limit",	/* ADE_SOFTLIM  ( 4) */
-	"all audit log directories over hard limit",	/* ADE_HARDLIM 	( 5) */
-	"could not create file name string",		/* ADE_STRERR 	( 6) */
-	"could not open audit record", 			/* ADE_AU_OPEN 	( 7) */
-	"could not close audit record",			/* ADE_AU_CLOSE ( 8) */
-	"could not set active audit session state",	/* ADE_SETAUDIT ( 9) */
-	"auditctl(2) failed (trail still swapped)",	/* ADE_ACTL 	(10) */
-	"auditctl(2) failed (trail not swapped)",	/* ADE_ACTLERR  (11) */
-	"could not swap audit trail file",		/* ADE_SWAPERR 	(12) */
+	"no error",					/* ADE_NOERR	( 0) */
+	"could not parse audit_control(5) file",	/* ADE_PARSE	( 1) */
+	"auditon(2) failed",				/* ADE_AUDITON	( 2) */
+	"malloc(3) failed",				/* ADE_NOMEM	( 3) */
+	"all audit log directories over soft limit",	/* ADE_SOFTLIM	( 4) */
+	"all audit log directories over hard limit",	/* ADE_HARDLIM	( 5) */
+	"could not create file name string",		/* ADE_STRERR	( 6) */
+	"could not open audit record",			/* ADE_AU_OPEN	( 7) */
+	"could not close audit record",			/* ADE_AU_CLOSE	( 8) */
+	"could not set active audit session state",	/* ADE_SETAUDIT	( 9) */
+	"auditctl(2) failed (trail still swapped)",	/* ADE_ACTL	(10) */
+	"auditctl(2) failed (trail not swapped)",	/* ADE_ACTLERR	(11) */
+	"could not swap audit trail file",		/* ADE_SWAPERR	(12) */
 	"could not rename crash recovery file",		/* ADE_RENAME	(13) */
 	"could not read 'current' link file",		/* ADE_READLINK	(14) */
-	"could not create 'current' link file", 	/* ADE_SYMLINK  (15) */
+	"could not create 'current' link file",		/* ADE_SYMLINK	(15) */
 	"invalid argument",				/* ADE_INVAL	(16) */
 	"could not resolve hostname to address",	/* ADE_GETADDR	(17) */
 	"address family not supported",			/* ADE_ADDRFAM	(18) */
@@ -144,19 +144,19 @@ auditd_strerror(int errcode)
 
 	if (idx < 0 || idx > (int)MAXERRCODE)
 		return ("Invalid auditd error code");
-	
+
 	return (auditd_errmsg[idx]);
 }
 
 
 /*
- * Free our local list of directory names and init list 
+ * Free our local list of directory names and init list.
  */
 static void
 free_dir_q(void)
 {
 	struct dir_ent *d1, *d2;
-	
+
 	d1 = TAILQ_FIRST(&dir_q);
 	while (d1 != NULL) {
 		d2 = TAILQ_NEXT(d1, dirs);
@@ -203,11 +203,11 @@ static void
 insert_orderly(struct dir_ent *denew)
 {
 	struct dir_ent *dep;
-	
+
 	TAILQ_FOREACH(dep, &dir_q, dirs) {
 		if (dep->softlim == 1 && denew->softlim == 0) {
 			TAILQ_INSERT_BEFORE(dep, denew, dirs);
-			return;			
+			return;
 		}
 		if (dep->hardlim == 1 && denew->hardlim == 0) {
 			TAILQ_INSERT_BEFORE(dep, denew, dirs);
@@ -223,8 +223,8 @@ insert_orderly(struct dir_ent *denew)
  *	ADE_NOERR	on success.
  *	ADE_PARSE	error parsing audit_control(5).
  *	ADE_AUDITON	error getting/setting auditon(2) value.
- *	ADE_GETADDR 	error getting address info for host. 
- *	ADE_ADDRFAM	un-supported address family. 	
+ *	ADE_GETADDR	error getting address info for host.
+ *	ADE_ADDRFAM	un-supported address family.
  */
 int
 auditd_set_host(void)
@@ -236,8 +236,8 @@ auditd_set_host(void)
 	int error, ret = ADE_NOERR;
 
 	if (getachost(auditd_host, sizeof(auditd_host)) != 0) {
-		ret = ADE_PARSE;	
-	
+		ret = ADE_PARSE;
+
 		/*
 		 * To maintain reverse compatability with older audit_control
 		 * files, simply drop a warning if the host parameter has not
@@ -283,11 +283,11 @@ auditd_set_host(void)
 	return (ret);
 }
 
-/* 
+/*
  * Get the min percentage of free blocks from audit_control(5) and that
  * value in the kernel.  Return:
  *	ADE_NOERR	on success,
- *	ADE_PARSE 	error parsing audit_control(5),
+ *	ADE_PARSE	error parsing audit_control(5),
  *	ADE_AUDITON	error getting/setting auditon(2) value.
  */
 int
@@ -297,7 +297,7 @@ auditd_set_minfree(void)
 
 	if (getacmin(&auditd_minval) != 0)
 		return (ADE_PARSE);
-	
+
 	if (audit_get_qctrl(&qctrl, sizeof(qctrl)) != 0)
 		return (ADE_AUDITON);
 
@@ -340,7 +340,7 @@ trailname_to_tstamp(char *fn, time_t *tstamp)
 	if (tm.tm_sec < 0 || tm.tm_sec > 60)
 		return (1);
 
-	/* minutes (0-59) */ 
+	/* minutes (0-59) */
 	*p = '\0'; p -= 2;
 	tm.tm_min = atol(p);
 	if (tm.tm_min < 0 || tm.tm_min > 59)
@@ -377,10 +377,10 @@ trailname_to_tstamp(char *fn, time_t *tstamp)
 
 /*
  * Remove audit trails files according to the expiration conditions.  Returns:
- * 	ADE_NOERR	on success or there is nothing to do.
- * 	ADE_PARSE	if error parsing audit_control(5).
- * 	ADE_NOMEM	if could not allocate memory.
- * 	ADE_EXPIRE	if there was an unespected error.
+ *	ADE_NOERR	on success or there is nothing to do.
+ *	ADE_PARSE	if error parsing audit_control(5).
+ *	ADE_NOMEM	if could not allocate memory.
+ *	ADE_EXPIRE	if there was an unespected error.
  */
 int
 auditd_expire_trails(int (*warn_expired)(char *))
@@ -410,7 +410,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 	 */
 	activefn[0] = '\0';
 	readlink(AUDIT_CURRENT_LINK, activefn, MAXPATHLEN - 1);
-	if ((afnp = strrchr(activefn, '/')) != NULL) 
+	if ((afnp = strrchr(activefn, '/')) != NULL)
 		afnp++;
 
 
@@ -431,7 +431,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			 */
 			if (dp->d_namlen < (FILENAME_LEN - 1) ||
 #ifdef DT_REG
-			    dp->d_type != DT_REG || 
+			    dp->d_type != DT_REG ||
 #endif
 			    dp->d_name[POSTFIX_LEN] != '.')
 				continue;
@@ -481,9 +481,9 @@ auditd_expire_trails(int (*warn_expired)(char *))
 				struct timeval tv[2];
 
 				tstamp = stbuf.st_mtime = current_time;
-				TIMESPEC_TO_TIMEVAL(&tv[0], 
+				TIMESPEC_TO_TIMEVAL(&tv[0],
 				    &stbuf.st_atimespec);
-				TIMESPEC_TO_TIMEVAL(&tv[1], 
+				TIMESPEC_TO_TIMEVAL(&tv[1],
 				    &stbuf.st_mtimespec);
 				utimes(pn, tv);
 			}
@@ -524,7 +524,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 
 	oldest_time = current_time - expire_age;
 
-	/* 
+	/*
 	 * Expire trail files, oldest (mtime) first, if the given
 	 * conditions are met.
 	 */
@@ -610,7 +610,7 @@ auditd_read_dirs(int (*warn_soft)(char *), int (*warn_hard)(char *))
 		    1 : 0;
 		hard = (sfs.f_bfree < AUDIT_HARD_LIMIT_FREE_BLOCKS) ? 1 : 0;
 		if (soft) {
-			if (warn_soft) 
+			if (warn_soft)
 				(*warn_soft)(cur_dir);
 			scnt++;
 		}
@@ -623,7 +623,7 @@ auditd_read_dirs(int (*warn_soft)(char *), int (*warn_hard)(char *))
 		if (dirent == NULL)
 			return (ADE_NOMEM);
 		dirent->softlim = soft;
-		dirent->hardlim = hard; 
+		dirent->hardlim = hard;
 		dirent->dirname = (char *) malloc(MAXNAMLEN);
 		if (dirent->dirname == NULL) {
 			free(dirent);
@@ -653,8 +653,8 @@ auditd_close_dirs(void)
 /*
  * Process the audit event file, obtaining a class mapping for each event, and
  * set that mapping into the kernel. Return:
- * 	 n	number of event mappings that were successfully processed,
- *   ADE_NOMEM	if there was an error allocating memory.	
+ *	 n	number of event mappings that were successfully processed,
+ *   ADE_NOMEM	if there was an error allocating memory.
  */
 int
 auditd_set_evcmap(void)
@@ -663,7 +663,7 @@ auditd_set_evcmap(void)
 	au_evclass_map_t evc_map;
 	int ctr = 0;
 
-         
+
 	/*
 	 * XXX There's a risk here that the BSM library will return NULL
 	 * for an event when it can't properly map it to a class. In that
@@ -677,7 +677,7 @@ auditd_set_evcmap(void)
 			free(ev.ae_name);
 		return (ADE_NOMEM);
 	}
-                 
+
 	/*
 	 * XXXRW: Currently we have no way to remove mappings from the kernel
 	 * when they are removed from the file-based mappings.
@@ -699,7 +699,7 @@ auditd_set_evcmap(void)
 
 /*
  * Get the non-attributable event string and set the kernel mask.  Return:
- *	ADE_NOERR 	on success,
+ *	ADE_NOERR	on success,
  *	ADE_PARSE	error parsing audit_control(5),
  *	ADE_AUDITON	error setting the mask using auditon(2).
  */
@@ -708,9 +708,9 @@ auditd_set_namask(void)
 {
 	au_mask_t aumask;
 	char naeventstr[NA_EVENT_STR_SIZE];
-	                 
-	if ((getacna(naeventstr, NA_EVENT_STR_SIZE) != 0) || 
-	    (getauditflagsbin(naeventstr, &aumask) != 0)) 
+
+	if ((getacna(naeventstr, NA_EVENT_STR_SIZE) != 0) ||
+	    (getauditflagsbin(naeventstr, &aumask) != 0))
 		return (ADE_PARSE);
 
 	if (audit_set_kmask(&aumask, sizeof(aumask)) != 0)
@@ -724,7 +724,7 @@ auditd_set_namask(void)
  * implement the policy. However, if one isn't defined or if there is an error
  * parsing the control file, set AUDIT_CNT to avoid leaving the system in a
  * fragile state.  Return:
- *	ADE_NOERR 	on success,
+ *	ADE_NOERR	on success,
  *	ADE_PARSE	error parsing audit_control(5),
  *	ADE_AUDITON	error setting policy using auditon(2).
  */
@@ -734,7 +734,7 @@ auditd_set_policy(void)
 	int policy;
 	char polstr[POL_STR_SIZE];
 
-	if ((getacpol(polstr, POL_STR_SIZE) != 0) || 
+	if ((getacpol(polstr, POL_STR_SIZE) != 0) ||
             (au_strtopol(polstr, &policy) != 0)) {
 		policy = AUDIT_CNT;
 		if (audit_set_policy(&policy) != 0)
@@ -748,9 +748,9 @@ auditd_set_policy(void)
 	return (ADE_NOERR);
 }
 
-/* 
+/*
  * Set trail rotation size.  Return:
- *	ADE_NOERR 	on success,
+ *	ADE_NOERR	on success,
  *	ADE_PARSE	error parsing audit_control(5),
  *	ADE_AUDITON	error setting file size using auditon(2).
  */
@@ -782,7 +782,7 @@ static int
 open_trail(char *fname, gid_t gid)
 {
 	int error, fd;
-	
+
 	fd = open(fname, O_RDONLY | O_CREAT, S_IRUSR | S_IRGRP);
 	if (fd < 0)
 		return (-1);
@@ -799,18 +799,18 @@ open_trail(char *fname, gid_t gid)
 /*
  * Create the new audit trail file, swap with existing audit file.  Arguments
  * include timestamp for the filename, a pointer to a string for returning the
- * new file name, GID for trail file, and audit_warn function pointer for 
+ * new file name, GID for trail file, and audit_warn function pointer for
  * 'getacdir()' errors.  Returns:
- *  	ADE_NOERR	on success,
- *  	ADE_STRERR	if the file name string could not be created,
- *  	ADE_SWAPERR	if the audit trail file could not be swapped,
- *	ADE_ACTL 	if the auditctl(2) call failed but file swap still
+ *	ADE_NOERR	on success,
+ *	ADE_STRERR	if the file name string could not be created,
+ *	ADE_SWAPERR	if the audit trail file could not be swapped,
+ *	ADE_ACTL	if the auditctl(2) call failed but file swap still
  *			successful.
  *	ADE_ACTLERR	if the auditctl(2) call failed and file swap failed.
  *	ADE_SYMLINK	if symlink(2) failed updating the current link.
  */
 int
-auditd_swap_trail(char *TS, char **newfile, gid_t gid, 
+auditd_swap_trail(char *TS, char **newfile, gid_t gid,
     int (*warn_getacdir)(char *))
 {
 	char timestr[FILENAME_LEN];
@@ -819,16 +819,16 @@ auditd_swap_trail(char *TS, char **newfile, gid_t gid,
 	int fd;
 	int error;
 	int saverrno = 0;
-                
+
 	if (strlen(TS) !=  (TIMESTAMP_LEN - 1) ||
 	    snprintf(timestr, FILENAME_LEN, "%s.%s", TS, NOT_TERMINATED) < 0) {
 		errno = EINVAL;
 		return (ADE_STRERR);
 	}
-                
+
 	/* Try until we succeed. */
 	TAILQ_FOREACH(dirent, &dir_q, dirs) {
-		if (dirent->hardlim) 
+		if (dirent->hardlim)
 			continue;
 		if ((fn = affixdir(timestr, dirent)) == NULL)
 			return (ADE_STRERR);
@@ -841,8 +841,8 @@ auditd_swap_trail(char *TS, char **newfile, gid_t gid,
 		if (fd >= 0) {
 			error = auditctl(fn);
 			if (error) {
-				/* 
-				 * auditctl failed setting log file.  
+				/*
+				 * auditctl failed setting log file.
 				 * Try again.
 				 */
 				saverrno = errno;
@@ -856,7 +856,7 @@ auditd_swap_trail(char *TS, char **newfile, gid_t gid,
 				if (saverrno) {
 					/*
 					 * auditctl() failed but still
-					 * successful. Return errno and "soft" 
+					 * successful. Return errno and "soft"
 					 * error.
 					 */
 					errno = saverrno;
@@ -890,11 +890,11 @@ auditd_prevent_audit(void)
 {
 	auditinfo_addr_t aia;
 
-	/* 
+	/*
 	 * To prevent event feedback cycles and avoid audit becoming stalled if
 	 * auditing is suspended we mask this processes events from being
 	 * audited.  We allow the uid, tid, and mask fields to be implicitly
-	 * set to zero, but do set the audit session ID to the PID. 
+	 * set to zero, but do set the audit session ID to the PID.
 	 *
 	 * XXXRW: Is there more to it than this?
 	 */
@@ -902,7 +902,7 @@ auditd_prevent_audit(void)
 	aia.ai_asid = AU_ASSIGN_ASID;
 	aia.ai_termid.at_type = AU_IPv4;
 	if (setaudit_addr(&aia, sizeof(aia)) != 0)
-		return (ADE_SETAUDIT); 
+		return (ADE_SETAUDIT);
 	return (ADE_NOERR);
 }
 #else
@@ -911,21 +911,21 @@ auditd_prevent_audit(void)
 {
 	auditinfo_t ai;
 
-	/* 
+	/*
 	 * To prevent event feedback cycles and avoid audit becoming stalled if
 	 * auditing is suspended we mask this processes events from being
 	 * audited.  We allow the uid, tid, and mask fields to be implicitly
-	 * set to zero, but do set the audit session ID to the PID. 
+	 * set to zero, but do set the audit session ID to the PID.
 	 *
 	 * XXXRW: Is there more to it than this?
 	 */
 	bzero(&ai, sizeof(ai));
 	ai.ai_asid = getpid();
 	if (setaudit(&ai) != 0)
-		return (ADE_SETAUDIT); 
+		return (ADE_SETAUDIT);
 	return (ADE_NOERR);
 }
-#endif /* __APPLE__ */
+#endif /* !__APPLE__ */
 
 /*
  * Generate and submit audit record for audit startup or shutdown.  The event
@@ -934,7 +934,7 @@ auditd_prevent_audit(void)
  * Returns:
  *	AUE_NOERR	on success,
  *	ADE_NOMEM	if memory allocation fails,
- * 	ADE_AU_OPEN	if au_open(3) fails,
+ *	ADE_AU_OPEN	if au_open(3) fails,
  *	ADE_AU_CLOSE	if au_close(3) fails.
  */
 int
@@ -953,7 +953,7 @@ auditd_gen_record(int event, char *path)
 		asprintf(&autext, "%s::Audit shutdown", getprogname());
 	else if (event == AUE_audit_recovery)
 		asprintf(&autext, "%s::Audit recovery", getprogname());
-	else 
+	else
 		return (ADE_INVAL);
 	if (autext == NULL)
 		return (ADE_NOMEM);
@@ -985,8 +985,8 @@ auditd_gen_record(int event, char *path)
  * 'current' symlink. The argument 'curfile' is the file the 'current' symlink
  * should point to.  Returns:
  *	ADE_NOERR	on success,
- *  	ADE_AU_OPEN	if au_open(3) fails,
- *  	ADE_AU_CLOSE	if au_close(3) fails.
+ *	ADE_AU_OPEN	if au_open(3) fails,
+ *	ADE_AU_CLOSE	if au_close(3) fails.
  *	ADE_RENAME	if error renaming audit trail file,
  *	ADE_READLINK	if error reading the 'current' link,
  *	ADE_SYMLINK	if error creating 'current' link.
@@ -1009,7 +1009,7 @@ auditd_new_curlink(char *curfile)
 	if (len > 0) {
 		/* 'current' exist but is it pointing at a valid file?  */
 		recoveredname[len++] = '\0';
-		if (stat(recoveredname, &sb) == 0) { 
+		if (stat(recoveredname, &sb) == 0) {
 			/* Yes, rename it to a crash recovery file. */
 			strlcpy(newname, recoveredname, MAXPATHLEN);
 
@@ -1056,7 +1056,7 @@ audit_quick_start(void)
 	char TS[TIMESTAMP_LEN];
 	int ret = 0;
 
-	/* 
+	/*
 	 * Mask auditing of this process.
 	 */
 	if (auditd_prevent_audit() != 0)
@@ -1081,7 +1081,7 @@ audit_quick_start(void)
 	}
 
 	/*
-	 * Add the current symlink and recover from crash, if needed. 
+	 * Add the current symlink and recover from crash, if needed.
 	 */
 	if (auditd_new_curlink(newfile) != 0) {
 		ret = -1;
@@ -1172,7 +1172,7 @@ audit_quick_stop(void)
 			return (-1);
 	} else
 		return (-1);
-	
+
 	(void) unlink(AUDIT_CURRENT_LINK);
 
 	return (0);
