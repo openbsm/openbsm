@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#67 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#68 $
  */
 
 #include <sys/types.h>
@@ -106,7 +106,7 @@
 		(dest) = be32dec((buf) + (bytesread));			\
 		(bytesread) += sizeof(u_int32_t);			\
 	} else								\
-		(err) = 1; 						\
+		(err) = 1;						\
 } while (0)
 
 #define	READ_TOKEN_U_INT64(buf, len, dest, bytesread, err) do {		\
@@ -114,7 +114,7 @@
 		dest = be64dec((buf) + (bytesread));			\
 		(bytesread) += sizeof(u_int64_t);			\
 	} else								\
-		(err) = 1; 						\
+		(err) = 1;						\
 } while (0)
 
 #define	SET_PTR(buf, len, ptr, size, bytesread, err) do {		\
@@ -835,7 +835,7 @@ print_ipctype(FILE *fp, u_char type, int oflags)
 void
 au_print_xml_header(FILE *outfp)
 {
-	
+
 	fprintf(outfp, "<?xml version='1.0' ?>\n");
 	fprintf(outfp, "<audit>\n");
 }
@@ -846,7 +846,7 @@ au_print_xml_header(FILE *outfp)
 void
 au_print_xml_footer(FILE *outfp)
 {
-	
+
 	fprintf(outfp, "</audit>\n");
 }
 
@@ -998,7 +998,7 @@ fetch_header32_ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_header32_ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags) 
+print_header32_ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "header_ex", oflags);
@@ -1083,9 +1083,9 @@ fetch_header64_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_header64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags) 
+print_header64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
-	
+
 	print_tok_type(fp, tok->id, "header", oflags);
 	if (oflags & AU_OFLAG_XML) {
 		open_attr(fp, "version");
@@ -1251,7 +1251,7 @@ fetch_trailer_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_trailer_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags) 
+print_trailer_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "trailer", oflags);
@@ -1835,7 +1835,7 @@ fetch_execarg_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_execarg_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags) 
+print_execarg_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 	u_int32_t i;
 
@@ -1987,15 +1987,15 @@ fetch_newgroups_tok(tokenstr_t *tok, u_char *buf, int len)
 	for (i = 0; i<tok->tt.grps.no; i++) {
 		READ_TOKEN_U_INT32(buf, len, tok->tt.grps.list[i], tok->len,
 		    err);
-    		if (err)
-    			return (-1);
+		if (err)
+			return (-1);
 	}
 
 	return (0);
 }
 
 static void
-print_newgroups_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags) 
+print_newgroups_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 	int i;
 
@@ -2031,7 +2031,7 @@ fetch_inaddr_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_inaddr_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags) 
+print_inaddr_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "ip addr", oflags);
@@ -2045,7 +2045,7 @@ print_inaddr_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 }
 
 /*
- * type 	4 bytes
+ * type 4 bytes
  * address 16 bytes
  */
 static int
@@ -2074,7 +2074,7 @@ fetch_inaddr_ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_inaddr_ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags) 
+print_inaddr_ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "ip addr ex", oflags);
@@ -3117,7 +3117,7 @@ fetch_sock_inet128_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_sock_inet128_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags) 
+print_sock_inet128_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "socket-inet6", oflags);
@@ -3160,7 +3160,7 @@ fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 
 	/* slen = strnlen((buf + tok->len), 104) + 1; */
 	p = (u_char *)memchr((const void *)(buf + tok->len), '\0', 104);
-	slen = (p ? (int)(p - (buf + tok->len))  : 104) + 1; 
+	slen = (p ? (int)(p - (buf + tok->len))  : 104) + 1;
 
 	READ_TOKEN_BYTES(buf, len, tok->tt.sockunix.path, slen, tok->len, err);
 	if (err)
@@ -3387,7 +3387,7 @@ print_upriv_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 	print_tok_type(fp, tok->id, "use of privilege", oflags);
 	if (oflags & AU_OFLAG_XML) {
 		open_attr(fp, "status");
-		if (tok->tt.priv.sorf)  
+		if (tok->tt.priv.sorf)
 			(void) fprintf(fp, "successful use of priv");
 		else
 			(void) fprintf(fp, "failed use of priv");
@@ -3440,7 +3440,7 @@ static int
 fetch_privset_tok(tokenstr_t *tok, u_char *buf, int len)
 {
 	int	err = 0;
-	
+
 	READ_TOKEN_U_INT16(buf, len, tok->tt.privset.privtstrlen,
 	    tok->len, err);
 	if (err)
@@ -3468,7 +3468,7 @@ print_privset_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 	if (oflags & AU_OFLAG_XML) {
 		open_attr(fp, "type");
 		print_string(fp, tok->tt.privset.privtstr,
-	     	    tok->tt.privset.privtstrlen);
+		    tok->tt.privset.privtstrlen);
 		close_attr(fp);
 		open_attr(fp, "priv");
 		print_string(fp, tok->tt.privset.privstr,
@@ -3480,7 +3480,7 @@ print_privset_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 		    tok->tt.privset.privtstrlen);
 		print_delim(fp, del);
 		print_string(fp, tok->tt.privset.privstr,
-			tok->tt.privset.privstrlen);	
+			tok->tt.privset.privstrlen);
 	}
 }
 
