@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#47 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#48 $
  */
 
 #include <sys/types.h>
@@ -155,18 +155,15 @@ close_lastfile(char *TS)
 {
 	char *ptr;
 	char *oldname;
-	size_t len;
 
 	/* If lastfile is NULL try to get it from the 'current' link.  */
 	if (lastfile == NULL)
 		lastfile = get_curfile();
 
 	if (lastfile != NULL) {
-		len = strlen(lastfile) + 1;
-		oldname = (char *)malloc(len);
+		oldname = strdup(lastfile);
 		if (oldname == NULL)
 			return (-1);
-		strlcpy(oldname, lastfile, len);
 
 		/* Rename the last file -- append timestamp. */
 		if ((ptr = strstr(lastfile, NOT_TERMINATED)) != NULL) {
