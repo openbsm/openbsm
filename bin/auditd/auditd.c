@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#48 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#49 $
  */
 
 #include <sys/types.h>
@@ -178,12 +178,12 @@ close_lastfile(char *TS)
 				 * is now invalid.
 				 */
 				(void) unlink(AUDIT_CURRENT_LINK);
-				auditd_log_notice( "renamed %s to %s",
+				auditd_log_notice("renamed %s to %s",
 				    oldname, lastfile);
 				audit_warn_closefile(lastfile);
 			}
 		} else
-			auditd_log_err( "Could not rename %s to %s", oldname,
+			auditd_log_err("Could not rename %s to %s", oldname,
 			    lastfile);
 		free(lastfile);
 		free(oldname);
@@ -208,7 +208,7 @@ swap_audit_file(void)
 	err = auditd_swap_trail(TS, &newfile, audit_review_gid,
 	    audit_warn_getacdir);
 	if (err != ADE_NOERR) {
-		auditd_log_err( "%s: %m", auditd_strerror(err));
+		auditd_log_err("%s: %m", auditd_strerror(err));
 		if (err != ADE_ACTL)
 			return (-1);
 	}
