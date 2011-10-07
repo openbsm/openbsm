@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#14 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#15 $
  */
 
 #include <sys/param.h>
@@ -783,10 +783,11 @@ open_trail(char *fname, gid_t gid)
 {
 	int error, fd;
 
-	fd = open(fname, O_RDONLY | O_CREAT, S_IRUSR | S_IRGRP);
+	/* XXXPJD: We create a file and open it only for reading? Strange. */
+	fd = open(fname, O_RDONLY | O_CREAT, S_IRUSR);
 	if (fd < 0)
 		return (-1);
-	if (fchown(fd, -1, gid) < 0) {
+	if (fchown(fd, -1, gid) < 0 || fchmod(fd, S_IRUSR | S_IRGRP) < 0) {
 		error = errno;
 		close(fd);
 		(void)unlink(fname);
