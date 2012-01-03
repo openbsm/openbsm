@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#15 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#16 $
  */
 
 #include <sys/param.h>
@@ -852,8 +852,6 @@ auditd_swap_trail(char *TS, char **newfile, gid_t gid,
                                 /* Success. */
                                 *newfile = fn;
                                 close(fd);
-				if (error)
-					return (error);
 				if (saverrno) {
 					/*
 					 * auditctl() failed but still
