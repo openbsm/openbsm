@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#37 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#38 $
  */
 
 #include <config/config.h>
@@ -498,11 +498,8 @@ getacfilesz(size_t *filesz_val)
 	return (0);
 }
 
-/*
- * Return the system audit value from the audit contol file.
- */
 int
-getacflg(char *auditstr, int len)
+getaccomon(const char *name, char *auditstr, int len)
 {
 	char *str;
 
@@ -510,7 +507,7 @@ getacflg(char *auditstr, int len)
 	pthread_mutex_lock(&mutex);
 #endif
 	setac_locked();
-	if (getstrfromtype_locked(FLAGS_CONTROL_ENTRY, &str) < 0) {
+	if (getstrfromtype_locked(name, &str) < 0) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
@@ -533,6 +530,16 @@ getacflg(char *auditstr, int len)
 	pthread_mutex_unlock(&mutex);
 #endif
 	return (0);
+}
+
+/*
+ * Return the system audit value from the audit contol file.
+ */
+int
+getacflg(char *auditstr, int len)
+{
+
+	return (getaccommon(FLAGS_CONTROL_ENTRY, auditstr, len));
 }
 
 /*
@@ -541,35 +548,8 @@ getacflg(char *auditstr, int len)
 int
 getacna(char *auditstr, int len)
 {
-	char *str;
 
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-	pthread_mutex_lock(&mutex);
-#endif
-	setac_locked();
-	if (getstrfromtype_locked(NA_CONTROL_ENTRY, &str) < 0) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-2);
-	}
-	if (str == NULL) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-1);
-	}
-	if (strlen(str) >= (size_t)len) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-3);
-	}
-	strlcpy(auditstr, str, len);
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-	pthread_mutex_unlock(&mutex);
-#endif
-	return (0);
+	return (getaccommon(NA_CONTROL_ENTRY, auditstr, len));
 }
 
 /*
@@ -578,69 +558,15 @@ getacna(char *auditstr, int len)
 int
 getacpol(char *auditstr, size_t len)
 {
-	char *str;
 
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-	pthread_mutex_lock(&mutex);
-#endif
-	setac_locked();
-	if (getstrfromtype_locked(POLICY_CONTROL_ENTRY, &str) < 0) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-2);
-	}
-	if (str == NULL) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-1);
-	}
-	if (strlen(str) >= len) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-3);
-	}
-	strlcpy(auditstr, str, len);
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-	pthread_mutex_unlock(&mutex);
-#endif
-	return (0);
+	return (getaccommon(POLICY_CONTROL_ENTRY, auditstr, len));
 }
 
 int
 getachost(char *auditstr, size_t len)
 {
-	char *str;
 
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-	pthread_mutex_lock(&mutex);
-#endif
-	setac_locked();
-	if (getstrfromtype_locked(AUDIT_HOST_CONTROL_ENTRY, &str) < 0) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-2);
-	}
-	if (str == NULL) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-1);
-	}
-	if (strlen(str) >= len) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-3);
-	}
-	strlcpy(auditstr, str, len);
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-	pthread_mutex_unlock(&mutex);
-#endif
-	return (0);
+	return (getaccommon(AUDIT_HOST_CONTROL_ENTRY, auditstr, len));
 }
 
 /*
