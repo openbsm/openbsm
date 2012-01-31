@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_control.3#14 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_control.3#15 $
 .\"
 .Dd April 19, 2005
 .Dt AU_CONTROL 3
@@ -35,6 +35,7 @@
 .Nm getacexpire ,
 .Nm getacfilesz ,
 .Nm getacflg ,
+.Nm getachost ,
 .Nm getacmin ,
 .Nm getacna ,
 .Nm getacpol ,
@@ -57,6 +58,8 @@
 .Fn getacfilesz "size_t *size_val"
 .Ft int
 .Fn getacflg "char *auditstr" "int len"
+.Ft int
+.Fn getachost "char *auditstr" "int len"
 .Ft int
 .Fn getacmin "int *min_val"
 .Ft int
@@ -130,6 +133,15 @@ of length
 .Fa len .
 .Pp
 The
+.Fn getachost
+function
+returns the local systems's audit host information via the the passed character
+buffer
+.Fa auditstr
+of length
+.Fa len .
+.Pp
+The
 .Fn getacmin
 function
 returns the minimum free disk space for the audit log target file system via
@@ -176,6 +188,7 @@ The
 .Fn getacdir ,
 .Fn getacexpire ,
 .Fn getacflg ,
+.Fn getachost ,
 .Fn getacmin ,
 .Fn getacna ,
 .Fn getacpol ,
