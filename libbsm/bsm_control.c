@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#36 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#37 $
  */
 
 #include <config/config.h>
@@ -418,7 +418,7 @@ getacmin(int *min_val)
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
-		return (1);
+		return (-1);
 	}
 	*min_val = atoi(min);
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
@@ -453,7 +453,7 @@ getacfilesz(size_t *filesz_val)
 		pthread_mutex_unlock(&mutex);
 #endif
 		errno = EINVAL;
-		return (1);
+		return (-1);
 	}
 
 	/* Trim off any leading white space. */
@@ -520,7 +520,7 @@ getacflg(char *auditstr, int len)
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
-		return (1);
+		return (-1);
 	}
 	if (strlen(str) >= (size_t)len) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
@@ -557,7 +557,7 @@ getacna(char *auditstr, int len)
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
-		return (1);
+		return (-1);
 	}
 	if (strlen(str) >= (size_t)len) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
@@ -628,7 +628,7 @@ getachost(char *auditstr, size_t len)
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
-		return (1);
+		return (-1);
 	}
 	if (strlen(str) >= len) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
@@ -686,7 +686,7 @@ getacexpire(int *andflg, time_t *age, size_t *size)
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
-		return (1);
+		return (-1);
 	}
 
 	/* First, trim off any leading white space. */
