@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#35 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#36 $
  */
 
 #include <config/config.h>
@@ -713,7 +713,7 @@ getacexpire(int *andflg, time_t *age, size_t *size)
 
 	case 5:
 		/* Two expiration conditions. */
-		if (setexpirecond(age, size, val1, mult1) != 0 || 
+		if (setexpirecond(age, size, val1, mult1) != 0 ||
 		    setexpirecond(age, size, val2, mult2) != 0) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 			pthread_mutex_unlock(&mutex);
