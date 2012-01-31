@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_control.3#13 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_control.3#14 $
 .\"
 .Dd April 19, 2005
 .Dt AU_CONTROL 3
@@ -32,10 +32,10 @@
 .Nm setac ,
 .Nm endac ,
 .Nm getacdir ,
-.Nm getacmin ,
 .Nm getacexpire ,
 .Nm getacfilesz ,
 .Nm getacflg ,
+.Nm getacmin ,
 .Nm getacna ,
 .Nm getacpol ,
 .Nm au_poltostr ,
@@ -52,13 +52,13 @@
 .Ft int
 .Fn getacdir "char *name" "int len"
 .Ft int
-.Fn getacmin "int *min_val"
-.Ft int
 .Fn getacexpire "int *andflg, time_t *age, size_t *size"
 .Ft int
 .Fn getacfilesz "size_t *size_val"
 .Ft int
 .Fn getacflg "char *auditstr" "int len"
+.Ft int
+.Fn getacmin "int *min_val"
 .Ft int
 .Fn getacna "char *auditstr" "int len"
 .Ft int
@@ -96,14 +96,6 @@ of length
 .Fa len .
 .Pp
 The
-.Fn getacmin
-function
-returns the minimum free disk space for the audit log target file system via
-the passed
-.Fa min_val
-variable.
-.Pp
-The
 .Fn getacexpire
 function
 returns the audit trail file expiration parameters in the passed
@@ -136,6 +128,14 @@ returns the audit system flags via the the passed character buffer
 .Fa auditstr
 of length
 .Fa len .
+.Pp
+The
+.Fn getacmin
+function
+returns the minimum free disk space for the audit log target file system via
+the passed
+.Fa min_val
+variable.
 .Pp
 The
 .Fn getacna
