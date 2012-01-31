@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#38 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#39 $
  */
 
 #include <config/config.h>
@@ -100,7 +100,7 @@ static struct audit_polstr au_polstr[] = {
  * Must be called with mutex held.
  */
 static int
-getstrfromtype_locked(char *name, char **str)
+getstrfromtype_locked(const char *name, char **str)
 {
 	char *type, *nl;
 	char *tokptr;
