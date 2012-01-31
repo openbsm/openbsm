@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#34 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#35 $
  */
 
 #include <config/config.h>
@@ -71,8 +71,8 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
  * Audit policy string token table for au_poltostr() and au_strtopol().
  */
 struct audit_polstr {
-	long 		 ap_policy;
-	const char 	*ap_str;	
+	long		 ap_policy;
+	const char	*ap_str;
 };
 
 static struct audit_polstr au_polstr[] = {
@@ -183,7 +183,7 @@ au_timetosec(time_t *seconds, u_long value, char mult)
 }
 
 /*
- * Convert a given disk space value with a multiplier (bytes, kilobytes, 
+ * Convert a given disk space value with a multiplier (bytes, kilobytes,
  * megabytes, gigabytes) to bytes.  Return 0 on success.
  */
 static int
@@ -691,7 +691,7 @@ getacexpire(int *andflg, time_t *age, size_t *size)
 
 	/* First, trim off any leading white space. */
 	while (*str == ' ' || *str == '\t')
-		str++;				 
+		str++;
 
 	nparsed = sscanf(str, "%lu%c%[ \tadnorADNOR]%lu%c", &val1, &mult1,
 	    andor, &val2, &mult2);
