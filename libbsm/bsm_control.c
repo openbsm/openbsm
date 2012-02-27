@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#39 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#40 $
  */
 
 #include <config/config.h>
@@ -499,7 +499,7 @@ getacfilesz(size_t *filesz_val)
 }
 
 int
-getaccomon(const char *name, char *auditstr, int len)
+getaccommon(const char *name, char *auditstr, int len)
 {
 	char *str;
 
