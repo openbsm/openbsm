@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/setaudit.2#10 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/setaudit.2#11 $
 .\"
 .Dd April 19, 2005
 .Dt SETAUDIT 2
@@ -73,13 +73,13 @@ typedef struct auditinfo        auditinfo_t;
 .Pp
 The
 .Fa ai_auid
-variable contains the audit identifier which is recorded in the audit log for 
+variable contains the audit identifier which is recorded in the audit log for
 each event the process caused.
 .PP
 
 The
 .Fa au_mask_t
-data structure defines the bit mask for auditing successful and failed events 
+data structure defines the bit mask for auditing successful and failed events
 out of the predefined list of event classes. It is defined as follows:
 .nf
 .in +4n
@@ -95,7 +95,7 @@ typedef struct au_mask  au_mask_t;
 
 The
 .Fa au_termid_t
-data structure defines the Terminal ID recorded with every event caused by the 
+data structure defines the Terminal ID recorded with every event caused by the
 process. It is defined as follows:
 .nf
 .in +4n
@@ -111,14 +111,14 @@ typedef struct au_tid   au_tid_t;
 .PP
 The
 .Fa ai_asid
-variable contains the audit session ID which is recorded with every event 
+variable contains the audit session ID which is recorded with every event
 caused by the process.
 .Pp
 The
 .Fn setaudit_addr
 system call
 uses the expanded
-.Fa auditinfo_addr_t 
+.Fa auditinfo_addr_t
 data structure supports Terminal IDs with larger addresses such as those used
 in IP version 6.  It is defined as follows:
 .nf
@@ -134,9 +134,9 @@ typedef struct auditinfo_addr   auditinfo_addr_t;
 .in
 .fi
 .Pp
-The 
+The
 .Fa au_tid_addr_t
-data structure which includes a larger address storage field and an additional 
+data structure which includes a larger address storage field and an additional
 field with the type of address stored:
 .nf
 .in +4n

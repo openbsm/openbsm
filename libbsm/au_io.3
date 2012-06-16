@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_io.3#8 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/libbsm/au_io.3#9 $
 .\"
 .Dd August 4, 2009
 .Dt AU_IO 3
@@ -83,7 +83,7 @@ The
 .Fn au_print_flags_tok
 function is a replacement for
 .Fn au_print_tok .
-The 
+The
 .Fa oflags
 controls how the output should be formatted and is specified by
 or'ing the following flags:
@@ -148,12 +148,12 @@ division of McAfee Inc., under contract to Apple Computer, Inc., in 2004.
 It was subsequently adopted by the TrustedBSD Project as the foundation for
 the OpenBSM distribution.
 .Pp
-The 
+The
 .Fn au_print_flags_tok
 function was added by Stacey Son as a replacement for the
 .Fn au_print_tok
 so new output formatting flags can be easily added without changing the API.
-The 
+The
 .Fn au_print_tok
 is obsolete but remains in the API to support legacy code.
 .Sh AUTHORS
