@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.2alpha1], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#56 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#57 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
@@ -36,7 +36,7 @@ AC_SEARCH_LIBS(clock_gettime, rt)
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([endian.h mach/mach.h machine/endian.h sys/endian.h stdint.h])
+AC_CHECK_HEADERS([mach/mach.h stdint.h])
 
 AC_DEFINE([_GNU_SOURCE],,[Use extended API on platforms that require it])
 
@@ -125,17 +125,75 @@ have_audit_syscalls=false
 AM_CONDITIONAL(HAVE_AUDIT_SYSCALLS, $have_audit_syscalls)
 
 #
-# There are a wide variety of endian macros and functions in the wild; we try
-# to use the native support if it defines be32enc(), but otherwise have to
-# use our own.
+# We rely on the BSD be32toh() and be32enc()-style endian macros to perform
+# byte order conversions.  Availability of these varies considerably -- in
+# general, a system might have neither, be32toh(), or be32toh() and be32enc().
+# There is also variation in which headers are even present, and whether they
+# are macros or functions.  Try to organise the world into some simpler cases.
+# The following macros may be set at the end:
+#
+# USE_ENDIAN_H
+# USE_SYS_ENDIAN_H
+# USE_COMPAT_ENDIAN_H
+# USE_COMPAT_ENDIAN_ENC_H
+#
+# First, decide which system endian.h to use.
+#
+AC_CHECK_HEADERS([endian.h], [
+	have_endian_h=yes
+	AC_DEFINE(HAVE_ENDIAN_H,, Define if endian.h is present)
+], [
+	have_endian_h=no
+])
+
+AC_CHECK_HEADERS([sys/endian.h], [
+	have_sys_endian_h=yes
+	AC_DEFINE(HAVE_SYS_ENDIAN_H, , Define if sys/endian.h is present)
+], [
+	have_sys_endian_h=no
+])
+
+if test $have_endian_h; then
+	AC_DEFINE(USE_ENDIAN_H,, Define if endian should be included)
+elif test $have_sys_endian_h; then
+	AC_DEFINE(USE_SYS_ENDIAN_H,, Define if sys/endian.h should be included)
+else
+	AC_MSG_ERROR([no endian.h])
+fi
+
+#
+# Next, decide if we need to supplement with compat headers.
 #
 AC_TRY_LINK([
+	#ifdef USE_ENDIAN_H
+	#include <endian.h>
+	#endif
+	#ifdef USE_SYS_ENDIAN_H
 	#include <sys/endian.h>
+	#endif
+], [
+	be32toh(0);
+], [], [
+	AC_DEFINE(USE_COMPAT_ENDIAN_H,, Define if compat/endian.h is required)
+	AC_MSG_RESULT([using compat/endian.h])
+])
+
+AC_TRY_LINK([
+	#ifdef USE_ENDIAN_H
+	#include <endian.h>
+	#endif
+	#ifdef USE_SYS_ENDIAN_H
+	#include <sys/endian.h>
+	#endif
+	#ifdef USE_COMPAT_ENDIAN_H
+	#include <compat/endian.h>
+	#endif
 	#include <stdlib.h>
 ], [
-	be32enc(NULL, 1);
-], [
-AC_DEFINE(HAVE_BE32ENC,, Define if be32enc is present)
+	be32enc(NULL, 0);
+], [], [
+	AC_DEFINE(USE_COMPAT_ENDIAN_ENC_H,, Define if compat/endian_enc.h is required)
+	AC_MSG_RESULT([using compat/endian_enc.h])
 ])
 
 # Check to see if Mach IPC is used for trigger messages.  If so, use Mach IPC

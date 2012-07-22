@@ -30,26 +30,26 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#97 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_token.c#98 $
  */
 
 #include <sys/types.h>
 
 #include <config/config.h>
-#if defined(HAVE_SYS_ENDIAN_H) && defined(HAVE_BE32ENC)
-#include <sys/endian.h>
-#else /* !HAVE_SYS_ENDIAN_H || !HAVE_BE32ENC */
-#ifdef HAVE_MACHINE_ENDIAN_H
-#include <machine/endian.h>
-#else /* !HAVE_MACHINE_ENDIAN_H */
-#ifdef HAVE_ENDIAN_H
+
+#ifdef USE_ENDIAN_H
 #include <endian.h>
-#else /* !HAVE_ENDIAN_H */
-#error "No supported endian.h"
-#endif /* !HAVE_ENDIAN_H */
-#endif /* !HAVE_MACHINE_ENDIAN_H */
+#endif
+#ifdef USE_SYS_ENDIAN_H
+#include <sys/endian.h>
+#endif
+#ifdef USE_COMPAT_ENDIAN_H
 #include <compat/endian.h>
-#endif /* !HAVE_SYS_ENDIAN_H || !HAVE_BE32ENC */
+#endif
+#ifdef USE_COMPAT_ENDIAN_ENC_H
+#include <compat/endian_enc.h>
+#endif
+
 #ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
 #else /* !HAVE_FULL_QUEUE_H */
