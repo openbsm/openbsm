@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#16 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#17 $
  */
 
 #include <sys/param.h>
@@ -520,6 +520,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 				}
 
 		}
+		closedir(dirp);
 	}
 
 	oldest_time = current_time - expire_age;
