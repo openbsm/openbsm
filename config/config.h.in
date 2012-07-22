@@ -18,7 +18,7 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* Define if endian.h is present */
+/* Define to 1 if you have the <endian.h> header file. */
 #undef HAVE_ENDIAN_H
 
 /* Define to 1 if you have the `fork' function. */
@@ -113,7 +113,7 @@
 /* Define to 1 if `st_rdev' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_RDEV
 
-/* Define if sys/endian.h is present */
+/* Define to 1 if you have the <sys/endian.h> header file. */
 #undef HAVE_SYS_ENDIAN_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
@@ -190,7 +190,7 @@
 /* Define if compat/endian.h is required */
 #undef USE_COMPAT_ENDIAN_H
 
-/* Define if endian should be included */
+/* Define if endian.h should be included */
 #undef USE_ENDIAN_H
 
 /* Define if uses Mach IPC for Triggers messages */

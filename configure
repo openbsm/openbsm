@@ -12975,9 +12975,6 @@ _ACEOF
 
 	have_endian_h=yes
 
-$as_echo "#define HAVE_ENDIAN_H /**/" >>confdefs.h
-
-
 else
 
 	have_endian_h=no
@@ -12997,9 +12994,6 @@ _ACEOF
 
 	have_sys_endian_h=yes
 
-$as_echo "#define HAVE_SYS_ENDIAN_H /**/" >>confdefs.h
-
-
 else
 
 	have_sys_endian_h=no
@@ -13009,11 +13003,11 @@ fi
 done
 
 
-if test $have_endian_h; then
+if test $have_endian_h = yes; then
 
 $as_echo "#define USE_ENDIAN_H /**/" >>confdefs.h
 
-elif test $have_sys_endian_h; then
+elif test $have_sys_endian_h = yes; then
 
 $as_echo "#define USE_SYS_ENDIAN_H /**/" >>confdefs.h
 
@@ -13068,7 +13062,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 	#include <sys/endian.h>
 	#endif
 	#ifdef USE_COMPAT_ENDIAN_H
-	#include <compat/endian.h>
+	#include "compat/endian.h"
 	#endif
 	#include <stdlib.h>
 

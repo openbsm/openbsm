@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.2alpha1], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#57 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#58 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
@@ -141,21 +141,19 @@ AM_CONDITIONAL(HAVE_AUDIT_SYSCALLS, $have_audit_syscalls)
 #
 AC_CHECK_HEADERS([endian.h], [
 	have_endian_h=yes
-	AC_DEFINE(HAVE_ENDIAN_H,, Define if endian.h is present)
 ], [
 	have_endian_h=no
 ])
 
 AC_CHECK_HEADERS([sys/endian.h], [
 	have_sys_endian_h=yes
-	AC_DEFINE(HAVE_SYS_ENDIAN_H, , Define if sys/endian.h is present)
 ], [
 	have_sys_endian_h=no
 ])
 
-if test $have_endian_h; then
-	AC_DEFINE(USE_ENDIAN_H,, Define if endian should be included)
-elif test $have_sys_endian_h; then
+if test $have_endian_h = yes; then
+	AC_DEFINE(USE_ENDIAN_H,, Define if endian.h should be included)
+elif test $have_sys_endian_h = yes; then
 	AC_DEFINE(USE_SYS_ENDIAN_H,, Define if sys/endian.h should be included)
 else
 	AC_MSG_ERROR([no endian.h])
@@ -186,7 +184,7 @@ AC_TRY_LINK([
 	#include <sys/endian.h>
 	#endif
 	#ifdef USE_COMPAT_ENDIAN_H
-	#include <compat/endian.h>
+	#include "compat/endian.h"
 	#endif
 	#include <stdlib.h>
 ], [
