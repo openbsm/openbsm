@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.2alpha1], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#59 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#60 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
@@ -86,7 +86,7 @@ AC_FUNC_MKTIME
 AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
-AC_CHECK_FUNCS([bzero clock_gettime ftruncate gettimeofday inet_ntoa memset strchr strerror strlcat strlcpy strrchr strstr strtol strtoul pthread_mutex_lock])
+AC_CHECK_FUNCS([bzero clock_gettime ftruncate gettimeofday inet_ntoa memset strchr strerror strlcat strlcpy strrchr strstr strtol strtoul pthread_mutex_lock vis])
 
 # sys/queue.h exists on most systems, but its capabilities vary a great deal.
 # test for LIST_FIRST and TAILQ_FOREACH_SAFE, which appears to not exist in

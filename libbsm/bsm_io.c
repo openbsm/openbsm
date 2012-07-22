@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#73 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#74 $
  */
 
 #include <sys/types.h>
@@ -76,7 +76,12 @@
 #include <string.h>
 #include <pwd.h>
 #include <grp.h>
+
+#ifdef HAVE_VIS
 #include <vis.h>
+#else
+#include <compat/vis.h>
+#endif
 
 #include <bsm/audit_internal.h>
 
