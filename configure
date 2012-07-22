@@ -13059,7 +13059,7 @@ int
 main ()
 {
 
-	be32toh(0);
+	(void)be32toh(0);
 
   ;
   return 0;
