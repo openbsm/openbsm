@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#72 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#73 $
  */
 
 #include <sys/types.h>
@@ -256,7 +256,7 @@ print_xml_string(FILE *fp, const char *str, size_t len)
 
 		default:
 			(void) vis(visbuf, str[i], VIS_CSTYLE, 0);
-			(void) fprintf(fp, visbuf);
+			(void) fprintf(fp, "%s", visbuf);
 			break;
 		}
 	}
