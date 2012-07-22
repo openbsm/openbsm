@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.2alpha1], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#58 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#59 $])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
@@ -127,13 +127,14 @@ AM_CONDITIONAL(HAVE_AUDIT_SYSCALLS, $have_audit_syscalls)
 #
 # We rely on the BSD be32toh() and be32enc()-style endian macros to perform
 # byte order conversions.  Availability of these varies considerably -- in
-# general, a system might have neither, be32toh(), or be32toh() and be32enc().
+# general, a system might have neither, be32toh(), or be32toh() and be32enc().
 # There is also variation in which headers are even present, and whether they
 # are macros or functions.  Try to organise the world into some simpler cases.
 # The following macros may be set at the end:
 #
 # USE_ENDIAN_H
 # USE_SYS_ENDIAN_H
+# USE_MACHINE_ENDIAN_H
 # USE_COMPAT_ENDIAN_H
 # USE_COMPAT_ENDIAN_ENC_H
 #
@@ -151,10 +152,18 @@ AC_CHECK_HEADERS([sys/endian.h], [
 	have_sys_endian_h=no
 ])
 
+AC_CHECK_HEADERS([machine/endian.h], [
+	have_machine_endian_h=yes
+], [
+	have_machine_endian_h=no
+])
+
 if test $have_endian_h = yes; then
 	AC_DEFINE(USE_ENDIAN_H,, Define if endian.h should be included)
 elif test $have_sys_endian_h = yes; then
 	AC_DEFINE(USE_SYS_ENDIAN_H,, Define if sys/endian.h should be included)
+elif test $have_machine_endian_h = yes; then
+	AC_DEFINE(USE_MACHINE_ENDIAN_H,, Define if machine/endian.h should be included)
 else
 	AC_MSG_ERROR([no endian.h])
 fi
@@ -169,6 +178,9 @@ AC_TRY_LINK([
 	#ifdef USE_SYS_ENDIAN_H
 	#include <sys/endian.h>
 	#endif
+	#ifdef USE_MACHINE_ENDIAN_H
+	#include <machine/endian.h>
+	#endif
 ], [
 	be32toh(0);
 ], [], [
@@ -182,6 +194,9 @@ AC_TRY_LINK([
 	#endif
 	#ifdef USE_SYS_ENDIAN_H
 	#include <sys/endian.h>
+	#endif
+	#ifdef USE_MACHINE_ENDIAN_H
+	#include <machine/endian.h>
 	#endif
 	#ifdef USE_COMPAT_ENDIAN_H
 	#include "compat/endian.h"

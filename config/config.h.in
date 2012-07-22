@@ -51,6 +51,9 @@
 /* Define if ipc_perm.__seq instead of seq */
 #undef HAVE_IPC_PERM___SEQ
 
+/* Define to 1 if you have the <machine/endian.h> header file. */
+#undef HAVE_MACHINE_ENDIAN_H
+
 /* Define to 1 if you have the <mach/mach.h> header file. */
 #undef HAVE_MACH_MACH_H
 
@@ -192,6 +195,9 @@
 
 /* Define if endian.h should be included */
 #undef USE_ENDIAN_H
+
+/* Define if machine/endian.h should be included */
+#undef USE_MACHINE_ENDIAN_H
 
 /* Define if uses Mach IPC for Triggers messages */
 #undef USE_MACH_IPC

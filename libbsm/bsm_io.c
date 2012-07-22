@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#70 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#71 $
  */
 
 #include <sys/types.h>
@@ -44,6 +44,9 @@
 #endif
 #ifdef USE_SYS_ENDIAN_H
 #include <sys/endian.h>
+#endif
+#ifdef USE_MACHINE_ENDIAN_H
+#include <machine/endian.h>
 #endif
 #ifdef USE_COMPAT_ENDIAN_H
 #include <compat/endian.h>
