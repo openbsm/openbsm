@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#71 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#72 $
  */
 
 #include <sys/types.h>
@@ -76,6 +76,7 @@
 #include <string.h>
 #include <pwd.h>
 #include <grp.h>
+#include <vis.h>
 
 #include <bsm/audit_internal.h>
 
@@ -212,6 +213,51 @@ print_string(FILE *fp, const char *str, size_t len)
 		for (i = 0; i < len; i++) {
 			if (str[i] != '\0')
 				fprintf(fp, "%c", str[i]);
+		}
+	}
+}
+
+/*
+ * Prints the given data bytes as an XML-sanitized string.
+ */
+static void
+print_xml_string(FILE *fp, const char *str, size_t len)
+{
+	u_int32_t i;
+	char visbuf[5];
+
+	if (len == 0)
+		return;
+
+	for (i = 0; i < len; i++) {
+		switch (str[i]) {
+		case '\0':
+			return;
+
+		case '&':
+			(void) fprintf(fp, "&amp;");
+			break;
+
+		case '<':
+			(void) fprintf(fp, "&lt;");
+			break;
+
+		case '>':
+			(void) fprintf(fp, "&gt;");
+			break;
+
+		case '\"':
+			(void) fprintf(fp, "&quot;");
+			break;
+
+		case '\'':
+			(void) fprintf(fp, "&apos;");
+			break;
+
+		default:
+			(void) vis(visbuf, str[i], VIS_CSTYLE, 0);
+			(void) fprintf(fp, visbuf);
+			break;
 		}
 	}
 }
@@ -1846,7 +1892,7 @@ print_execarg_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 	for (i = 0; i < tok->tt.execarg.count; i++) {
 		if (oflags & AU_OFLAG_XML) {
 			fprintf(fp, "<arg>");
-			print_string(fp, tok->tt.execarg.text[i],
+			print_xml_string(fp, tok->tt.execarg.text[i],
 			    strlen(tok->tt.execarg.text[i]));
 			fprintf(fp, "</arg>");
 		} else {
@@ -1904,7 +1950,7 @@ print_execenv_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 	for (i = 0; i< tok->tt.execenv.count; i++) {
 		if (oflags & AU_OFLAG_XML) {
 			fprintf(fp, "<env>");
-			print_string(fp, tok->tt.execenv.text[i],
+			print_xml_string(fp, tok->tt.execenv.text[i],
 			    strlen(tok->tt.execenv.text[i]));
 			fprintf(fp, "</env>");
 		} else {
