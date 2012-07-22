@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/bsm/Makefile.in#11 $
+# $P4: //depot/projects/trustedbsd/openbsm/bsm/Makefile.in#12 $
 #
 
 VPATH = @srcdir@

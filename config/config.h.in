@@ -6,9 +6,6 @@
 /* Define if audit system calls present */
 #undef HAVE_AUDIT_SYSCALLS
 
-/* Define if be32enc is present */
-#undef HAVE_BE32ENC
-
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
 
@@ -21,7 +18,7 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* Define to 1 if you have the <endian.h> header file. */
+/* Define if endian.h is present */
 #undef HAVE_ENDIAN_H
 
 /* Define to 1 if you have the `fork' function. */
@@ -53,9 +50,6 @@
 
 /* Define if ipc_perm.__seq instead of seq */
 #undef HAVE_IPC_PERM___SEQ
-
-/* Define to 1 if you have the <machine/endian.h> header file. */
-#undef HAVE_MACHINE_ENDIAN_H
 
 /* Define to 1 if you have the <mach/mach.h> header file. */
 #undef HAVE_MACH_MACH_H
@@ -119,7 +113,7 @@
 /* Define to 1 if `st_rdev' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_RDEV
 
-/* Define to 1 if you have the <sys/endian.h> header file. */
+/* Define if sys/endian.h is present */
 #undef HAVE_SYS_ENDIAN_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
@@ -190,11 +184,23 @@
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME
 
+/* Define if compat/endian_enc.h is required */
+#undef USE_COMPAT_ENDIAN_ENC_H
+
+/* Define if compat/endian.h is required */
+#undef USE_COMPAT_ENDIAN_H
+
+/* Define if endian should be included */
+#undef USE_ENDIAN_H
+
 /* Define if uses Mach IPC for Triggers messages */
 #undef USE_MACH_IPC
 
 /* Define to use native include files */
 #undef USE_NATIVE_INCLUDES
+
+/* Define if sys/endian.h should be included */
+#undef USE_SYS_ENDIAN_H
 
 /* Version number of package */
 #undef VERSION

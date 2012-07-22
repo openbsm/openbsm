@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# $P4: //depot/projects/trustedbsd/openbsm/sys/Makefile.in#5 $
+# $P4: //depot/projects/trustedbsd/openbsm/sys/Makefile.in#6 $
 #
 VPATH = @srcdir@
 am__make_dryrun = \
