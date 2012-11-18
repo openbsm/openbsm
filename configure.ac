@@ -3,7 +3,8 @@
 
 AC_PREREQ(2.59)
 AC_INIT([OpenBSM], [1.2alpha1], [trustedbsd-audit@TrustesdBSD.org],[openbsm])
-AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#61 $])
+AC_REVISION([$P4: //depot/projects/trustedbsd/openbsm/configure.ac#62 $])
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
@@ -26,17 +27,23 @@ AC_PATH_PROGS(MIG, mig)
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LEX
 AC_PROG_LIBTOOL
+AC_PROG_YACC
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
 AC_SEARCH_LIBS(dlsym, dl)
+AC_SEARCH_LIBS(pthread_create, pthread)
 AC_SEARCH_LIBS(clock_gettime, rt)
+AC_SEARCH_LIBS(SSL_connect, ssl)
+AC_SEARCH_LIBS(humanize_number, util)
+AC_SEARCH_LIBS(pidfile_open, util)
 
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([mach/mach.h stdint.h])
+AC_CHECK_HEADERS([mach/mach.h stdint.h pthread_np.h printf.h])
 
 AC_DEFINE([_GNU_SOURCE],,[Use extended API on platforms that require it])
 
@@ -75,6 +82,13 @@ AC_CHECK_MEMBER([struct ipc_perm._seq],
 #include <sys/ipc.h>
 ])
 
+AC_CHECK_MEMBER([struct sockaddr_storage.ss_len],
+[AC_DEFINE(HAVE_SOCKADDR_STORAGE_SS_LEN,, Define if sockaddr_storage.ss_len field exists)],
+[],[
+#include <sys/types.h>
+#include <sys/socket.h>
+])
+
 AC_HEADER_TIME
 AC_STRUCT_TM
 
@@ -86,7 +100,7 @@ AC_FUNC_MKTIME
 AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
-AC_CHECK_FUNCS([bzero clock_gettime ftruncate gettimeofday inet_ntoa memset strchr strerror strlcat strlcpy strrchr strstr strtol strtoul pthread_mutex_lock vis])
+AC_CHECK_FUNCS([arc4random arc4random_buf bzero cap_enter clock_gettime closefrom faccessat fdopendir fstatat ftruncate getresgid getresuid gettimeofday inet_ntoa jail kqueue memset openat pthread_cond_timedwait_relative_np pthread_condattr_setclock pthread_mutex_lock renameat setproctitle sigtimedwait strchr strerror strlcat strlcpy strndup strrchr strstr strtol strtoul unlinkat vis])
 
 # sys/queue.h exists on most systems, but its capabilities vary a great deal.
 # test for LIST_FIRST and TAILQ_FOREACH_SAFE, which appears to not exist in
@@ -203,7 +217,12 @@ AC_TRY_LINK([
 	#endif
 	#include <stdlib.h>
 ], [
+	bswap16(0);
+	bswap32(0);
+	bswap64(0);
 	be32enc(NULL, 0);
+	htole64(0);
+	le64toh(0);
 ], [], [
 	AC_DEFINE(USE_COMPAT_ENDIAN_ENC_H,, Define if compat/endian_enc.h is required)
 	AC_MSG_RESULT([using compat/endian_enc.h])
@@ -223,6 +242,7 @@ AC_CONFIG_FILES([Makefile
                  bin/Makefile
                  bin/audit/Makefile
                  bin/auditd/Makefile
+                 bin/auditdistd/Makefile
                  bin/auditfilterd/Makefile
                  bin/auditreduce/Makefile
                  bin/praudit/Makefile

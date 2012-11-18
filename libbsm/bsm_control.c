@@ -27,7 +27,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#40 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_control.c#41 $
  */
 
 #include <config/config.h>
@@ -37,6 +37,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <string.h>
+#include <strings.h>
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 #include <pthread.h>
 #endif
@@ -397,6 +398,43 @@ getacdir(char *name, int len)
 }
 
 /*
+ * Return 1 if dist value is set to 'yes' or 'on'.
+ * Return 0 if dist value is set to something else.
+ * Return negative value on error.
+ */
+int
+getacdist(void)
+{
+	char *str;
+	int ret;
+
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_lock(&mutex);
+#endif
+	setac_locked();
+	if (getstrfromtype_locked(DIST_CONTROL_ENTRY, &str) < 0) {
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+		pthread_mutex_unlock(&mutex);
+#endif
+		return (-2);
+	}
+	if (str == NULL) {
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+		pthread_mutex_unlock(&mutex);
+#endif
+		return (0);
+	}
+	if (strcasecmp(str, "on") == 0 || strcasecmp(str, "yes") == 0)
+		ret = 1;
+	else
+		ret = 0;
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_unlock(&mutex);
+#endif
+	return (ret);
+}
+
+/*
  * Return the minimum free diskspace value from the audit control file.
  */
 int
@@ -498,7 +536,7 @@ getacfilesz(size_t *filesz_val)
 	return (0);
 }
 
-int
+static int
 getaccommon(const char *name, char *auditstr, int len)
 {
 	char *str;
@@ -566,7 +604,7 @@ int
 getachost(char *auditstr, size_t len)
 {
 
-	return (getaccommon(AUDIT_HOST_CONTROL_ENTRY, auditstr, len));
+	return (getaccommon(HOST_CONTROL_ENTRY, auditstr, len));
 }
 
 /*

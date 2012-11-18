@@ -26,7 +26,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#25 $
+.\" $P4: //depot/projects/trustedbsd/openbsm/man/audit_control.5#26 $
 .\"
 .Dd May 14, 2009
 .Dt AUDIT_CONTROL 5
@@ -52,6 +52,18 @@ audit system.
 See
 .Xr audit 8
 for a description of how to restart the audit system.
+.It Va dist
+When set to
+.Va on
+or
+.Va yes ,
+.Xr auditd 8
+will be creating hardlinks to all trail files in
+.Pa /var/audit/dist
+directory.
+Those hardlinks will be consumed by the
+.Xr auditdistd 8
+daemon.
 .It Va flags
 Specifies which audit event classes are audited for all users.
 .Xr audit_user 5

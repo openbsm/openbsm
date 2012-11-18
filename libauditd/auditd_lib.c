@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#17 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libauditd/auditd_lib.c#18 $
  */
 
 #include <sys/param.h>
@@ -52,6 +52,7 @@
 #include <bsm/auditd_lib.h>
 #include <bsm/libbsm.h>
 
+#include <assert.h>
 #include <dirent.h>
 #include <err.h>
 #include <errno.h>
@@ -66,7 +67,7 @@
 #ifdef __APPLE__
 #include <notify.h>
 #ifndef __BSM_INTERNAL_NOTIFY_KEY
-#define __BSM_INTERNAL_NOTIFY_KEY "com.apple.audit.change"
+#define	__BSM_INTERNAL_NOTIFY_KEY	"com.apple.audit.change"
 #endif /* __BSM_INTERNAL_NOTIFY_KEY */
 #endif /* __APPLE__ */
 
@@ -101,6 +102,7 @@ struct audit_trail {
 };
 
 static int auditd_minval = -1;
+static int auditd_dist = 0;
 
 static char auditd_host[MAXHOSTNAMELEN];
 static int auditd_hostlen = -1;
@@ -128,10 +130,10 @@ static char *auditd_errmsg[] = {
 	"error expiring audit trail files",		/* ADE_EXPIRE	(19) */
 };
 
-#define MAXERRCODE (sizeof(auditd_errmsg) / sizeof(auditd_errmsg[0]))
+#define	MAXERRCODE	(sizeof(auditd_errmsg) / sizeof(auditd_errmsg[0]))
 
-#define NA_EVENT_STR_SIZE       128
-#define POL_STR_SIZE            128
+#define	NA_EVENT_STR_SIZE	128
+#define	POL_STR_SIZE		128
 
 
 /*
@@ -179,9 +181,9 @@ affixdir(char *name, struct dir_ent *dirent)
 	/*
 	 * Sanity check on file name.
 	 */
-	if (strlen(name) != (FILENAME_LEN - 1)) {
+	if (strlen(name) != FILENAME_LEN) {
 		errno = EINVAL;
-                return (NULL);
+		return (NULL);
 	}
 
 	/*
@@ -215,6 +217,26 @@ insert_orderly(struct dir_ent *denew)
 		}
 	}
 	TAILQ_INSERT_TAIL(&dir_q, denew, dirs);
+}
+
+/*
+ * Get the min percentage of free blocks from audit_control(5) and that
+ * value in the kernel.  Return:
+ *	ADE_NOERR	on success,
+ *	ADE_PARSE	error parsing audit_control(5),
+ */
+int
+auditd_set_dist(void)
+{
+	int ret;
+
+	ret = getacdist();
+	if (ret < 0)
+		return (ADE_PARSE);
+
+	auditd_dist = ret;
+
+	return (ADE_NOERR);
 }
 
 /*
@@ -318,7 +340,7 @@ static int
 trailname_to_tstamp(char *fn, time_t *tstamp)
 {
 	struct tm tm;
-	char ts[TIMESTAMP_LEN];
+	char ts[TIMESTAMP_LEN + 1];
 	char *p;
 
 	*tstamp = 0;
@@ -328,7 +350,7 @@ trailname_to_tstamp(char *fn, time_t *tstamp)
 	 */
 	if ((p = strchr(fn, '.')) == NULL)
 		return (1);
-	strlcpy(ts, ++p, TIMESTAMP_LEN);
+	strlcpy(ts, ++p, sizeof(ts));
 	if (strlen(ts) != POSTFIX_LEN)
 		return (1);
 
@@ -429,15 +451,12 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			/*
 			 * Quickly filter non-trail files.
 			 */
-			if (dp->d_namlen < (FILENAME_LEN - 1) ||
-#ifdef DT_REG
-			    dp->d_type != DT_REG ||
-#endif
+			if (dp->d_namlen < FILENAME_LEN ||
 			    dp->d_name[POSTFIX_LEN] != '.')
 				continue;
 
 			if (asprintf(&pn, "%s/%s", traildir->dirname,
-				dp->d_name) < 0) {
+			    dp->d_name) < 0) {
 				ret = ADE_NOMEM;
 				break;
 			}
@@ -453,8 +472,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			 * If this is the 'current' audit trail then
 			 * don't add it to the tail queue.
 			 */
-			if (NULL != afnp &&
-			    strncmp(dp->d_name, afnp, FILENAME_LEN) == 0) {
+			if (NULL != afnp && strcmp(dp->d_name, afnp) == 0) {
 				free(pn);
 				continue;
 			}
@@ -507,7 +525,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			 * insertion sort.
 			 */
 			if (TAILQ_EMPTY(&head) ||
-			    (new->at_time <= TAILQ_FIRST(&head)->at_time)) {
+			    new->at_time <= TAILQ_FIRST(&head)->at_time) {
 				TAILQ_INSERT_HEAD(&head, new, at_trls);
 				continue;
 			}
@@ -537,7 +555,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			if ((expire_size && total_size > expire_size) &&
 			    (expire_age && at->at_time < oldest_time)) {
 				if (warn_expired)
-				    (*warn_expired)(at->at_path);
+					(*warn_expired)(at->at_path);
 				if (unlink(at->at_path) < 0)
 					ret = ADE_EXPIRE;
 				total_size -= at->at_size;
@@ -546,7 +564,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			if ((expire_size && total_size > expire_size) ||
 			    (expire_age && at->at_time < oldest_time)) {
 				if (warn_expired)
-				    (*warn_expired)(at->at_path);
+					(*warn_expired)(at->at_path);
 				if (unlink(at->at_path) < 0)
 					ret = ADE_EXPIRE;
 				total_size -= at->at_size;
@@ -590,9 +608,9 @@ auditd_read_dirs(int (*warn_soft)(char *), int (*warn_hard)(char *))
 	if (auditd_hostlen == -1)
 		auditd_set_host();
 
-        /*
-         * Init directory q.  Force a re-read of the file the next time.
-         */
+	/*
+	 * Init directory q.  Force a re-read of the file the next time.
+	 */
 	free_dir_q();
 	endac();
 
@@ -601,9 +619,9 @@ auditd_read_dirs(int (*warn_soft)(char *), int (*warn_hard)(char *))
 	 * admin's preference, then those over soft limit and, finally,
 	 * those over the hard limit.
 	 *
-         * XXX We should use the reentrant interfaces once they are
-         * available.
-         */
+	 * XXX We should use the reentrant interfaces once they are
+	 * available.
+	 */
 	while (getacdir(cur_dir, MAXNAMLEN) >= 0) {
 		if (statfs(cur_dir, &sfs) < 0)
 			continue;  /* XXX should warn */
@@ -664,7 +682,6 @@ auditd_set_evcmap(void)
 	au_evclass_map_t evc_map;
 	int ctr = 0;
 
-
 	/*
 	 * XXX There's a risk here that the BSM library will return NULL
 	 * for an event when it can't properly map it to a class. In that
@@ -673,7 +690,7 @@ auditd_set_evcmap(void)
 	 */
 	ev.ae_name = (char *)malloc(AU_EVENT_NAME_MAX);
 	ev.ae_desc = (char *)malloc(AU_EVENT_DESC_MAX);
-	if ((ev.ae_name == NULL) || (ev.ae_desc == NULL)) {
+	if (ev.ae_name == NULL || ev.ae_desc == NULL) {
 		if (ev.ae_name != NULL)
 			free(ev.ae_name);
 		return (ADE_NOMEM);
@@ -710,8 +727,8 @@ auditd_set_namask(void)
 	au_mask_t aumask;
 	char naeventstr[NA_EVENT_STR_SIZE];
 
-	if ((getacna(naeventstr, NA_EVENT_STR_SIZE) != 0) ||
-	    (getauditflagsbin(naeventstr, &aumask) != 0))
+	if (getacna(naeventstr, NA_EVENT_STR_SIZE) != 0 ||
+	    getauditflagsbin(naeventstr, &aumask) != 0)
 		return (ADE_PARSE);
 
 	if (audit_set_kmask(&aumask, sizeof(aumask)) != 0)
@@ -735,13 +752,13 @@ auditd_set_policy(void)
 	int policy;
 	char polstr[POL_STR_SIZE];
 
-	if ((getacpol(polstr, POL_STR_SIZE) != 0) ||
-            (au_strtopol(polstr, &policy) != 0)) {
+	if (getacpol(polstr, POL_STR_SIZE) != 0 ||
+	    au_strtopol(polstr, &policy) != 0) {
 		policy = AUDIT_CNT;
 		if (audit_set_policy(&policy) != 0)
 			return (ADE_AUDITON);
 		return (ADE_PARSE);
-        }
+	}
 
 	if (audit_set_policy(&policy) != 0)
 		return (ADE_AUDITON);
@@ -772,30 +789,79 @@ auditd_set_fsize(void)
 	if (audit_set_fsize(&au_fstat, sizeof(au_fstat)) != 0)
 		return (ADE_AUDITON);
 
-        return (ADE_NOERR);
+	return (ADE_NOERR);
+}
+
+static void
+inject_dist(const char *fromname, char *toname, size_t tonamesize)
+{
+	char *ptr;
+
+	ptr = strrchr(fromname, '/');
+	assert(ptr != NULL);
+	assert(ptr - fromname < (ssize_t)tonamesize);
+	strlcpy(toname, fromname, ptr - fromname + 1);
+	strlcat(toname, "/dist/", tonamesize);
+	strlcat(toname, ptr + 1, tonamesize);
+}
+
+static int
+auditdist_link(const char *filename)
+{
+	char fname[MAXPATHLEN];
+
+	if (auditd_dist) {
+		inject_dist(filename, fname, sizeof(fname));
+		/* Ignore errors. */
+		(void) link(filename, fname);
+	}
+
+	return (0);
+}
+
+int
+auditd_rename(const char *fromname, const char *toname)
+{
+	char fname[MAXPATHLEN], tname[MAXPATHLEN];
+
+	if (auditd_dist) {
+		inject_dist(fromname, fname, sizeof(fname));
+		inject_dist(toname, tname, sizeof(tname));
+		/* Ignore errors. */
+		(void) rename(fname, tname);
+	}
+
+	return (rename(fromname, toname));
 }
 
 /*
- * Create the new audit file with appropriate permissions and ownership.  Try
- * to clean up if something goes wrong.
+ * Create the new audit file with appropriate permissions and ownership.
+ * Call auditctl(2) for this file.
+ * Try to clean up if something goes wrong.
+ * *errorp is modified only on auditctl(2) failure.
  */
 static int
-open_trail(char *fname, gid_t gid)
+open_trail(char *fname, gid_t gid, int *errorp)
 {
-	int error, fd;
+	int fd;
 
-	/* XXXPJD: We create a file and open it only for reading? Strange. */
+	/* XXXPJD: What should we do if the file already exists? */
 	fd = open(fname, O_RDONLY | O_CREAT, S_IRUSR);
 	if (fd < 0)
 		return (-1);
 	if (fchown(fd, -1, gid) < 0 || fchmod(fd, S_IRUSR | S_IRGRP) < 0) {
-		error = errno;
-		close(fd);
-		(void)unlink(fname);
-		errno = error;
+		(void) close(fd);
+		(void) unlink(fname);
 		return (-1);
 	}
-	return (fd);
+	(void) close(fd);
+	if (auditctl(fname) < 0) {
+		*errorp = errno;
+		(void) unlink(fname);
+		return (-1);
+	}
+	(void) auditdist_link(fname);
+	return (0);
 }
 
 /*
@@ -815,15 +881,14 @@ int
 auditd_swap_trail(char *TS, char **newfile, gid_t gid,
     int (*warn_getacdir)(char *))
 {
-	char timestr[FILENAME_LEN];
+	char timestr[FILENAME_LEN + 1];
 	char *fn;
 	struct dir_ent *dirent;
-	int fd;
-	int error;
 	int saverrno = 0;
 
-	if (strlen(TS) !=  (TIMESTAMP_LEN - 1) ||
-	    snprintf(timestr, FILENAME_LEN, "%s.%s", TS, NOT_TERMINATED) < 0) {
+	if (strlen(TS) != TIMESTAMP_LEN ||
+	    snprintf(timestr, sizeof(timestr), "%s.%s", TS,
+	    NOT_TERMINATED) < 0) {
 		errno = EINVAL;
 		return (ADE_STRERR);
 	}
@@ -836,36 +901,25 @@ auditd_swap_trail(char *TS, char **newfile, gid_t gid,
 			return (ADE_STRERR);
 
 		/*
-		 * Create and open the file; then close and pass to the
-		 * kernel if all went well.
+		 * Create the file and pass to the kernel if all went well.
 		 */
-		fd = open_trail(fn, gid);
-		if (fd >= 0) {
-			error = auditctl(fn);
-			if (error) {
+		if (open_trail(fn, gid, &saverrno) == 0) {
+			/* Success. */
+			*newfile = fn;
+			if (saverrno) {
 				/*
-				 * auditctl failed setting log file.
-				 * Try again.
+				 * auditctl() failed but still
+				 * successful. Return errno and "soft"
+				 * error.
 				 */
-				saverrno = errno;
-                                close(fd);
-                        } else {
-                                /* Success. */
-                                *newfile = fn;
-                                close(fd);
-				if (saverrno) {
-					/*
-					 * auditctl() failed but still
-					 * successful. Return errno and "soft"
-					 * error.
-					 */
-					errno = saverrno;
-					return (ADE_ACTL);
-				}
-                                return (ADE_NOERR);
-                        }
-                }
-
+				errno = saverrno;
+				return (ADE_ACTL);
+			}
+			return (ADE_NOERR);
+		}
+		/*
+		 * auditctl failed setting log file. Try again.
+		 */
 		/*
 		 * Tell the administrator about lack of permissions for dir.
 		 */
@@ -965,7 +1019,7 @@ auditd_gen_record(int event, char *path)
 	bzero(&aia, sizeof(aia));
 	uid = getuid(); pid = getpid();
 	if ((tok = au_to_subject32_ex(uid, geteuid(), getegid(), uid, getgid(),
-	     pid, pid, &aia.ai_termid)) != NULL)
+	    pid, pid, &aia.ai_termid)) != NULL)
 		au_write(aufd, tok);
 	if ((tok = au_to_text(autext)) != NULL)
 		au_write(aufd, tok);
@@ -1005,17 +1059,18 @@ auditd_new_curlink(char *curfile)
 	 * Check to see if audit was shutdown properly.  If not, clean up,
 	 * recover previous audit trail file, and generate audit record.
 	 */
-	len = readlink(AUDIT_CURRENT_LINK, recoveredname, MAXPATHLEN - 1);
+	len = readlink(AUDIT_CURRENT_LINK, recoveredname,
+	    sizeof(recoveredname) - 1);
 	if (len > 0) {
 		/* 'current' exist but is it pointing at a valid file?  */
 		recoveredname[len++] = '\0';
 		if (stat(recoveredname, &sb) == 0) {
 			/* Yes, rename it to a crash recovery file. */
-			strlcpy(newname, recoveredname, MAXPATHLEN);
+			strlcpy(newname, recoveredname, sizeof(newname));
 
 			if ((ptr = strstr(newname, NOT_TERMINATED)) != NULL) {
 				memcpy(ptr, CRASH_RECOVERY, POSTFIX_LEN);
-				if (rename(recoveredname, newname) != 0)
+				if (auditd_rename(recoveredname, newname) != 0)
 					return (ADE_RENAME);
 			} else
 				return (ADE_STRERR);
@@ -1053,7 +1108,7 @@ audit_quick_start(void)
 	int err;
 	char *newfile = NULL;
 	time_t tt;
-	char TS[TIMESTAMP_LEN];
+	char TS[TIMESTAMP_LEN + 1];
 	int ret = 0;
 
 	/*
@@ -1065,14 +1120,19 @@ audit_quick_start(void)
 	/*
 	 * Read audit_control and get log directories.
 	 */
-        err = auditd_read_dirs(NULL, NULL);
+	err = auditd_read_dirs(NULL, NULL);
 	if (err != ADE_NOERR && err != ADE_SOFTLIM)
 		return (-1);
 
 	/*
+	 * Setup trail file distribution.
+	 */
+	(void) auditd_set_dist();
+
+	/*
 	 *  Create a new audit trail log.
 	 */
-	if (getTSstr(tt, TS, TIMESTAMP_LEN) != 0)
+	if (getTSstr(tt, TS, sizeof(TS)) != 0)
 		return (-1);
 	err = auditd_swap_trail(TS, &newfile, getgid(), NULL);
 	if (err != ADE_NOERR && err != ADE_ACTL) {
@@ -1128,7 +1188,7 @@ audit_quick_stop(void)
 	time_t tt;
 	char oldname[MAXPATHLEN];
 	char newname[MAXPATHLEN];
-	char TS[TIMESTAMP_LEN];
+	char TS[TIMESTAMP_LEN + 1];
 
 	/*
 	 * Auditing already disabled?
@@ -1156,19 +1216,19 @@ audit_quick_stop(void)
 	/*
 	 * Rename last audit trail and remove 'current' link.
 	 */
-	len = readlink(AUDIT_CURRENT_LINK, oldname, MAXPATHLEN - 1);
+	len = readlink(AUDIT_CURRENT_LINK, oldname, sizeof(oldname) - 1);
 	if (len < 0)
 		return (-1);
 	oldname[len++] = '\0';
 
-	if (getTSstr(tt, TS, TIMESTAMP_LEN) != 0)
+	if (getTSstr(tt, TS, sizeof(TS)) != 0)
 		return (-1);
 
-	strlcpy(newname, oldname, len);
+	strlcpy(newname, oldname, sizeof(newname));
 
 	if ((ptr = strstr(newname, NOT_TERMINATED)) != NULL) {
 		memcpy(ptr, TS, POSTFIX_LEN);
-		if (rename(oldname, newname) != 0)
+		if (auditd_rename(oldname, newname) != 0)
 			return (-1);
 	} else
 		return (-1);

@@ -26,7 +26,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#49 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bsm/libbsm.h#50 $
  */
 
 #ifndef _LIBBSM_H_
@@ -77,12 +77,13 @@
 #define	AUDIT_USER_FILE		"/etc/security/audit_user"
 
 #define	DIR_CONTROL_ENTRY		"dir"
-#define	MINFREE_CONTROL_ENTRY		"minfree"
+#define	DIST_CONTROL_ENTRY		"dist"
 #define	FILESZ_CONTROL_ENTRY		"filesz"
 #define	FLAGS_CONTROL_ENTRY		"flags"
+#define	HOST_CONTROL_ENTRY		"host"
+#define	MINFREE_CONTROL_ENTRY		"minfree"
 #define	NA_CONTROL_ENTRY		"naflags"
 #define	POLICY_CONTROL_ENTRY		"policy"
-#define	AUDIT_HOST_CONTROL_ENTRY	"host"
 #define	EXPIRE_AFTER_CONTROL_ENTRY	"expire-after"
 
 #define	AU_CLASS_NAME_MAX	8
@@ -224,7 +225,7 @@ typedef struct {
  */
 typedef struct {
 	u_int32_t	mode;
-   	u_int32_t	uid;
+	u_int32_t	uid;
 	u_int32_t	gid;
 	u_int32_t	fsid;
 	u_int64_t	nid;
@@ -233,7 +234,7 @@ typedef struct {
 
 typedef struct {
 	u_int32_t	mode;
-   	u_int32_t	uid;
+	u_int32_t	uid;
 	u_int32_t	gid;
 	u_int32_t	fsid;
 	u_int64_t	nid;
@@ -803,13 +804,14 @@ struct au_class_ent	*getauclassnum_r(au_class_ent_t *class_int,
 void			 setac(void);
 void			 endac(void);
 int			 getacdir(char *name, int len);
-int			 getacmin(int *min_val);
+int			 getacdist(void);
+int			 getacexpire(int *andflg, time_t *age, size_t *size);
 int			 getacfilesz(size_t *size_val);
 int			 getacflg(char *auditstr, int len);
+int			 getachost(char *auditstr, size_t len);
+int			 getacmin(int *min_val);
 int			 getacna(char *auditstr, int len);
 int			 getacpol(char *auditstr, size_t len);
-int			 getachost(char *auditstr, size_t len);
-int			 getacexpire(int *andflg, time_t *age, size_t *size);
 int			 getauditflagsbin(char *auditstr, au_mask_t *masks);
 int			 getauditflagschar(char *auditstr, au_mask_t *masks,
 			    int verbose);
@@ -880,7 +882,7 @@ int	 au_bsm_to_socket_type(u_short bsm_socket_type,
 	    int *local_socket_typep);
 u_short	 au_domain_to_bsm(int local_domain);
 u_char	 au_errno_to_bsm(int local_errno);
-u_short	 au_fcntl_cmd_to_bsm(int local_fcntl_command); 
+u_short	 au_fcntl_cmd_to_bsm(int local_fcntl_command);
 u_short	 au_socket_type_to_bsm(int local_socket_type);
 
 const char	 *au_strerror(u_char bsm_error);

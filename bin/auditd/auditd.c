@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#49 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditd/auditd.c#50 $
  */
 
 #include <sys/types.h>
@@ -36,9 +36,9 @@
 #include <sys/dirent.h>
 #ifdef HAVE_FULL_QUEUE_H
 #include <sys/queue.h>
-#else /* !HAVE_FULL_QUEUE_H */
+#else	/* !HAVE_FULL_QUEUE_H */
 #include <compat/queue.h>
-#endif /* !HAVE_FULL_QUEUE_H */
+#endif	/* !HAVE_FULL_QUEUE_H */
 #include <sys/mman.h>
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -82,18 +82,18 @@
  * LaunchD flag (Mac OS X and, maybe, FreeBSD only.)  See launchd(8) and
  * http://wiki.freebsd.org/launchd for more information.
  *
- *      In order for auditd to work "on demand" with launchd(8) it can't:
- *              call daemon(3)
- *              call fork and having the parent process exit
- *              change uids or gids.
- *              set up the current working directory or chroot.
- *              set the session id
- *              change stdio to /dev/null.
- *              call setrusage(2)
- *              call setpriority(2)
- *              Ignore SIGTERM.
- *      auditd (in 'launchd mode') is launched on demand so it must catch
- *      SIGTERM to exit cleanly.
+ *	In order for auditd to work "on demand" with launchd(8) it can't:
+ *		call daemon(3)
+ *		call fork and having the parent process exit
+ *		change uids or gids.
+ *		set up the current working directory or chroot.
+ *		set the session id
+ *		change stdio to /dev/null.
+ *		call setrusage(2)
+ *		call setpriority(2)
+ *		Ignore SIGTERM.
+ *	auditd (in 'launchd mode') is launched on demand so it must catch
+ *	SIGTERM to exit cleanly.
  */
 static int	launchd_flag = 0;
 
@@ -168,7 +168,7 @@ close_lastfile(char *TS)
 		/* Rename the last file -- append timestamp. */
 		if ((ptr = strstr(lastfile, NOT_TERMINATED)) != NULL) {
 			memcpy(ptr, TS, POSTFIX_LEN);
-			if (rename(oldname, lastfile) != 0)
+			if (auditd_rename(oldname, lastfile) != 0)
 				auditd_log_err(
 				    "Could not rename %s to %s: %m", oldname,
 				    lastfile);
@@ -199,12 +199,35 @@ static int
 swap_audit_file(void)
 {
 	int err;
-	char *newfile;
-	char TS[TIMESTAMP_LEN];
+	char *newfile, *name;
+	char TS[TIMESTAMP_LEN + 1];
 	time_t tt;
 
-	if (getTSstr(tt, TS, TIMESTAMP_LEN) != 0)
+	if (getTSstr(tt, TS, sizeof(TS)) != 0)
 		return (-1);
+	/*
+	 * If prefix and suffix are the same, it means that records are
+	 * being produced too fast. We don't want to rename now, because
+	 * next trail file can get the same name and once that one is
+	 * terminated also within one second it will overwrite the current
+	 * one. Just keep writing to the same trail and wait for the next
+	 * trigger from the kernel.
+	 * FREEBSD KERNEL WAS UPDATED TO KEEP SENDING TRIGGERS, WHICH MIGHT
+	 * NOT BE THE CASE FOR OTHER OSES.
+	 * If the kernel will not keep sending triggers, trail file will not
+	 * be terminated.
+	 */
+	if (lastfile == NULL) {
+		name = NULL;
+	} else {
+		name = strrchr(lastfile, '/');
+		if (name != NULL)
+			name++;
+	}
+	if (name != NULL && strncmp(name, TS, TIMESTAMP_LEN) == 0) {
+		auditd_log_debug("Not ready to terminate trail file yet.");
+		return (0);
+	}
 	err = auditd_swap_trail(TS, &newfile, audit_review_gid,
 	    audit_warn_getacdir);
 	if (err != ADE_NOERR) {
@@ -232,7 +255,7 @@ swap_audit_file(void)
 	 */
 	if (auditd_new_curlink(newfile) != 0)
 		auditd_log_err("auditd_new_curlink(\"%s\") failed: %s: %m",
-		     newfile, auditd_strerror(err));
+		    newfile, auditd_strerror(err));
 
 	lastfile = newfile;
 	auditd_log_notice("New audit file is %s", newfile);
@@ -295,6 +318,14 @@ audit_setup(void)
 {
 	int err;
 
+	/* Configure trail files distribution. */
+	err = auditd_set_dist();
+	if (err) {
+		auditd_log_err("auditd_set_dist() %s: %m",
+		    auditd_strerror(err));
+	} else
+		auditd_log_debug("Configured trail files distribution.");
+
 	if (do_trail_file() == -1) {
 		auditd_log_err("Error creating audit trail file");
 		fail_exit();
@@ -341,7 +372,7 @@ static int
 close_all(void)
 {
 	int err_ret = 0;
-	char TS[TIMESTAMP_LEN];
+	char TS[TIMESTAMP_LEN + 1];
 	int err;
 	int cond;
 	time_t tt;
@@ -364,7 +395,7 @@ close_all(void)
 	 */
 	auditd_set_state(AUD_STATE_DISABLED);
 
-	if (getTSstr(tt, TS, TIMESTAMP_LEN) == 0)
+	if (getTSstr(tt, TS, sizeof(TS)) == 0)
 		close_lastfile(TS);
 	if (lastfile != NULL)
 		free(lastfile);

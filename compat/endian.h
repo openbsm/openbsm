@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  *
  * Derived from FreeBSD src/sys/sys/endian.h:1.6.
- * $P4: //depot/projects/trustedbsd/openbsm/compat/endian.h#9 $
+ * $P4: //depot/projects/trustedbsd/openbsm/compat/endian.h#10 $
  */
 
 #ifndef _COMPAT_ENDIAN_H_
@@ -116,6 +116,8 @@ bswap64(uint64_t int64)
 #define	_LITTLE_ENDIAN	LITTLE_ENDIAN
 #endif
 
+/* XXX: Hack. */
+#ifndef htobe16
 /*
  * Host to big endian, host to little endian, big endian to host, and little
  * endian to host byte order functions as detailed in byteorder(9).
@@ -149,5 +151,6 @@ bswap64(uint64_t int64)
 #define	le32toh(x)	bswap32((x))
 #define	le64toh(x)	bswap64((x))
 #endif /* _BYTE_ORDER == _LITTLE_ENDIAN */
+#endif
 
 #endif	/* _COMPAT_ENDIAN_H_ */
