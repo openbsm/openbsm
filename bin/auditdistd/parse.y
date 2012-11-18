@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/parse.y#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/parse.y#2 $
  */
 
 #include "config.h"
@@ -228,6 +228,11 @@ sender_start:	OB
 		depth1_compression = -1;
 		depth1_source[0] = '\0';
 		depth1_directory[0] = '\0';
+
+#ifndef HAVE_AUDIT_SYSCALLS
+		pjdlog_error("Sender functionality is not available.");
+		return (1);
+#endif
 	}
 	;
 
