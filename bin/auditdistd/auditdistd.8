@@ -51,7 +51,7 @@ daemon can be started with the following command line arguments:
 .It Fl c Ar config
 Specify alternative location of the configuration file.
 The default location is
-.Pa /etc/auditdistd.conf .
+.Pa /etc/security/auditdistd.conf .
 .It Fl d
 Print or log debugging information.
 This option can be specified multiple times to raise the verbosity
@@ -77,8 +77,8 @@ The default location is
 .Pa /var/run/auditdistd.pid .
 .El
 .Sh FILES
-.Bl -tag -width ".Pa /var/run/auditdistd.pid" -compact
-.It Pa /etc/auditdistd.conf
+.Bl -tag -width ".Pa /etc/security/auditdistd.conf" -compact
+.It Pa /etc/security/auditdistd.conf
 The configuration file for
 .Nm .
 .It Pa /var/run/auditdistd.pid

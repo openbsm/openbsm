@@ -126,11 +126,11 @@ receiver {
 	directory "<basedir>"
 
 	# Path to receiver's certificate file.
-	# The default is "/etc/auditdistd.cert.pem".
+	# The default is "/etc/security/auditdistd.cert.pem".
 	certfile "<path>"
 
 	# Path to receiver's private key file.
-	# The default is "/etc/auditdistd.key.pem".
+	# The default is "/etc/security/auditdistd.key.pem".
 	keyfile "<path>"
 
 	# Configuration for a source system we want to receive audit trail
@@ -307,15 +307,15 @@ Currently only SHA256 algorithm is supported.
 Certificate public key's fingerprint ready to be pasted into auditdistd
 configuration file can be obtained by running:
 .Bd -literal -offset
-# openssl x509 -in /etc/auditdistd.cert.pem -noout -fingerprint -sha256 | awk -F '[ =]' '{printf("%s=%s\\n", $1, $3)}'
+# openssl x509 -in /etc/security/auditdistd.cert.pem -noout -fingerprint -sha256 | awk -F '[ =]' '{printf("%s=%s\\n", $1, $3)}'
 .Ed
 .It Ic password Aq password
 .Pp
 Password used to authenticate the sender in front of the receiver.
 .El
 .Sh FILES
-.Bl -tag -width ".Pa /etc/auditdistd.conf" -compact
-.It Pa /etc/auditdistd.conf
+.Bl -tag -width ".Pa /etc/security/auditdistd.conf" -compact
+.It Pa /etc/security/auditdistd.conf
 The default
 .Nm auditdistd
 configuration file.

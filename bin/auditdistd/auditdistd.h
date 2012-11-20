@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/auditdistd.h#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/auditdistd.h#2 $
  */
 
 #ifndef	_AUDITDISTD_H_
@@ -62,15 +62,15 @@
 
 #define	ADIST_USER			"auditdistd"
 #define	ADIST_TIMEOUT			20
-#define	ADIST_CONFIG			"/etc/auditdistd.conf"
+#define	ADIST_CONFIG			"/etc/security/auditdistd.conf"
 #define	ADIST_TCP_PORT			"7878"
 #define	ADIST_LISTEN_TLS_TCP4		"tls://0.0.0.0:" ADIST_TCP_PORT
 #define	ADIST_LISTEN_TLS_TCP6		"tls://[::]:" ADIST_TCP_PORT
 #define	ADIST_PIDFILE			"/var/run/auditdistd.pid"
 #define	ADIST_DIRECTORY_SENDER		"/var/audit/dist"
 #define	ADIST_DIRECTORY_RECEIVER	"/var/audit/remote"
-#define	ADIST_CERTFILE			"/etc/auditdistd.cert.pem"
-#define	ADIST_KEYFILE			"/etc/auditdistd.key.pem"
+#define	ADIST_CERTFILE			"/etc/security/auditdistd.cert.pem"
+#define	ADIST_KEYFILE			"/etc/security/auditdistd.key.pem"
 
 #define	ADIST_ERROR_WRONG_ORDER		1
 #define	ADIST_ERROR_INVALID_NAME	2
