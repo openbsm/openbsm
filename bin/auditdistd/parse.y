@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/parse.y#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/parse.y#3 $
  */
 
 #include "config.h"
