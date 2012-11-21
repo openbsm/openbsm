@@ -36,6 +36,10 @@
 .Xr auditdistd 8
 daemon.
 .Sh DESCRIPTION
+Note: the configuration file may contain passwords.
+Care should be taken to configure proper permissions on this file
+.Li ( eg. 0600 ) .
+.Pp
 Every line starting with # is treated as comment and ignored.
 .Sh CONFIGURATION FILE SYNTAX
 General syntax of the

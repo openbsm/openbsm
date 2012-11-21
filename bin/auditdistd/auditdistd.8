@@ -52,6 +52,9 @@ daemon can be started with the following command line arguments:
 Specify alternative location of the configuration file.
 The default location is
 .Pa /etc/security/auditdistd.conf .
+Note: the configuration file may contain passwords.
+Care should be taken to configure proper permissions on this file
+.Li ( eg. 0600 ) .
 .It Fl d
 Print or log debugging information.
 This option can be specified multiple times to raise the verbosity
