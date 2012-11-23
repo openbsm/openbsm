@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/synch.h#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/synch.h#3 $
  */
 
 #ifndef	_SYNCH_H_
@@ -40,7 +40,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include <pjdlog.h>
+#include "pjdlog.h"
 
 #ifndef	PJDLOG_ASSERT
 #include <assert.h>
