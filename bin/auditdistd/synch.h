@@ -26,15 +26,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/synch.h#1 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/synch.h#2 $
  */
 
 #ifndef	_SYNCH_H_
 #define	_SYNCH_H_
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 #include <errno.h>
 #include <pthread.h>
