@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/auditdistd.c#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/auditdistd.c#3 $
  */
 
 #include <config/config.h>
@@ -75,9 +75,8 @@
 #include "sigtimedwait.h"
 #endif
 
-#include <pjdlog.h>
-
 #include "auditdistd.h"
+#include "pjdlog.h"
 #include "proto.h"
 #include "subr.h"
 #include "synch.h"

@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/sandbox.c#2 $
+ * $P4: //depot/projects/trustedbsd/openbsm/bin/auditdistd/sandbox.c#3 $
  */
 
 #include <config/config.h>
@@ -48,8 +48,7 @@
 #include <strings.h>
 #include <unistd.h>
 
-#include <pjdlog.h>
-
+#include "pjdlog.h"
 #include "sandbox.h"
 
 static int
