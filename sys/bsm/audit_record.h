@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_record.h#10 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_record.h#11 $
  */
 
 #ifndef _BSM_AUDIT_RECORD_H_
@@ -278,6 +278,7 @@ token_t	*au_to_exec_env(char **envp);
 token_t	*au_to_text(const char *text);
 token_t	*au_to_kevent(struct kevent *kev);
 token_t	*au_to_trailer(int rec_size);
+token_t	*au_to_upriv(char sorf, char *priv);
 token_t	*au_to_zonename(const char *zonename);
 
 /*
