@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#75 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#76 $
  */
 
 #include <sys/types.h>
@@ -949,7 +949,7 @@ print_header32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "header", oflags);
-	if (oflags & AU_OFLAG_RAW) {
+	if (oflags & AU_OFLAG_XML) {
 		open_attr(fp, "version");
 		print_1_byte(fp, tok->tt.hdr32.version, "%u");
 		close_attr(fp);
