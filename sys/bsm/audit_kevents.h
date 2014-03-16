@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_kevents.h#10 $
+ * $P4: //depot/projects/trustedbsd/openbsm/sys/bsm/audit_kevents.h#11 $
  */
 
 #ifndef _BSM_AUDIT_KEVENTS_H_
@@ -35,8 +35,8 @@
 /*
  * The reserved event numbers for kernel events are 1...2047 and 43001..44900.
  */
-#define	AUE_IS_A_KEVENT(e)	(((e) > 0 && (e) < 2048) || 	\
-    				 ((e) > 43000 && (e) < 45000))
+#define	AUE_IS_A_KEVENT(e)	(((e) > 0 && (e) < 2048) ||	\
+				 ((e) > 43000 && (e) < 45000))
 
 /*
  * Values marked as AUE_NULL are not required to be audited as per CAPP.
