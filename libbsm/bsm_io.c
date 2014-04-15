@@ -32,7 +32,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#77 $
+ * $P4: //depot/projects/trustedbsd/openbsm/libbsm/bsm_io.c#78 $
  */
 
 #include <sys/types.h>
@@ -596,6 +596,7 @@ print_tok_type(FILE *fp, u_char type, const char *tokname, int oflags)
 
 		case AUT_SOCKINET128:
 			fprintf(fp, "<socket-inet6 ");
+			break;
 
 		case AUT_SUBJECT32:
 			fprintf(fp, "<subject ");
