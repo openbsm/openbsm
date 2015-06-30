@@ -131,7 +131,7 @@ present_rawrecord(struct timespec *ts, u_char *data, u_int len)
 }
 
 /*
- * Parse the BSM into a set of tokens, which will be pased to registered
+ * Parse the BSM into a set of tokens, which will be passed to registered
  * and interested filters.
  */
 #define	MAX_TOKENS	128	/* Maximum tokens we handle per record. */
