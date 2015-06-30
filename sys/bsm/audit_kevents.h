@@ -33,7 +33,7 @@
 #define	_BSM_AUDIT_KEVENTS_H_
 
 /*
- * The reserved event numbers for kernel events are 1...2047 and 43001..44900.
+ * The reserved event numbers for kernel events are 1...2047 and 43001..44999.
  */
 #define	AUE_IS_A_KEVENT(e)	(((e) > 0 && (e) < 2048) ||	\
 				 ((e) > 43000 && (e) < 45000))
