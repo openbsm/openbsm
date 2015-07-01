@@ -47,7 +47,7 @@ gets treated as a comment and is ignored.
 The general syntax of the
 .Nm
 file is as follows:
-.Bd -literal -offset
+.Bd -literal
 ## Global section.
 
 # Our name.
@@ -313,7 +313,7 @@ Currently only the SHA256 algorithm is supported.
 The certificate public key's fingerprint ready to be pasted into the
 .Nm auditdistd
 configuration file can be obtained by running:
-.Bd -literal -offset
+.Bd -literal
 # openssl x509 -in /etc/security/auditdistd.cert.pem -noout -fingerprint -sha256 | awk -F '[ =]' '{printf("%s=%s\\n", $1, $3)}'
 .Ed
 .It Ic password Aq password
