@@ -1,5 +1,14 @@
 OpenBSM Version History
 
+OpenBSM 1.2 alpha 4
+
+- Fix praudit to emit correct XML.
+- Fix auditdistd bugs related to IPv6 support, locking, and a kqueue-related
+  descriptor leak.
+- Add audit event definitions for Capsicum-related syscalls, as well as
+  AUE_BINDAT and AUE_CONNECTAT.
+- A variety of minor documentation cleanups.
+
 OpenBSM 1.2 alpha 3
 
 - Various minor tweaks to the auditdistd build to make it fit the FreeBSD
