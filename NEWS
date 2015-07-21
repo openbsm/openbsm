@@ -7,6 +7,8 @@ OpenBSM 1.2 alpha 4
   descriptor leak.
 - Add audit event definitions for Capsicum-related syscalls, as well as
   AUE_BINDAT and AUE_CONNECTAT.
+- Manpage symlinks for all libbsm functions are installed again after the
+  move to autotools in OpenBSM 1.0 Alpha 5.
 - A variety of minor documentation cleanups.
 
 OpenBSM 1.2 alpha 3
