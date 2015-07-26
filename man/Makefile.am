@@ -1,7 +1,3 @@
-##
-## $P4: //depot/projects/trustedbsd/openbsm/man/Makefile.am#2 $
-##
-
 man2_MANS =			\
 	audit.2			\
 	auditctl.2		\

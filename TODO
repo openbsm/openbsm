@@ -21,5 +21,3 @@ OpenBSM TODO
   not available on the local OS platform.
 - Support for client certificates in auditdistd, to include certificate chain
   validation.
-
-$P4: //depot/projects/trustedbsd/openbsm/TODO#14 $
