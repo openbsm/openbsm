@@ -4,6 +4,10 @@ compiler:
   - clang
   - gcc
 
+os:
+  - linux
+  - osx
+
 before_install:
   - sudo apt-get update
   - sudo apt-get install byacc flex
