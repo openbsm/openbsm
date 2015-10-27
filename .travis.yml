@@ -9,5 +9,10 @@ os:
   - osx
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install byacc flex
+  - if [ $TRAVIS_OS_NAME == "linux" ]; then
+      sudo apt-get -qq update
+      sudo apt-get -qq install byacc flex
+    if [ $TRAVIS_OS_NAME == "osx" ]; then
+      brew update
+      brew install byacc flex
+    fi
