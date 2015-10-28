@@ -31,7 +31,7 @@ not configurable.
 You may wish to specify that the OpenBSM components not be installed in the
 base system, rather in a specific directory.  This may be done using the
 --prefix argument to configure.  If installing to a specific directory,
-remember to update your library path so that running tools from that
+remember to update your library path so that when running tools from that
 directory the correct libbsm is used:
 
     ./configure --prefix=/home/rwatson/openbsm
