@@ -570,6 +570,7 @@
 43210:AUE_PREADV:preadv(2):no
 43211:AUE_PWRITEV:pwritev(2):no
 43212:AUE_POSIX_FALLOCATE:posix_fallocate(2):no
+43213:AUE_AIO_MLOCK:aio_mlock(2):no
 #
 # Solaris userspace events.
 #
