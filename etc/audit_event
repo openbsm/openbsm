@@ -572,6 +572,14 @@
 43212:AUE_POSIX_FALLOCATE:posix_fallocate(2):no
 43213:AUE_AIO_MLOCK:aio_mlock(2):no
 43214:AUE_PROCCTL:procctl(2):pc
+43215:AUE_AIO_READ:aio_read(2):no
+43216:AUE_AIO_WRITE:aio_write(2):no
+43217:AUE_AIO_RETURN:aio_return(2):no
+43218:AUE_AIO_SUSPEND:aio_suspend(2):no
+43219:AUE_AIO_CANCEL:aio_cancel(2):no
+43220:AUE_AIO_ERROR:aio_error(2):no
+43221:AUE_AIO_WAITCOMPLETE:aio_waitcomplete(2):no
+43222:AUE_AIO_FSYNC:aio_fsync(2):no
 #
 # Solaris userspace events.
 #

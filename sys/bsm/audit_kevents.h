@@ -614,6 +614,14 @@
 #define	AUE_POSIX_FALLOCATE	43212	/* FreeBSD-specific. */
 #define	AUE_AIO_MLOCK		43213	/* FreeBSD-specific. */
 #define	AUE_PROCCTL		43214	/* FreeBSD-specific. */
+#define	AUE_AIO_READ		43215	/* FreeBSD-specific. */
+#define	AUE_AIO_WRITE		43216	/* FreeBSD-specific. */
+#define	AUE_AIO_RETURN		43217	/* FreeBSD-specific. */
+#define	AUE_AIO_SUSPEND		43218	/* FreeBSD-specific. */
+#define	AUE_AIO_CANCEL		43219	/* FreeBSD-specific. */
+#define	AUE_AIO_ERROR		43220	/* FreeBSD-specific. */
+#define	AUE_AIO_WAITCOMPLETE	43221	/* FreeBSD-specific. */
+#define	AUE_AIO_FSYNC		43222	/* FreeBSD-specific. */
 
 /*
  * Darwin BSM uses a number of AUE_O_* definitions, which are aliased to the
