@@ -613,6 +613,7 @@
 #define	AUE_PWRITEV		43211	/* FreeBSD-specific. */
 #define	AUE_POSIX_FALLOCATE	43212	/* FreeBSD-specific. */
 #define	AUE_AIO_MLOCK		43213	/* FreeBSD-specific. */
+#define	AUE_PROCCTL		43214	/* FreeBSD-specific. */
 
 /*
  * Darwin BSM uses a number of AUE_O_* definitions, which are aliased to the
