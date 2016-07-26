@@ -622,6 +622,11 @@
 #define	AUE_AIO_ERROR		43220	/* FreeBSD-specific. */
 #define	AUE_AIO_WAITCOMPLETE	43221	/* FreeBSD-specific. */
 #define	AUE_AIO_FSYNC		43222	/* FreeBSD-specific. */
+#define	AUE_THR_CREATE		43223	/* FreeBSD-specific. */
+#define	AUE_THR_NEW		43224	/* FreeBSD-specific. */
+#define	AUE_THR_EXIT		43225	/* FreeBSD-specific. */
+#define	AUE_THR_KILL		43226	/* FreeBSD-specific. */
+#define	AUE_THR_KILL2		43227	/* FreeBSD-specific. */
 
 /*
  * Darwin BSM uses a number of AUE_O_* definitions, which are aliased to the

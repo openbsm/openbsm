@@ -580,6 +580,11 @@
 43220:AUE_AIO_ERROR:aio_error(2):no
 43221:AUE_AIO_WAITCOMPLETE:aio_waitcomplete(2):no
 43222:AUE_AIO_FSYNC:aio_fsync(2):no
+43223:AUE_THR_CREATE:thr_create(2):pc
+43224:AUE_THR_NEW:thr_new(2):pc
+43225:AUE_THR_EXIT:thr_exit(2):pc
+43226:AUE_THR_KILL:thr_kill(2):pc
+43227:AUE_THR_KILL2:thr_kill(2):pc
 #
 # Solaris userspace events.
 #
