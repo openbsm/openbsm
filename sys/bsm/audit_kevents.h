@@ -627,6 +627,18 @@
 #define	AUE_THR_EXIT		43225	/* FreeBSD-specific. */
 #define	AUE_THR_KILL		43226	/* FreeBSD-specific. */
 #define	AUE_THR_KILL2		43227	/* FreeBSD-specific. */
+#define	AUE_SETFIB		43228	/* FreeBSD-specific. */
+#define	AUE_LIO_LISTIO		43229	/* FreeBSD-specific. */
+#define	AUE_SETUGID		43230	/* FreeBSD-specific. */
+#define	AUE_SCTP_PEELOFF	43231	/* FreeBSD-specific. */
+#define	AUE_SCTP_GENERIC_SENDMSG	43232	/* FreeBSD-specific. */
+#define	AUE_SCTP_GENERIC_RECVMSG	43233	/* FreeBSD-specific. */
+#define	AUE_JAIL_GET		43234	/* FreeBSD-specific. */
+#define	AUE_JAIL_SET		43235	/* FreeBSD-specific. */
+#define	AUE_JAIL_REMOVE		43236	/* FreeBSD-specific. */
+#define	AUE_GETLOGINCLASS	43237	/* FreeBSD-specific. */
+#define	AUE_SETLOGINCLASS	43238	/* FreeBSD-specific. */
+#define	AUE_POSIX_FADVISE	43239	/* FreeBSD-specific. */
 
 /*
  * Darwin BSM uses a number of AUE_O_* definitions, which are aliased to the
