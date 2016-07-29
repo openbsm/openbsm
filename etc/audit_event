@@ -597,6 +597,7 @@
 43237:AUE_GETLOGINCLASS:getloginclass(2):pc
 43238:AUE_SETLOGINCLASS:setloginclass(2):pc
 43239:AUE_POSIX_FADVISE:posix_fadvise(2):no
+43240:AUE_SCTP_GENERIC_SENDMSG_IOV:sctp_generic_sendmsg_iov(2):nt
 #
 # Solaris userspace events.
 #
