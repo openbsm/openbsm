@@ -1,6 +1,12 @@
 /*-
  * Copyright (c) 2008-2009 Apple Inc.
+ * Copyright (c) 2016 Robert N. M. Watson
  * All rights reserved.
+ *
+ * Portions of this software were developed by BAE Systems, the University of
+ * Cambridge Computer Laboratory, and Memorial University under DARPA/AFRL
+ * contract FA8650-15-C-7558 ("CADETS"), as part of the DARPA Transparent
+ * Computing (TC) research program.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -788,6 +794,33 @@ auditd_set_fsize(void)
 	bzero(&au_fstat, sizeof(au_fstat));
 	au_fstat.af_filesz = filesz;
 	if (audit_set_fsize(&au_fstat, sizeof(au_fstat)) != 0)
+		return (ADE_AUDITON);
+
+	return (ADE_NOERR);
+}
+
+/*
+ * Set trail rotation size.  Return:
+ *	ADE_NOERR	on success,
+ *	ADE_PARSE	error parsing audit_control(5),
+ *	ADE_AUDITON	error setting queue size using auditon(2).
+ */
+int
+auditd_set_qsize(void)
+{
+	size_t qsz;
+	au_qctrl_t au_qctrl;
+
+	/*
+	 * Set trail rotation size.
+	 */
+	if (getacqsize(&qsz) != 0)
+		return (ADE_PARSE);
+
+	if (audit_get_qctrl(&au_qctrl, sizeof(au_qctrl)) != 0)
+		return (ADE_AUDITON);
+	au_qctrl.aq_hiwater = qsz;
+	if (audit_set_qctrl(&au_qctrl, sizeof(au_qctrl)) != 0)
 		return (ADE_AUDITON);
 
 	return (ADE_NOERR);

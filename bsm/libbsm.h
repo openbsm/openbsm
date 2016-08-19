@@ -83,6 +83,7 @@
 #define	NA_CONTROL_ENTRY		"naflags"
 #define	POLICY_CONTROL_ENTRY		"policy"
 #define	EXPIRE_AFTER_CONTROL_ENTRY	"expire-after"
+#define	QSZ_CONTROL_ENTRY		"qsize"
 
 #define	AU_CLASS_NAME_MAX	8
 #define	AU_CLASS_DESC_MAX	72
@@ -805,6 +806,7 @@ int			 getacdir(char *name, int len);
 int			 getacdist(void);
 int			 getacexpire(int *andflg, time_t *age, size_t *size);
 int			 getacfilesz(size_t *size_val);
+int			 getacqsize(size_t *size_val);
 int			 getacflg(char *auditstr, int len);
 int			 getachost(char *auditstr, size_t len);
 int			 getacmin(int *min_val);
