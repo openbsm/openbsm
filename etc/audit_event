@@ -570,7 +570,7 @@
 43210:AUE_PREADV:preadv(2):no
 43211:AUE_PWRITEV:pwritev(2):no
 43212:AUE_POSIX_FALLOCATE:posix_fallocate(2):no
-43213:AUE_AIO_MLOCK:aio_mlock(2):no
+43213:AUE_AIO_MLOCK:aio_mlock(2):pc
 43214:AUE_PROCCTL:procctl(2):pc
 43215:AUE_AIO_READ:aio_read(2):no
 43216:AUE_AIO_WRITE:aio_write(2):no
