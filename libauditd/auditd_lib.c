@@ -681,12 +681,18 @@ auditd_close_dirs(void)
  * set that mapping into the kernel. Return:
  *	 n	number of event mappings that were successfully processed,
  *   ADE_NOMEM	if there was an error allocating memory.
+ *
+ * Historically, this code only set up the in-kernel class mapping.  On
+ * systems with an in-kernel event-to-name mapping, it also now installs that,
+ * as it is iterating over the event list anyway.  Failures there will be
+ * ignored as not all kernels support the feature.
  */
 int
 auditd_set_evcmap(void)
 {
 	au_event_ent_t ev, *evp;
 	au_evclass_map_t evc_map;
+	au_evname_map_t evn_map;
 	int ctr = 0;
 
 	/*
@@ -710,6 +716,20 @@ auditd_set_evcmap(void)
 	evp = &ev;
 	setauevent();
 	while ((evp = getauevent_r(evp)) != NULL) {
+		/*
+		 * Set the event-to-name mapping entry.  If there's not room
+		 * in the in-kernel string, then we skip the entry.  Possibly
+		 * better than truncating...?
+		 */
+		if (strlcpy(evn_map.en_name, evp->ae_name,
+		    sizeof(evn_map.en_name)) < sizeof(evn_map.en_name)) {
+			evn_map.en_number = evp->ae_number;
+			(void)audit_set_event(&evn_map, sizeof(evn_map));
+		}
+
+		/*
+		 * Set the event-to-class mapping entry.
+		 */
 		evc_map.ec_number = evp->ae_number;
 		evc_map.ec_class = evp->ae_class;
 		if (audit_set_class(&evc_map, sizeof(evc_map)) == 0)

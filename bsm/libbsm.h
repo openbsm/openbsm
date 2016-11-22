@@ -1316,6 +1316,8 @@ void audit_token_to_au32(
 int audit_get_car(char *path, size_t sz);
 int audit_get_class(au_evclass_map_t *evc_map, size_t sz);
 int audit_set_class(au_evclass_map_t *evc_map, size_t sz);
+int audit_get_event(au_evname_map_t *evn_map, size_t sz);
+int audit_set_event(au_evname_map_t *evn_map, size_t sz);
 int audit_get_cond(int *cond);
 int audit_set_cond(int *cond);
 int audit_get_cwd(char *path, size_t sz);
