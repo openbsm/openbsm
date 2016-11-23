@@ -123,6 +123,8 @@
 #define	AUT_SOCKINET128		0x81		/* XXX */
 #define	AUT_SOCKUNIX		0x82		/* XXX */
 
+#define	AUT_RIGHTS		0x83		/* Capability rights. */
+
 /* print values for the arbitrary token */
 #define AUP_BINARY      0
 #define AUP_OCTAL       1
@@ -185,6 +187,13 @@ struct sockaddr_un;
 struct vnode_au_info;
 #endif
 
+#ifndef	_CAP_RIGHTS_T_DECLARED
+#define	_CAP_RIGHTS_T_DECLARED
+struct cap_rights;
+
+typedef	struct cap_rights	cap_rights_t;
+#endif
+
 int	 au_open(void);
 int	 au_write(int d, token_t *m);
 int	 au_close(int d, int keep, short event);
@@ -245,6 +254,7 @@ token_t	*au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid,
 	    au_tid_addr_t *tid);
 token_t	*au_to_process64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_addr_t *tid);
+token_t	*au_to_rights(cap_rights_t *rightsp);
 token_t	*au_to_return(char status, uint32_t ret);
 token_t	*au_to_return32(char status, uint32_t ret);
 token_t	*au_to_return64(char status, uint64_t ret);
