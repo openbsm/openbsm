@@ -327,6 +327,30 @@ au_to_attr(struct vnode_au_info *vni)
 
 /*
  * token ID                1 byte
+ * cap_rights_t            16 bytes
+ */
+#ifdef HAVE_SYS_CAPSICUM_H
+token_t *
+au_to_caprights(cap_rights_t *rightsp)
+{
+	token_t *t;
+	u_char *dptr;
+	int i;
+
+	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(*rightsp));
+	if (t == NULL)
+		return (NULL);
+
+	ADD_U_CHAR(dptr, AUT_RIGHTS);
+	for (i = 0; i < nitems(rightsp->cr_rights); i++)
+		ADD_U_INT64(dptr, rightsp->cr_rights[i]);
+
+	return (t);
+}
+#endif /* !HAVE_SYS_CAPSICUM_H */
+
+/*
+ * token ID                1 byte
  * how to print            1 byte
  * basic unit              1 byte
  * unit count              1 byte
@@ -926,26 +950,6 @@ au_to_process_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	return (au_to_process32_ex(auid, euid, egid, ruid, rgid, pid, sid,
 	    tid));
 }
-
-#ifdef HAVE_SYS_CAPSICUM_H
-token_t *
-au_to_rights(cap_rights_t *rightsp)
-{
-	token_t *t;
-	u_char *dptr;
-	int i;
-
-	GET_TOKEN_AREA(t, dptr, sizeof(u_char) + sizeof(*rightsp));
-	if (t == NULL)
-		return (NULL);
-
-	ADD_U_CHAR(dptr, AUT_RIGHTS);
-	for (i = 0; i < nitems(rightsp->cr_rights); i++)
-		ADD_U_INT64(dptr, rightsp->cr_rights[i]);
-
-	return (t);
-}
-#endif /* !HAVE_SYS_CAPSICUM_H */
 
 /*
  * token ID                1 byte

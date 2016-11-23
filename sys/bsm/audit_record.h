@@ -227,6 +227,7 @@ token_t	*au_to_attr32(struct vnode_au_info *vni);
 token_t	*au_to_attr64(struct vnode_au_info *vni);
 #endif
 
+token_t	*au_to_caprights(cap_rights_t *rightsp);
 token_t	*au_to_data(char unit_print, char unit_type, char unit_count,
 	    const char *p);
 token_t	*au_to_exit(int retval, int err);
@@ -254,7 +255,6 @@ token_t	*au_to_process32_ex(au_id_t auid, uid_t euid, gid_t egid,
 	    au_tid_addr_t *tid);
 token_t	*au_to_process64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 	    gid_t rgid, pid_t pid, au_asid_t sid, au_tid_addr_t *tid);
-token_t	*au_to_rights(cap_rights_t *rightsp);
 token_t	*au_to_return(char status, uint32_t ret);
 token_t	*au_to_return32(char status, uint32_t ret);
 token_t	*au_to_return64(char status, uint64_t ret);

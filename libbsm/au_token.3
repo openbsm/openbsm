@@ -1,6 +1,11 @@
 .\"-
-.\" Copyright (c) 2005-2007 Robert N. M. Watson
+.\" Copyright (c) 2005-2007, 2016 Robert N. M. Watson
 .\" All rights reserved.
+.\"
+.\" Portions of this software were developed by BAE Systems, the University of
+.\" Cambridge Computer Laboratory, and Memorial University under DARPA/AFRL
+.\" contract FA8650-15-C-7558 ("CADETS"), as part of the DARPA Transparent
+.\" Computing (TC) research program.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -31,6 +36,7 @@
 .Nm au_to_arg64 ,
 .Nm au_to_arg ,
 .Nm au_to_attr64 ,
+.Nm au_to_caprights ,
 .Nm au_to_data ,
 .Nm au_to_exit ,
 .Nm au_to_groups ,
@@ -92,6 +98,8 @@
 .Fn au_to_attr64 "struct vattr *attr"
 .Ft "token_t *"
 .Fn au_to_attr "struct vattr *attr"
+.Ft "token_t *"
+.Fn au_to_caprights "cap_rights_t"
 .Ft "token_t *"
 .Fn au_to_data "char unit_print" "char unit_type" "char unit_count" "const char *p"
 .Ft "token_t *"
