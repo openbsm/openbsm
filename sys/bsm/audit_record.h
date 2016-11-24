@@ -123,8 +123,6 @@
 #define	AUT_SOCKINET128		0x81		/* XXX */
 #define	AUT_SOCKUNIX		0x82		/* XXX */
 
-#define	AUT_RIGHTS		0x83		/* Capability rights. */
-
 /* print values for the arbitrary token */
 #define AUP_BINARY      0
 #define AUP_OCTAL       1

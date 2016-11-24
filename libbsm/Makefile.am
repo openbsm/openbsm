@@ -102,7 +102,6 @@ install-exec-hook:
 	  $(LN_S) -f au_token.3 au_to_arg64.3 && \
 	  $(LN_S) -f au_token.3 au_to_arg.3 && \
 	  $(LN_S) -f au_token.3 au_to_attr64.3 && \
-	  $(LN_S) -f au_token.3 au_to_caprights.3 && \
 	  $(LN_S) -f au_token.3 au_to_data.3 && \
 	  $(LN_S) -f au_token.3 au_to_exit.3 && \
 	  $(LN_S) -f au_token.3 au_to_groups.3 && \
