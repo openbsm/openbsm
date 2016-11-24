@@ -225,7 +225,6 @@ token_t	*au_to_attr32(struct vnode_au_info *vni);
 token_t	*au_to_attr64(struct vnode_au_info *vni);
 #endif
 
-token_t	*au_to_caprights(cap_rights_t *rightsp);
 token_t	*au_to_data(char unit_print, char unit_type, char unit_count,
 	    const char *p);
 token_t	*au_to_exit(int retval, int err);
