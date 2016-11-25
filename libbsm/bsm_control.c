@@ -718,7 +718,6 @@ int
 getacqsize(size_t *qsz_val)
 {
 	char *str;
-	size_t val;
 	int nparsed;
 
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
