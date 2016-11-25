@@ -10,7 +10,8 @@ of several organizations.
 OpenBSM includes several command line tools, including auditreduce(8) and
 praudit(8) for reducing and printing audit trails, as well as the libbsm(3)
 library to manage configuration files, generate audit records, and parse and
-print audit trails.
+print audit trails.  It also includes the auditd(8) audit configuration
+daemon, and the auditdistd(8) audit-trail distribution daemon.
 
 Coupled with a kernel audit implementation, OpenBSM can be used to maintain
 system audit streams, and is a foundation for a full audit-enabled system.
@@ -22,15 +23,15 @@ and Mac OS X kernels.
 
 OpenBSM consists of several directories:
 
-    bin/           Audit-related command line tools
-    bsm/           Library include files for BSM
+    bin/           Audit-related command line tools and daemons
+    bsm/           Library header files for BSM
     compat/        Compatibility code to build on various operating systems
     etc/           Sample /etc/security configuration files
-    libauditd      Common audit management functions for auditd and launchd
+    libauditd/     Common audit management functions for auditd and launchd
     libbsm/        Implementation of BSM library interfaces and man pages
     man/           System call and configuration file man pages
     modules/       Directory for auditfilterd module source
-    sys/           System include files for BSM
+    sys/           System header files for BSM
     test/          Test token sets and geneneration program
     tools/         Tool directory, including audump to dump databases
 
