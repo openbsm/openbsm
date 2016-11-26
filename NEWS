@@ -11,6 +11,8 @@ OpenBSM 1.2 alpha 5
   system calls including those for asynchronous I/O, thread management, SCTP,
   jails, multi-FIB support, and misc. POSIX interfaces such as
   posix_fallocate(2) and posix_fadvise(2).
+- On operating systems supporting Capsicum, auditreduce(1) and praudit(1) now
+  run sandboxed.
 
 OpenBSM 1.2 alpha 4
 
