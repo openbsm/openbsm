@@ -173,13 +173,14 @@ main(int argc, char **argv)
 
 #ifdef HAVE_CAP_ENTER
 	/*
-	 * Prime group and password files to be opened before we enter
-	 * capability mode.
+	 * Prime group, password, and audit-event files to be opened before we
+	 * enter capability mode.
 	 */
 	(void)getgrgid(0);
 	(void)setgroupent(1);
 	(void)getpwuid(0);
 	(void)setpassent(1);
+	(void)getauevent();
 #endif
 
 	if (oflags & AU_OFLAG_XML)
