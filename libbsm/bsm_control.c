@@ -554,19 +554,18 @@ getaccommon(const char *name, char *auditstr, int len)
 #endif
 		return (-2);
 	}
-	if (str == NULL) {
-#ifdef HAVE_PTHREAD_MUTEX_LOCK
-		pthread_mutex_unlock(&mutex);
-#endif
-		return (-1);
-	}
-	if (strlen(str) >= (size_t)len) {
+
+	/*
+	 * getstrfromtype_locked() can return NULL for an empty value -- make
+	 * sure to handle this by coercing the NULL back into an empty string.
+	 */
+	if (str != NULL && (strlen(str) >= (size_t)len)) {
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
 		return (-3);
 	}
-	strlcpy(auditstr, str, len);
+	strlcpy(auditstr, str != NULL ? str : "", len);
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 	pthread_mutex_unlock(&mutex);
 #endif
