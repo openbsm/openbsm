@@ -137,11 +137,7 @@ getstrfromtype_locked(const char *name, char **str)
 		if ((type = strtok_r(tokptr, delim, &last)) != NULL) {
 			if (strcmp(name, type) == 0) {
 				/* Found matching name. */
-				*str = strtok_r(NULL, delim, &last);
-				if (*str == NULL) {
-					errno = EINVAL;
-					return (-1); /* Parse error in file */
-				}
+				*str = last;
 				return (0); /* Success */
 			}
 		}
