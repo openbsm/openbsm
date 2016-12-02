@@ -710,7 +710,7 @@ getacexpire(int *andflg, time_t *age, size_t *size)
  * Return the desired queue size from the audit control file.
  */
 int
-getacqsize(size_t *qsz_val)
+getacqsize(int *qsz_val)
 {
 	char *str;
 	int nparsed;
@@ -729,15 +729,15 @@ getacqsize(size_t *qsz_val)
 #ifdef HAVE_PTHREAD_MUTEX_LOCK
 		pthread_mutex_unlock(&mutex);
 #endif
-		errno = EINVAL;
-		return (-1);
+		*qsz_val = USE_DEFAULT_QSZ;
+		return (0);
 	}
 
 	/* Trim off any leading white space. */
 	while (*str == ' ' || *str == '\t')
 		str++;
 
-	nparsed = sscanf(str, "%ju", (uintmax_t *)qsz_val);
+	nparsed = sscanf(str, "%d", (int *)qsz_val);
 
 	if (nparsed != 1) {
 		errno = EINVAL;

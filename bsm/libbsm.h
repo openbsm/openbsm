@@ -94,6 +94,8 @@
 #define	MAX_AUDITSTRING_LEN	256
 #define	BSM_TEXTBUFSZ		MAX_AUDITSTRING_LEN	/* OpenSSH compatibility */
 
+#define USE_DEFAULT_QSZ		-1	/* Use system default queue size */
+
 /*
  * Arguments to au_close(3).
  */
@@ -806,7 +808,7 @@ int			 getacdir(char *name, int len);
 int			 getacdist(void);
 int			 getacexpire(int *andflg, time_t *age, size_t *size);
 int			 getacfilesz(size_t *size_val);
-int			 getacqsize(size_t *size_val);
+int			 getacqsize(int *size_val);
 int			 getacflg(char *auditstr, int len);
 int			 getachost(char *auditstr, size_t len);
 int			 getacmin(int *min_val);

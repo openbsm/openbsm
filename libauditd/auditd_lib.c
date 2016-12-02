@@ -828,7 +828,7 @@ auditd_set_fsize(void)
 int
 auditd_set_qsize(void)
 {
-	size_t qsz;
+	int qsz;
 	au_qctrl_t au_qctrl;
 
 	/*
@@ -839,7 +839,8 @@ auditd_set_qsize(void)
 
 	if (audit_get_qctrl(&au_qctrl, sizeof(au_qctrl)) != 0)
 		return (ADE_AUDITON);
-	au_qctrl.aq_hiwater = qsz;
+	if (qsz != USE_DEFAULT_QSZ)
+		au_qctrl.aq_hiwater = qsz;
 	if (audit_set_qctrl(&au_qctrl, sizeof(au_qctrl)) != 0)
 		return (ADE_AUDITON);
 
