@@ -2,8 +2,8 @@ OpenBSM Version History
 
 OpenBSM 1.2 alpha 5
 
-- Add a new "qsize" parameter in audit_control to allow setting the kernel's
-  maximum audit queue length.
+- Add a new "qsize" parameter in audit_control and the getacqsize(3) API to
+  query it, allowing to set the kernel's maximum audit queue length.
 - Add support to push a mapping between audit event names and event numbers
   into the kernel (where supported) using new A_GETEVENT and A_SETEVENT
   auditon(2) operations.
