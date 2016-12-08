@@ -43,7 +43,7 @@ AC_SEARCH_LIBS(pidfile_open, util)
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([mach/mach.h stdint.h pthread_np.h printf.h])
+AC_CHECK_HEADERS([mach/mach.h stdint.h pthread_np.h printf.h capsicum_helpers.h])
 
 AC_DEFINE([_GNU_SOURCE],,[Use extended API on platforms that require it])
 
