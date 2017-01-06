@@ -125,11 +125,12 @@
  * names more consistent with Sun's BSM.  These originally came from Apple's
  * BSM.
  */
-#define	AUT_SOCKINET32		0x80		/* XXX */
-#define	AUT_SOCKINET128		0x81		/* XXX */
-#define	AUT_SOCKUNIX		0x82		/* XXX */
-#define	AUT_ARG_UUID		0x83		/* UUID of argument object */
-#define	AUT_RETURN_UUID		0x84		/* UUID of returned object */
+#define	AUT_SOCKINET32		0x80		/* XXX Darwin/FreeBSD */
+#define	AUT_SOCKINET128		0x81		/* XXX Darwin/FreeBSD */
+#define	AUT_SOCKUNIX		0x82		/* XXX Darwin/FreeBSD */
+#define	_AUT_RIGHTS		0x83		/* XXX FreeBSD */
+#define	AUT_ARG_UUID		0x84		/* UUID of argument object */
+#define	AUT_RETURN_UUID		0x85		/* UUID of returned object */
 
 /* print values for the arbitrary token */
 #define AUP_BINARY      0
