@@ -1,6 +1,12 @@
 /*-
  * Copyright (c) 2005-2009 Apple Inc.
+ * Copyright (c) 2017 Robert N. M. Watson
  * All rights reserved.
+ *
+ * Portions of this software were developed by BAE Systems, the University of
+ * Cambridge Computer Laboratory, and Memorial University under DARPA/AFRL
+ * contract FA8650-15-C-7558 ("CADETS"), as part of the DARPA Transparent
+ * Computing (TC) research program.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -122,6 +128,8 @@
 #define	AUT_SOCKINET32		0x80		/* XXX */
 #define	AUT_SOCKINET128		0x81		/* XXX */
 #define	AUT_SOCKUNIX		0x82		/* XXX */
+#define	AUT_ARG_UUID		0x83		/* UUID of argument object */
+#define	AUT_RETURN_UUID		0x84		/* UUID of returned object */
 
 /* print values for the arbitrary token */
 #define AUP_BINARY      0
@@ -218,6 +226,7 @@ token_t	*au_to_me(void);
 token_t	*au_to_arg(char n, const char *text, uint32_t v);
 token_t	*au_to_arg32(char n, const char *text, uint32_t v);
 token_t	*au_to_arg64(char n, const char *text, uint64_t v);
+token_t	*au_to_arg_uuid(char n, const char *text, const void *uuidp);
 
 #if defined(_KERNEL) || defined(KERNEL)
 token_t	*au_to_attr(struct vnode_au_info *vni);
@@ -255,6 +264,7 @@ token_t	*au_to_process64_ex(au_id_t auid, uid_t euid, gid_t egid, uid_t ruid,
 token_t	*au_to_return(char status, uint32_t ret);
 token_t	*au_to_return32(char status, uint32_t ret);
 token_t	*au_to_return64(char status, uint64_t ret);
+token_t	*au_to_return_uuid(char n, const char *text, const void *uuidp);
 token_t	*au_to_seq(long audit_count);
 token_t	*au_to_socket_ex(u_short so_domain, u_short so_type,
 	    struct sockaddr *sa_local, struct sockaddr *sa_remote);

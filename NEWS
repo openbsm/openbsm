@@ -1,5 +1,12 @@
 OpenBSM Version History
 
+OpenBSM 1.2 alpha 6
+
+- New AUT_ARG_UUID and AUT_RETURN_UUID token types are added allowing audit
+  implementations to identify objects associated with arguments and return
+  values using UUIDs.  New au_to_arg_uuid(3) and au_to_return_uuid(3) APIs
+  are added, praudit is updated, and test BSM is added.
+
 OpenBSM 1.2 alpha 5
 
 - Add a new "qsize" parameter in audit_control and the getacqsize(3) API to
