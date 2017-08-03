@@ -26,7 +26,8 @@ env:
    - secure: "0IFnq4BvajBCaWYWSWFtci345f2Teiqjt5mXvasMW4WZ4Eqg798jscydQQIWYXDj4zq0xyH1Sci384/j4cSQVj4fc1B7MviV0RAa3c+NvRnhUpq6SwD9iGLyQ40OnQulS2t7OvFpS/J4+W8rFmkyFlrFim03SegpVMrd173Shd0yxwqZl9Vu9k3UIL1cvnrz1wFt7Krt8nW7Hi9jQRB5MdF99BG5ay8NLnPH/WdAfJW02TMF1aFQZ/igRSMHLJdDQmtHlIn7IInMeytRn+kXZVxcUdxoD9PIFSgGDd+nU1U22z52P4UlP8EltQG7IubmC/Hk73alVbhVtbSGhLW0zQLRAj0QoMFGnNBD1YtEvdHZbHIuI+4X7liG3zSImnnHC9QKsaVhJJ14M8uhZf99DR0qltPYnyzRSMf6Afm5zW0GYXxayV4hMd1/MZEdpz65G4ZNhkEBp7HeoZbLls43+DOWJTpMRjkfYXsx1yOYoVIoDB1VflTjPUX48x2h+3DgQ4r81CCqBa8HRUwTaNskNaDdRvS7wAZyZZSW9FQeTJhFuclMksEOqpFXJPODWzRPMXxVEuP0G3Lv0fTvJvL8TFTLonGye+lrkJn8syTDNRiDe9B87wxKC52LMH4xl8rzyW18TvaHh7WUf+UfJsQJ4lhOyopbplXF9DciFKyndLg="
 
 before_install:
-      - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' >/tmp/cert.crt;
+      - |
+        echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' >/tmp/cert.crt
         if [ $TRAVIS_OS_NAME == "linux" ]; then
           cat /tmp/cert.crt >> /etc/ssl/certs/ca-certificates.crt
         elif [ $TRAVIS_OS_NAME == "osx" ]; then
