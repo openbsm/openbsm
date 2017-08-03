@@ -581,7 +581,7 @@ static void
 adrep_decode_header(struct adrep *adrep)
 {
 
-	/* Byte-swap only is the receiver is using different byte order. */
+	/* Byte-swap only if the receiver is using different byte order. */
 	if (adrep->adrp_byteorder != ADIST_BYTEORDER) {
 		adrep->adrp_byteorder = ADIST_BYTEORDER;
 		adrep->adrp_seq = bswap64(adrep->adrp_seq);
