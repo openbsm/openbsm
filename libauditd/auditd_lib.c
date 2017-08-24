@@ -496,9 +496,9 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			/*
 			 * If the time stamp is older than Jan 1, 2000 then
 			 * update the mtime of the trail file to the current
-			 * time. This is so we don't prematurely remove a trail
+			 * time.  This is so we don't prematurely remove a trail
 			 * file that was created while the system clock reset
-			 * to the * "beginning of time" but later the system
+			 * to the "beginning of time" but later the system
 			 * clock is set to the correct current time.
 			 */
 			if (current_time >= JAN_01_2000 &&
