@@ -413,7 +413,7 @@ tls_exec_client(const char *user, int startfd, const char *srcaddr,
 	tls_certificate_verify(ssl, fingerprint);
 
 	/*
-	 * The following byte is send to make proto_connect_wait() to work.
+	 * The following byte is sent to make proto_connect_wait() work.
 	 */
 	connected = 1;
 	for (;;) {
