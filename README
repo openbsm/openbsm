@@ -1,6 +1,8 @@
-OpenBSM
+# OpenBSM
 
-  Introduction
+[![Build Status](https://travis-ci.org/openbsm/openbsm.svg?branch=master)](https://travis-ci.org/openbsm/openbsm)
+
+## Introduction
 
 OpenBSM is an open-source implementation of Sun's BSM event auditing file
 format and API.  Originally created for Apple Computer by McAfee Research,
@@ -19,7 +21,7 @@ Portions of OpenBSM, including include files and token-building routines, are
 reusable in a kernel audit implementation, and may be found in the FreeBSD
 and Mac OS X kernels.
 
-  Contents
+## Contents
 
 OpenBSM consists of several directories:
 
@@ -45,18 +47,18 @@ The following programs are included with OpenBSM:
     audump         Debugging tool to parse and print audit databases
     praudit        Tool to print audit trails
 
-  Build and Installation
+## Build and Installation
 
 Please see the file INSTALL for build and installation instructions.
 
-  Contributions
+## Contributions
 
-The TrustedBSD Project would appreciate the contribution of bug fixes, 
+The TrustedBSD Project would appreciate the contribution of bug fixes,
 enhancements, etc, under the same license found in the top-level LICENSE file.
 Please see the file CREDITS to learn more about who has contributed to the
 project.
 
-  Location
+## Location
 
 Information on OpenBSM may be found on the OpenBSM home page:
 
