@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/openbsm/openbsm.svg?branch=master)](https://travis-ci.org/openbsm/openbsm)
 
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/11238/badge.svg)](https://scan.coverity.com/projects/openbsm)
+
 ## Introduction
 
 OpenBSM is an open-source implementation of Sun's BSM event auditing file
