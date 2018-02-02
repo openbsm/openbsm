@@ -114,7 +114,7 @@ audit_warn_auditoff(void)
 }
 
 /*
- * Indicate that a trail file has been closed, so can now be post-processed.
+ * Indicates that a trail file has been closed, so can now be post-processed.
  */
 int
 audit_warn_closefile(char *filename)
@@ -129,7 +129,7 @@ audit_warn_closefile(char *filename)
 }
 
 /*
- * Indicates that the audit deammn is already running
+ * Indicates that the audit daemon is already running
  */
 int
 audit_warn_ebusy(void)
@@ -191,7 +191,7 @@ audit_warn_nostart(void)
 }
 
 /*
- * Indicaes that an error occrred during the orderly shutdown of the audit
+ * Indicates that an error occurred during the orderly shutdown of the audit
  * daemon.
  */
 int
@@ -221,7 +221,7 @@ audit_warn_soft(char *filename)
 }
 
 /*
- * Indicates that the temporary audit file already exists indicating a fatal
+ * Indicates that the temporary audit file already exists resulting in a fatal
  * error.
  */
 int

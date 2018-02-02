@@ -34,6 +34,7 @@ OpenBSM consists of several directories:
     libauditd/     Common audit management functions for auditd and launchd
     libbsm/        Implementation of BSM library interfaces and man pages
     man/           System call and configuration file man pages
+    m4/            Input files for m4 macro text processor 
     modules/       Directory for auditfilterd module source
     sys/           System header files for BSM
     test/          Test token sets and geneneration program
