@@ -21,7 +21,7 @@ Coupled with a kernel audit implementation, OpenBSM can be used to maintain
 system audit streams, and is a foundation for a full audit-enabled system.
 Portions of OpenBSM, including include files and token-building routines, are
 reusable in a kernel audit implementation, and may be found in the FreeBSD
-and Mac OS X kernels.
+and macOS kernels.
 
 ## Contents
 
