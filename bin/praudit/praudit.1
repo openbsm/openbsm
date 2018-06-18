@@ -25,7 +25,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.Dd June 11, 2018
+.Dd June 18, 2018
 .Dt PRAUDIT 1
 .Os
 .Sh NAME
@@ -33,7 +33,7 @@
 .Nd "print the contents of audit trail files"
 .Sh SYNOPSIS
 .Nm
-.Op Fl lnpx
+.Op Fl lnx
 .Op Fl r | s
 .Op Fl d Ar del
 .Op Ar
@@ -42,6 +42,10 @@ The
 .Nm
 utility prints the contents of the audit trail files to the standard output in
 human-readable form.
+.Nm
+by default syncs to the start of next legitimate record if the initial part of
+.Ar file
+is corrupted.
 If no
 .Ar file
 argument is specified, the standard input is used
@@ -59,15 +63,6 @@ every token is displayed on a different line.
 .It Fl n
 Do not convert user and group IDs to their names but leave in their
 numeric forms.
-.It Fl p
-Specify this option if input to
-.Nm
-is piped from the
-.Xr tail 1
-utility.
-This causes
-.Nm
-to sync to the start of the next record.
 .It Fl r
 Prints the records in their raw, numeric form.
 This option is exclusive from
