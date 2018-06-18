@@ -39,7 +39,7 @@
  */
 
 /*
- * praudit [-lnpx] [-r | -s] [-d del] [file ...]
+ * praudit [-lnx] [-r | -s] [-d del] [file ...]
  */
 
 #include <config/config.h>
@@ -67,7 +67,6 @@ extern int	 optind, optopt, opterr,optreset;
 
 static char	*del = ",";	/* Default delimiter. */
 static int	 oneline = 0;
-static int	 partial = 0;
 static int	 oflags = AU_OFLAG_NONE;
 
 static void
@@ -86,27 +85,26 @@ static int
 print_tokens(FILE *fp)
 {
 	u_char *buf;
+	u_char type = 0;
 	tokenstr_t tok;
-	int reclen;
+	int reclen, retval = 0;
 	int bytesread;
 
-	/* Allow tail -f | praudit to work. */
-	if (partial) {
-		u_char type = 0;
-		/* Record must begin with a header token. */
-		do {
-			type = fgetc(fp);
-		} while(type != AUT_HEADER32);
-		ungetc(type, fp);
-	}
+	/* Record must begin with a header token. */
+	do {
+		type = fgetc(fp);
+	} while(type != AUT_HEADER32);
+	ungetc(type, fp);
 
 	while ((reclen = au_read_rec(fp, &buf)) != -1) {
 		bytesread = 0;
 		while (bytesread < reclen) {
 			/* Is this an incomplete record? */
 			if (-1 == au_fetch_tok(&tok, buf + bytesread,
-			    reclen - bytesread))
-				break;
+			    reclen - bytesread)) {
+				    retval = -1;
+				    break;
+			    }
 			au_print_flags_tok(stdout, &tok, del, oflags);
 			bytesread += tok.len;
 			if (oneline) {
@@ -120,21 +118,20 @@ print_tokens(FILE *fp)
 			printf("\n");
 		fflush(stdout);
 	}
-	return (0);
+	return (retval);
 }
 
 int
 main(int argc, char **argv)
 {
-	int ch;
-	int i;
+	int ch, i;
 #ifdef HAVE_CAP_ENTER
 	int retval;
 	pid_t childpid, pid;
 #endif
 	FILE *fp;
 
-	while ((ch = getopt(argc, argv, "d:lnprsx")) != -1) {
+	while ((ch = getopt(argc, argv, "d:lnrsx")) != -1) {
 		switch(ch) {
 		case 'd':
 			del = optarg;
@@ -146,10 +143,6 @@ main(int argc, char **argv)
 
 		case 'n':
 			oflags |= AU_OFLAG_NORESOLVE;
-			break;
-
-		case 'p':
-			partial = 1;
 			break;
 
 		case 'r':
@@ -208,7 +201,22 @@ main(int argc, char **argv)
 		fp = fopen(argv[i], "r");
 		if (fp == NULL) {
 			perror(argv[i]);
-			continue;
+			exit(1);
+		}
+
+		/* File must not be empty */
+		if (fseek(fp, 0, SEEK_END) < 0) {
+			perror("fseek:end");
+			exit(1);
+		}
+		if (ftell(fp) == 0) {
+			printf("File is empty\n");
+			exit(1);
+		}
+		/* Set the pointer back to beginning */
+		if (fseek(fp, 0, SEEK_SET) < 0) {
+			perror("fseek:start");
+			exit(1);
 		}
 
 		/*
@@ -228,16 +236,20 @@ main(int argc, char **argv)
 			retval = cap_enter();
 			if (retval != 0 && errno != ENOSYS)
 				err(EXIT_FAILURE, "cap_enter");
-			if (print_tokens(fp) == -1)
+			if (print_tokens(fp) < 0) {
 				perror(argv[i]);
+				exit(1);
+			}
 			exit(0);
 		}
 
 		/* Parent.  Await child termination. */
 		while ((pid = waitpid(childpid, NULL, 0)) != childpid);
 #else
-		if (print_tokens(fp) == -1)
+		if (print_tokens(fp) < 0) {
 			perror(argv[i]);
+			exit(1);
+		}
 #endif
 		fclose(fp);
 	}
