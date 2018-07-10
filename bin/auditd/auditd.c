@@ -433,11 +433,6 @@ register_daemon(void)
 		    "Could not set signal handler for SIGTERM");
 		fail_exit();
 	}
-	if (sigaction(SIGCHLD, &action, NULL) != 0) {
-		auditd_log_err(
-		    "Could not set signal handler for SIGCHLD");
-		fail_exit();
-	}
 	if (sigaction(SIGHUP, &action, NULL) != 0) {
 		auditd_log_err(
 		    "Could not set signal handler for SIGHUP");
@@ -446,6 +441,13 @@ register_daemon(void)
 	if (sigaction(SIGALRM, &action, NULL) != 0) {
 		auditd_log_err(
 		    "Could not set signal handler for SIGALRM");
+		fail_exit();
+	}
+	/* Don't generate zombie children */
+	action.sa_flags = SA_NOCLDWAIT;
+	if (sigaction(SIGCHLD, &action, NULL) != 0) {
+		auditd_log_err(
+		    "Could not set signal handler for SIGCHLD");
 		fail_exit();
 	}
 
@@ -613,35 +615,13 @@ auditd_handle_trigger(int trigger)
 }
 
 /*
- * Reap our children.
- */
-void
-auditd_reap_children(void)
-{
-	pid_t child;
-	int wstatus;
-
-	while ((child = waitpid(-1, &wstatus, WNOHANG)) > 0) {
-		if (!wstatus)
-			continue;
-		auditd_log_info("warn process [pid=%d] %s %d.", child,
-		    ((WIFEXITED(wstatus)) ? "exited with non-zero status" :
-		    "exited as a result of signal"),
-		    ((WIFEXITED(wstatus)) ? WEXITSTATUS(wstatus) :
-		    WTERMSIG(wstatus)));
-	}
-}
-
-/*
- * Reap any children and terminate.  If under launchd don't shutdown auditing
- * but just the other stuff.
+ * Terminate.  If under launchd don't shutdown auditing but just the other
+ * stuff.
  */
 void
 auditd_terminate(void)
 {
 	int ret;
-
-	auditd_reap_children();
 
 	if (launchd_flag)
 		ret = close_misc();

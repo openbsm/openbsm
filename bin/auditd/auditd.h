@@ -94,7 +94,6 @@ void	auditd_wait_for_events(void);
 void	auditd_relay_signal(int signal);
 void	auditd_terminate(void);
 int	auditd_config_controls(void);
-void	auditd_reap_children(void);
 
 
 #endif /* !_AUDITD_H_ */

@@ -57,7 +57,6 @@ static int	auditing_state = AUD_STATE_INIT;
  */
 static int	max_idletime = 0;
 
-static int	sigchlds, sigchlds_handled;
 static int	sighups, sighups_handled;
 static int	sigterms, sigterms_handled;
 static int	sigalrms, sigalrms_handled;
@@ -231,10 +230,6 @@ auditd_wait_for_events(void)
 			auditd_terminate();
 			/* not reached */ 
 		}
- 		if (sigchlds != sigchlds_handled) {
-			sigchlds_handled = sigchlds;
-			auditd_reap_children();
-		}
 		if (sighups != sighups_handled) {
 			auditd_log_debug("%s: SIGHUP", __FUNCTION__);
 			sighups_handled = sighups;
@@ -264,8 +259,6 @@ auditd_relay_signal(int signal)
                 sighups++;
         if (signal == SIGTERM)
                 sigterms++;
-        if (signal == SIGCHLD)
-                sigchlds++;
 	if (signal == SIGALRM)
 		sigalrms++;
 }
