@@ -96,5 +96,6 @@ void	auditd_terminate(void);
 int	auditd_config_controls(void);
 void	auditd_reap_children(void);
 
+void	auditd_check_and_reap(void);
 
 #endif /* !_AUDITD_H_ */

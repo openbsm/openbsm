@@ -28,12 +28,15 @@
  */
 
 #include <sys/types.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
 
 #include <config/config.h>
 
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <string.h>
 #include <syslog.h>
@@ -270,3 +273,124 @@ auditd_relay_signal(int signal)
 		sigalrms++;
 }
 
+/*
+ * Retrieve the number of processe in use and kern.maxproc. This data is used to
+ * check whether or not we want to reap the child processes.
+ *
+ * Return -1 for any error (non-fatal) and let the caller decide how they want
+ * to deal with any failures in this code.
+ */
+static int
+auditd_get_proc_stats(int *maxproc, int *curproc)
+{
+	int name[4], error, alloc, pcbuf;
+	struct kinfo_proc *p;
+	size_t len, olen;
+
+	/*
+	 * First, kern.maxproc to represent the max number of processes allowed
+	 * on the system.
+	 */
+	len = sizeof(pcbuf);
+	name[0] = CTL_KERN;
+	name[1] = KERN_MAXPROC;
+	error = sysctl(name, 2, maxproc, &len, NULL, 0);
+	if (error == -1 && errno != EPERM) {
+		fprintf(stderr, "sysctl(kern.maxproc): %s\n", strerror(errno));
+		return (-1);
+	}
+	/*
+	 * Figure out how many processes (including zombies) are in use right now.
+	 * I am not sure if there is a better way to do this. Retrieve the process
+	 * table (without threads) and figure it out.
+	 */
+	len = 0;
+	name[0] = CTL_KERN;
+	name[1] = KERN_PROC;
+	name[2] = KERN_PROC_PROC;
+	name[3] = 0;
+	error = sysctl(name, nitems(name), NULL, &len, NULL, 0);
+	if (error == -1 && errno != EPERM) {
+		fprintf(stderr, "sysctl(kern.proc): %s\n", strerror(errno));
+		return (-1);
+	}
+	if (len == 0) {
+		fprintf(stderr, "no processes found\n");
+		return (-1);
+	}
+	alloc = 0;
+	p = NULL;
+	do {
+		len += len / 10;
+		p = reallocf(p, len);
+		if (p == NULL) {
+			if (alloc) {
+				free(p);
+			}
+			fprintf(stderr, "reallocf(%zu)\n", len);
+			return (-1);
+		}
+		alloc = 1;
+		olen = len;
+		error = sysctl(name, nitems(name), p, &len, NULL, 0);
+	} while (error == -1 && errno == ENOMEM && olen == len);
+	if (error < 0 && errno != EPERM) {
+		free(p);
+		fprintf(stderr, "sysctl(kern.proc): %s\n", strerror(errno));
+		return (-1);
+	}
+	/*
+	 * Check the consistency of the returned data.
+	 */
+	if ((len % sizeof(*p)) != 0 || p->ki_structsize != sizeof(*p)) {
+		free(p);
+		fprintf(stderr, "kinfo_proc structure size mismatch (len = %zu)\n", len);
+		return (-1);
+	}
+	*curproc = len / sizeof(*p);
+	free(p);
+	return (0);
+}
+
+/*
+ * Run this function after the execution of audit_warn to make sure that we do not
+ * run out of processes in the event that we have thousands of audit trail files
+ * to expire. This will be a NOP on Darwin since the child reap code runs in
+ * a different context.
+ */
+void
+auditd_check_and_reap(void)
+{
+	int curproc, maxproc, error;
+	float q;
+
+	/*
+	 * First check to see if the number of SIGCHLD's handled is equal to
+	 * the number of SIGCHLDs received. If so, there is no work to be done.
+	 */
+	if (sigchlds == sigchlds_handled) {
+		return;
+	}
+	/*
+	 * Second, fetch the current process count and max proc limits. We will
+	 * use this to calculate which percentage of our limits are currently
+	 * used. If we fail to fetch either counter from the kernel, error on
+	 * the side of safety and reap any children.
+	 */
+	error = auditd_get_proc_stats(&maxproc, &curproc);
+	if (error == -1) {
+		sigchlds_handled = sigchlds;
+		auditd_reap_children();
+		return;
+	}
+	/*
+	 * Calculate the percentage of processes used. If we have used %10 or
+	 * more of maxproc, trigger the child reap machinery.
+	 */
+	q = 100 * ((float) curproc / (float) maxproc);
+	if (q > 10) {
+		return;
+	}
+	auditd_reap_children();
+	sigchlds_handled = sigchlds;
+}

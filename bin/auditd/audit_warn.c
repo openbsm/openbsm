@@ -62,6 +62,7 @@ auditwarnlog(char *args[])
 		    AUDITWARN_SCRIPT);
 		exit(1);
 	}
+	auditd_check_and_reap();
 	/*
 	 * Parent.
 	 */

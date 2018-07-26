@@ -480,3 +480,12 @@ auditd_relay_signal(int signal)
 	mach_msg(&(msg.header), MACH_SEND_MSG|MACH_SEND_TIMEOUT, sizeof(msg),
 	    0, MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
 }
+
+/*
+ * This function is a stub on Darwin, see the FreeBSD implementation for more
+ * details.
+ */
+void
+auditd_check_and_reap(void)
+{
+}
