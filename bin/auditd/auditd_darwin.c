@@ -395,10 +395,6 @@ auditd_combined_server(mach_msg_header_t *InHeadP, mach_msg_header_t *OutHeadP)
 			auditd_terminate();
 			/* Not reached. */
 
-		case SIGCHLD:
-			auditd_reap_children();
-			return (TRUE);
-
 		case SIGHUP:
 			auditd_config_controls();
 			return (TRUE);
