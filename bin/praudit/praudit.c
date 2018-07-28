@@ -82,12 +82,12 @@ usage(void)
  * Token printing for each token type .
  */
 static void
-print_tokens(FILE *fp)
+print_tokens(FILE *fp, const char *filename)
 {
 	u_char *buf;
 	int type = 0;
 	tokenstr_t tok;
-	int reclen, recflag = 1;
+	int reclen, recflag;
 	int bytesread;
 
 	/* Record must begin with a header token. */
@@ -105,8 +105,8 @@ print_tokens(FILE *fp)
 			/* Is this an incomplete record? */
 			if (-1 == au_fetch_tok(&tok, buf + bytesread,
 			    reclen - bytesread)) {
-				fprintf(stderr,
-					"Corrupted audit trail: %s\n", argv[i]);
+				fprintf(stderr, "Corrupted audit trail: %s\n",
+					filename);
     				recflag = 0;
 				break;
 			}
@@ -201,7 +201,7 @@ main(int argc, char **argv)
 		if (retval != 0 && errno != ENOSYS)
 			err(EXIT_FAILURE, "cap_enter");
 #endif
-		print_tokens(stdin);
+		print_tokens(stdin, "stdin");
 		return (1);
 	}
 	for (i = optind; i < argc; i++) {
@@ -229,14 +229,14 @@ main(int argc, char **argv)
 			if (retval != 0 && errno != ENOSYS)
 				err(EXIT_FAILURE, "cap_enter");
 
-			print_tokens(fp);
+			print_tokens(fp, argv[i]);
 			exit(0);
 		}
 
 		/* Parent.  Await child termination. */
 		while ((pid = waitpid(childpid, NULL, 0)) != childpid);
 #else
-		print_tokens(fp);
+		print_tokens(fp, argv[i]);
 #endif
 		fclose(fp);
 	}
