@@ -65,7 +65,7 @@
 extern char	*optarg;
 extern int	 optind, optopt, opterr,optreset;
 
-static char	*del = ",";	/* Default delimiter. */
+static const char	*del = ",";	/* Default delimiter. */
 static int	 oneline = 0;
 static int	 partial = 0;
 static int	 oflags = AU_OFLAG_NONE;

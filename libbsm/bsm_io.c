@@ -953,7 +953,7 @@ fetch_header32_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_header32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_header32_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "header", oflags);
@@ -1060,7 +1060,7 @@ fetch_header32_ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_header32_ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_header32_ex_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "header_ex", oflags);
@@ -1145,7 +1145,7 @@ fetch_header64_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_header64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_header64_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "header", oflags);
@@ -1248,7 +1248,7 @@ fetch_header64_ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_header64_ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_header64_ex_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "header_ex", oflags);
@@ -1313,7 +1313,7 @@ fetch_trailer_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_trailer_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_trailer_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "trailer", oflags);
@@ -1355,7 +1355,7 @@ fetch_arg32_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_arg32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_arg32_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "argument", oflags);
@@ -1406,7 +1406,7 @@ fetch_arg64_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_arg64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_arg64_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "argument", oflags);
@@ -1562,10 +1562,10 @@ fetch_arb_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_arb_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
-	char *str;
-	char *format;
+	const char *str;
+	const char *format;
 	size_t size;
 	int i;
 
@@ -1770,7 +1770,7 @@ fetch_attr32_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_attr32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_attr32_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "attribute", oflags);
@@ -1851,7 +1851,7 @@ fetch_attr64_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_attr64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_attr64_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "attribute", oflags);
@@ -1912,7 +1912,7 @@ fetch_exit_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_exit_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_exit_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "exit", oflags);
@@ -1969,7 +1969,7 @@ fetch_execarg_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_execarg_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_execarg_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 	u_int32_t i;
 
@@ -2027,7 +2027,7 @@ fetch_execenv_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_execenv_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_execenv_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 	u_int32_t i;
 
@@ -2080,7 +2080,7 @@ fetch_file_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_file_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_file_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "file", oflags);
@@ -2129,7 +2129,7 @@ fetch_newgroups_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_newgroups_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_newgroups_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 	int i;
 
@@ -2165,7 +2165,7 @@ fetch_inaddr_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_inaddr_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_inaddr_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "ip addr", oflags);
@@ -2208,7 +2208,7 @@ fetch_inaddr_ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_inaddr_ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_inaddr_ex_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "ip addr ex", oflags);
@@ -2281,7 +2281,7 @@ fetch_ip_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_ip_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_ip_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "ip", oflags);
@@ -2364,7 +2364,7 @@ fetch_ipc_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_ipc_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_ipc_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "IPC", oflags);
@@ -2430,7 +2430,7 @@ fetch_ipcperm_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_ipcperm_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_ipcperm_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "IPC perm", oflags);
@@ -2492,7 +2492,7 @@ fetch_iport_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_iport_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_iport_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "ip port", oflags);
@@ -2527,7 +2527,7 @@ fetch_opaque_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_opaque_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_opaque_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "opaque", oflags);
@@ -2566,7 +2566,7 @@ fetch_path_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_path_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_path_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "path", oflags);
@@ -2638,7 +2638,7 @@ fetch_process32_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_process32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_process32_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "process", oflags);
@@ -2750,7 +2750,7 @@ fetch_process64_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_process64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_process64_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 	print_tok_type(fp, tok->id, "process", oflags);
 	if (oflags & AU_OFLAG_XML) {
@@ -2876,7 +2876,7 @@ fetch_process32ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_process32ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_process32ex_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "process_ex", oflags);
@@ -3005,7 +3005,7 @@ fetch_process64ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_process64ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_process64ex_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 	print_tok_type(fp, tok->id, "process_ex", oflags);
 	if (oflags & AU_OFLAG_XML) {
@@ -3080,7 +3080,7 @@ fetch_return32_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_return32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_return32_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "return", oflags);
@@ -3117,7 +3117,7 @@ fetch_return64_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_return64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_return64_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "return", oflags);
@@ -3224,7 +3224,7 @@ fetch_seq_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_seq_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_seq_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "sequence", oflags);
@@ -3268,7 +3268,7 @@ fetch_sock_inet32_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_sock_inet32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_sock_inet32_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "socket-inet", oflags);
@@ -3322,7 +3322,7 @@ fetch_sock_inet128_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_sock_inet128_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_sock_inet128_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "socket-inet6", oflags);
@@ -3375,7 +3375,7 @@ fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_sock_unix_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_sock_unix_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "socket-unix", oflags);
@@ -3439,7 +3439,7 @@ fetch_socket_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_socket_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_socket_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "socket", oflags);
@@ -3532,7 +3532,7 @@ fetch_subject32_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_subject32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_subject32_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "subject", oflags);
@@ -3586,7 +3586,7 @@ print_subject32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 }
 
 static void
-print_upriv_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_upriv_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "use of privilege", oflags);
@@ -3666,7 +3666,7 @@ fetch_privset_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_privset_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_privset_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "privilege", oflags);
@@ -3747,7 +3747,7 @@ fetch_subject64_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_subject64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_subject64_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "subject", oflags);
@@ -3873,7 +3873,7 @@ fetch_subject32ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_subject32ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_subject32ex_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "subject_ex", oflags);
@@ -4001,7 +4001,7 @@ fetch_subject64ex_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_subject64ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_subject64ex_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 	print_tok_type(fp, tok->id, "subject_ex", oflags);
 	if (oflags & AU_OFLAG_XML) {
@@ -4077,7 +4077,7 @@ fetch_text_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_text_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_text_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "text", oflags);
@@ -4161,7 +4161,7 @@ fetch_socketex32_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_socketex32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_socketex32_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	/*
@@ -4232,7 +4232,7 @@ fetch_invalid_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_invalid_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_invalid_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	if (!(oflags & AU_OFLAG_XML)) {
@@ -4264,7 +4264,7 @@ fetch_zonename_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 static void
-print_zonename_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
+print_zonename_tok(FILE *fp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	print_tok_type(fp, tok->id, "zone", oflags);
@@ -4437,7 +4437,7 @@ au_fetch_tok(tokenstr_t *tok, u_char *buf, int len)
 }
 
 void
-au_print_flags_tok(FILE *outfp, tokenstr_t *tok, char *del, int oflags)
+au_print_flags_tok(FILE *outfp, tokenstr_t *tok, const char *del, int oflags)
 {
 
 	switch(tok->id) {
