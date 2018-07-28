@@ -81,7 +81,7 @@ usage(void)
 /*
  * Token printing for each token type .
  */
-static int
+static void
 print_tokens(FILE *fp)
 {
 	u_char *buf;
@@ -93,20 +93,23 @@ print_tokens(FILE *fp)
 	/* Record must begin with a header token. */
 	do {
 		if ((type = fgetc(fp)) == EOF)
-			return (0);
+			return;
 	} while((type != AUT_HEADER32) && (type != AUT_HEADER64) &&
 		(type != AUT_HEADER32_EX) && (type != AUT_HEADER64_EX));
 	ungetc(type, fp);
 
 	while ((reclen = au_read_rec(fp, &buf)) != -1) {
 		bytesread = 0;
+		recflag = 1;
 		while (bytesread < reclen) {
 			/* Is this an incomplete record? */
 			if (-1 == au_fetch_tok(&tok, buf + bytesread,
 			    reclen - bytesread)) {
+				fprintf(stderr,
+					"Corrupted audit trail: %s\n", argv[i]);
     				recflag = 0;
 				break;
-			    }
+			}
 
 			au_print_flags_tok(stdout, &tok, del, oflags);
 			bytesread += tok.len;
@@ -117,11 +120,12 @@ print_tokens(FILE *fp)
 				printf("\n");
 		}
 		free(buf);
+		/* Don't print newline for incomplete record when '-l' is set */
 		if (oneline && recflag)
 			printf("\n");
 		fflush(stdout);
 	}
-	return (0);
+	return;
 }
 
 int
@@ -150,7 +154,7 @@ main(int argc, char **argv)
 
 		case 'r':
 			if (oflags & AU_OFLAG_SHORT)
-				usage();	/* Exclusive from shortfrm. */
+				usage();	/* Exclusive from short form. */
 			oflags |= AU_OFLAG_RAW;
 			break;
 
@@ -224,16 +228,15 @@ main(int argc, char **argv)
 			retval = cap_enter();
 			if (retval != 0 && errno != ENOSYS)
 				err(EXIT_FAILURE, "cap_enter");
-			if (print_tokens(fp) < 0)
-				perror(argv[i]);
+
+			print_tokens(fp);
 			exit(0);
 		}
 
 		/* Parent.  Await child termination. */
 		while ((pid = waitpid(childpid, NULL, 0)) != childpid);
 #else
-		if (print_tokens(fp) < 0)
-			perror(argv[i]);
+		print_tokens(fp);
 #endif
 		fclose(fp);
 	}
