@@ -29,43 +29,52 @@
 
 #include <sys/types.h>
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 #include "auditd.h"
 
+#ifndef __DECONST
+#define __DECONST(type, var)    ((type)(uintptr_t)(const void *)(var))
+#endif
+#ifndef nitems
+#define nitems(x)       (sizeof((x)) / sizeof((x)[0]))
+#endif
+
 /*
  * Write an audit-related error to the system log via syslog(3).
  */
 static int
-auditwarnlog(char *args[])
+auditwarnlog(int count, ...)
 {
 	char *loc_args[9];
+	va_list ap;
 	pid_t pid;
 	int i;
 
-	loc_args[0] = AUDITWARN_SCRIPT;
-	for (i = 0; args[i] != NULL && i < 8; i++)
-		loc_args[i+1] = args[i];
-	loc_args[i+1] = NULL;
+	/*
+	 * execv's prototype wrongly takes the arguments as mutable, rather
+	 * than const pointers.  deconstify them to make the compiler happy.
+	 */
+	loc_args[0] = __DECONST(char*, AUDITWARN_SCRIPT);
+	va_start(ap, count);
+	for (i = 0; i < count && i < nitems(loc_args) - 1; i++)
+		loc_args[i + 1] = __DECONST(char*, va_arg(ap, const char*));
+	loc_args[i + 1] = NULL;
 
 	pid = fork();
 	if (pid == -1)
 		return (-1);
 	if (pid == 0) {
-		/*
-		 * Child.
-		 */
 		execv(AUDITWARN_SCRIPT, loc_args);
-		syslog(LOG_ERR, "Could not exec %s (%m)\n",
-		    AUDITWARN_SCRIPT);
+		syslog(LOG_ERR, "Could not exec %s (%m)\n", AUDITWARN_SCRIPT);
 		exit(1);
 	}
 	/*
 	 * Parent.
 	 */
-	auditd_check_and_reap();
 	return (0);
 }
 
@@ -75,12 +84,7 @@ auditwarnlog(char *args[])
 int
 audit_warn_allhard(void)
 {
-	char *args[2];
-
-	args[0] = HARDLIM_ALL_WARN;
-	args[1] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(1, HARDLIM_ALL_WARN));
 }
 
 /*
@@ -89,12 +93,7 @@ audit_warn_allhard(void)
 int
 audit_warn_allsoft(void)
 {
-	char *args[2];
-
-	args[0] = SOFTLIM_ALL_WARN;
-	args[1] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(1, SOFTLIM_ALL_WARN));
 }
 
 /*
@@ -106,12 +105,7 @@ audit_warn_allsoft(void)
 int
 audit_warn_auditoff(void)
 {
-	char *args[2];
-
-	args[0] = AUDITOFF_WARN;
-	args[1] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(1, AUDITOFF_WARN));
 }
 
 /*
@@ -120,13 +114,7 @@ audit_warn_auditoff(void)
 int
 audit_warn_closefile(char *filename)
 {
-	char *args[3];
-
-	args[0] = CLOSEFILE_WARN;
-	args[1] = filename;
-	args[2] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(2, CLOSEFILE_WARN, filename));
 }
 
 /*
@@ -135,12 +123,7 @@ audit_warn_closefile(char *filename)
 int
 audit_warn_ebusy(void)
 {
-	char *args[2];
-
-	args[0] = EBUSY_WARN;
-	args[1] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(1, EBUSY_WARN));
 }
 
 /*
@@ -153,13 +136,7 @@ audit_warn_ebusy(void)
 int
 audit_warn_getacdir(char *filename)
 {
-	char *args[3];
-
-	args[0] = GETACDIR_WARN;
-	args[1] = filename;
-	args[2] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(2, GETACDIR_WARN, filename));
 }
 
 /*
@@ -168,13 +145,7 @@ audit_warn_getacdir(char *filename)
 int
 audit_warn_hard(char *filename)
 {
-	char *args[3];
-
-	args[0] = HARDLIM_WARN;
-	args[1] = filename;
-	args[2] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(2, HARDLIM_WARN, filename));
 }
 
 /*
@@ -183,12 +154,7 @@ audit_warn_hard(char *filename)
 int
 audit_warn_nostart(void)
 {
-	char *args[2];
-
-	args[0] = NOSTART_WARN;
-	args[1] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(1, NOSTART_WARN));
 }
 
 /*
@@ -198,12 +164,7 @@ audit_warn_nostart(void)
 int
 audit_warn_postsigterm(void)
 {
-	char *args[2];
-
-	args[0] = POSTSIGTERM_WARN;
-	args[1] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(1, POSTSIGTERM_WARN));
 }
 
 /*
@@ -212,13 +173,7 @@ audit_warn_postsigterm(void)
 int
 audit_warn_soft(char *filename)
 {
-	char *args[3];
-
-	args[0] = SOFTLIM_WARN;
-	args[1] = filename;
-	args[2] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(2, SOFTLIM_WARN, filename));
 }
 
 /*
@@ -228,12 +183,7 @@ audit_warn_soft(char *filename)
 int
 audit_warn_tmpfile(void)
 {
-	char *args[2];
-
-	args[0] = TMPFILE_WARN;
-	args[1] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(1, TMPFILE_WARN));
 }
 
 /*
@@ -242,11 +192,5 @@ audit_warn_tmpfile(void)
 int
 audit_warn_expired(char *filename)
 {
-	char *args[3];
-
-	args[0] = EXPIRED_WARN;
-	args[1] = filename;
-	args[2] = NULL;
-
-	return (auditwarnlog(args));
+	return (auditwarnlog(2, EXPIRED_WARN, filename));
 }
