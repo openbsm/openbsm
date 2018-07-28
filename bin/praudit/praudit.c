@@ -63,7 +63,7 @@
 #include <unistd.h>
 
 extern char	*optarg;
-extern int	 optind, optopt, opterr,optreset;
+extern int	 optind, optopt, opterr, optreset;
 
 static char	*del = ",";	/* Default delimiter. */
 static int	 oneline = 0;
@@ -73,7 +73,7 @@ static void
 usage(void)
 {
 
-	fprintf(stderr, "usage: praudit [-lnpx] [-r | -s] [-d del] "
+	fprintf(stderr, "usage: praudit [-lnx] [-r | -s] [-d del] "
 	    "[file ...]\n");
 	exit(1);
 }
@@ -85,15 +85,17 @@ static int
 print_tokens(FILE *fp)
 {
 	u_char *buf;
-	u_char type = 0;
+	int type = 0;
 	tokenstr_t tok;
-	int reclen, retval = 0;
+	int reclen;
 	int bytesread;
 
 	/* Record must begin with a header token. */
 	do {
-		type = fgetc(fp);
-	} while(type != AUT_HEADER32);
+		if ((type = fgetc(fp)) == EOF)
+			return (0);
+	} while(type & ~(AUT_HEADER32 | AUT_HEADER64 |
+		AUT_HEADER32_EX | AUT_HEADER64_EX));
 	ungetc(type, fp);
 
 	while ((reclen = au_read_rec(fp, &buf)) != -1) {
@@ -101,10 +103,9 @@ print_tokens(FILE *fp)
 		while (bytesread < reclen) {
 			/* Is this an incomplete record? */
 			if (-1 == au_fetch_tok(&tok, buf + bytesread,
-			    reclen - bytesread)) {
-				    retval = -1;
-				    break;
-			    }
+			    reclen - bytesread))
+				    return (-1);
+
 			au_print_flags_tok(stdout, &tok, del, oflags);
 			bytesread += tok.len;
 			if (oneline) {
@@ -118,7 +119,7 @@ print_tokens(FILE *fp)
 			printf("\n");
 		fflush(stdout);
 	}
-	return (retval);
+	return (0);
 }
 
 int
@@ -204,21 +205,6 @@ main(int argc, char **argv)
 			exit(1);
 		}
 
-		/* File must not be empty */
-		if (fseek(fp, 0, SEEK_END) < 0) {
-			perror("fseek:end");
-			exit(1);
-		}
-		if (ftell(fp) == 0) {
-			printf("File is empty\n");
-			exit(1);
-		}
-		/* Set the pointer back to beginning */
-		if (fseek(fp, 0, SEEK_SET) < 0) {
-			perror("fseek:start");
-			exit(1);
-		}
-
 		/*
 		 * If operating with sandboxing, create a sandbox process for
 		 * each trail file we operate on.  This avoids the need to do
@@ -236,20 +222,16 @@ main(int argc, char **argv)
 			retval = cap_enter();
 			if (retval != 0 && errno != ENOSYS)
 				err(EXIT_FAILURE, "cap_enter");
-			if (print_tokens(fp) < 0) {
+			if (print_tokens(fp) < 0)
 				perror(argv[i]);
-				exit(1);
-			}
 			exit(0);
 		}
 
 		/* Parent.  Await child termination. */
 		while ((pid = waitpid(childpid, NULL, 0)) != childpid);
 #else
-		if (print_tokens(fp) < 0) {
+		if (print_tokens(fp) < 0)
 			perror(argv[i]);
-			exit(1);
-		}
 #endif
 		fclose(fp);
 	}
