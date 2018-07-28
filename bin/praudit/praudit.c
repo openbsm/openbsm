@@ -87,15 +87,15 @@ print_tokens(FILE *fp)
 	u_char *buf;
 	int type = 0;
 	tokenstr_t tok;
-	int reclen;
+	int reclen, recflag = 1;
 	int bytesread;
 
 	/* Record must begin with a header token. */
 	do {
 		if ((type = fgetc(fp)) == EOF)
 			return (0);
-	} while(type & ~(AUT_HEADER32 | AUT_HEADER64 |
-		AUT_HEADER32_EX | AUT_HEADER64_EX));
+	} while((type != AUT_HEADER32) && (type != AUT_HEADER64) &&
+		(type != AUT_HEADER32_EX) && (type != AUT_HEADER64_EX));
 	ungetc(type, fp);
 
 	while ((reclen = au_read_rec(fp, &buf)) != -1) {
@@ -103,8 +103,10 @@ print_tokens(FILE *fp)
 		while (bytesread < reclen) {
 			/* Is this an incomplete record? */
 			if (-1 == au_fetch_tok(&tok, buf + bytesread,
-			    reclen - bytesread))
-				    return (-1);
+			    reclen - bytesread)) {
+    				recflag = 0;
+				break;
+			    }
 
 			au_print_flags_tok(stdout, &tok, del, oflags);
 			bytesread += tok.len;
@@ -115,7 +117,7 @@ print_tokens(FILE *fp)
 				printf("\n");
 		}
 		free(buf);
-		if (oneline)
+		if (oneline && recflag)
 			printf("\n");
 		fflush(stdout);
 	}
@@ -202,7 +204,7 @@ main(int argc, char **argv)
 		fp = fopen(argv[i], "r");
 		if (fp == NULL) {
 			perror(argv[i]);
-			exit(1);
+			continue;
 		}
 
 		/*
