@@ -138,7 +138,7 @@ main(int argc, char **argv)
 #endif
 	FILE *fp;
 
-	while ((ch = getopt(argc, argv, "d:lnrsx")) != -1) {
+	while ((ch = getopt(argc, argv, "d:lnprsx")) != -1) {
 		switch(ch) {
 		case 'd':
 			del = optarg;
@@ -150,6 +150,9 @@ main(int argc, char **argv)
 
 		case 'n':
 			oflags |= AU_OFLAG_NORESOLVE;
+			break;
+
+		case 'p':
 			break;
 
 		case 'r':
