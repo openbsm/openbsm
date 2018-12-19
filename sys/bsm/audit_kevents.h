@@ -652,6 +652,9 @@
 #define	AUE_GETUUID		43260	/* CADETS. */
 #define	AUE_LGETUUID		43261	/* CADETS. */
 #define	AUE_EXECVEAT		43262	/* FreeBSD/Linux. */
+#define	AUE_GETCRED		43263	/* FreeBSD-specific. */
+#define	AUE_SETCRED		43264	/* FreeBSD-specific. */
+#define	AUE_REVERTCRED		43265	/* FreeBSD-specific. */
 
 /*
  * Darwin BSM uses a number of AUE_O_* definitions, which are aliased to the

@@ -610,6 +610,9 @@
 43260:AUE_GETUUID:getuuid(2):ip
 43261:AUE_LGETUUID:lgetuuid(2):ip
 43262:AUE_EXECVEAT:execveat(2):pc,ex
+43263:AUE_GETCRED:getcred(2):pc
+43264:AUE_SETCRED:setcred(2):pc
+43265:AUE_REVERTCRED:revertcred(2):pc
 #
 # Solaris userspace events.
 #
