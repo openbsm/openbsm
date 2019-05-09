@@ -207,14 +207,17 @@ auditd_close_trigger(void)
 void
 auditd_wait_for_events(void)
 {
-	int num;
+	int num, serrno;
 	unsigned int trigger;
 
 	for (;;) {
 		num = read(triggerfd, &trigger, sizeof(trigger));
-		if ((num == -1) && (errno != EINTR)) {
-			auditd_log_err("%s: error %d", __FUNCTION__, errno);
-			return;
+		if (num == -1) {
+			serrno = errno;
+			if (serrno != EINTR) {
+				auditd_log_err("%s: error %d", __FUNCTION__, errno);
+				return;
+			}
 		}
 		
 		/* Reset the idle time alarm, if used. */
@@ -241,7 +244,7 @@ auditd_wait_for_events(void)
 			auditd_config_controls();
 		}
 
-		if ((num == -1) && (errno == EINTR))
+		if (num == -1 && serrno == EINTR)
 			continue;
 		if (num == 0) {
 			auditd_log_err("%s: read EOF", __FUNCTION__);
