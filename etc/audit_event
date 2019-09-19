@@ -610,6 +610,7 @@
 43260:AUE_GETUUID:getuuid(2):ip
 43261:AUE_LGETUUID:lgetuuid(2):ip
 43262:AUE_EXECVEAT:execveat(2):pc,ex
+43263:AUE_SHMRENAME:shm_rename(2):ip
 #
 # Solaris userspace events.
 #
