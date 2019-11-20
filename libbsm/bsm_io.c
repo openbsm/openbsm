@@ -3430,7 +3430,7 @@ fetch_socket_tok(tokenstr_t *tok, u_char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.l_addr,
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.r_addr,
 	    sizeof(tok->tt.socket.r_addr), tok->len, err);
 	if (err)
 		return (-1);
