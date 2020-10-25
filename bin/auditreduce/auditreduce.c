@@ -649,6 +649,7 @@ main(int argc, char **argv)
 #ifdef HAVE_CAP_ENTER
 	int retval, status;
 	pid_t childpid, pid;
+	int fd;
 #endif
 
 	converr = NULL;
@@ -820,6 +821,15 @@ main(int argc, char **argv)
 	argv += optind;
 	argc -= optind;
 
+#ifdef HAVE_CAP_ENTER
+        fd = open(AUDIT_EVENT_FILE, O_RDONLY);
+        if (fd == -1) {
+                err(1, "failed to get file descriptor for event db");
+        }
+        if (au_set_eventdb_fd(fd) != 0) {
+		errx(1, "failed to initialize event db file descriptor");
+	}
+#endif
 	if (argc == 0) {
 #ifdef HAVE_CAP_ENTER
 		retval = cap_enter();

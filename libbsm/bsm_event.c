@@ -57,6 +57,26 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
 /*
+ * Expose an interface to allow consumers of this library running inside a
+ * capsisum sandbox to set the file descriptor for the event database. Currently
+ * we assume read only access.
+ *
+ * NB: locking? Currently this pointer is not under mutex scope.
+ */
+int
+au_set_eventdb_fd(int fd)
+{
+	FILE *event_fp;
+
+	event_fp = fdopen(fd, "r");
+	if (event_fp == NULL) {
+		return (-1);
+	}
+	fp = event_fp;
+	return (0);
+}
+
+/*
  * Parse one line from the audit_event file into the au_event_ent structure.
  */
 static struct au_event_ent *
