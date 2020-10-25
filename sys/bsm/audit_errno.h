@@ -161,6 +161,7 @@
 #define	BSM_ERRNO_EALREADY		149
 #define	BSM_ERRNO_EINPROGRESS		150
 #define	BSM_ERRNO_ESTALE		151
+#define	BSM_ERRNO_EQFULL		152
 
 /*
  * OpenBSM constants for error numbers not defined in Solaris.  In the event
