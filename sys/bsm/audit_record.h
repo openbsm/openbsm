@@ -132,6 +132,11 @@
 #define	AUT_ARG_UUID		0x84		/* UUID of argument object */
 #define	AUT_RETURN_UUID		0x85		/* UUID of returned object */
 
+/* Apple specific tokens */
+#define	AUT_IDENTITY		0xed
+#define	AUT_KRB5_PRINCIPAL	0xee
+#define	AUT_CERT_HASH		0xef
+
 /* print values for the arbitrary token */
 #define AUP_BINARY      0
 #define AUP_OCTAL       1
