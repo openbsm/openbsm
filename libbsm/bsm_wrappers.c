@@ -458,7 +458,6 @@ int
 audit_write_failure_na(short event_code, char *errmsg, int errret, uid_t euid,
     uid_t egid, pid_t pid, au_tid_t *tid)
 {
-
 	return (audit_write_failure(event_code, errmsg, errret, -1, euid,
 	    egid, -1, -1, pid, -1, tid));
 }
@@ -510,7 +509,7 @@ audit_get_cond(int *cond)
 	return (ret);
 }
 
-int 
+int
 audit_set_cond(int *cond)
 {
 	int ret;
@@ -520,7 +519,7 @@ audit_set_cond(int *cond)
 	if ((0 != ret) && (EINVAL == errno)) {
 		long lcond = (long)*cond;
 
-		ret = auditon(A_OLDSETCOND, &lcond, sizeof(lcond)); 
+		ret = auditon(A_OLDSETCOND, &lcond, sizeof(lcond));
 		*cond = (int)lcond;
 	}
 #endif
@@ -537,14 +536,14 @@ audit_get_policy(int *policy)
 	if ((0 != ret) && (EINVAL == errno)){
 		long lpolicy = (long)*policy;
 
-		ret = auditon(A_OLDGETPOLICY, &lpolicy, sizeof(lpolicy)); 
+		ret = auditon(A_OLDGETPOLICY, &lpolicy, sizeof(lpolicy));
 		*policy = (int)lpolicy;
 	}
 #endif
 	return (ret);
 }
 
-int 
+int
 audit_set_policy(int *policy)
 {
 	int ret;
@@ -554,7 +553,7 @@ audit_set_policy(int *policy)
 	if ((0 != ret) && (EINVAL == errno)){
 		long lpolicy = (long)*policy;
 
-		ret = auditon(A_OLDSETPOLICY, &lpolicy, sizeof(lpolicy)); 
+		ret = auditon(A_OLDSETPOLICY, &lpolicy, sizeof(lpolicy));
 		*policy = (int)lpolicy;
 	}
 #endif
@@ -588,7 +587,7 @@ audit_get_qctrl(au_qctrl_t *qctrl, size_t sz)
 		oq.oq_delay = (clock_t)qctrl->aq_delay;
 		oq.oq_minfree = qctrl->aq_minfree;
 
-		ret = auditon(A_OLDGETQCTRL, &oq, sizeof(oq)); 
+		ret = auditon(A_OLDGETQCTRL, &oq, sizeof(oq));
 
 		qctrl->aq_hiwater = (int)oq.oq_hiwater;
 		qctrl->aq_lowater = (int)oq.oq_lowater;
@@ -610,7 +609,7 @@ audit_set_qctrl(au_qctrl_t *qctrl, size_t sz)
 		return (-1);
 	}
 
-	ret = auditon(A_SETQCTRL, qctrl, sz); 
+	ret = auditon(A_SETQCTRL, qctrl, sz);
 #ifdef	A_OLDSETQCTRL
 	if ((0 != ret) && (EINVAL == errno)) {
 		struct old_qctrl {
@@ -627,7 +626,7 @@ audit_set_qctrl(au_qctrl_t *qctrl, size_t sz)
 		oq.oq_delay = (clock_t)qctrl->aq_delay;
 		oq.oq_minfree = qctrl->aq_minfree;
 
-		ret = auditon(A_OLDSETQCTRL, &oq, sizeof(oq)); 
+		ret = auditon(A_OLDSETQCTRL, &oq, sizeof(oq));
 
 		qctrl->aq_hiwater = (int)oq.oq_hiwater;
 		qctrl->aq_lowater = (int)oq.oq_lowater;
@@ -642,14 +641,12 @@ audit_set_qctrl(au_qctrl_t *qctrl, size_t sz)
 int
 audit_send_trigger(int *trigger)
 {
-
 	return (auditon(A_SENDTRIGGER, trigger, sizeof(*trigger)));
 }
 
 int
 audit_get_kaudit(auditinfo_addr_t *aia, size_t sz)
 {
-
 	if (sizeof(*aia) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -661,7 +658,6 @@ audit_get_kaudit(auditinfo_addr_t *aia, size_t sz)
 int
 audit_set_kaudit(auditinfo_addr_t *aia, size_t sz)
 {
-
 	if (sizeof(*aia) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -673,7 +669,6 @@ audit_set_kaudit(auditinfo_addr_t *aia, size_t sz)
 int
 audit_get_class(au_evclass_map_t *evc_map, size_t sz)
 {
-
 	if (sizeof(*evc_map) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -683,9 +678,8 @@ audit_get_class(au_evclass_map_t *evc_map, size_t sz)
 }
 
 int
-audit_set_class(au_evclass_map_t *evc_map, size_t sz) 
+audit_set_class(au_evclass_map_t *evc_map, size_t sz)
 {
-
 	if (sizeof(*evc_map) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -697,7 +691,6 @@ audit_set_class(au_evclass_map_t *evc_map, size_t sz)
 int
 audit_get_event(au_evname_map_t *evn_map, size_t sz)
 {
-
 	if (sizeof(*evn_map) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -709,7 +702,6 @@ audit_get_event(au_evname_map_t *evn_map, size_t sz)
 int
 audit_set_event(au_evname_map_t *evn_map, size_t sz)
 {
-
 	if (sizeof(*evn_map) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -743,7 +735,6 @@ audit_set_kmask(au_mask_t *kmask, size_t sz)
 int
 audit_get_fsize(au_fstat_t *fstat, size_t sz)
 {
-
 	if (sizeof(*fstat) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -755,7 +746,6 @@ audit_get_fsize(au_fstat_t *fstat, size_t sz)
 int
 audit_set_fsize(au_fstat_t *fstat, size_t sz)
 {
-
 	if (sizeof(*fstat) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -767,7 +757,6 @@ audit_set_fsize(au_fstat_t *fstat, size_t sz)
 int
 audit_set_pmask(auditpinfo_t *api, size_t sz)
 {
-	
 	if (sizeof(*api) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -776,10 +765,9 @@ audit_set_pmask(auditpinfo_t *api, size_t sz)
 	return (auditon(A_SETPMASK, api, sz));
 }
 
-int 
+int
 audit_get_pinfo(auditpinfo_t *api, size_t sz)
 {
-	
 	if (sizeof(*api) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -791,7 +779,6 @@ audit_get_pinfo(auditpinfo_t *api, size_t sz)
 int
 audit_get_pinfo_addr(auditpinfo_addr_t *apia, size_t sz)
 {
-	
 	if (sizeof(*apia) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -803,7 +790,6 @@ audit_get_pinfo_addr(auditpinfo_addr_t *apia, size_t sz)
 int
 audit_get_sinfo_addr(auditinfo_addr_t *aia, size_t sz)
 {
-	
 	if (sizeof(*aia) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -815,7 +801,6 @@ audit_get_sinfo_addr(auditinfo_addr_t *aia, size_t sz)
 int
 audit_get_stat(au_stat_t *stats, size_t sz)
 {
-
 	if (sizeof(*stats) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -827,7 +812,6 @@ audit_get_stat(au_stat_t *stats, size_t sz)
 int
 audit_set_stat(au_stat_t *stats, size_t sz)
 {
-
 	if (sizeof(*stats) != sz) {
 		errno = EINVAL;
 		return (-1);
@@ -839,13 +823,11 @@ audit_set_stat(au_stat_t *stats, size_t sz)
 int
 audit_get_cwd(char *path, size_t sz)
 {
-
 	return (auditon(A_GETCWD, path, sz));
 }
 
 int
 audit_get_car(char *path, size_t sz)
 {
-
 	return (auditon(A_GETCAR, path, sz));
 }
