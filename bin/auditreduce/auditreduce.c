@@ -824,10 +824,10 @@ main(int argc, char **argv)
 #ifdef HAVE_CAP_ENTER
 	efp = fopen(AUDIT_EVENT_FILE, "r");
 	if (efp == NULL) {
-		err(1, "failed to get file descriptor for event db");
+		err(EXIT_FAILURE, "failed to get file descriptor for event db");
 	}
 	if (setauevent_fp(efp) != 0) {
-		errx(1, "failed to initialize event db file handle");
+		errx(EXIT_FAILURE, "failed to initialize event db file handle");
 	}
 #endif
 	if (argc == 0) {
