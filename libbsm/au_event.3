@@ -47,9 +47,9 @@
 .In bsm/libbsm.h
 .Ft void
 .Fn setauevent void
-.Ft void
-.Fn setauevent_fp "FILE *"
 .Ft int
+.Fn setauevent_fp "FILE *"
+.Ft void
 .Fn endauevent void
 .Ft int
 .Fn endauevent_fp "FILE *"
@@ -160,7 +160,8 @@ The
 .Fn setauevent_fp
 and
 .Fn endauevent_fp
-functions will both return non-zero if the referenced stream is NULL.
+functions will both return zero on success,
+and non-zero if the referenced stream is NULL.
 .Sh SEE ALSO
 .Xr libbsm 3 ,
 .Xr audit_event 5
