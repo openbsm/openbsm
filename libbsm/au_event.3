@@ -103,7 +103,7 @@ The
 .Fn setauevent_fp
 function
 can be used if the process using the event database is running
-in a sandbox and would like to provide a file handle to the library
+in a sandbox and would like to provide a file handle for the library
 to use. It should be noted that libbsm will not cleanup this file,
 and it is the responsibility of the caller to do so using the
 .Fn endauevent_fp
