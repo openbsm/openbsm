@@ -58,21 +58,43 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /*
  * Expose an interface to allow consumers of this library running inside a
- * capsisum sandbox to set the file descriptor for the event database. Currently
- * we assume read only access.
- *
- * NB: locking? Currently this pointer is not under mutex scope.
+ * capsisum (or other) sandbox. Caller is expected to cleanup this fp.
  */
 int
-au_set_eventdb_fd(int fd)
+setauevent_fp(FILE *src_fp)
 {
-	FILE *event_fp;
 
-	event_fp = fdopen(fd, "r");
-	if (event_fp == NULL) {
+	if (src_fp == NULL) {
 		return (-1);
 	}
-	fp = event_fp;
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_lock(&mutex);
+#endif
+	fp = src_fp;
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_unlock(&mutex);
+#endif
+	return (0);
+}
+
+/*
+ * Expose interface to sandboxed consumer to cleanup the eventdb fp
+ */
+int
+endauevent_fp(FILE *src_fp)
+{
+
+	if (src_fp == NULL) {
+		return (-1);
+	}
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_lock(&mutex);
+#endif
+	fclose(src_fp);
+	fp = NULL;
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_unlock(&mutex);
+#endif
 	return (0);
 }
 

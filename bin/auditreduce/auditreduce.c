@@ -649,7 +649,7 @@ main(int argc, char **argv)
 #ifdef HAVE_CAP_ENTER
 	int retval, status;
 	pid_t childpid, pid;
-	int fd;
+	FILE *efp;
 #endif
 
 	converr = NULL;
@@ -822,12 +822,12 @@ main(int argc, char **argv)
 	argc -= optind;
 
 #ifdef HAVE_CAP_ENTER
-	fd = open(AUDIT_EVENT_FILE, O_RDONLY);
-	if (fd == -1) {
+	efp = fopen(AUDIT_EVENT_FILE, "r");
+	if (efp == NULL) {
 		err(1, "failed to get file descriptor for event db");
 	}
-	if (au_set_eventdb_fd(fd) != 0) {
-		errx(1, "failed to initialize event db file descriptor");
+	if (setauevent_fp(efp) != 0) {
+		errx(1, "failed to initialize event db file handle");
 	}
 #endif
 	if (argc == 0) {
@@ -878,6 +878,9 @@ main(int argc, char **argv)
 		while ((pid = waitpid(childpid, &status, 0)) != childpid);
 		if (WEXITSTATUS(status) != 0)
 			exit(EXIT_FAILURE);
+		if (endauevent_fp(efp) != 0) {
+			errx(EXIT_FAILURE, "invalid event db handle");
+		}
 #else
 		if (select_records(fp) == -1)
 			errx(EXIT_FAILURE, "Couldn't select records %s",
