@@ -486,7 +486,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 
 			/*
 			 * Get the ending time stamp encoded in the trail
-			 * name.  If we can't read it or if it is older
+			 * name. If we can't read it or if it is older
 			 * than Jan 1, 2000 then use the mtime.
 			 */
 			if (trailname_to_tstamp(dp->d_name, &tstamp) != 0 ||
@@ -496,7 +496,7 @@ auditd_expire_trails(int (*warn_expired)(char *))
 			/*
 			 * If the time stamp is older than Jan 1, 2000 then
 			 * update the mtime of the trail file to the current
-			 * time.  This is so we don't prematurely remove a trail
+			 * time. This is so we don't prematurely remove a trail
 			 * file that was created while the system clock reset
 			 * to the "beginning of time" but later the system
 			 * clock is set to the correct current time.
