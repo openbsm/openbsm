@@ -41,8 +41,8 @@ closefrom(int lowfd)
 
 	maxfd = sysconf(_SC_OPEN_MAX);
 	if (maxfd < 0)
-		maxfd = 16384;
-	for (fd = lowfd; fd <= maxfd; fd++)
+		maxfd = 16385;
+	for (fd = lowfd; fd < maxfd; fd++)
 		(void)close(fd);
 
 	errno = error;
