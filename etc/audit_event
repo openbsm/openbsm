@@ -439,7 +439,7 @@
 43079:AUE_CAPGET:capget(2):pc
 43080:AUE_CAPSET:capset(2):pc
 43081:AUE_PIVOT_ROOT:pivot_root(2):pc
-43082:AUE_RTPRIO::rtprio(2):pc
+43082:AUE_RTPRIO:rtprio(2):pc
 43083:AUE_SCHED_GETPARAM:sched_getparam(2):ad
 43084:AUE_SCHED_SETPARAM:sched_setparam(2):ad
 43085:AUE_SCHED_GET_PRIORITY_MAX:sched_get_priority_max(2):ad
