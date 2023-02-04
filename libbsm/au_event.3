@@ -30,6 +30,8 @@
 .Nm free_au_event_ent ,
 .Nm setauevent ,
 .Nm endauevent ,
+.Nm setauevent_fp ,
+.Nm endauevent_fp ,
 .Nm getauevent ,
 .Nm getauevent_r ,
 .Nm getauevnam ,
@@ -45,8 +47,12 @@
 .In bsm/libbsm.h
 .Ft void
 .Fn setauevent void
+.Ft int
+.Fn setauevent_fp "FILE *"
 .Ft void
 .Fn endauevent void
+.Ft int
+.Fn endauevent_fp "FILE *"
 .Ft "struct au_event_ent *"
 .Fn getauevent void
 .Ft "struct au_event_ent *"
@@ -94,6 +100,16 @@ closes the
 database session.
 .Pp
 The
+.Fn setauevent_fp
+function
+can be used if the process using the event database is running
+in a sandbox and would like to provide a file handle for the library
+to use. It should be noted that libbsm will not cleanup this file,
+and it is the responsibility of the caller to do so using the
+.Fn endauevent_fp
+function.
+.Pp
+The
 .Fn getauevent
 function
 returns a reference to the next entry in the
@@ -139,6 +155,13 @@ on success, or
 on failure, with
 .Va errno
 set to provide further error information.
+.Pp
+The
+.Fn setauevent_fp
+and
+.Fn endauevent_fp
+functions will both return zero on success,
+and non-zero if the referenced stream is NULL.
 .Sh SEE ALSO
 .Xr libbsm 3 ,
 .Xr audit_event 5

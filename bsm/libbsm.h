@@ -861,6 +861,8 @@ int			 au_strtopol(const char *polstr, int *policy);
 /*
  * Functions relating to querying audit event information.
  */
+int			 setauevent_fp(FILE *);
+int			 endauevent_fp(FILE *);
 void			 setauevent(void);
 void			 endauevent(void);
 struct au_event_ent	*getauevent(void);
