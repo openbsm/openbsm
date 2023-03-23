@@ -2665,7 +2665,7 @@ print_process32_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 		print_4_bytes(fp, tok->tt.proc32.sid, "%u");
 		close_attr(fp);
 		open_attr(fp, "tid");
-		print_4_bytes(fp, tok->tt.proc32.tid.port, "%u");
+		print_4_bytes(fp, tok->tt.proc32.tid.port, "%u ");
 		print_ip_address(fp, tok->tt.proc32.tid.addr);
 		close_attr(fp);
 		close_tag(fp, tok->id);
@@ -2776,7 +2776,7 @@ print_process64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 		print_4_bytes(fp, tok->tt.proc64.sid, "%u");
 		close_attr(fp);
 		open_attr(fp, "tid");
-		print_8_bytes(fp, tok->tt.proc64.tid.port, "%llu");
+		print_8_bytes(fp, tok->tt.proc64.tid.port, "%llu ");
 		print_ip_address(fp, tok->tt.proc64.tid.addr);
 		close_attr(fp);
 		close_tag(fp, tok->id);
@@ -2903,7 +2903,7 @@ print_process32ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 		print_4_bytes(fp, tok->tt.proc32_ex.sid, "%u");
 		close_attr(fp);
 		open_attr(fp, "tid");
-		print_4_bytes(fp, tok->tt.proc32_ex.tid.port, "%u");
+		print_4_bytes(fp, tok->tt.proc32_ex.tid.port, "%u ");
 		print_ip_ex_address(fp, tok->tt.proc32_ex.tid.type,
 		    tok->tt.proc32_ex.tid.addr);
 		close_attr(fp);
@@ -3031,7 +3031,7 @@ print_process64ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 		print_4_bytes(fp, tok->tt.proc64_ex.sid, "%u");
 		close_attr(fp);
 		open_attr(fp, "tid");
-		print_8_bytes(fp, tok->tt.proc64_ex.tid.port, "%llu");
+		print_8_bytes(fp, tok->tt.proc64_ex.tid.port, "%llu ");
 		print_ip_ex_address(fp, tok->tt.proc64_ex.tid.type,
 		    tok->tt.proc64_ex.tid.addr);
 		close_attr(fp);
@@ -3774,7 +3774,7 @@ print_subject64_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 		print_4_bytes(fp, tok->tt.subj64.sid, "%u");
 		close_attr(fp);
 		open_attr(fp, "tid");
-		print_8_bytes(fp, tok->tt.subj64.tid.port, "%llu");
+		print_8_bytes(fp, tok->tt.subj64.tid.port, "%llu ");
 		print_ip_address(fp, tok->tt.subj64.tid.addr);
 		close_attr(fp);
 		close_tag(fp, tok->id);
@@ -3900,7 +3900,7 @@ print_subject32ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 		print_4_bytes(fp, tok->tt.subj32_ex.sid, "%u");
 		close_attr(fp);
 		open_attr(fp, "tid");
-		print_4_bytes(fp, tok->tt.subj32_ex.tid.port, "%u");
+		print_4_bytes(fp, tok->tt.subj32_ex.tid.port, "%u ");
 		print_ip_ex_address(fp, tok->tt.subj32_ex.tid.type,
 		    tok->tt.subj32_ex.tid.addr);
 		close_attr(fp);
@@ -4027,7 +4027,7 @@ print_subject64ex_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 		print_4_bytes(fp, tok->tt.subj64_ex.sid, "%u");
 		close_attr(fp);
 		open_attr(fp, "tid");
-		print_8_bytes(fp, tok->tt.subj64_ex.tid.port, "%llu");
+		print_8_bytes(fp, tok->tt.subj64_ex.tid.port, "%llu ");
 		print_ip_ex_address(fp, tok->tt.subj64_ex.tid.type,
 		    tok->tt.subj64_ex.tid.addr);
 		close_attr(fp);
