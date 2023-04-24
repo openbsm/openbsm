@@ -39,7 +39,7 @@
  */
 
 /*
- * praudit [-lnpx] [-r | -s] [-d del] [file ...]
+ * praudit [-lnx] [-r | -s] [-d del] [file ...]
  */
 
 #include <config/config.h>
@@ -63,18 +63,17 @@
 #include <unistd.h>
 
 extern char	*optarg;
-extern int	 optind, optopt, opterr,optreset;
+extern int	 optind, optopt, opterr, optreset;
 
 static char	*del = ",";	/* Default delimiter. */
 static int	 oneline = 0;
-static int	 partial = 0;
 static int	 oflags = AU_OFLAG_NONE;
 
 static void
 usage(void)
 {
 
-	fprintf(stderr, "usage: praudit [-lnpx] [-r | -s] [-d del] "
+	fprintf(stderr, "usage: praudit [-lnx] [-r | -s] [-d del] "
 	    "[file ...]\n");
 	exit(1);
 }
@@ -82,31 +81,36 @@ usage(void)
 /*
  * Token printing for each token type .
  */
-static int
-print_tokens(FILE *fp)
+static void
+print_tokens(FILE *fp, const char *filename)
 {
 	u_char *buf;
+	int type = 0;
 	tokenstr_t tok;
-	int reclen;
+	int reclen, recflag;
 	int bytesread;
 
-	/* Allow tail -f | praudit to work. */
-	if (partial) {
-		u_char type = 0;
-		/* Record must begin with a header token. */
-		do {
-			type = fgetc(fp);
-		} while(type != AUT_HEADER32);
-		ungetc(type, fp);
-	}
+	/* Record must begin with a header token. */
+	do {
+		if ((type = fgetc(fp)) == EOF)
+			return;
+	} while((type != AUT_HEADER32) && (type != AUT_HEADER64) &&
+		(type != AUT_HEADER32_EX) && (type != AUT_HEADER64_EX));
+	ungetc(type, fp);
 
 	while ((reclen = au_read_rec(fp, &buf)) != -1) {
 		bytesread = 0;
+		recflag = 1;
 		while (bytesread < reclen) {
 			/* Is this an incomplete record? */
 			if (-1 == au_fetch_tok(&tok, buf + bytesread,
-			    reclen - bytesread))
+			    reclen - bytesread)) {
+				fprintf(stderr, "Corrupted audit trail: %s\n",
+					filename);
+    				recflag = 0;
 				break;
+			}
+
 			au_print_flags_tok(stdout, &tok, del, oflags);
 			bytesread += tok.len;
 			if (oneline) {
@@ -116,18 +120,18 @@ print_tokens(FILE *fp)
 				printf("\n");
 		}
 		free(buf);
-		if (oneline)
+		/* Don't print newline for incomplete record when '-l' is set */
+		if (oneline && recflag)
 			printf("\n");
 		fflush(stdout);
 	}
-	return (0);
+	return;
 }
 
 int
 main(int argc, char **argv)
 {
-	int ch;
-	int i;
+	int ch, i;
 #ifdef HAVE_CAP_ENTER
 	int retval;
 	pid_t childpid, pid;
@@ -149,12 +153,11 @@ main(int argc, char **argv)
 			break;
 
 		case 'p':
-			partial = 1;
 			break;
 
 		case 'r':
 			if (oflags & AU_OFLAG_SHORT)
-				usage();	/* Exclusive from shortfrm. */
+				usage();	/* Exclusive from short form. */
 			oflags |= AU_OFLAG_RAW;
 			break;
 
@@ -201,7 +204,7 @@ main(int argc, char **argv)
 		if (retval != 0 && errno != ENOSYS)
 			err(EXIT_FAILURE, "cap_enter");
 #endif
-		print_tokens(stdin);
+		print_tokens(stdin, "stdin");
 		return (1);
 	}
 	for (i = optind; i < argc; i++) {
@@ -228,16 +231,15 @@ main(int argc, char **argv)
 			retval = cap_enter();
 			if (retval != 0 && errno != ENOSYS)
 				err(EXIT_FAILURE, "cap_enter");
-			if (print_tokens(fp) == -1)
-				perror(argv[i]);
+
+			print_tokens(fp, argv[i]);
 			exit(0);
 		}
 
 		/* Parent.  Await child termination. */
 		while ((pid = waitpid(childpid, NULL, 0)) != childpid);
 #else
-		if (print_tokens(fp) == -1)
-			perror(argv[i]);
+		print_tokens(fp, argv[i]);
 #endif
 		fclose(fp);
 	}
