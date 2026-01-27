@@ -656,9 +656,14 @@
 #define	AUE_SHMRENAME		43263	/* FreeBSD-specific. */
 #define	AUE_REALPATHAT		43264	/* FreeBSD-specific. */
 #define	AUE_CLOSERANGE		43265	/* FreeBSD-specific. */
-#define	AUE_SPECIALFD		43266   /* FreeBSD-specific. */
-#define	AUE_AIO_WRITEV		43267   /* FreeBSD-specific. */
-#define	AUE_AIO_READV		43268   /* FreeBSD-specific. */
+#define	AUE_SPECIALFD		43266	/* FreeBSD-specific. */
+#define	AUE_AIO_WRITEV		43267	/* FreeBSD-specific. */
+#define	AUE_AIO_READV		43268	/* FreeBSD-specific. */
+#define	AUE_FSPACECTL		43269	/* FreeBSD-specific. */
+#define	AUE_TIMERFD		43270	/* FreeBSD/Linux. */
+#define	AUE_SETCRED		43271	/* FreeBSD-specific. */
+#define	AUE_INOTIFY		43272	/* FreeBSD/Linux. */
+#define	AUE_PDRFORK		43273	/* FreeBSD-specific. */
 
 #define	AUE_SESSION_START	44901   /* Darwin. */
 #define	AUE_SESSION_UPDATE	44902   /* Darwin. */
