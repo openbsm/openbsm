@@ -898,7 +898,7 @@ int			 au_fetch_tok(tokenstr_t *tok, u_char *buf, int len);
 void			 au_print_tok(FILE *outfp, tokenstr_t *tok,
 			    char *del, char raw, char sfrm);
 void			 au_print_flags_tok(FILE *outfp, tokenstr_t *tok,
-			    char *del, int oflags);
+			    const char *del, int oflags);
 void			 au_print_tok_xml(FILE *outfp, tokenstr_t *tok,
 			    char *del, char raw, char sfrm);
 

@@ -111,7 +111,7 @@ static int auditd_dist = 0;
 static char auditd_host[MAXHOSTNAMELEN];
 static int auditd_hostlen = -1;
 
-static char *auditd_errmsg[] = {
+static const char *auditd_errmsg[] = {
 	"no error",					/* ADE_NOERR	( 0) */
 	"could not parse audit_control(5) file",	/* ADE_PARSE	( 1) */
 	"auditon(2) failed",				/* ADE_AUDITON	( 2) */

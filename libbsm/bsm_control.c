@@ -62,7 +62,7 @@
  */
 static FILE	*fp = NULL;
 static char	linestr[AU_LINE_MAX];
-static char	*delim = ":";
+static const char	*delim = ":";
 
 static char	inacdir = 0;
 static char	ptrmoved = 0;
