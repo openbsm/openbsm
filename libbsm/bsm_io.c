@@ -3378,7 +3378,7 @@ print_sock_inet128_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 
 /*
  * socket family           2 bytes
- * path                    (up to) AU_UNIX_PATH_MAX bytes + NUL
+ * path                    (up to) AU_UNIX_PATH_MAX bytes (NUL terminated)
  */
 static int
 fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)

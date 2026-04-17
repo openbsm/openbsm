@@ -627,7 +627,7 @@ typedef struct {
 
 /*
  * socket family           2 bytes
- * path                    up to AU_UNIX_PATH_MAX bytes + NUL
+ * path                    up to AU_UNIX_PATH_MAX bytes (NUL terminated)
  */
 typedef struct {
 	u_int16_t	family;
