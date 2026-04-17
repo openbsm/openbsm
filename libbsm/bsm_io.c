@@ -3383,10 +3383,10 @@ print_sock_inet128_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 static int
 fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 {
+	size_t remaining, search;
 	int err = 0;
 	u_char *p;
 	int slen;
-	size_t remaining, search;
 
 	READ_TOKEN_U_INT16(buf, len, tok->tt.sockunix.family, tok->len, err);
 	if (err)
