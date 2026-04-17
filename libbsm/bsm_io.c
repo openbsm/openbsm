@@ -3378,12 +3378,12 @@ print_sock_inet128_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 
 /*
  * socket family           2 bytes
- * path                    (up to) 104 bytes + NULL (NULL terminated string).
+ * path                    (up to) AU_UNIX_PATH_MAX bytes + NUL
  */
 static int
 fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 {
-	size_t remaining, search;
+	size_t remaining, search, pathmax;
 	int err = 0;
 	u_char *p;
 	int slen;
@@ -3393,23 +3393,17 @@ fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 		return (-1);
 
 	/*
-	 * Make sure we clamp the search length to at most the number of bytes
-	 * that are remaining in the buffer after we subtract the current
-	 * value of tok->len (3 at this point: 1 byte for the token type and
-	 * 2 for the socket address family). Also make sure it's no more than
-	 * 104 bytes.
+	 * Clamp the search to the bytes remaining in the token and the path
+	 * storage size.  Using sizeof(tok->tt.sockunix.path) rather than a
+	 * literal keeps the bound in sync with au_socketunix_t automatically.
 	 */
+	pathmax = sizeof(tok->tt.sockunix.path);
 	remaining = (size_t)(len - (int)tok->len);
-	search = remaining < 104 ? remaining : 104;
+	search = remaining < pathmax ? remaining : pathmax;
 	p = (u_char *)memchr((const void *)(buf + tok->len), '\0', search);
-	slen = (p ? (int)(p - (buf + tok->len)) : 104) + 1;
-	/*
-	 * If a nul byte was not found the resulting calculation for slen above
-	 * will end up being 105 which will result in a 1 byte overflow.
-	 */
-	if (slen > (int)sizeof(tok->tt.sockunix.path)) {
-		slen = (int)sizeof(tok->tt.sockunix.path);
-	}
+	slen = (p ? (int)(p - (buf + tok->len)) : (int)pathmax - 1) + 1;
+	if (slen > (int)pathmax)
+		slen = (int)pathmax;
 
 	READ_TOKEN_BYTES(buf, len, tok->tt.sockunix.path, slen, tok->len, err);
 	if (err)
