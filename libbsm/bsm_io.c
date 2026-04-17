@@ -1948,6 +1948,15 @@ fetch_execarg_tok(tokenstr_t *tok, u_char *buf, int len)
 		return (-1);
 
 	for (i = 0; i < tok->tt.execarg.count; i++) {
+		/*
+		 * Make sure that tok->len has not reached the end of the
+		 * buffer. If the previous string's nul byte was the last byte
+		 * in the buffer, the nul accounting below will have set
+		 * tok->len == len, leaving no room for another string.
+		 */
+		if (tok->len >= (u_int32_t)len) {
+			return (-1);
+		}
 		bptr = buf + tok->len;
 		if (i < AUDIT_MAX_ARGS)
 			tok->tt.execarg.text[i] = (char*)bptr;
@@ -2006,6 +2015,15 @@ fetch_execenv_tok(tokenstr_t *tok, u_char *buf, int len)
 		return (-1);
 
 	for (i = 0; i < tok->tt.execenv.count; i++) {
+		/*
+		 * Make sure that tok->len has not reached the end of the
+		 * buffer. If the previous string's nul byte was the last byte
+		 * in the buffer, the nul accounting below will have set
+		 * tok->len == len, leaving no room for another string.
+		 */
+		if (tok->len >= (u_int32_t)len) {
+			return (-1);
+		}
 		bptr = buf + tok->len;
 		if (i < AUDIT_MAX_ENV)
 			tok->tt.execenv.text[i] = (char*)bptr;
@@ -2118,6 +2136,17 @@ fetch_newgroups_tok(tokenstr_t *tok, u_char *buf, int len)
 	if (err)
 		return (-1);
 
+	/*
+	 * grps.list[] is statically sized and set to AUDIT_MAX_GROUPS. If the
+	 * group count specified in the record is greater than this value just
+	 * clamp/truncate it. Silently truncating a malformed record changes
+	 * what was recorded and could mask tampering. However, a precedent
+	 * has been set in fetch_execarg_tok and fetch_execenv_tok which
+	 * truncate the count under similar circumstances.
+	 */
+	if (tok->tt.grps.no > AUDIT_MAX_GROUPS) {
+		tok->tt.grps.no = AUDIT_MAX_GROUPS;
+	}
 	for (i = 0; i<tok->tt.grps.no; i++) {
 		READ_TOKEN_U_INT32(buf, len, tok->tt.grps.list[i], tok->len,
 		    err);
@@ -3357,15 +3386,30 @@ fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 	int err = 0;
 	u_char *p;
 	int slen;
-
+	size_t remaining, search;
 
 	READ_TOKEN_U_INT16(buf, len, tok->tt.sockunix.family, tok->len, err);
 	if (err)
 		return (-1);
 
-	/* slen = strnlen((buf + tok->len), 104) + 1; */
-	p = (u_char *)memchr((const void *)(buf + tok->len), '\0', 104);
-	slen = (p ? (int)(p - (buf + tok->len))  : 104) + 1;
+	/*
+	 * Make sure we clamp the search length to at most the number of bytes
+	 * that are remaining in the buffer after we subtract the current
+	 * value of tok->len (3 at this point: 1 byte for the token type and
+	 * 2 for the socket address family). Also make sure it's no more than
+	 * 104 bytes.
+	 */
+	remaining = (size_t)(len - (int)tok->len);
+	search = remaining < 104 ? remaining : 104;
+	p = (u_char *)memchr((const void *)(buf + tok->len), '\0', search);
+	slen = (p ? (int)(p - (buf + tok->len)) : 104) + 1;
+	/*
+	 * If a nul byte was not found the resulting calculation for slen above
+	 * will end up being 105 which will result in a 1 byte overflow.
+	 */
+	if (slen > (int)sizeof(tok->tt.sockunix.path)) {
+		slen = (int)sizeof(tok->tt.sockunix.path);
+	}
 
 	READ_TOKEN_BYTES(buf, len, tok->tt.sockunix.path, slen, tok->len, err);
 	if (err)
@@ -3430,7 +3474,7 @@ fetch_socket_tok(tokenstr_t *tok, u_char *buf, int len)
 	if (err)
 		return (-1);
 
-	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.l_addr,
+	READ_TOKEN_BYTES(buf, len, &tok->tt.socket.r_addr,
 	    sizeof(tok->tt.socket.r_addr), tok->len, err);
 	if (err)
 		return (-1);
