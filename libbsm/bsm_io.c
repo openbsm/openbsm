@@ -3401,10 +3401,7 @@ fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 	remaining = (size_t)(len - (int)tok->len);
 	search = remaining < pathmax ? remaining : pathmax;
 	p = (u_char *)memchr((const void *)(buf + tok->len), '\0', search);
-	slen = (p ? (int)(p - (buf + tok->len)) : (int)pathmax - 1) + 1;
-	if (slen > (int)pathmax) {
-		slen = (int)pathmax;
-	}
+	slen = (p ? (int)(p - (buf + tok->len)) + 1 : (int)search);
 
 	READ_TOKEN_BYTES(buf, len, tok->tt.sockunix.path, slen, tok->len, err);
 	if (err)
