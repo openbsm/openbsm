@@ -3409,6 +3409,8 @@ fetch_sock_unix_tok(tokenstr_t *tok, u_char *buf, int len)
 	READ_TOKEN_BYTES(buf, len, tok->tt.sockunix.path, slen, tok->len, err);
 	if (err)
 		return (-1);
+	/* guarantee NUL termination when no NUL was found in the token data */
+	tok->tt.sockunix.path[pathmax - 1] = '\0';
 
 	return (0);
 }
