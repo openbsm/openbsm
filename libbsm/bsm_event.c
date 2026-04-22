@@ -57,6 +57,48 @@ static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
 /*
+ * Expose an interface to allow consumers of this library running inside a
+ * capsisum (or other) sandbox. Caller is expected to cleanup this fp.
+ */
+int
+setauevent_fp(FILE *src_fp)
+{
+
+	if (src_fp == NULL) {
+		return (-1);
+	}
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_lock(&mutex);
+#endif
+	fp = src_fp;
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_unlock(&mutex);
+#endif
+	return (0);
+}
+
+/*
+ * Expose interface to sandboxed consumer to cleanup the eventdb fp
+ */
+int
+endauevent_fp(FILE *src_fp)
+{
+
+	if (src_fp == NULL) {
+		return (-1);
+	}
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_lock(&mutex);
+#endif
+	fclose(src_fp);
+	fp = NULL;
+#ifdef HAVE_PTHREAD_MUTEX_LOCK
+	pthread_mutex_unlock(&mutex);
+#endif
+	return (0);
+}
+
+/*
  * Parse one line from the audit_event file into the au_event_ent structure.
  */
 static struct au_event_ent *
