@@ -31,7 +31,9 @@
 
 #include <sys/types.h>
 #include <sys/queue.h>
+#ifdef HAVE_SYS_SYSCTL_H
 #include <sys/sysctl.h>
+#endif
 
 #include <arpa/inet.h>
 
