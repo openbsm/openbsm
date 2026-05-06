@@ -1568,6 +1568,9 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 	char *format;
 	size_t size;
 	int i;
+	uint16_t d16;
+	uint32_t d32;
+	uint64_t d64;
 
 	print_tok_type(fp, tok->id, "arbitrary", oflags);
 	if (!(oflags & AU_OFLAG_XML))
@@ -1650,20 +1653,22 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			close_attr(fp);
 			fprintf(fp, ">");
-			for (i = 0; i < tok->tt.arb.uc; i++)
-				fprintf(fp, format,
-				    *((u_int16_t *)(tok->tt.arb.data +
-				    (size * i))));
+			for (i = 0; i < tok->tt.arb.uc; i++) {
+				memmove(&d16, tok->tt.arb.data + (size * i),
+					sizeof(d16));
+				fprintf(fp, format, d16);
+			}
 			close_tag(fp, tok->id);
 		} else {
 			print_string(fp, str, strlen(str));
 			print_delim(fp, del);
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			print_delim(fp, del);
-			for (i = 0; i < tok->tt.arb.uc; i++)
-				fprintf(fp, format,
-				    *((u_int16_t *)(tok->tt.arb.data +
-				    (size * i))));
+			for (i = 0; i < tok->tt.arb.uc; i++) {
+				memmove(&d16, tok->tt.arb.data + (size * i),
+					sizeof(d16));
+				fprintf(fp, format, d16);
+			}
 		}
 		break;
 
@@ -1679,20 +1684,22 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			close_attr(fp);
 			fprintf(fp, ">");
-			for (i = 0; i < tok->tt.arb.uc; i++)
-				fprintf(fp, format,
-				    *((u_int32_t *)(tok->tt.arb.data +
-				    (size * i))));
+			for (i = 0; i < tok->tt.arb.uc; i++) {
+				memmove(&d32, tok->tt.arb.data + (size * i),
+					sizeof(d32));
+				fprintf(fp, format, d32);
+			}
 			close_tag(fp, tok->id);
 		} else {
 			print_string(fp, str, strlen(str));
 			print_delim(fp, del);
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			print_delim(fp, del);
-			for (i = 0; i < tok->tt.arb.uc; i++)
-				fprintf(fp, format,
-				    *((u_int32_t *)(tok->tt.arb.data +
-				    (size * i))));
+			for (i = 0; i < tok->tt.arb.uc; i++) {
+				memmove(&d32, tok->tt.arb.data + (size * i),
+					sizeof(d32));
+				fprintf(fp, format, d32);
+			}
 		}
 		break;
 
@@ -1707,20 +1714,22 @@ print_arb_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			close_attr(fp);
 			fprintf(fp, ">");
-			for (i = 0; i < tok->tt.arb.uc; i++)
-				fprintf(fp, format,
-				    *((u_int64_t *)(tok->tt.arb.data +
-				    (size * i))));
+			for (i = 0; i < tok->tt.arb.uc; i++) {
+				memmove(&d64, tok->tt.arb.data + (size * i),
+					sizeof(d64));
+				fprintf(fp, format, d64);
+			}
 			close_tag(fp, tok->id);
 		} else {
 			print_string(fp, str, strlen(str));
 			print_delim(fp, del);
 			print_1_byte(fp, tok->tt.arb.uc, "%u");
 			print_delim(fp, del);
-			for (i = 0; i < tok->tt.arb.uc; i++)
-				fprintf(fp, format,
-				    *((u_int64_t *)(tok->tt.arb.data +
-				    (size * i))));
+			for (i = 0; i < tok->tt.arb.uc; i++) {
+				memmove(&d64, tok->tt.arb.data + (size * i),
+					sizeof(d64));
+				fprintf(fp, format, d64);
+			}
 		}
 		break;
 
