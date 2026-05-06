@@ -296,13 +296,12 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
     int errcode)
 {
 	int aufd;
-	char *func = "audit_write()";
 	token_t *rettok;
 
 	if ((aufd = au_open()) == -1) {
 		au_free_token(subject);
 		au_free_token(misctok);
-		syslog(LOG_ERR, "%s: au_open() failed", func);
+		syslog(LOG_ERR, "%s: au_open() failed", __func__);
 		return (kAUOpenErr);
 	}
 
@@ -311,7 +310,7 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
 		au_free_token(subject);
 		au_free_token(misctok);
 		(void)au_close(aufd, AU_TO_NO_WRITE, event_code);
-		syslog(LOG_ERR, "%s: write of subject failed", func);
+		syslog(LOG_ERR, "%s: write of subject failed", __func__);
 		return (kAUWriteSubjectTokErr);
 	}
 
@@ -319,21 +318,21 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
 	if (misctok && au_write(aufd, misctok) == -1) {
 		au_free_token(misctok);
 		(void)au_close(aufd, AU_TO_NO_WRITE, event_code);
-		syslog(LOG_ERR, "%s: write of caller token failed", func);
+		syslog(LOG_ERR, "%s: write of caller token failed", __func__);
 		return (kAUWriteCallerTokErr);
 	}
 
 	/* Tokenize and save the return value. */
 	if ((rettok = au_to_return32(retval, errcode)) == NULL) {
 		(void)au_close(aufd, AU_TO_NO_WRITE, event_code);
-		syslog(LOG_ERR, "%s: au_to_return32() failed", func);
+		syslog(LOG_ERR, "%s: au_to_return32() failed", __func__);
 		return (kAUMakeReturnTokErr);
 	}
 
 	if (au_write(aufd, rettok) == -1) {
 		au_free_token(rettok);
 		(void)au_close(aufd, AU_TO_NO_WRITE, event_code);
-		syslog(LOG_ERR, "%s: write of return code failed", func);
+		syslog(LOG_ERR, "%s: write of return code failed", __func__);
 		return (kAUWriteReturnTokErr);
 	}
 
@@ -342,7 +341,7 @@ audit_write(short event_code, token_t *subject, token_t *misctok, char retval,
 	 * function if it hadn't already decided to keep the record.
 	 */
 	if (au_close(aufd, AU_TO_WRITE, event_code) < 0) {
-		syslog(LOG_ERR, "%s: au_close() failed", func);
+		syslog(LOG_ERR, "%s: au_close() failed", __func__);
 		return (kAUCloseErr);
 	}
 
@@ -358,14 +357,13 @@ audit_write_success(short event_code, token_t *tok, au_id_t auid, uid_t euid,
     gid_t egid, uid_t ruid, gid_t rgid, pid_t pid, au_asid_t sid,
     au_tid_t *tid)
 {
-	char *func = "audit_write_success()";
 	token_t *subject = NULL;
 
 	/* Tokenize and save subject. */
 	subject = au_to_subject32(auid, euid, egid, ruid, rgid, pid, sid,
 	    tid);
 	if (subject == NULL) {
-		syslog(LOG_ERR, "%s: au_to_subject32() failed", func);
+		syslog(LOG_ERR, "%s: au_to_subject32() failed", __func__);
 		return kAUMakeSubjectTokErr;
 	}
 
@@ -380,10 +378,9 @@ int
 audit_write_success_self(short event_code, token_t *tok)
 {
 	token_t *subject;
-	char *func = "audit_write_success_self()";
 
 	if ((subject = au_to_me()) == NULL) {
-		syslog(LOG_ERR, "%s: au_to_me() failed", func);
+		syslog(LOG_ERR, "%s: au_to_me() failed", __func__);
 		return (kAUMakeSubjectTokErr);
 	}
 
@@ -402,19 +399,18 @@ audit_write_failure(short event_code, char *errmsg, int errcode, au_id_t auid,
     uid_t euid, gid_t egid, uid_t ruid, gid_t rgid, pid_t pid, au_asid_t sid,
     au_tid_t *tid)
 {
-	char *func = "audit_write_failure()";
 	token_t *subject, *errtok;
 
 	subject = au_to_subject32(auid, euid, egid, ruid, rgid, pid, sid, tid);
 	if (subject == NULL) {
-		syslog(LOG_ERR, "%s: au_to_subject32() failed", func);
+		syslog(LOG_ERR, "%s: au_to_subject32() failed", __func__);
 		return (kAUMakeSubjectTokErr);
 	}
 
 	/* tokenize and save the error message */
 	if ((errtok = au_to_text(errmsg)) == NULL) {
 		au_free_token(subject);
-		syslog(LOG_ERR, "%s: au_to_text() failed", func);
+		syslog(LOG_ERR, "%s: au_to_text() failed", __func__);
 		return (kAUMakeTextTokErr);
 	}
 
@@ -431,17 +427,16 @@ audit_write_failure(short event_code, char *errmsg, int errcode, au_id_t auid,
 int
 audit_write_failure_self(short event_code, char *errmsg, int errret)
 {
-	char *func = "audit_write_failure_self()";
 	token_t *subject, *errtok;
 
 	if ((subject = au_to_me()) == NULL) {
-		syslog(LOG_ERR, "%s: au_to_me() failed", func);
+		syslog(LOG_ERR, "%s: au_to_me() failed", __func__);
 		return (kAUMakeSubjectTokErr);
 	}
 	/* tokenize and save the error message */
 	if ((errtok = au_to_text(errmsg)) == NULL) {
 		au_free_token(subject);
-		syslog(LOG_ERR, "%s: au_to_text() failed", func);
+		syslog(LOG_ERR, "%s: au_to_text() failed", __func__);
 		return (kAUMakeTextTokErr);
 	}
 	return (audit_write(event_code, subject, errtok, -1, errret));
