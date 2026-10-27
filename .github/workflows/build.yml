@@ -1,0 +1,37 @@
+name: Build OpenBSM
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, macos-latest]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install system packages (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update --quiet || true
+          sudo apt-get -yq --no-install-suggests --no-install-recommends install byacc flex
+      - name: install system packages (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew update --quiet || true
+          brew install byacc flex openssl
+      - name: configure
+        run: ./configure
+        env:
+          CFLAGS: ${{ runner.os == 'macOS' && '-I/opt/homebrew/include' || '' }}
+          LDFLAGS: ${{ runner.os == 'macOS' && '-L/opt/homebrew/lib' || '' }}
+      - name: build OpenBSM
+        run: make
