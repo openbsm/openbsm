@@ -1148,6 +1148,7 @@ EOF
 	exit 0 ;;
     *:Darwin:*:*)
 	case `uname -p` in
+	    arm) UNAME_PROCESSOR=arm ;;
 	    *86) UNAME_PROCESSOR=i686 ;;
 	    powerpc) UNAME_PROCESSOR=powerpc ;;
 	esac
