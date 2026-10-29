@@ -163,6 +163,20 @@ generate_file_record(const char *directory, const char *record_filename)
 	write_record(directory, record_filename, file_token, AUE_NULL);
 }
 
+static char *class_record_text = "Class filter test.";
+
+static void
+generate_class_record(const char *directory, const char *record_filename,
+    short event)
+{
+	token_t *token;
+
+	token = au_to_text(class_record_text);
+	if (token == NULL)
+		err(EX_UNAVAILABLE, "au_to_text");
+	write_record(directory, record_filename, token, event);
+}
+
 /*
  * AUT_OHEADER
  */
@@ -1187,6 +1201,7 @@ main(int argc, char *argv[])
 
 	if (do_records) {
 		generate_file_record(directory, "file_record");
+		generate_class_record(directory, "class_record", AUE_EXECVE);
 		generate_data_record(directory, "data_record");
 		generate_ipc_record(directory, "ipc_record");
 		generate_path_record(directory, "path_record");
