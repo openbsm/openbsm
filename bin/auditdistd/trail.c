@@ -263,6 +263,12 @@ again:
 	 * 2. It is fully sent, but is not terminated, so new data can be
 	 *    appended still, or
 	 * 3. It is fully sent but file name has changed.
+	 *    There are two cases here:
+	 *    3a. Sender has crashed and the name has changed from
+	 *        .not_terminated to .crash_recovery.
+	 *    3b. Sender was disconnected, no new data was added to the file,
+	 *        but its name has changed from .not_terminated to terminated
+	 *        name.
 	 *
 	 * Note that we are fine if our .not_terminated or .crash_recovery file
 	 * is smaller than the one on the receiver side, as it is possible that
@@ -274,7 +280,7 @@ again:
 	    (offset >= sb.st_size &&
 	     trail_is_not_terminated(trail->tr_filename)) ||
 	    (offset >= sb.st_size && trail_is_not_terminated(filename) &&
-	     trail_is_crash_recovery(trail->tr_filename))) {
+	     !trail_is_not_terminated(trail->tr_filename))) {
 		/* File was not fully send. Let's finish it. */
 		if (lseek(fd, offset, SEEK_SET) == -1) {
 			pjdlog_errno(LOG_ERR,
@@ -360,17 +366,38 @@ again:
 		pjdlog_debug(1, "No new trail files.");
 		return;
 	}
-	PJDLOG_VERIFY(strlcpy(trail->tr_filename, curfile,
-	    sizeof(trail->tr_filename)) < sizeof(trail->tr_filename));
 	dfd = dirfd(trail->tr_dirfp);
 	PJDLOG_ASSERT(dfd >= 0);
-	trail->tr_filefd = openat(dfd, trail->tr_filename, O_RDONLY);
+	trail->tr_filefd = openat(dfd, curfile, O_RDONLY);
 	if (trail->tr_filefd == -1) {
-		pjdlog_errno(LOG_ERR,
-		    "Unable to open file \"%s/%s\", skipping",
-		    trail->tr_dirname, trail->tr_filename);
+		if (errno == ENOENT && trail_is_not_terminated(curfile)) {
+			/*
+			 * The .not_terminated file was most likely renamed.
+			 * Keep trail->tr_filename as a starting point and
+			 * search again.
+			 */
+			pjdlog_debug(1,
+			    "Unable to open \"%s/%s\", most likely renamed in the meantime, retrying.",
+			    trail->tr_dirname, curfile);
+		} else {
+			/*
+			 * We were unable to open the file, but not because of
+			 * the above. This shouldn't happen, but it did.
+			 * We don't know why it happen, so the best we can do
+			 * is to just skip this file - this is why we copy the
+			 * name, so we can start and the next entry.
+			 */
+			PJDLOG_VERIFY(strlcpy(trail->tr_filename, curfile,
+			    sizeof(trail->tr_filename)) <
+			    sizeof(trail->tr_filename));
+			pjdlog_errno(LOG_ERR,
+			    "Unable to open file \"%s/%s\", skipping",
+			    trail->tr_dirname, curfile);
+		}
 		goto again;
 	}
+	PJDLOG_VERIFY(strlcpy(trail->tr_filename, curfile,
+	    sizeof(trail->tr_filename)) < sizeof(trail->tr_filename));
 	pjdlog_debug(1, "Found next trail file: \"%s/%s\".", trail->tr_dirname,
 	    trail->tr_filename);
 }
