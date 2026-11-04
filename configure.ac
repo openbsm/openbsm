@@ -6,7 +6,6 @@ AC_INIT([OpenBSM], [1.2-alpha6], [trustedbsd-audit@TrustedBSD.org],[openbsm])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([bin/auditreduce/auditreduce.c])
 AC_CONFIG_AUX_DIR(config)
-AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([config/config.h])
 AM_MAINTAINER_MODE
 
@@ -43,7 +42,7 @@ AC_SEARCH_LIBS(pidfile_open, util)
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([mach/mach.h stdint.h pthread_np.h printf.h capsicum_helpers.h])
+AC_CHECK_HEADERS([mach/mach.h stdint.h pthread_np.h printf.h capsicum_helpers.h sys/sysctl.h])
 
 AC_DEFINE([_GNU_SOURCE],,[Use extended API on platforms that require it])
 
