@@ -95,7 +95,7 @@ write_file(int fd, void *buffer, size_t buflen, const char *filename)
 	len = write(fd, buffer, buflen);
 	if (len < 0)
 		err(EX_OSERR, "write_file: %s", filename);
-	if (len < buflen)
+	if ((size_t)len != buflen)
 		err(EX_OSERR, "write_file: short write: %s", filename);
 }
 
@@ -288,8 +288,8 @@ static uid_t		 subject32_ruid = 0x98765432;
 static gid_t		 subject32_rgid = 0x09876543;
 static pid_t		 subject32_pid = 0x13243546;
 static au_asid_t	 subject32_sid = 0x97867564;
-static au_tid_t		 subject32_tid = { 0x16593746 };
-static au_tid_addr_t	 subject32_tid_addr = { 0x16593746 };
+static au_tid_t		 subject32_tid = { .port = 0x16593746 };
+static au_tid_addr_t	 subject32_tid_addr = { .at_port = 0x16593746 };
 
 static void
 generate_subject32_token(const char *directory, const char *token_filename)
@@ -382,8 +382,8 @@ static uid_t		 process32_ruid = 0x98765432;
 static gid_t		 process32_rgid = 0x09876543;
 static pid_t		 process32_pid = 0x13243546;
 static au_asid_t	 process32_sid = 0x97867564;
-static au_tid_t		 process32_tid = { 0x16593746 };
-static au_tid_addr_t	 process32_tid_addr = { 0x16593746 };
+static au_tid_t		 process32_tid = { .port = 0x16593746 };
+static au_tid_addr_t	 process32_tid_addr = { .at_port = 0x16593746 };
 
 static void
 generate_process32_token(const char *directory, const char *token_filename)
@@ -476,8 +476,8 @@ static uid_t		 process64_ruid = 0x98765432;
 static gid_t		 process64_rgid = 0x09876543;
 static pid_t		 process64_pid = 0x13243546;
 static au_asid_t	 process64_sid = 0x97867564;
-static au_tid_t		 process64_tid = { 0x16593746 };
-static au_tid_addr_t	 process64_tid_addr = { 0x16593746 };
+static au_tid_t		 process64_tid = { .port = 0x16593746 };
+static au_tid_addr_t	 process64_tid_addr = { .at_port = 0x16593746 };
 
 static void
 generate_process64_token(const char *directory, const char *token_filename)

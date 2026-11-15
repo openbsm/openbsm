@@ -267,7 +267,7 @@ print_xml_string(FILE *fp, const char *str, size_t len)
 			break;
 
 		default:
-			(void) vis(visbuf, str[i], VIS_CSTYLE, 0);
+			(void) nvis(visbuf, sizeof(visbuf), str[i], VIS_CSTYLE, 0);
 			(void) fprintf(fp, "%s", visbuf);
 			break;
 		}
@@ -1463,7 +1463,6 @@ static void
 print_arg_uuid_tok(FILE *fp, tokenstr_t *tok, char *del, int oflags)
 {
 	char *uuidstr;
-	uint32_t status;
 
 	/*
 	 * XXXRW: Not quite clear how we want to handle failures here.  For
