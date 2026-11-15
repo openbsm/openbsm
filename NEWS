@@ -2,6 +2,8 @@ OpenBSM Version History
 
 OpenBSM 1.2 alpha 7
 
+- Fix a bug in auditdistd which could result in corrupted trail logs
+  on the receiving side.
 - Fix build issues on recent macOS.
 - Modernize the build system.
 
