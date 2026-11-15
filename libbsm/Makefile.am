@@ -1,7 +1,7 @@
 if USE_NATIVE_INCLUDES
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 else
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/sys
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/sys
 endif
 
 lib_LTLIBRARIES = libbsm.la
@@ -27,7 +27,7 @@ libbsm_la_SOURCES +=	\
 	bsm_wrappers.c
 endif
 
-man3_MANS =		\
+man_MANS =		\
 	au_class.3	\
 	au_control.3	\
 	au_domain.3	\
@@ -43,9 +43,10 @@ man3_MANS =		\
 	au_token.3	\
 	au_user.3	\
 	libbsm.3
+EXTRA_DIST = $(man_MANS)
 
-install-exec-hook:
-	cd $(DESTDIR)$(mandir) && \
+install-data-hook:
+	cd $(DESTDIR)$(man3dir) && \
 	  $(LN_S) -f au_class.3 getauclassent.3 && \
 	  $(LN_S) -f au_class.3 getauclassent_r.3 && \
 	  $(LN_S) -f au_class.3 getauclassnam.3 && \

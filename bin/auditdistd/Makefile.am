@@ -1,15 +1,16 @@
 if USE_NATIVE_INCLUDES
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 else
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/sys
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/sys
 endif
 
 sbin_PROGRAMS = auditdistd
-man5_MANS = auditdistd.conf.5
-man8_MANS = auditdistd.8
-YFLAGS = -d
+AM_YFLAGS = -d
 auditdistd_CFLAGS = -Wno-format
 auditdistd_LDFLAGS = -lcrypto
+
+BUILT_SOURCES = parse.c parse.h token.c
+CLEANFILES = $(BUILT_SOURCES)
 
 auditdistd_SOURCES =		\
 	auditdistd.c		\
@@ -27,3 +28,26 @@ auditdistd_SOURCES =		\
 	subr.c			\
 	token.l			\
 	trail.c
+
+noinst_HEADERS =		\
+	auditdistd.h		\
+	faccessat.h 		\
+	fstatat.h		\
+	openat.h 		\
+	parse.h 		\
+	pjdlog.h 		\
+	proto_impl.h 		\
+	proto.h 		\
+	renameat.h 		\
+	sandbox.h 		\
+	sigtimedwait.h 		\
+	strndup.h 		\
+	subr.h 			\
+	synch.h 		\
+	trail.h 		\
+	unlinkat.h
+
+man_MANS = \
+	auditdistd.conf.5	\
+	auditdistd.8
+EXTRA_DIST = $(man_MANS)

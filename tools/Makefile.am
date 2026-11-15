@@ -1,7 +1,7 @@
 if USE_NATIVE_INCLUDES
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 else
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/sys
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/sys
 endif
 
 bin_PROGRAMS = audump
