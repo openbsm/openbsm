@@ -5,6 +5,7 @@ for building on a range of operating systems, including FreeBSD, Mac OS X,
 and Linux.  Some components are built only if appropriate kernel audit
 support is found.  Typical builds will be performed using:
 
+   autoreconf -i
     ./configure
     make
 
