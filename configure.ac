@@ -95,7 +95,7 @@ AC_FUNC_MALLOC
 AC_FUNC_MKTIME
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
-AC_CHECK_FUNCS([arc4random arc4random_buf bzero cap_enter clock_gettime closefrom faccessat fdopendir fstatat ftruncate getresgid getresuid gettimeofday inet_ntoa jail kqueue memset openat pthread_cond_timedwait_relative_np pthread_condattr_setclock pthread_mutex_isowned_np pthread_mutex_lock renameat setproctitle sigtimedwait strchr strerror strlcat strlcpy strndup strrchr strstr strtol strtoul unlinkat vis])
+AC_CHECK_FUNCS([arc4random arc4random_buf bzero cap_enter clock_gettime closefrom eaccess faccessat fdopendir fstatat ftruncate getresgid getresuid gettimeofday inet_ntoa jail kqueue memset openat pthread_cond_timedwait_relative_np pthread_condattr_setclock pthread_mutex_isowned_np pthread_mutex_lock renameat setproctitle sigtimedwait strchr strerror strlcat strlcpy strndup strrchr strstr strtol strtoul unlinkat vis])
 
 # sys/queue.h exists on most systems, but its capabilities vary a great deal.
 # test for LIST_FIRST and TAILQ_FOREACH_SAFE, which appears to not exist in
@@ -227,8 +227,8 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 
 # Check to see if Mach IPC is used for trigger messages.  If so, use Mach IPC
 # instead of the default for sending trigger messages to the audit components.
-AC_CHECK_FILE([/usr/include/mach/audit_triggers.defs], [
-AC_DEFINE(USE_MACH_IPC,, Define if uses Mach IPC for Triggers messages)
+AC_CHECK_HEADER([mach/audit_triggers_types.h], [
+AC_DEFINE(USE_MACH_IPC, 1, Define if uses Mach IPC for Triggers messages)
 use_mach_ipc=true
 ], [
 use_mach_ipc=false

@@ -30,6 +30,8 @@
  * SUCH DAMAGE.
  */
 
+#include <config/config.h>
+
 /*
  * Generate a series of BSM token samples in the requested directory.
  */
