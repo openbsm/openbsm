@@ -1,5 +1,10 @@
 OpenBSM Version History
 
+OpenBSM 1.2 alpha 7
+
+- Fix build issues on recent macOS.
+- Modernize the build system.
+
 OpenBSM 1.2 alpha 6
 
 - Make auditd(8) log directly to syslog(3) if audit_warn(5) does not
