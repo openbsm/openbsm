@@ -235,6 +235,17 @@ use_mach_ipc=false
 ])
 AM_CONDITIONAL(USE_MACH_IPC, $use_mach_ipc)
 
+# Developer options
+AC_ARG_ENABLE([developer-warnings],
+    AS_HELP_STRING([--enable-developer-warnings], [enable strict warnings (default is NO)]),
+    [CFLAGS="${CFLAGS} -Wall -Wextra"])
+AC_ARG_ENABLE([debugging-symbols],
+    AS_HELP_STRING([--enable-debugging-symbols], [enable debugging symbols (default is NO)]),
+    [CFLAGS="${CFLAGS} -O0 -g -fno-inline"])
+AC_ARG_ENABLE([werror],
+    AS_HELP_STRING([--enable-werror], [use -Werror (default is NO)]),
+    [CFLAGS="${CFLAGS} -Werror"])
+
 AC_CONFIG_FILES([
 	Makefile
 	bin/Makefile
