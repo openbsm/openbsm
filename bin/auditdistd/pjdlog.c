@@ -57,96 +57,6 @@ static int pjdlog_initialized = PJDLOG_NEVER_INITIALIZED;
 static int pjdlog_mode, pjdlog_debug_level;
 static char pjdlog_prefix[128];
 
-#ifdef __FreeBSD__
-static int
-pjdlog_printf_arginfo_humanized_number(const struct printf_info *pi __unused,
-    size_t n, int *argt)
-{
-
-	assert(n >= 1);
-	argt[0] = PA_INT | PA_FLAG_INTMAX;
-	return (1);
-}
-
-static int
-pjdlog_printf_render_humanized_number(struct __printf_io *io,
-    const struct printf_info *pi, const void * const *arg)
-{
-	char buf[5];
-	intmax_t num;
-	int ret;
-
-	num = *(const intmax_t *)arg[0];
-	humanize_number(buf, sizeof(buf), (int64_t)num, "", HN_AUTOSCALE,
-	    HN_NOSPACE | HN_DECIMAL);
-	ret = __printf_out(io, pi, buf, strlen(buf));
-	__printf_flush(io);
-	return (ret);
-}
-
-static int
-pjdlog_printf_arginfo_sockaddr(const struct printf_info *pi __unused,
-    size_t n, int *argt)
-{
-
-	assert(n >= 1);
-	argt[0] = PA_POINTER;
-	return (1);
-}
-
-static int
-pjdlog_printf_render_sockaddr(struct __printf_io *io,
-    const struct printf_info *pi, const void * const *arg)
-{
-	const struct sockaddr_storage *ss;
-	char buf[64];
-	int ret;
-
-	ss = *(const struct sockaddr_storage * const *)arg[0];
-	switch (ss->ss_family) {
-	case AF_INET:
-	    {
-		char addr[INET_ADDRSTRLEN];
-		const struct sockaddr_in *sin;
-		unsigned int port;
-
-		sin = (const struct sockaddr_in *)ss;
-		port = ntohs(sin->sin_port);
-		if (inet_ntop(ss->ss_family, &sin->sin_addr, addr,
-		    sizeof(addr)) == NULL) {
-			PJDLOG_ABORT("inet_ntop(AF_INET) failed: %s.",
-			    strerror(errno));
-		}
-		snprintf(buf, sizeof(buf), "%s:%u", addr, port);
-		break;
-	    }
-	case AF_INET6:
-	    {
-		char addr[INET6_ADDRSTRLEN];
-		const struct sockaddr_in6 *sin;
-		unsigned int port;
-
-		sin = (const struct sockaddr_in6 *)ss;
-		port = ntohs(sin->sin6_port);
-		if (inet_ntop(ss->ss_family, &sin->sin6_addr, addr,
-		    sizeof(addr)) == NULL) {
-			PJDLOG_ABORT("inet_ntop(AF_INET6) failed: %s.",
-			    strerror(errno));
-		}
-		snprintf(buf, sizeof(buf), "[%s]:%u", addr, port);
-		break;
-	    }
-	default:
-		snprintf(buf, sizeof(buf), "[unsupported family %hhu]",
-		    ss->ss_family);
-		break;
-	}
-	ret = __printf_out(io, pi, buf, strlen(buf));
-	__printf_flush(io);
-	return (ret);
-}
-#endif	/* __FreeBSD__ */
-
 void
 pjdlog_init(int mode)
 {
@@ -157,19 +67,6 @@ pjdlog_init(int mode)
 	assert(mode == PJDLOG_MODE_STD || mode == PJDLOG_MODE_SYSLOG);
 
 	saved_errno = errno;
-
-	if (pjdlog_initialized == PJDLOG_NEVER_INITIALIZED) {
-#ifdef __FreeBSD__
-		__use_xprintf = 1;
-		register_printf_render_std("T");
-		register_printf_render('N',
-		    pjdlog_printf_render_humanized_number,
-		    pjdlog_printf_arginfo_humanized_number);
-		register_printf_render('S',
-		    pjdlog_printf_render_sockaddr,
-		    pjdlog_printf_arginfo_sockaddr);
-#endif
-	}
 
 	if (mode == PJDLOG_MODE_SYSLOG)
 		openlog(NULL, LOG_PID | LOG_NDELAY, LOG_DAEMON);

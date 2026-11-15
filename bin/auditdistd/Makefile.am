@@ -6,7 +6,6 @@ endif
 
 sbin_PROGRAMS = auditdistd
 AM_YFLAGS = -d
-auditdistd_CFLAGS = -Wno-format
 auditdistd_LDFLAGS = -lcrypto
 
 BUILT_SOURCES = parse.c parse.h token.c
