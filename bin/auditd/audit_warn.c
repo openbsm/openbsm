@@ -29,10 +29,16 @@
 
 #include <sys/types.h>
 
+#include <config/config.h>
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#ifndef HAVE_EACCESS
+# define eaccess(path, mode) access(path, mode)
+#endif
 
 #include "auditd.h"
 

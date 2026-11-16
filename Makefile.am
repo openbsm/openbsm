@@ -1,22 +1,25 @@
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS =		\
-	bsm
+	bsm		\
+	compat		\
+	sys		\
+	libbsm
 
 if HAVE_AUDIT_SYSCALLS
 SUBDIRS +=              \
-       	libauditd
+	libauditd
 endif
 
-SUBDIRS +=              \
-	libbsm		\
+SUBDIRS +=		\
 	bin		\
 	man		\
 	modules		\
-	sys
-
-ACLOCAL_AMFLAGS = -I m4
+	test		\
+	tools
 
 EXTRA_DIST =		\
-	CHANGELOG	\
+	NEWS		\
 	LICENSE		\
 	README		\
 	TODO		\

@@ -82,7 +82,7 @@ audump_control(void)
 {
 	char string[PATH_MAX], string2[PATH_MAX];
 	int ret, val, qsz;
-	long policy;
+	int policy;
 	time_t age;
 	size_t size;
 

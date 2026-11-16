@@ -190,9 +190,8 @@ adreq_validate_data(const struct adreq *adreq)
 		 * File name must end up with '\0' and there must be no '\0'
 		 * in the middle.
 		 */
-		if (adreq->adr_data[adreq->adr_datasize - 1] != '\0' ||
-		    strchr(adreq->adr_data, '\0') !=
-		    (const char *)adreq->adr_data + adreq->adr_datasize - 1) {
+		if (memchr(adreq->adr_data, '\0', adreq->adr_datasize) !=
+		    adreq->adr_data + adreq->adr_datasize - 1) {
 			pjdlog_exitx(EX_PROTOCOL,
 			    "Invalid file name received.");
 		}
@@ -358,7 +357,7 @@ receiver_open(const char *filename)
  * Function appends data to the trail file that is currently open.
  */
 static int
-receiver_append(const unsigned char *data, size_t size)
+receiver_append(const void *data, size_t size)
 {
 	ssize_t done;
 	size_t osize;
@@ -382,6 +381,7 @@ receiver_append(const unsigned char *data, size_t size)
 		}
 		pjdlog_debug(3, "Wrote %zd bytes into \"%s/%s\".", done,
 		    adhost->adh_directory, adhost->adh_trail_name);
+		data = (const char *)data + done;
 		size -= done;
 	}
 	pjdlog_debug(2, "Appended %zu bytes to file \"%s/%s\".",

@@ -27,6 +27,22 @@
 #ifndef _COMPAT_UUID_STREAM_H_
 #define	_COMPAT_UUID_STREAM_H_
 
+#ifdef USE_ENDIAN_H
+#include <endian.h>
+#endif
+#ifdef USE_SYS_ENDIAN_H
+#include <sys/endian.h>
+#endif
+#ifdef USE_MACHINE_ENDIAN_H
+#include <machine/endian.h>
+#endif
+#ifdef USE_COMPAT_ENDIAN_H
+#include <compat/endian.h>
+#endif
+#ifdef USE_COMPAT_ENDIAN_ENC_H
+#include <compat/endian_enc.h>
+#endif
+
 /*
  * Encode/Decode UUID into octet-stream.
  *   http://www.opengroup.org/dce/info/draft-leach-uuids-guids-01.txt

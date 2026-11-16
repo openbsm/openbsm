@@ -134,14 +134,13 @@ present_rawrecord(struct timespec *ts, u_char *data, u_int len)
  */
 #define	MAX_TOKENS	128	/* Maximum tokens we handle per record. */
 static void
-present_tokens(struct timespec *ts, u_char *data, u_int len)
+present_tokens(struct timespec *ts, u_char *data, size_t len)
 {
 	struct auditfilter_module *am;
 	tokenstr_t tokens[MAX_TOKENS];
-	u_int bytesread;
-	int tokencount;
+	size_t bytesread = 0;
+	int tokencount = 0;
 
-	tokencount = 0;
 	while (bytesread < len) {
 		if (au_fetch_tok(&tokens[tokencount], data + bytesread,
 		    len - bytesread) == -1)
@@ -166,7 +165,7 @@ mainloop_file(const char *conffile, const char *trailfile, FILE *trail_fp)
 	struct timespec ts;
 	FILE *conf_fp;
 	u_char *buf;
-	int reclen;
+	ssize_t reclen;
 
 	while (1) {
 		/*
@@ -202,8 +201,8 @@ mainloop_file(const char *conffile, const char *trailfile, FILE *trail_fp)
 			continue;
 		if (clock_gettime(CLOCK_REALTIME, &ts) < 0)
 			err(-1, "clock_gettime");
-		present_rawrecord(&ts, buf, reclen);
-		present_tokens(&ts, buf, reclen);
+		present_rawrecord(&ts, buf, (size_t)reclen);
+		present_tokens(&ts, buf, (size_t)reclen);
 		free(buf);
 	}
 }

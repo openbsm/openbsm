@@ -345,8 +345,7 @@ sender_disconnect(void)
 }
 
 static void
-adreq_fill(struct adreq *adreq, uint8_t cmd, const unsigned char *data,
-    size_t size)
+adreq_fill(struct adreq *adreq, uint8_t cmd, const char *data, size_t size)
 {
 	static uint64_t seq = 1;
 

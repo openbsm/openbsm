@@ -1,6 +1,6 @@
 # OpenBSM
 
-[![Build Status](https://travis-ci.org/openbsm/openbsm.svg?branch=master)](https://travis-ci.org/openbsm/openbsm)
+[![Build](https://github.com/openbsm/openbsm/actions/workflows/check.yml/badge.svg)](https://github.com/openbsm/openbsm/actions/workflows/check.yml)
 
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/11238/badge.svg)](https://scan.coverity.com/projects/openbsm)
 

@@ -194,7 +194,7 @@ struct adpkt {
 	uint8_t		adp_cmd;
 	uint64_t	adp_seq;
 	uint32_t	adp_datasize;
-	unsigned char	adp_data[0];
+	char		adp_data[0];
 } __packed;
 
 struct adreq {

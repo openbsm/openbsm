@@ -586,13 +586,11 @@ tcp_address_match(const void *ctx, const char *addr)
 	}
 }
 
-#ifndef __FreeBSD__
 static void
 sockaddr_to_string(const void *sa, char *buf, size_t size)
 {
-	const struct sockaddr_storage *ss;
+	const struct sockaddr_storage *ss = sa;
 
-	ss = (const struct sockaddr_storage * const *)sa;
 	switch (ss->ss_family) {
 	case AF_INET:
 	    {
@@ -632,7 +630,6 @@ sockaddr_to_string(const void *sa, char *buf, size_t size)
 		break;
 	}
 }
-#endif	/* !__FreeBSD__ */
 
 static void
 tcp_local_address(const void *ctx, char *addr, size_t size)
@@ -649,13 +646,9 @@ tcp_local_address(const void *ctx, char *addr, size_t size)
 		PJDLOG_VERIFY(strlcpy(addr, "N/A", size) < size);
 		return;
 	}
-#ifdef __FreeBSD__
-	PJDLOG_VERIFY(snprintf(addr, size, "tcp://%S", &sa) < (ssize_t)size);
-#else
 	strlcpy(addr, "tcp://", size);
 	if (size > 6)
 		sockaddr_to_string(&sa, addr + 6, size - 6);
-#endif
 }
 
 static void
@@ -673,13 +666,9 @@ tcp_remote_address(const void *ctx, char *addr, size_t size)
 		PJDLOG_VERIFY(strlcpy(addr, "N/A", size) < size);
 		return;
 	}
-#ifdef __FreeBSD__
-	PJDLOG_VERIFY(snprintf(addr, size, "tcp://%S", &sa) < (ssize_t)size);
-#else
 	strlcpy(addr, "tcp://", size);
 	if (size > 6)
 		sockaddr_to_string(&sa, addr + 6, size - 6);
-#endif
 }
 
 static void

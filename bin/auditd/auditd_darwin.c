@@ -463,6 +463,19 @@ auditd_control(mach_port_t __unused auditd_port, int trigger)
 }
 
 /*
+ * Implementation of the audit_analytics() MIG simpleroutine.
+ */
+kern_return_t
+audit_analytics(mach_port_t audit_port, string_t caller_id, string_t caller_name)
+{
+
+	(void)audit_port;
+	(void)caller_id;
+	(void)caller_name;
+	return (KERN_SUCCESS);
+}
+
+/*
  * When we get a signal, we are often not at a clean point.  So, little can
  * be done in the signal handler itself.  Instead,  we send a message to the
  * main servicing loop to do proper handling from a non-signal-handler

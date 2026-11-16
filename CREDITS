@@ -39,7 +39,11 @@ the development of OpenBSM:
     Mateusz Piotrowski
     Alan Somers
     Aniket Pandey
-    Modirum MDPay
+    Entersekt (formerly Modirum MDPay)
+    Kyle Evans
+    Dag-Erling Smørgrav
+    Klara, Inc.
+    Qualys, Inc.
 
 In addition, Coverity, Inc.'s Prevent(tm) static analysis tool and Gimpel
 Software's FlexeLint tool were used to identify a number of bugs in the
