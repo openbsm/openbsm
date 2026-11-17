@@ -817,6 +817,22 @@ main(int argc, char **argv)
 			usage("Unknown option");
 		}
 	}
+
+#ifdef HAVE_CAP_ENTER
+  /*
+   * Class filtering (option -c) uses au_preselect() which lazily reads
+   * the audit event database while processing records. Pre-open it here,
+   * after option parsing and before entering capability mode.
+   *
+   * Other filters do not require filesystem access at this stage.
+   */
+  if (ISOPTSET(opttochk, OPT_c)) {
+      if (getauevent() == NULL)
+        errx(EXIT_FAILURE, "Cannot open audit event database");
+      setauevent();
+  }
+#endif
+
 	argv += optind;
 	argc -= optind;
 
