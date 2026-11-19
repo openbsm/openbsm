@@ -1,12 +1,18 @@
 .\"-
 .\" Copyright (c) 2005-2006, 2017 Robert N. M. Watson
 .\" Copyright (c) 2008 Apple Inc.
+.\" Copyright (c) 2026 Capabilities Limited and contributors
 .\" All rights reserved.
 .\"
 .\" Portions of this software were developed by BAE Systems, the University of
 .\" Cambridge Computer Laboratory, and Memorial University under DARPA/AFRL
 .\" contract FA8650-15-C-7558 ("CADETS"), as part of the DARPA Transparent
 .\" Computing (TC) research program.
+.\"
+.\" This software was developed in part by Capabilities Limited,
+.\" lowRISC CIC, Sigil Logic Inc., and Cherified Systems LLC under Advanced
+.\" Research and Invention Agency (ARIA) Contract PR-SGAI-00358, "AI Verified
+.\" Hardware for AI (AIVHAI)".
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -29,7 +35,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd January 6, 2017
+.Dd November 18, 2026
 .Dt AUDIT.LOG 5
 .Os
 .Sh NAME
@@ -134,7 +140,7 @@ token can be created using
 .It "Version Number	1 byte	Record version number"
 .It "Event Type	2 bytes	Event type"
 .It "Event Modifier	2 bytes	Event sub-type"
-.It "Address Type/Length	1 byte	Host address type and length"
+.It "Address Type/Length	4 bytes	Host address type (AU_IPv4 or AU_IPv6)"
 .It "Machine Address	4/16 bytes	IPv4 or IPv6 address"
 .It "Seconds	4/8 bytes	Record time stamp (32/64-bits)"
 .It "Nanoseconds	4/8 bytes	Record time stamp (32/64-bits)"
@@ -200,14 +206,10 @@ An
 token can be created using
 .Xr au_to_in_addr_ex 3
 for an IPv6 address.
-.Pp
-See the
-.Sx BUGS
-section for information on the storage of this token.
 .Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
 .It Sy "Field	Bytes	Description"
 .It "Token ID	1 byte	Token ID"
-.It "IP Address Type	1 byte	Type of address"
+.It "IP Address Type	4 bytes	Type of address (AU_IPv4 or AU_IPv6)"
 .It "IP Address	4/16 bytes	IPv4 or IPv6 address"
 .El
 .Ss ip Token
@@ -330,8 +332,8 @@ or
 .It "Process ID	4 bytes	Process ID"
 .It "Session ID	4 bytes	Audit session ID"
 .It "Terminal Port ID	4/8 bytes	Terminal port ID (32/64-bits)"
-.It "Terminal Address Type/Length	4 bytes	Length of machine address"
-.It "Terminal Machine Address	4 bytes	IPv4 or IPv6 address of machine"
+.It "Terminal Address Type	4 bytes	Address type (AU_IPv4 or AU_IPv6)"
+.It "Terminal Machine Address	4/16 bytes	IPv4 or IPv6 address of machine"
 .El
 .Ss Return Token
 The
@@ -422,8 +424,8 @@ or
 .It "Process ID	4 bytes	Process ID"
 .It "Session ID	4 bytes	Audit session ID"
 .It "Terminal Port ID	4/8 bytes	Terminal port ID (32/64-bits)"
-.It "Terminal Address Type/Length	1 byte	Length of machine address"
-.It "Terminal Machine Address	4 bytes	IPv4 or IPv6 address of machine"
+.It "Terminal Address Type	4 bytes	Address type (AU_IPv4 or AU_IPv6)"
+.It "Terminal Machine Address	4/16 bytes	IPv4 or IPv6 address of machine"
 .El
 .Ss System V IPC Token
 The
@@ -470,7 +472,7 @@ or
 .Bl -column -offset 3n ".No Terminal Address Type/Length" ".No N bytes + 1 NUL"
 .It Sy "Field	Bytes	Description"
 .It "Token ID	1 byte	Token ID"
-.It "File Access Mode	1 byte	mode_t associated with file"
+.It "File Access Mode	4 bytes	mode_t associated with file"
 .It "Owner User ID	4 bytes	uid_t associated with file"
 .It "Owner Group ID	4 bytes	gid_t associated with file"
 .It "File System ID	4 bytes	fsid_t associated with file"
@@ -582,19 +584,61 @@ token can be created using
 .Ss Socket Token
 The
 .Dq socket
-token contains information about UNIX domain and Internet sockets.
-Each token has four or eight fields.
-Depending on the type of socket, a socket token may be created using
-.Xr au_to_sock_unix 3 ,
-.Xr au_to_sock_inet32 3
-or
-.Xr au_to_sock_inet128 3 .
+token describes a legacy IPv4 socket endpoint.
+A
+.Dq socket
+token can be created using
+.Xr au_to_socket 3 .
 .Bl -column -offset 3n ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
 .It Sy "Field" Ta Sy Bytes Ta Sy Description
 .It Li "Token ID" Ta "1 byte" Ta "Token ID"
 .It Li "Socket family" Ta "2 bytes" Ta "Socket family"
 .It Li "Local port" Ta "2 bytes" Ta "Local port"
 .It Li "Socket address" Ta "4 bytes" Ta "Socket address"
+.It Li "Remote port" Ta "2 bytes" Ta "Remote port"
+.It Li "Remote address" Ta "4 bytes" Ta "Remote address"
+.El
+.Ss Internet Socket Token (IPv4)
+The
+.Dq inet4 socket
+token contains information about an IPv4 Internet socket.
+An Internet socket token can be created using
+.Xr au_to_sock_inet32 3 .
+.Bl -column -offset 3n ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
+.It Sy "Field" Ta Sy Bytes Ta Sy Description
+.It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Socket family" Ta "2 bytes" Ta "Socket family"
+.It Li "Local port" Ta "2 bytes" Ta "Local port"
+.It Li "Local address" Ta "4 bytes" Ta "Local IPv4 address"
+.It Li "Remote port" Ta "2 bytes" Ta "Remote port"
+.It Li "Remote address" Ta "4 bytes" Ta "Remote IPv4 address"
+.El
+.Ss Internet Socket Token (IPv6)
+The
+.Dq inet6 socket
+token contains information about an IPv6 Internet socket.
+An Internet socket token can be created using
+.Xr au_to_sock_inet128 3 .
+.Bl -column -offset 3n ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
+.It Sy "Field" Ta Sy Bytes Ta Sy Description
+.It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Socket family" Ta "2 bytes" Ta "Socket family"
+.It Li "Local port" Ta "2 bytes" Ta "Local port"
+.It Li "Local address" Ta "16 bytes" Ta "Local IPv6 address"
+.It Li "Remote port" Ta "2 bytes" Ta "Remote port"
+.It Li "Remote address" Ta "16 bytes" Ta "Remote IPv6 address"
+.El
+.Ss UNIX Domain Socket Token
+The
+.Dq unix socket
+token contains information about a UNIX domain socket.
+A UNIX socket token can be created using
+.Xr au_to_sock_unix 3 .
+.Bl -column -offset 3n ".Sy Field Name Width XX" ".Sy XX Bytes XXXX" ".Sy Description"
+.It Sy "Field" Ta Sy Bytes Ta Sy Description
+.It Li "Token ID" Ta "1 byte" Ta "Token ID"
+.It Li "Socket family" Ta "2 bytes" Ta "Socket family"
+.It Li "Path" Ta "Variable" Ta "UNIX domain socket pathname"
 .El
 .Ss Expanded Socket Token
 The
@@ -697,12 +741,3 @@ The
 field in the
 .Dq arbitrary data
 token has undefined values.
-.Pp
-The
-.Dq in_addr
-and
-.Dq in_addr_ex
-token layout documented here appears to be in conflict with the
-.Xr libbsm 3
-implementation of
-.Xr au_to_in_addr_ex 3 .
